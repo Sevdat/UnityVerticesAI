@@ -1,4 +1,4 @@
-The world is being built layer by layer from the ground up meaning 3D printers can use it.
+The world is being built layer by layer from the ground up meaning the binary files can be used by 3D printers to print models.
 
 
 
