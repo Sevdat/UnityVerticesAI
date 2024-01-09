@@ -88,7 +88,6 @@ public class ball : MonoBehaviour
         if (i%xAmount == xAmount-1-1) i += 1;
         if (i!= 0 && i%(xSquare-xAmount-1)==0) {i += 2*xAmount;} else i+=1; 
         }
-        print(lol.Length);
     }
 
     void loadFile(string binaryWorld){
