@@ -48,51 +48,48 @@ public class ball : MonoBehaviour
          mesh.RecalculateNormals();
 
     }
-
+int minOne = -1;
+string lol = "";
     void loadTriangles(){
-            for(int i = 0; i<sortedWorld.Length;){
-        if (i+1+xAmount-1+xSquare-1 < sortedWorld.Length){
-            
-        int one1 = (sortedWorld[i]!=zero) ? i:0;
-        int two1 = (sortedWorld[i+1]!=zero) ? i+1:0;
-        int two2 = (sortedWorld[i+xAmount-1]!=zero) ? i+xAmount-1:0;
-        int one2 = (sortedWorld[i+1+xAmount-1]!=zero) ? i+1+xAmount-1:0;
 
-        int three1 = (sortedWorld[i+xSquare-1]!=zero) ? i+xSquare-1:0;
-        int four1 = (sortedWorld[i+1+xSquare-1]!=zero) ? i+1+xSquare-1:0;
-        int four2 = (sortedWorld[i+xAmount-1+xSquare-1]!=zero) ? i+xAmount-1+xSquare-1:0;
-        int three2 = (sortedWorld[i+1+xAmount-1+xSquare-1]!=zero) ? i+1+xAmount-1+xSquare-1:0;
+            for(int i = 0; i+1+xAmount-1+xSquare-1<sortedWorld.Length;){
+                    lol += sortedWorld[i];
+
+        int one1 = (sortedWorld[i]!=zero) ? i:minOne;
+        int two1 = (sortedWorld[i+1]!=zero) ? i+1:minOne;
+        int two2 = (sortedWorld[i+xAmount-1]!=zero) ? i+xAmount-1:minOne;
+        int one2 = (sortedWorld[i+1+xAmount-1]!=zero) ? i+1+xAmount-1:minOne;
+
+        int three1 = (sortedWorld[i+xSquare-1]!=zero) ? i+xSquare-1:minOne;
+        int four1 = (sortedWorld[i+1+xSquare-1]!=zero) ? i+1+xSquare-1:minOne;
+        int four2 = (sortedWorld[i+xAmount-1+xSquare-1]!=zero) ? i+xAmount-1+xSquare-1:minOne;
+        int three2 = (sortedWorld[i+1+xAmount-1+xSquare-1]!=zero) ? i+1+xAmount-1+xSquare-1:minOne;
 
         int[] cubeConnect = new int[]{one1,one2,two1,two2,three1,three2,four1,four2};
         
-
         for (int current = 0; current <cubeConnect.Length;){
             int vertices1 = cubeConnect[current];
             int vertices2 = cubeConnect[current+1];
 
-            if (vertices1 != 0 && vertices2 !=0){
+
+            if (vertices1 != minOne && vertices2 !=minOne){
                 for (int check = current+2; check <cubeConnect.Length;){ 
                         int vertices3 = cubeConnect[check];
-                        if (vertices3 !=0) {
+                        if (vertices3 !=minOne) {
                         triangles = createTriangles(
-                            triangles,vertices1,vertices2,vertices3
+                            triangles,vertices3,vertices2,vertices1
                             );
                         }
                     check +=1;
                 }
-                
-
             }
                 current+=2;
-
         }
 
-
-            }
         if (i%xAmount == xAmount-1-1) i += 1;
-        if (i!= 0 && i%(xSquare-1)==0) {i += xAmount;} else i+=1; 
+        if (i!= 0 && i%(xSquare-xAmount-1)==0) {i += 2*xAmount;} else i+=1; 
         }
-
+        print(lol.Length);
     }
 
     void loadFile(string binaryWorld){
