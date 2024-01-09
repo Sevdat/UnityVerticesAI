@@ -75,7 +75,7 @@ public class ball : MonoBehaviour
                         int vertices3 = cubeConnect[check];
                         if (vertices3 !=minOne) {
                         triangles = createTriangles(
-                            triangles,vertices3,vertices2,vertices1
+                            triangles,vertices1,vertices2,vertices3
                             );
                         }
                     check +=1;
@@ -83,10 +83,8 @@ public class ball : MonoBehaviour
             }
                 current+=2;
         }
-        int o = i;
         if (i%xAmount == xAmount-1-1) i += 1;
         if (i!= 0 && i%(xSquare-xAmount-1)==0) {i += 2*xAmount+1;} else i+=1; 
-        print(i);
         }
     }
 
