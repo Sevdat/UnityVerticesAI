@@ -17,6 +17,7 @@ public class ball : MonoBehaviour
     int xSquare;
     int count;
     int zero = (int)'0';
+    int minOne = -1;
 //Vector(x,y,z)  x = side, y = up/down, z = forward/backward 
 //new Vector3(0,0,0), new Vector3(0,0,1), new Vector3(1,0,0), new Vector3(1,0,1)
 //int[] triangles = new int[]{0,1,2};
@@ -48,12 +49,10 @@ public class ball : MonoBehaviour
          mesh.RecalculateNormals();
 
     }
-int minOne = -1;
-string lol = "";
+
     void loadTriangles(){
 
             for(int i = 0; i+1+xAmount-1+xSquare-1<sortedWorld.Length;){
-                    lol += sortedWorld[i];
 
         int one1 = (sortedWorld[i]!=zero) ? i:minOne;
         int two1 = (sortedWorld[i+1]!=zero) ? i+1:minOne;
