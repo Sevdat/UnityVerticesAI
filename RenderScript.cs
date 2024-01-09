@@ -51,25 +51,24 @@ public class ball : MonoBehaviour
     }
 
     void loadTriangles(){
-
-            for(int i = 0; i+1+xAmount-1+xSquare-1<sortedWorld.Length;){
+    
+    for(int i = 0; i<sortedWorld.Length-2*xAmount-xSquare;){
 
         int one1 = (sortedWorld[i]!=zero) ? i:minOne;
         int two1 = (sortedWorld[i+1]!=zero) ? i+1:minOne;
-        int two2 = (sortedWorld[i+xAmount-1]!=zero) ? i+xAmount-1:minOne;
-        int one2 = (sortedWorld[i+1+xAmount-1]!=zero) ? i+1+xAmount-1:minOne;
+        int two2 = (sortedWorld[i+xAmount]!=zero) ? i+xAmount:minOne;
+        int one2 = (sortedWorld[i+1+xAmount]!=zero) ? i+1+xAmount:minOne;
 
-        int three1 = (sortedWorld[i+xSquare-1]!=zero) ? i+xSquare-1:minOne;
-        int four1 = (sortedWorld[i+1+xSquare-1]!=zero) ? i+1+xSquare-1:minOne;
-        int four2 = (sortedWorld[i+xAmount-1+xSquare-1]!=zero) ? i+xAmount-1+xSquare-1:minOne;
-        int three2 = (sortedWorld[i+1+xAmount-1+xSquare-1]!=zero) ? i+1+xAmount-1+xSquare-1:minOne;
+        int three1 = (sortedWorld[i+xSquare]!=zero) ? i+xSquare:minOne;
+        int four1 = (sortedWorld[i+1+xSquare]!=zero) ? i+1+xSquare:minOne;
+        int four2 = (sortedWorld[i+xAmount+xSquare]!=zero) ? i+xAmount+xSquare:minOne;
+        int three2 = (sortedWorld[i+1+xAmount+xSquare]!=zero) ? i+1+xAmount+xSquare:minOne;
 
         int[] cubeConnect = new int[]{one1,one2,two1,two2,three1,three2,four1,four2};
         
         for (int current = 0; current <cubeConnect.Length;){
             int vertices1 = cubeConnect[current];
             int vertices2 = cubeConnect[current+1];
-
 
             if (vertices1 != minOne && vertices2 !=minOne){
                 for (int check = current+2; check <cubeConnect.Length;){ 
@@ -84,9 +83,10 @@ public class ball : MonoBehaviour
             }
                 current+=2;
         }
-
+        int o = i;
         if (i%xAmount == xAmount-1-1) i += 1;
-        if (i!= 0 && i%(xSquare-xAmount-1)==0) {i += 2*xAmount;} else i+=1; 
+        if (i!= 0 && i%(xSquare-xAmount-1)==0) {i += 2*xAmount+1;} else i+=1; 
+        print(i);
         }
     }
 
