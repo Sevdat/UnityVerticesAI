@@ -15,9 +15,13 @@ public class ball : MonoBehaviour
     string sortedWorld;
     int xAmount;
     int xSquare;
-    int count;
     int zero = (int)'0';
     int minOne = -1;
+    string bottom = "1342";
+    string top = "5786";
+    List<string[]> allCorners = new List<string[]>();
+    
+
 //Vector(x,y,z)  x = side, y = up/down, z = forward/backward 
 //new Vector3(0,0,0), new Vector3(0,0,1), new Vector3(1,0,0), new Vector3(1,0,1)
 //int[] triangles = new int[]{0,1,2};
@@ -31,13 +35,14 @@ public class ball : MonoBehaviour
         vertices = createVertices(xAmount,10);
 
         renderVertices();
+        cubeCorners(bottom,top);
         loadTriangles();
              
         renderTriangles(mesh,vertices,triangles);
         print($"Vertices: {vertices.Length}");
         print($"xMax: {vertices[xAmount-1].x}");
         printList(vertices);
-
+        
          
         GetComponent<MeshFilter>().mesh = mesh;
     }
@@ -65,27 +70,65 @@ public class ball : MonoBehaviour
         int three2 = (sortedWorld[i+1+xAmount+xSquare]!=zero) ? i+1+xAmount+xSquare:minOne;
 
         int[] cubeConnect = new int[]{one1,one2,two1,two2,three1,three2,four1,four2};
-        
-        for (int current = 0; current <cubeConnect.Length;){
-            int vertices1 = cubeConnect[current];
-            int vertices2 = cubeConnect[current+1];
-
-            if (vertices1 != minOne && vertices2 !=minOne){
-                for (int check = current+2; check <cubeConnect.Length;){ 
-                        int vertices3 = cubeConnect[check];
-                        if (vertices3 !=minOne) {
-                        triangles = createTriangles(
-                            triangles,vertices1,vertices2,vertices3
-                            );
-                        }
-                    check +=1;
-                }
-            }
-                current+=2;
+        int count =0;
+        foreach (int lol in cubeConnect){
+            if (lol!=minOne) count++;
         }
+        switch (count){
+            case 8:          
+            break;
+            case 7:
+            break;
+            case 6:
+            break;
+            case 5:
+            break;
+            case 4:
+            break;
+            case 3:
+            break;
+
+        }
+
+
         if (i%xAmount == xAmount-1-1) i += 1;
         if (i!= 0 && i%(xSquare-xAmount-1)==0) {i += 2*xAmount+1;} else i+=1; 
         }
+    }
+    // string[] chosenCorner = new string[]{
+    //     "1342","1573","1562",  "1782", "1584", "1386",
+    //     "176","174","146",
+    //      };
+    void cubeCorners(string bottom,string top){
+
+        for (int corner = 1;corner<(bottom+top).Length-1;){
+        string down = (corner>4) ? top:bottom;
+        string up = (corner>4) ? bottom:top;
+
+        while (down[0] != $"{corner}"[0] && up[0] != $"{corner}"[0]){
+            char first = down[0];
+            char second = up[0];
+            down = down.Replace($"{first}","") + first;
+            up = up.Replace($"{second}","") + second;
+
+        }
+        string l = $"{down}{up}";
+        string[] chosenCorner = new string[]{
+        $"{l[0]}{l[1]}{l[2]}{l[3]}", //Straight
+        $"{l[0]}{l[4]}{l[5]}{l[1]}", //Straight
+        $"{l[0]}{l[4]}{l[7]}{l[3]}", //Straight
+        $"{l[0]}{l[5]}{l[6]}{l[3]}", //Cross
+        $"{l[0]}{l[4]}{l[6]}{l[2]}", //Cross
+        $"{l[0]}{l[1]}{l[6]}{l[7]}", //Cross
+        $"{l[0]}{l[5]}{l[7]}",  //CrossThree
+        $"{l[0]}{l[5]}{l[2]}",  //CrossThree
+        $"{l[0]}{l[2]}{l[7]}",  //CrossThree
+         };
+
+        allCorners.Add(chosenCorner);
+        corner +=1;
+        }
+
     }
 
     void loadFile(string binaryWorld){
@@ -300,3 +343,88 @@ public class ball : MonoBehaviour
         // string[] sideOfCube = new string[]{
         //     "1386","1342","1584","1573","1562","1782", "176","174","164",
         //     };
+
+    //         void loadTriangles(){
+    
+    // for(int i = 0; i<sortedWorld.Length-2*xAmount-xSquare;){
+
+    //     int one1 = (sortedWorld[i]!=zero) ? i:minOne;
+    //     int two1 = (sortedWorld[i+1]!=zero) ? i+1:minOne;
+    //     int two2 = (sortedWorld[i+xAmount]!=zero) ? i+xAmount:minOne;
+    //     int one2 = (sortedWorld[i+1+xAmount]!=zero) ? i+1+xAmount:minOne;
+
+    //     int three1 = (sortedWorld[i+xSquare]!=zero) ? i+xSquare:minOne;
+    //     int four1 = (sortedWorld[i+1+xSquare]!=zero) ? i+1+xSquare:minOne;
+    //     int four2 = (sortedWorld[i+xAmount+xSquare]!=zero) ? i+xAmount+xSquare:minOne;
+    //     int three2 = (sortedWorld[i+1+xAmount+xSquare]!=zero) ? i+1+xAmount+xSquare:minOne;
+
+    //     int[] cubeConnect = new int[]{one1,one2,two1,two2,three1,three2,four1,four2};
+        
+    //     for (int current = 0; current <cubeConnect.Length;){
+    //         int vertices1 = cubeConnect[current];
+    //         int vertices2 = cubeConnect[current+1];
+
+    //         if (vertices1 != minOne && vertices2 !=minOne){
+    //             for (int check = current+2; check <cubeConnect.Length;){ 
+    //                     int vertices3 = cubeConnect[check];
+    //                     if (vertices3 !=minOne) {
+    //                     triangles = createTriangles(
+    //                         triangles,vertices1,vertices2,vertices3
+    //                         );
+    //                     }
+    //                 check +=1;
+    //             }
+    //         }
+    //             current+=2;
+    //     }
+    //     if (i%xAmount == xAmount-1-1) i += 1;
+    //     if (i!= 0 && i%(xSquare-xAmount-1)==0) {i += 2*xAmount+1;} else i+=1; 
+    //     }
+    // }
+
+
+                //1342
+            //1573
+            //1562
+
+            //2134
+            //2684
+            //2156
+
+            //3157
+            //3421
+            //3784
+
+            //4268
+            //4378
+            //4213
+
+            //5786
+            //5731
+            //5621
+
+            //6578
+            //6215
+            //6842
+
+            //7865
+            //7834
+            //7315
+            
+            //
+
+                // string[] sideOfCube = new string[]{
+    //     "1386","1342","1584","1573","1562","1782", "176","174","164",
+    //     };
+
+    //12563
+    
+
+        // 1532
+        // 2614
+        // 3741
+        // 4823
+        // 5176
+        // 6258
+        // 7385
+        // 8467
