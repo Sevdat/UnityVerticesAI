@@ -19,7 +19,7 @@ public class ball : MonoBehaviour
     int minOne = -1;
     string bottom = "1342";
     string top = "5786";
-    List<string[]> allCorners = new List<string[]>();
+    List<string[]> allCorners;
     
 
 //Vector(x,y,z)  x = side, y = up/down, z = forward/backward 
@@ -33,9 +33,9 @@ public class ball : MonoBehaviour
         xAmount = (int) Mathf.Pow(sortedWorld.Length,1f/3f);
         xSquare = (int)Mathf.Pow(xAmount,2f);
         vertices = createVertices(xAmount,10);
-
+        
+        allCorners = cubeCorners(bottom,top);
         renderVertices();
-        cubeCorners(bottom,top);
         loadTriangles();
              
         renderTriangles(mesh,vertices,triangles);
@@ -56,7 +56,9 @@ public class ball : MonoBehaviour
     }
 
     void loadTriangles(){
-    
+    foreach (string i in allCorners[3]){
+        print(i);
+    }
     for(int i = 0; i<sortedWorld.Length-2*xAmount-xSquare;){
 
         int one1 = (sortedWorld[i]!=zero) ? i:minOne;
@@ -99,8 +101,9 @@ public class ball : MonoBehaviour
     //     "1342","1573","1562",  "1782", "1584", "1386",
     //     "176","174","146",
     //      };
-    void cubeCorners(string bottom,string top){
-
+    List<string[]> cubeCorners(string bottom,string top){
+        
+        List<string[]> allCorners = new List<string[]>();
         for (int corner = 1;corner<(bottom+top).Length-1;){
         string down = (corner>4) ? top:bottom;
         string up = (corner>4) ? bottom:top;
@@ -128,7 +131,7 @@ public class ball : MonoBehaviour
         allCorners.Add(chosenCorner);
         corner +=1;
         }
-
+        return allCorners;
     }
 
     void loadFile(string binaryWorld){
