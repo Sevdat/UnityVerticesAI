@@ -36,9 +36,10 @@ public class ball : MonoBehaviour
         
         allCorners = cubeCorners(bottom,top);
         renderVertices();
-        loadTriangles();
-             
+        loadTriangles();  
         renderTriangles(mesh,vertices,triangles);
+
+        printAll(allCorners);
         print($"Vertices: {vertices.Length}");
         print($"xMax: {vertices[xAmount-1].x}");
         printList(vertices);
@@ -55,29 +56,75 @@ public class ball : MonoBehaviour
 
     }
 
-    void loadTriangles(){
-    foreach (string i in allCorners[3]){
-        print(i);
+public struct Pair {
+  public char value;
+  public int vertices;
+    public Pair(char value,int vertices) {
+        this.value = value;
+        this.vertices = vertices;
     }
+
+}
+    void loadTriangles(){
     for(int i = 0; i<sortedWorld.Length-2*xAmount-xSquare;){
 
-        int one1 = (sortedWorld[i]!=zero) ? i:minOne;
-        int two1 = (sortedWorld[i+1]!=zero) ? i+1:minOne;
-        int two2 = (sortedWorld[i+xAmount]!=zero) ? i+xAmount:minOne;
-        int one2 = (sortedWorld[i+1+xAmount]!=zero) ? i+1+xAmount:minOne;
+        int a = (sortedWorld[i]!=zero) ? i:minOne;
+        int b = (sortedWorld[i+1]!=zero) ? i+1:minOne;
+        int c = (sortedWorld[i+xAmount]!=zero) ? i+xAmount:minOne;
+        int d = (sortedWorld[i+1+xAmount]!=zero) ? i+1+xAmount:minOne;
 
-        int three1 = (sortedWorld[i+xSquare]!=zero) ? i+xSquare:minOne;
-        int four1 = (sortedWorld[i+1+xSquare]!=zero) ? i+1+xSquare:minOne;
-        int four2 = (sortedWorld[i+xAmount+xSquare]!=zero) ? i+xAmount+xSquare:minOne;
-        int three2 = (sortedWorld[i+1+xAmount+xSquare]!=zero) ? i+1+xAmount+xSquare:minOne;
+        int e = (sortedWorld[i+xSquare]!=zero) ? i+xSquare:minOne;
+        int f = (sortedWorld[i+1+xSquare]!=zero) ? i+1+xSquare:minOne;
+        int g = (sortedWorld[i+xAmount+xSquare]!=zero) ? i+xAmount+xSquare:minOne;
+        int h = (sortedWorld[i+1+xAmount+xSquare]!=zero) ? i+1+xAmount+xSquare:minOne;
 
-        int[] cubeConnect = new int[]{one1,one2,two1,two2,three1,three2,four1,four2};
+        List<Pair> cubeConnect = new List<Pair>(){
+            new Pair('1',a),new Pair('2',b),new Pair('3',c),new Pair('4',d),
+            new Pair('5',e),new Pair('6',f),new Pair('7',g),new Pair('8',h)
+
+        };
+
         int count =0;
-        foreach (int lol in cubeConnect){
-            if (lol!=minOne) count++;
+        foreach (Pair lol in cubeConnect){
+            if (lol.vertices!=minOne) count++;
         }
-        switch (count){
-            case 8:          
+
+        renderRules(count, cubeConnect);
+
+        if (i%xAmount == xAmount-1-1) i += 1;
+        if (i!= 0 && i%(xSquare-xAmount-1)==0) {i += 2*xAmount+1;} else i+=1; 
+        }
+    }
+
+    void renderRules(int count,List<Pair> cubeConnect){
+                switch (count){
+            case 8: 
+            count = 0;
+            for(int search = 0; search<allCorners.Count;){
+            List<int> collect = new List<int>();
+            foreach (char check in allCorners[search][count]){
+                foreach (Pair pair in cubeConnect){
+                    
+                    if(check == pair.value) {
+                        collect.Add(pair.vertices);
+                    if (collect.Count == 3){
+                        triangles = createTriangles(
+                            triangles,
+                            collect[0],collect[1],collect[2]
+                            );
+                            collect.RemoveAt(1);
+                    }
+                        break;
+                    }
+
+                }
+            }
+
+            if (search == 7 && count == 2) break;
+            if (count != 2) count+=1; else {
+                count = 0; search = 7;
+             }
+    }
             break;
             case 7:
             break;
@@ -91,22 +138,15 @@ public class ball : MonoBehaviour
             break;
 
         }
-
-
-        if (i%xAmount == xAmount-1-1) i += 1;
-        if (i!= 0 && i%(xSquare-xAmount-1)==0) {i += 2*xAmount+1;} else i+=1; 
-        }
     }
-    // string[] chosenCorner = new string[]{
-    //     "1342","1573","1562",  "1782", "1584", "1386",
-    //     "176","174","146",
-    //      };
+
     List<string[]> cubeCorners(string bottom,string top){
         
         List<string[]> allCorners = new List<string[]>();
-        for (int corner = 1;corner<(bottom+top).Length-1;){
-        string down = (corner>4) ? top:bottom;
-        string up = (corner>4) ? bottom:top;
+        for (int corner = 1;corner<(bottom+top).Length+1;){
+        bool heightCheck = corner>4;
+        string down = heightCheck ? top:bottom;
+        string up = heightCheck ? bottom:top;
 
         while (down[0] != $"{corner}"[0] && up[0] != $"{corner}"[0]){
             char first = down[0];
@@ -116,10 +156,20 @@ public class ball : MonoBehaviour
 
         }
         string l = $"{down}{up}";
-        string[] chosenCorner = new string[]{
+        string[] chosenCorner = !heightCheck ? new string[]{
+        $"{l[0]}{l[3]}{l[2]}{l[1]}", //Straight
+        $"{l[0]}{l[1]}{l[5]}{l[4]}", //Straight
+        $"{l[0]}{l[4]}{l[7]}{l[3]}", //Straight
+        $"{l[0]}{l[5]}{l[6]}{l[3]}", //Cross
+        $"{l[0]}{l[4]}{l[6]}{l[2]}", //Cross
+        $"{l[0]}{l[1]}{l[6]}{l[7]}", //Cross
+        $"{l[0]}{l[5]}{l[7]}",  //CrossThree
+        $"{l[0]}{l[5]}{l[2]}",  //CrossThree
+        $"{l[0]}{l[2]}{l[7]}",  //CrossThree
+         }: new string[]{
         $"{l[0]}{l[1]}{l[2]}{l[3]}", //Straight
         $"{l[0]}{l[4]}{l[5]}{l[1]}", //Straight
-        $"{l[0]}{l[4]}{l[7]}{l[3]}", //Straight
+        $"{l[0]}{l[3]}{l[7]}{l[4]}", //Straight
         $"{l[0]}{l[5]}{l[6]}{l[3]}", //Cross
         $"{l[0]}{l[4]}{l[6]}{l[2]}", //Cross
         $"{l[0]}{l[1]}{l[6]}{l[7]}", //Cross
@@ -192,6 +242,15 @@ public class ball : MonoBehaviour
     }
     print($"allVertices: {str}");
     }
+    void printAll(List<string[]> allCorners){
+        foreach (Array i in allCorners){
+        string a= "";
+     foreach (string e in i){
+        a+=$" {e}";
+    }
+    print(a);
+    }
+}
     void Update()
     {
         if (Input.GetKey(KeyCode.W)){
