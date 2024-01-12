@@ -2,10 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using Unity.VisualScripting.AssemblyQualifiedNameParser;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
-public class ball : MonoBehaviour
+public class RenderScript : MonoBehaviour
 {
     // Start is called before the first frame update
     public GameObject points;
@@ -57,10 +58,10 @@ public class ball : MonoBehaviour
     }
 
 public struct Pair {
-  public char value;
+  public char charValue;
   public int vertices;
-    public Pair(char value,int vertices) {
-        this.value = value;
+    public Pair(char charValue,int vertices) {
+        this.charValue = charValue;
         this.vertices = vertices;
     }
 
@@ -77,54 +78,36 @@ public struct Pair {
         int f = (sortedWorld[i+1+xSquare]!=zero) ? i+1+xSquare:minOne;
         int g = (sortedWorld[i+xAmount+xSquare]!=zero) ? i+xAmount+xSquare:minOne;
         int h = (sortedWorld[i+1+xAmount+xSquare]!=zero) ? i+1+xAmount+xSquare:minOne;
+        
+        int[] array = new int[]{a,b,c,d,e,f,g,h};
 
-        List<Pair> cubeConnect = new List<Pair>(){
-            new Pair('1',a),new Pair('2',b),new Pair('3',c),new Pair('4',d),
-            new Pair('5',e),new Pair('6',f),new Pair('7',g),new Pair('8',h)
-
-        };
-
-        int count =0;
-        foreach (Pair lol in cubeConnect){
-            if (lol.vertices!=minOne) count++;
+        List<Pair> cubeConnect = new List<Pair>();
+        int validConnect = 0;
+        for (int num = 0; num < array.Length;num++){
+            int value = array[num];
+            char charNum = $"{num+1}"[0];
+            cubeConnect.Add(new Pair(charNum,value));
+            if (value != minOne) validConnect +=1;
         }
-
-        renderRules(count, cubeConnect);
+        
+        renderRules(cubeConnect,validConnect);
 
         if (i%xAmount == xAmount-1-1) i += 1;
-        if (i!= 0 && i%(xSquare-xAmount-1)==0) {i += 2*xAmount+1;} else i+=1; 
+        if (i!= 0 && i%(xSquare-xAmount-1)==0) i += 2*xAmount+1; else i+=1; 
         }
     }
 
-    void renderRules(int count,List<Pair> cubeConnect){
-                switch (count){
+    void renderRules(List<Pair> cubeConnect, int validConnect){
+        List<int> searchList = new List<int>();
+        List<int> sides = new List<int>();
+            switch (validConnect){
             case 8: 
-            count = 0;
-            for(int search = 0; search<allCorners.Count;){
-            List<int> collect = new List<int>();
-            foreach (char check in allCorners[search][count]){
-                foreach (Pair pair in cubeConnect){
-                    
-                    if(check == pair.value) {
-                        collect.Add(pair.vertices);
-                    if (collect.Count == 3){
-                        triangles = createTriangles(
-                            triangles,
-                            collect[0],collect[1],collect[2]
-                            );
-                            collect.RemoveAt(1);
-                    }
-                        break;
-                    }
-
-                }
-            }
-
-            if (search == 7 && count == 2) break;
-            if (count != 2) count+=1; else {
-                count = 0; search = 7;
-             }
-    }
+            searchList.Add(0);
+            searchList.Add(7);
+            sides.Add(0);
+            sides.Add(1);
+            sides.Add(2);
+            rule8(cubeConnect,searchList,sides);
             break;
             case 7:
             break;
@@ -139,6 +122,30 @@ public struct Pair {
 
         }
     }
+    void rule8(List<Pair> cubeConnect,List<int> searchList, List<int> sides){
+        for (int i = 0; i<searchList.Count;i++){
+            foreach (int num in sides){
+            List<int> maker = new List<int>();
+                foreach (char c in allCorners[searchList[i]][num]){
+                foreach (Pair pair in cubeConnect){
+                if (pair.charValue==c && pair.vertices!=minOne){
+                    maker.Add(pair.vertices);
+                    print($"char: {c}  int: {pair.vertices} size:{maker.Count}");
+                if (maker.Count==3){
+                print($"{maker[0]} {maker[1]} {maker[2]}");
+                triangles = createTriangles(triangles,
+                    maker[0],maker[1],maker[2]
+                );
+                maker.RemoveAt(1);
+                }
+                }
+            }
+            }
+            
+            }
+        }        
+    }
+    
 
     List<string[]> cubeCorners(string bottom,string top){
         
@@ -490,3 +497,5 @@ public struct Pair {
         // 6258
         // 7385
         // 8467
+    // new Pair('1',a),new Pair('2',b),new Pair('3',c),new Pair('4',d),
+    // new Pair('5',e),new Pair('6',f),new Pair('7',g),new Pair('8',h)
