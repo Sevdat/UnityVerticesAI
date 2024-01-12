@@ -57,15 +57,6 @@ public class RenderScript : MonoBehaviour
 
     }
 
-public struct Pair {
-  public char charValue;
-  public int vertices;
-    public Pair(char charValue,int vertices) {
-        this.charValue = charValue;
-        this.vertices = vertices;
-    }
-
-}
     void loadTriangles(){
     for(int i = 0; i<sortedWorld.Length-2*xAmount-xSquare;){
 
@@ -79,14 +70,11 @@ public struct Pair {
         int g = (sortedWorld[i+xAmount+xSquare]!=zero) ? i+xAmount+xSquare:minOne;
         int h = (sortedWorld[i+1+xAmount+xSquare]!=zero) ? i+1+xAmount+xSquare:minOne;
         
-        int[] array = new int[]{a,b,c,d,e,f,g,h};
+        int[] cubeConnect = new int[]{a,b,c,d,e,f,g,h};
 
-        List<Pair> cubeConnect = new List<Pair>();
         int validConnect = 0;
-        for (int num = 0; num < array.Length;num++){
-            int value = array[num];
-            char charNum = $"{num+1}"[0];
-            cubeConnect.Add(new Pair(charNum,value));
+        for (int num = 0; num < cubeConnect.Length;num++){
+            int value = cubeConnect[num];
             if (value != minOne) validConnect +=1;
         }
         
@@ -97,16 +85,13 @@ public struct Pair {
         }
     }
 
-    void renderRules(List<Pair> cubeConnect, int validConnect){
+    void renderRules(int[] cubeConnect, int validConnect){
         List<int> searchList = new List<int>();
         List<int> sides = new List<int>();
             switch (validConnect){
             case 8: 
-            searchList.Add(0);
-            searchList.Add(7);
-            sides.Add(0);
-            sides.Add(1);
-            sides.Add(2);
+            searchList.AddRange(new int[]{0,7});
+            sides.AddRange(new int[]{0,1,2,3,4,5});
             rule8(cubeConnect,searchList,sides);
             break;
             case 7:
@@ -122,28 +107,18 @@ public struct Pair {
 
         }
     }
-    void rule8(List<Pair> cubeConnect,List<int> searchList, List<int> sides){
-        for (int i = 0; i<searchList.Count;i++){
-            foreach (int num in sides){
-            List<int> maker = new List<int>();
-                foreach (char c in allCorners[searchList[i]][num]){
-                foreach (Pair pair in cubeConnect){
-                if (pair.charValue==c && pair.vertices!=minOne){
-                    maker.Add(pair.vertices);
-                    print($"char: {c}  int: {pair.vertices} size:{maker.Count}");
-                if (maker.Count==3){
-                print($"{maker[0]} {maker[1]} {maker[2]}");
-                triangles = createTriangles(triangles,
-                    maker[0],maker[1],maker[2]
+    void rule8(int[] cubeConnect,List<int> searchList, List<int> sides){
+        foreach(int i in searchList){
+            for (int e = 0; e < sides.Count; e++){
+                string str = allCorners[i][sides[e]];
+                triangles = createTriangles(
+                    triangles,
+                    cubeConnect[(int)char.GetNumericValue(str[0])-1],
+                    cubeConnect[(int)char.GetNumericValue(str[1])-1],
+                    cubeConnect[(int)char.GetNumericValue(str[2])-1]
                 );
-                maker.RemoveAt(1);
-                }
-                }
             }
-            }
-            
-            }
-        }        
+        }
     }
     
 
@@ -163,26 +138,52 @@ public struct Pair {
 
         }
         string l = $"{down}{up}";
+        //0123 4567
+        //1342 5786
         string[] chosenCorner = !heightCheck ? new string[]{
-        $"{l[0]}{l[3]}{l[2]}{l[1]}", //Straight
-        $"{l[0]}{l[1]}{l[5]}{l[4]}", //Straight
-        $"{l[0]}{l[4]}{l[7]}{l[3]}", //Straight
-        $"{l[0]}{l[5]}{l[6]}{l[3]}", //Cross
-        $"{l[0]}{l[4]}{l[6]}{l[2]}", //Cross
-        $"{l[0]}{l[1]}{l[6]}{l[7]}", //Cross
-        $"{l[0]}{l[5]}{l[7]}",  //CrossThree
-        $"{l[0]}{l[5]}{l[2]}",  //CrossThree
-        $"{l[0]}{l[2]}{l[7]}",  //CrossThree
+        $"{l[0]}{l[3]}{l[2]}", //Bottom
+        $"{l[0]}{l[2]}{l[1]}", //Bottom
+
+        $"{l[0]}{l[1]}{l[5]}", //Left
+        $"{l[0]}{l[5]}{l[4]}", //Left
+
+        $"{l[0]}{l[4]}{l[7]}", //Back
+        $"{l[0]}{l[7]}{l[3]}", //Back
+
+        $"{l[0]}{l[5]}{l[6]}", //FrontCross
+        $"{l[0]}{l[6]}{l[3]}", //FrontCross
+
+        $"{l[0]}{l[4]}{l[6]}", //DiagonalCross
+        $"{l[0]}{l[6]}{l[2]}", //DiagonalCross
+
+        $"{l[0]}{l[1]}{l[6]}", //RightCross
+        $"{l[0]}{l[6]}{l[7]}", //RightCross
+
+        $"{l[0]}{l[5]}{l[7]}",  //UpperCrossThree
+        $"{l[0]}{l[5]}{l[2]}",  //BottomCrossThree
+        $"{l[0]}{l[2]}{l[7]}"  //RightCrossThree
          }: new string[]{
-        $"{l[0]}{l[1]}{l[2]}{l[3]}", //Straight
-        $"{l[0]}{l[4]}{l[5]}{l[1]}", //Straight
-        $"{l[0]}{l[3]}{l[7]}{l[4]}", //Straight
-        $"{l[0]}{l[5]}{l[6]}{l[3]}", //Cross
-        $"{l[0]}{l[4]}{l[6]}{l[2]}", //Cross
-        $"{l[0]}{l[1]}{l[6]}{l[7]}", //Cross
-        $"{l[0]}{l[5]}{l[7]}",  //CrossThree
-        $"{l[0]}{l[5]}{l[2]}",  //CrossThree
-        $"{l[0]}{l[2]}{l[7]}",  //CrossThree
+        $"{l[0]}{l[2]}{l[3]}", //Bottom
+        $"{l[0]}{l[1]}{l[2]}", //Bottom
+
+        $"{l[0]}{l[5]}{l[1]}", //Left
+        $"{l[0]}{l[4]}{l[5]}", //Left
+
+        $"{l[0]}{l[7]}{l[4]}", //Back
+        $"{l[0]}{l[3]}{l[7]}", //Back
+
+        $"{l[0]}{l[6]}{l[5]}", //FrontCross
+        $"{l[0]}{l[3]}{l[6]}", //FrontCross
+
+        $"{l[0]}{l[6]}{l[4]}", //DiagonalCross
+        $"{l[0]}{l[2]}{l[6]}", //DiagonalCross
+
+        $"{l[0]}{l[6]}{l[1]}", //RightCross
+        $"{l[0]}{l[7]}{l[6]}", //RightCross
+
+        $"{l[0]}{l[7]}{l[5]}",  //UpperCrossThree
+        $"{l[0]}{l[2]}{l[5]}",  //BottomCrossThree
+        $"{l[0]}{l[7]}{l[2]}"  //RightCrossThree
          };
 
         allCorners.Add(chosenCorner);
