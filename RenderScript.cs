@@ -93,6 +93,8 @@ public class RenderScript : MonoBehaviour
             applyRule(cubeConnect,searchList);
             break;
             case 7:
+            searchList = rule7();
+            applyRule(cubeConnect,searchList);
             break;
             case 6:
             break;
@@ -112,12 +114,14 @@ public class RenderScript : MonoBehaviour
             if (i.Length != 0){
             for (int e = 0; e < size; e++){
                 string str = allCorners[count][searchList[count][e]];
-                triangles = createTriangles(
-                    triangles,
-                    cubeConnect[(int)char.GetNumericValue(str[0])-1],
-                    cubeConnect[(int)char.GetNumericValue(str[1])-1],
-                    cubeConnect[(int)char.GetNumericValue(str[2])-1]
-                );
+                int a = cubeConnect[(int)char.GetNumericValue(str[0])-1];
+                int b = cubeConnect[(int)char.GetNumericValue(str[1])-1];
+                int c = cubeConnect[(int)char.GetNumericValue(str[2])-1];
+                if (a != minOne && b != minOne && c!=minOne){
+                    triangles = createTriangles(
+                        triangles, a, b, c
+                        );
+                    }
                 }
             }
             count++;    
@@ -135,6 +139,21 @@ public class RenderScript : MonoBehaviour
             new int[]{},//5
             new int[]{},//6
             new int[]{0,1,2,3,4,5},//7             
+        });
+        return searchList;
+    }
+
+    List<int[]> rule7(){
+        List<int[]> searchList= new List<int[]>();
+        searchList.AddRange(new int[][]{
+            new int[]{0,1,2,3,6},//0
+            new int[]{},//1
+            new int[]{},//2
+            new int[]{},//3
+            new int[]{},//4
+            new int[]{},//5
+            new int[]{},//6
+            new int[]{0,1,2,3},//7             
         });
         return searchList;
     }
@@ -176,8 +195,8 @@ public class RenderScript : MonoBehaviour
         $"{l[0]}{l[1]}{l[6]}", //RightCross
         $"{l[0]}{l[6]}{l[7]}", //RightCross
 
-        $"{l[0]}{l[5]}{l[7]}",  //UpperCrossThree
-        $"{l[0]}{l[5]}{l[2]}",  //BottomCrossThree
+        $"{l[0]}{l[5]}{l[7]}", //UpperCrossThree
+        $"{l[0]}{l[5]}{l[2]}", //BottomCrossThree
         $"{l[0]}{l[2]}{l[7]}"  //RightCrossThree
          }: new string[]{
         $"{l[0]}{l[2]}{l[3]}", //Bottom
@@ -198,8 +217,8 @@ public class RenderScript : MonoBehaviour
         $"{l[0]}{l[6]}{l[1]}", //RightCross
         $"{l[0]}{l[7]}{l[6]}", //RightCross
 
-        $"{l[0]}{l[7]}{l[5]}",  //UpperCrossThree
-        $"{l[0]}{l[2]}{l[5]}",  //BottomCrossThree
+        $"{l[0]}{l[7]}{l[5]}", //UpperCrossThree
+        $"{l[0]}{l[2]}{l[5]}", //BottomCrossThree
         $"{l[0]}{l[7]}{l[2]}"  //RightCrossThree
          };
 
