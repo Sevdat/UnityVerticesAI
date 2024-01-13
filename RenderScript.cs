@@ -86,13 +86,11 @@ public class RenderScript : MonoBehaviour
     }
 
     void renderRules(int[] cubeConnect, int validConnect){
-        List<int> searchList = new List<int>();
-        List<int> sides = new List<int>();
+        List<int[]> searchList;
             switch (validConnect){
             case 8: 
-            searchList.AddRange(new int[]{0,7});
-            sides.AddRange(new int[]{0,1,2,3,4,5});
-            rule8(cubeConnect,searchList,sides);
+            searchList = rule8();
+            applyRule(cubeConnect,searchList);
             break;
             case 7:
             break;
@@ -107,20 +105,39 @@ public class RenderScript : MonoBehaviour
 
         }
     }
-    void rule8(int[] cubeConnect,List<int> searchList, List<int> sides){
-        foreach(int i in searchList){
-            for (int e = 0; e < sides.Count; e++){
-                string str = allCorners[i][sides[e]];
+    void applyRule(int[] cubeConnect,List<int[]> searchList){
+        int count = 0;
+        foreach(int[] i in searchList){
+            int size = i.Length;
+            if (i.Length != 0){
+            for (int e = 0; e < size; e++){
+                string str = allCorners[count][searchList[count][e]];
                 triangles = createTriangles(
                     triangles,
                     cubeConnect[(int)char.GetNumericValue(str[0])-1],
                     cubeConnect[(int)char.GetNumericValue(str[1])-1],
                     cubeConnect[(int)char.GetNumericValue(str[2])-1]
                 );
+                }
             }
+            count++;    
         }
     }
-    
+
+    List<int[]> rule8(){
+        List<int[]> searchList= new List<int[]>();
+        searchList.AddRange(new int[][]{
+            new int[]{0,1,2,3,4,5},//0
+            new int[]{},//1
+            new int[]{},//2
+            new int[]{},//3
+            new int[]{},//4
+            new int[]{},//5
+            new int[]{},//6
+            new int[]{0,1,2,3,4,5},//7             
+        });
+        return searchList;
+    }
 
     List<string[]> cubeCorners(string bottom,string top){
         
