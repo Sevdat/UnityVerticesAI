@@ -127,18 +127,24 @@ public class RenderScript : MonoBehaviour
             count++;    
         }
     }
+    //      Botom      Left      Back     FrontCross
+       int a=0,b=2,  c=4,d=6,  e=8,f=10,  g=12,h=14,
+    //      DiagonalCross     RightCross
+              i=16,j=18,       k=20,l=22,
+    //UpperCrossThree  BottomCrossThree  RightCrossThree
+           m=24,            n=26,             o=28;
 
     List<int[]> rule8(){
         List<int[]> searchList= new List<int[]>();
         searchList.AddRange(new int[][]{
-            new int[]{0,1,2,3,4,5},//0
+            new int[]{a,b,c,d,e,f},//0
             new int[]{},//1
             new int[]{},//2
             new int[]{},//3
             new int[]{},//4
             new int[]{},//5
             new int[]{},//6
-            new int[]{0,1,2,3,4,5},//7             
+            new int[]{a+1,b+1,c+1,d+1,e+1,f+1},//7             
         });
         return searchList;
     }
@@ -146,14 +152,14 @@ public class RenderScript : MonoBehaviour
     List<int[]> rule7(){
         List<int[]> searchList= new List<int[]>();
         searchList.AddRange(new int[][]{
-            new int[]{0,1,2,3,6},//0
+            new int[]{a,b,c,d,e,f},//0
             new int[]{},//1
             new int[]{},//2
             new int[]{},//3
             new int[]{},//4
             new int[]{},//5
-            new int[]{},//6
-            new int[]{0,1,2,3},//7             
+            new int[]{4},//6
+            new int[]{a+1,b+1,c+1,d+1,e+1,f+1},//7             
         });
         return searchList;
     }
@@ -176,51 +182,29 @@ public class RenderScript : MonoBehaviour
         string l = $"{down}{up}";
         //0123 4567
         //1342 5786
-        string[] chosenCorner = !heightCheck ? new string[]{
-        $"{l[0]}{l[3]}{l[2]}", //Bottom
-        $"{l[0]}{l[2]}{l[1]}", //Bottom
+        string[] chosenCorner = new string[]{
+        $"{l[0]}{l[3]}{l[2]}",$"{l[0]}{l[2]}{l[3]}", //Bottom
+        $"{l[0]}{l[2]}{l[1]}",$"{l[0]}{l[1]}{l[2]}", //Bottom
 
-        $"{l[0]}{l[1]}{l[5]}", //Left
-        $"{l[0]}{l[5]}{l[4]}", //Left
+        $"{l[0]}{l[1]}{l[5]}",$"{l[0]}{l[5]}{l[1]}", //Left
+        $"{l[0]}{l[5]}{l[4]}",$"{l[0]}{l[4]}{l[5]}", //Left
 
-        $"{l[0]}{l[4]}{l[7]}", //Back
-        $"{l[0]}{l[7]}{l[3]}", //Back
+        $"{l[0]}{l[4]}{l[7]}",$"{l[0]}{l[7]}{l[4]}", //Back
+        $"{l[0]}{l[7]}{l[3]}",$"{l[0]}{l[3]}{l[7]}", //Back
 
-        $"{l[0]}{l[5]}{l[6]}", //FrontCross
-        $"{l[0]}{l[6]}{l[3]}", //FrontCross
+        $"{l[0]}{l[5]}{l[6]}",$"{l[0]}{l[6]}{l[5]}", //FrontCross
+        $"{l[0]}{l[6]}{l[3]}",$"{l[0]}{l[3]}{l[6]}", //FrontCross
 
-        $"{l[0]}{l[4]}{l[6]}", //DiagonalCross
-        $"{l[0]}{l[6]}{l[2]}", //DiagonalCross
+        $"{l[0]}{l[4]}{l[6]}",$"{l[0]}{l[6]}{l[4]}", //DiagonalCross
+        $"{l[0]}{l[6]}{l[2]}",$"{l[0]}{l[2]}{l[6]}", //DiagonalCross
 
-        $"{l[0]}{l[1]}{l[6]}", //RightCross
-        $"{l[0]}{l[6]}{l[7]}", //RightCross
+        $"{l[0]}{l[1]}{l[6]}",$"{l[0]}{l[6]}{l[1]}", //RightCross
+        $"{l[0]}{l[6]}{l[7]}",$"{l[0]}{l[7]}{l[6]}", //RightCross
 
-        $"{l[0]}{l[5]}{l[7]}", //UpperCrossThree
-        $"{l[0]}{l[5]}{l[2]}", //BottomCrossThree
-        $"{l[0]}{l[2]}{l[7]}"  //RightCrossThree
-         }: new string[]{
-        $"{l[0]}{l[2]}{l[3]}", //Bottom
-        $"{l[0]}{l[1]}{l[2]}", //Bottom
-
-        $"{l[0]}{l[5]}{l[1]}", //Left
-        $"{l[0]}{l[4]}{l[5]}", //Left
-
-        $"{l[0]}{l[7]}{l[4]}", //Back
-        $"{l[0]}{l[3]}{l[7]}", //Back
-
-        $"{l[0]}{l[6]}{l[5]}", //FrontCross
-        $"{l[0]}{l[3]}{l[6]}", //FrontCross
-
-        $"{l[0]}{l[6]}{l[4]}", //DiagonalCross
-        $"{l[0]}{l[2]}{l[6]}", //DiagonalCross
-
-        $"{l[0]}{l[6]}{l[1]}", //RightCross
-        $"{l[0]}{l[7]}{l[6]}", //RightCross
-
-        $"{l[0]}{l[7]}{l[5]}", //UpperCrossThree
-        $"{l[0]}{l[2]}{l[5]}", //BottomCrossThree
-        $"{l[0]}{l[7]}{l[2]}"  //RightCrossThree
-         };
+        $"{l[0]}{l[5]}{l[7]}",$"{l[0]}{l[7]}{l[5]}", //UpperCrossThree
+        $"{l[0]}{l[5]}{l[2]}",$"{l[0]}{l[2]}{l[5]}", //BottomCrossThree
+        $"{l[0]}{l[2]}{l[7]}",$"{l[0]}{l[7]}{l[2]}",  //RightCrossThree
+        };
 
         allCorners.Add(chosenCorner);
         corner +=1;
