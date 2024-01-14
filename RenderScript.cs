@@ -134,6 +134,12 @@ public class RenderScript : MonoBehaviour
     //UpperCrossThree  BottomCrossThree  RightCrossThree
            m=24,            n=26,             o=28;
 
+            // 6 7 (Top)(Front) (6:Left) (7:Right)
+            // 4 5 (Top)(Back)  (4:Left) (5:Right)
+
+            // 2 3 (Bottom)(Front) (2:Left) (3:Right)
+            // 0 1 (Bottom)(Back)  (0:Left) (1:Right)
+
     List<int[]> rule8(){
         List<int[]> searchList= new List<int[]>();
         searchList.AddRange(new int[][]{
@@ -152,14 +158,14 @@ public class RenderScript : MonoBehaviour
     List<int[]> rule7(){
         List<int[]> searchList= new List<int[]>();
         searchList.AddRange(new int[][]{
-            new int[]{a,b,c,d,e,f},//0
+            new int[]{},//0
             new int[]{},//1
             new int[]{},//2
             new int[]{},//3
             new int[]{},//4
             new int[]{},//5
-            new int[]{4},//6
-            new int[]{a+1,b+1,c+1,d+1,e+1,f+1},//7             
+            new int[]{},//6
+            new int[]{},//7             
         });
         return searchList;
     }
@@ -202,8 +208,8 @@ public class RenderScript : MonoBehaviour
         $"{l[0]}{l[6]}{l[7]}",$"{l[0]}{l[7]}{l[6]}", //RightCross
 
         $"{l[0]}{l[5]}{l[7]}",$"{l[0]}{l[7]}{l[5]}", //UpperCrossThree
-        $"{l[0]}{l[5]}{l[2]}",$"{l[0]}{l[2]}{l[5]}", //BottomCrossThree
-        $"{l[0]}{l[2]}{l[7]}",$"{l[0]}{l[7]}{l[2]}",  //RightCrossThree
+        $"{l[0]}{l[2]}{l[5]}",$"{l[0]}{l[5]}{l[2]}", //BottomCrossThree
+        $"{l[0]}{l[7]}{l[2]}",$"{l[0]}{l[2]}{l[7]}",  //RightCrossThree
         };
 
         allCorners.Add(chosenCorner);
