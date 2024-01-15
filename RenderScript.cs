@@ -128,8 +128,8 @@ public class RenderScript : MonoBehaviour
         }
     }
     //      Botom      Left      Back     FrontCross
-       int a=0,b=2,  c=4,d=6,  e=8,f=10,  g=12,h=14,
-    //      DiagonalCross     RightCross
+static int a=0,b=2,  c=4,d=6,  e=8,f=10,  g=12,h=14,
+    //      DiagonalCross      RightCross
               i=16,j=18,       k=20,l=22,
     //UpperCrossThree  BottomCrossThree  RightCrossThree
            m=24,            n=26,             o=28;
@@ -140,17 +140,28 @@ public class RenderScript : MonoBehaviour
             // 2 3 (Bottom)(Front) (2:Left) (3:Right)
             // 0 1 (Bottom)(Back)  (0:Left) (1:Right)
 
+            //0  (c,d) = left\  (e,f) = back/  (g,h) = back/
+            //1  (c,d) = back\  (e,f) = right/ (g,h) = right/
+            //2  (c,d) = front\ (e,f) = left/  (g,h) = left/  
+            //3  (c,d) = right\ (e,f) = front/ (g,h) = front/ 
+            
+
+int[] sideList0 = new int[]{a,b, c,d, e,f, g,i,j,k,l,m,n,o};
+int[] sideList1 = new int[]{a,b, c,d, e,f, g,i,j,k,l,m,n,o};
+int[] sideList2 = new int[]{a,b, c,d, e,f, g,i,j,k,l,m,n,o};
+int[] sideList3 = new int[]{a,b, c,d, e,f, g,i,j,k,l,m,n,o};
+
     List<int[]> rule8(){
         List<int[]> searchList= new List<int[]>();
         searchList.AddRange(new int[][]{
-            new int[]{a,b,c,d,e,f},//0
-            new int[]{},//1
-            new int[]{},//2
-            new int[]{},//3
+            new int[]{a,b,c,d},//0
+            new int[]{c,d},//1
+            new int[]{c,d},//2
+            new int[]{c,d},//3
             new int[]{},//4
             new int[]{},//5
             new int[]{},//6
-            new int[]{a+1,b+1,c+1,d+1,e+1,f+1},//7             
+            new int[]{a+1,b+1},//7             
         });
         return searchList;
     }
