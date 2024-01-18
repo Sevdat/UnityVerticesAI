@@ -89,8 +89,7 @@ string s(int index, int num){
             // 7 connections (Top missing)
             {"1234678",new string[]{
                 s(0,a),s(0,b),s(0,c),s(0,f),
-                s(6,b+1),s(7,c+1),s(7,d+1),s(7,e+1),s(7,f+1),s(5,n+1)
-                   
+                s(6,b+1),s(7,c+1),s(7,d+1),s(7,e+1),s(7,f+1),s(5,n+1)      
             }},
             {"1234578",new string[]{
                 s(0,a),s(0,b),s(0,c),s(1,c),s(0,d),s(1,f),
@@ -104,7 +103,23 @@ string s(int index, int num){
                 s(0,a),s(0,b),s(0,c),s(0,d),s(0,e),s(0,f),
                 s(5,b+1),s(5,e+1),s(6,d+1),s(6,n+1)
             }},
-
+            // 7 connections (Bottom missing)
+            {"2345678",new string[]{
+                s(1,d),s(1,a),s(2,e),s(2,o),
+                s(7,a+1),s(7,b+1),s(7,c+1),s(7,d+1),s(7,e+1),s(7,f+1)
+                }},
+            {"1345678",new string[]{
+                s(0,b),s(0,c),s(0,d),s(0,e),s(0,o),
+                s(7,a+1),s(7,b+1),s(7,e+1),s(7,f+1),s(5,f+1),
+                }},
+            {"1245678",new string[]{
+                s(0,a),s(0,d),s(0,e),s(0,f),s(0,n),
+                s(7,a+1),s(7,b+1),s(6,c+1),s(7,c+1),s(7,d+1)
+                }},
+            {"1235678",new string[]{
+                s(1,b),s(0,c),s(0,d),s(0,e),s(0,f),
+                s(7,a+1),s(7,b+1),s(7,c+1),s(7,f+1),s(7,m+1)
+                }},
         };
 
     for(int i = 0; i<sortedWorld.Length-2*xAmount-xSquare;){
