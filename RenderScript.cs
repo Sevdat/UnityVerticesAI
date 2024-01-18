@@ -57,76 +57,12 @@ public class RenderScript : MonoBehaviour
 
     }
 
-    void loadTriangles(){
-    for(int i = 0; i<sortedWorld.Length-2*xAmount-xSquare;){
+        // 6 7 (Top)(Front) (6:Left) (7:Right)
+        // 4 5 (Top)(Back)  (4:Left) (5:Right)
 
-        int a = (sortedWorld[i]!=zero) ? i:minOne;
-        int b = (sortedWorld[i+1]!=zero) ? i+1:minOne;
-        int c = (sortedWorld[i+xAmount]!=zero) ? i+xAmount:minOne;
-        int d = (sortedWorld[i+1+xAmount]!=zero) ? i+1+xAmount:minOne;
+        // 2 3 (Bottom)(Front) (2:Left) (3:Right)
+        // 0 1 (Bottom)(Back)  (0:Left) (1:Right) 
 
-        int e = (sortedWorld[i+xSquare]!=zero) ? i+xSquare:minOne;
-        int f = (sortedWorld[i+1+xSquare]!=zero) ? i+1+xSquare:minOne;
-        int g = (sortedWorld[i+xAmount+xSquare]!=zero) ? i+xAmount+xSquare:minOne;
-        int h = (sortedWorld[i+1+xAmount+xSquare]!=zero) ? i+1+xAmount+xSquare:minOne;
-        
-        int[] cubeConnect = new int[]{a,b,c,d,e,f,g,h};
-
-        int validConnect = 0;
-        for (int num = 0; num < cubeConnect.Length;num++){
-            int value = cubeConnect[num];
-            if (value != minOne) validConnect +=1;
-        }
-        
-        renderRules(cubeConnect,validConnect);
-
-        if (i%xAmount == xAmount-1-1) i += 1;
-        if (i!= 0 && i%(xSquare-xAmount-1)==0) i += 2*xAmount+1; else i+=1; 
-        }
-    }
-
-    void renderRules(int[] cubeConnect, int validConnect){
-        List<int[]> searchList;
-            switch (validConnect){
-            case 8: 
-            searchList = rule8();
-            applyRule(cubeConnect,searchList);
-            break;
-            case 7:
-            searchList = rule7();
-            applyRule(cubeConnect,searchList);
-            break;
-            case 6:
-            break;
-            case 5:
-            break;
-            case 4:
-            break;
-            case 3:
-            break;
-
-        }
-    }
-    void applyRule(int[] cubeConnect,List<int[]> searchList){
-        int count = 0;
-        foreach(int[] i in searchList){
-            int size = i.Length;
-            if (i.Length != 0){
-            for (int e = 0; e < size; e++){
-                string str = allCorners[count][searchList[count][e]];
-                int a = cubeConnect[(int)char.GetNumericValue(str[0])-1];
-                int b = cubeConnect[(int)char.GetNumericValue(str[1])-1];
-                int c = cubeConnect[(int)char.GetNumericValue(str[2])-1];
-                if (a != minOne && b != minOne && c!=minOne){
-                    triangles = createTriangles(
-                        triangles, a, b, c
-                        );
-                    }
-                }
-            }
-            count++;    
-        }
-    }
     //      Botom      Left      Back     FrontCross
 static int a=0,b=2,  c=4,d=6,  e=8,f=10,  g=12,h=14,
     //      DiagonalCross      RightCross
@@ -134,60 +70,75 @@ static int a=0,b=2,  c=4,d=6,  e=8,f=10,  g=12,h=14,
     //UpperCrossThree  BottomCrossThree  RightCrossThree
            m=24,            n=26,             o=28;
 
-            // 6 7 (Top)(Front) (6:Left) (7:Right)
-            // 4 5 (Top)(Back)  (4:Left) (5:Right)
+    //0  (c,d) = left\  (e,f) = back/  (g,h) = back/
+    //1  (c,d) = back\  (e,f) = right/ (g,h) = right/
+    //2  (c,d) = front\ (e,f) = left/  (g,h) = left/  
+    //3  (c,d) = right\ (e,f) = front/ (g,h) = front/
 
-            // 2 3 (Bottom)(Front) (2:Left) (3:Right)
-            // 0 1 (Bottom)(Back)  (0:Left) (1:Right)
+int s1,s2,s3,s4,s5,s6,s7,s8;
+string s(int index, int num){
+    return allCorners[index][num];
+}
 
-            //0  (c,d) = left\  (e,f) = back/  (g,h) = back/
-            //1  (c,d) = back\  (e,f) = right/ (g,h) = right/
-            //2  (c,d) = front\ (e,f) = left/  (g,h) = left/  
-            //3  (c,d) = right\ (e,f) = front/ (g,h) = front/ 
-            
+    void loadTriangles(){
+        Dictionary<string,string[]> sides = new Dictionary<string, string[]>(){
+            {"12345678",new string[]{
+                s(0,a),s(0,b),s(0,c),s(0,d),s(0,e),s(0,f),
+                s(7,a+1),s(7,b+1),s(7,c+1),s(7,d+1),s(7,e+1),s(7,f+1)
+                }},
+            {"",new string[]{}}
+        };
 
-int[] sideList0 = new int[]{a,b, c,d, e,f, g,i,j,k,l,m,n,o};
-int[] sideList1 = new int[]{a,b, c,d, e,f, g,i,j,k,l,m,n,o};
-int[] sideList2 = new int[]{a,b, c,d, e,f, g,i,j,k,l,m,n,o};
-int[] sideList3 = new int[]{a,b, c,d, e,f, g,i,j,k,l,m,n,o};
+    for(int i = 0; i<sortedWorld.Length-2*xAmount-xSquare;){
 
-    List<int[]> rule8(){
-        List<int[]> searchList= new List<int[]>();
-        searchList.AddRange(new int[][]{
-            new int[]{a,b,c,d},//0
-            new int[]{c,d},//1
-            new int[]{c,d},//2
-            new int[]{c,d},//3
-            new int[]{},//4
-            new int[]{},//5
-            new int[]{},//6
-            new int[]{a+1,b+1},//7             
-        });
-        return searchList;
+        s1 = (sortedWorld[i]!=zero) ? i:minOne;
+        s2 = (sortedWorld[i+1]!=zero) ? i+1:minOne;
+        s3 = (sortedWorld[i+xAmount]!=zero) ? i+xAmount:minOne;
+        s4 = (sortedWorld[i+1+xAmount]!=zero) ? i+1+xAmount:minOne;
+
+        s5 = (sortedWorld[i+xSquare]!=zero) ? i+xSquare:minOne;
+        s6 = (sortedWorld[i+1+xSquare]!=zero) ? i+1+xSquare:minOne;
+        s7 = (sortedWorld[i+xAmount+xSquare]!=zero) ? i+xAmount+xSquare:minOne;
+        s8 = (sortedWorld[i+1+xAmount+xSquare]!=zero) ? i+1+xAmount+xSquare:minOne;
+        
+        int[] cubeConnect = new int[]{s1,s2,s3,s4,s5,s6,s7,s8};
+
+        string validConnect = "";
+        for (int num = 0; num < cubeConnect.Length;num++){
+            int value = cubeConnect[num];
+            if (value != minOne) validConnect +=$"{num+1}";
+        }
+        if (validConnect.Length>7){
+        string[] searchList = sides[validConnect];
+        applyRule(cubeConnect,searchList);
+        }
+        
+        if (i%xAmount == xAmount-1-1) i += 1;
+        if (i!= 0 && i%(xSquare-xAmount-1)==0) i += 2*xAmount+1; else i+=1; 
+        }
     }
-
-    List<int[]> rule7(){
-        List<int[]> searchList= new List<int[]>();
-        searchList.AddRange(new int[][]{
-            new int[]{},//0
-            new int[]{},//1
-            new int[]{},//2
-            new int[]{},//3
-            new int[]{},//4
-            new int[]{},//5
-            new int[]{},//6
-            new int[]{},//7             
-        });
-        return searchList;
+    void applyRule(int[] cubeConnect,string[] searchList){
+        foreach(string i in searchList){
+            int a = cubeConnect[(int)char.GetNumericValue(i[0])-1];
+            int b = cubeConnect[(int)char.GetNumericValue(i[1])-1];
+            int c = cubeConnect[(int)char.GetNumericValue(i[2])-1];
+            triangles = createTriangles(
+                    triangles, a, b, c
+                );       
+        }
     }
 
     List<string[]> cubeCorners(string bottom,string top){
+
+        string down = bottom;
+        string up =  top;
+        bool once = true;
         
         List<string[]> allCorners = new List<string[]>();
         for (int corner = 1;corner<(bottom+top).Length+1;){
-        bool heightCheck = corner>4;
-        string down = heightCheck ? top:bottom;
-        string up = heightCheck ? bottom:top;
+        if (corner>4 && once){
+        down = top; up = bottom; once = false;
+        }
 
         while (down[0] != $"{corner}"[0] && up[0] != $"{corner}"[0]){
             char first = down[0];
@@ -220,7 +171,7 @@ int[] sideList3 = new int[]{a,b, c,d, e,f, g,i,j,k,l,m,n,o};
 
         $"{l[0]}{l[5]}{l[7]}",$"{l[0]}{l[7]}{l[5]}", //UpperCrossThree
         $"{l[0]}{l[2]}{l[5]}",$"{l[0]}{l[5]}{l[2]}", //BottomCrossThree
-        $"{l[0]}{l[7]}{l[2]}",$"{l[0]}{l[2]}{l[7]}",  //RightCrossThree
+        $"{l[0]}{l[7]}{l[2]}",$"{l[0]}{l[2]}{l[7]}", //RightCrossThree
         };
 
         allCorners.Add(chosenCorner);
