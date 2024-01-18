@@ -63,6 +63,11 @@ public class RenderScript : MonoBehaviour
         // 2 3 (Bottom)(Front) (2:Left) (3:Right)
         // 0 1 (Bottom)(Back)  (0:Left) (1:Right) 
 
+    //0  (c,d) = left\  (e,f) = back/  (g,h) = back/
+    //1  (c,d) = back\  (e,f) = right/ (g,h) = right/
+    //2  (c,d) = front\ (e,f) = left/  (g,h) = left/  
+    //3  (c,d) = right\ (e,f) = front/ (g,h) = front/
+
     //      Botom      Left      Back     FrontCross
 static int a=0,b=2,  c=4,d=6,  e=8,f=10,  g=12,h=14,
     //      DiagonalCross      RightCross
@@ -70,36 +75,49 @@ static int a=0,b=2,  c=4,d=6,  e=8,f=10,  g=12,h=14,
     //UpperCrossThree  BottomCrossThree  RightCrossThree
            m=24,            n=26,             o=28;
 
-    //0  (c,d) = left\  (e,f) = back/  (g,h) = back/
-    //1  (c,d) = back\  (e,f) = right/ (g,h) = right/
-    //2  (c,d) = front\ (e,f) = left/  (g,h) = left/  
-    //3  (c,d) = right\ (e,f) = front/ (g,h) = front/
-
-int s1,s2,s3,s4,s5,s6,s7,s8;
 string s(int index, int num){
     return allCorners[index][num];
 }
 
     void loadTriangles(){
         Dictionary<string,string[]> sides = new Dictionary<string, string[]>(){
+            // 8 connections
             {"12345678",new string[]{
                 s(0,a),s(0,b),s(0,c),s(0,d),s(0,e),s(0,f),
                 s(7,a+1),s(7,b+1),s(7,c+1),s(7,d+1),s(7,e+1),s(7,f+1)
                 }},
-            {"",new string[]{}}
+            // 7 connections (Top missing)
+            {"1234678",new string[]{
+                s(0,a),s(0,b),s(0,c),s(0,f),
+                s(6,b+1),s(7,c+1),s(7,d+1),s(7,e+1),s(7,f+1),s(5,n+1)
+                   
+            }},
+            {"1234578",new string[]{
+                s(0,a),s(0,b),s(0,c),s(1,c),s(0,d),s(1,f),
+                s(7,a+1),s(7,e+1),s(7,f+1),s(7,n+1),
+            }},
+            {"1234568",new string[]{
+                s(0,a),s(0,b),s(0,e),s(0,f),s(2,f),
+                s(7,b+1),s(7,c+1),s(7,d+1),s(7,e+1),s(7,o+1)            
+            }},
+            {"1234567",new string[]{
+                s(0,a),s(0,b),s(0,c),s(0,d),s(0,e),s(0,f),
+                s(5,b+1),s(5,e+1),s(6,d+1),s(6,n+1)
+            }},
+
         };
 
     for(int i = 0; i<sortedWorld.Length-2*xAmount-xSquare;){
 
-        s1 = (sortedWorld[i]!=zero) ? i:minOne;
-        s2 = (sortedWorld[i+1]!=zero) ? i+1:minOne;
-        s3 = (sortedWorld[i+xAmount]!=zero) ? i+xAmount:minOne;
-        s4 = (sortedWorld[i+1+xAmount]!=zero) ? i+1+xAmount:minOne;
+       int s1 = (sortedWorld[i]!=zero) ? i:minOne;
+       int s2 = (sortedWorld[i+1]!=zero) ? i+1:minOne;
+       int s3 = (sortedWorld[i+xAmount]!=zero) ? i+xAmount:minOne;
+       int s4 = (sortedWorld[i+1+xAmount]!=zero) ? i+1+xAmount:minOne;
 
-        s5 = (sortedWorld[i+xSquare]!=zero) ? i+xSquare:minOne;
-        s6 = (sortedWorld[i+1+xSquare]!=zero) ? i+1+xSquare:minOne;
-        s7 = (sortedWorld[i+xAmount+xSquare]!=zero) ? i+xAmount+xSquare:minOne;
-        s8 = (sortedWorld[i+1+xAmount+xSquare]!=zero) ? i+1+xAmount+xSquare:minOne;
+       int s5 = (sortedWorld[i+xSquare]!=zero) ? i+xSquare:minOne;
+       int s6 = (sortedWorld[i+1+xSquare]!=zero) ? i+1+xSquare:minOne;
+       int s7 = (sortedWorld[i+xAmount+xSquare]!=zero) ? i+xAmount+xSquare:minOne;
+       int s8 = (sortedWorld[i+1+xAmount+xSquare]!=zero) ? i+1+xAmount+xSquare:minOne;
         
         int[] cubeConnect = new int[]{s1,s2,s3,s4,s5,s6,s7,s8};
 
@@ -108,7 +126,8 @@ string s(int index, int num){
             int value = cubeConnect[num];
             if (value != minOne) validConnect +=$"{num+1}";
         }
-        if (validConnect.Length>7){
+        if (validConnect.Length==7){
+        print(sides[validConnect]);
         string[] searchList = sides[validConnect];
         applyRule(cubeConnect,searchList);
         }
