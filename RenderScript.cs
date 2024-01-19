@@ -138,6 +138,24 @@ string s(int index, int num){
                 s(7,c+1),s(7,d+1)
                 }},
             // 6 connections (Bottom Horizontal missing)
+            {"345678",new string[]{
+   /*k,l*/      s(2,k+1),s(2,l+1),s(3,d),s(2,e),
+                s(7,a+1),s(7,b+1),s(7,e+1),s(7,f+1)
+                }},
+            {"125678",new string[]{
+   /*k,l*/      s(0,d),s(0,e),s(1,e),s(0,f),s(1,k+1),s(1,l+1),
+                s(7,a+1),s(7,b+1)
+                }},
+            {"135678",new string[]{
+   /*g,h*/      s(0,c),s(0,d),s(2,g+1),s(2,h+1),s(0,e),
+                s(7,a+1),s(7,b+1),s(7,f+1)
+                }},
+            {"245678",new string[]{
+   /*k,l*/      s(1,d),s(3,k+1),s(3,l+1),
+                s(6,c+1),s(7,a+1),s(7,b+1),s(7,c+1),s(7,d+1),
+                }},
+            // 6 connections (Cross missing)
+            // 6 connections (Vertical missing)
         };
 
     for(int i = 0; i<sortedWorld.Length-2*xAmount-xSquare;){
