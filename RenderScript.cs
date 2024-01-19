@@ -81,7 +81,7 @@ string s(int index, int num){
 
     void loadTriangles(){
         Dictionary<string,string[]> sides = new Dictionary<string, string[]>(){
-            // 8 connections
+            // 8 connections (All connected)
             {"12345678",new string[]{
                 s(0,a),s(0,b),s(0,c),s(0,d),s(0,e),s(0,f),
                 s(7,a+1),s(7,b+1),s(7,c+1),s(7,d+1),s(7,e+1),s(7,f+1)
@@ -93,7 +93,7 @@ string s(int index, int num){
             }},
             {"1234578",new string[]{
                 s(0,a),s(0,b),s(0,c),s(1,c),s(0,d),s(1,f),
-                s(7,a+1),s(7,e+1),s(7,f+1),s(7,n+1),
+                s(7,a+1),s(7,e+1),s(7,f+1),s(7,n+1)
             }},
             {"1234568",new string[]{
                 s(0,a),s(0,b),s(0,e),s(0,f),s(2,f),
@@ -110,7 +110,7 @@ string s(int index, int num){
                 }},
             {"1345678",new string[]{
                 s(0,b),s(0,c),s(0,d),s(0,e),s(0,o),
-                s(7,a+1),s(7,b+1),s(7,e+1),s(7,f+1),s(5,f+1),
+                s(7,a+1),s(7,b+1),s(7,e+1),s(7,f+1),s(5,f+1)
                 }},
             {"1245678",new string[]{
                 s(0,a),s(0,d),s(0,e),s(0,f),s(0,n),
@@ -120,6 +120,24 @@ string s(int index, int num){
                 s(1,b),s(0,c),s(0,d),s(0,e),s(0,f),
                 s(7,a+1),s(7,b+1),s(7,c+1),s(7,f+1),s(7,m+1)
                 }},
+            // 6 connections (Top Horizontal missing)
+            {"123478",new string[]{
+                s(0,a),s(0,b),s(1,k),s(1,l),
+                s(7,d+1),s(6,e+1),s(7,e+1),s(7,f+1)
+                }},
+            {"123456",new string[]{
+                s(0,a),s(0,b),s(0,e),s(0,f),s(2,f),s(2,k),s(2,l),
+                s(5,e+1)
+                }},
+            {"123457",new string[]{
+                s(0,a),s(0,b),s(0,c),s(0,d),s(1,c),s(4,k),s(4,l),
+                s(6,d+1)
+                }},
+            {"123468",new string[]{
+                s(0,a),s(0,b),s(0,f),s(2,c),s(5,g),s(5,h),
+                s(7,c+1),s(7,d+1)
+                }},
+            // 6 connections (Bottom Horizontal missing)
         };
 
     for(int i = 0; i<sortedWorld.Length-2*xAmount-xSquare;){
@@ -141,7 +159,7 @@ string s(int index, int num){
             int value = cubeConnect[num];
             if (value != minOne) validConnect +=$"{num+1}";
         }
-        if (validConnect.Length==7){
+        if (validConnect.Length==6){
         print(sides[validConnect]);
         string[] searchList = sides[validConnect];
         applyRule(cubeConnect,searchList);
