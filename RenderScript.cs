@@ -180,10 +180,22 @@ string s(int index, int num){
                 s(0,c),s(0,f),s(0,m),s(1,b),s(1,e),s(1,o),
                 s(6,b+1),s(7,f+1)
                 }},
+            {"124578",new string[]{
+               s(0,a),s(0,d),s(0,n),s(1,c),
+                s(4,b+1),s(4,o+1),s(6,c+1),s(7,d+1)
+                }},
+            {"234567",new string[]{
+               s(1,d),s(2,b),s(2,e),s(3,f),s(2,o),s(3,c),s(3,m),
+               s(5,b+1)
+                }},
 
             // 6 connections (Vertiacal missing)
         };
+// 1100000000
+// 0100000000
 
+// 1000000000
+// 1100000000
     for(int i = 0; i<sortedWorld.Length-2*xAmount-xSquare;){
 
        int s1 = (sortedWorld[i]!=zero) ? i:minOne;
