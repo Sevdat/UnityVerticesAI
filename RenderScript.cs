@@ -188,13 +188,46 @@ string s(int index, int num){
                s(1,d),s(2,b),s(2,e),s(3,f),s(2,o),s(3,c),s(3,m),
                s(5,b+1)
                 }},
+            // 6 connections (Vertiacal Cross missing)
+            {"234578",new string[]{
+               s(2,o),s(1,f),s(1,a),
+                s(7,e+1),s(7,f+1),s(4,c+1),s(4,b+1),s(4,o+1),
+                }},
+            {"134678",new string[]{
+               s(0,c),s(0,o),s(0,b),s(2,c),s(2,d),
+               s(5,f+1),s(6,b+1),s(6,o+1)
+                }},
+            {"124567",new string[]{
+                s(0,a),s(0,d),s(0,e),s(0,f),s(3,c),
+                s(6,n+1),s(6,a+1),s(6,m+1),
+                }},
+            {"123568",new string[]{
+                s(0,e),s(0,f),s(1,e),s(2,a),s(2,f),s(2,n),
+                s(4,a+1),s(4,n+1)
+                }},
+            {"134567",new string[]{
+                s(0,b),s(0,c),s(0,d),s(0,e),s(0,o),
+                s(5,b+1),s(6,d+1),s(6,n+1)
+                }},
+            {"123578",new string[]{
+                s(0,c),s(0,d),s(1,c),s(1,o),s(2,d),s(1,b),
+                s(4,b+1),s(4,o+1)
+                }},
+            {"124678",new string[]{
+                s(0,a),s(0,f),s(0,m),s(0,n),s(1,e),s(1,f),s(3,e),
+                s(6,b+1)
+                }},
+            {"234568",new string[]{
+                s(1,a),s(1,e),s(1,f),s(1,d),s(2,c),
+                s(4,a+1),s(4,m+1),s(4,n+1)
+                }},
 
             // 6 connections (Vertiacal missing)
         };
 // 1100000000
 // 0100000000
 
-// 1000000000
+// 0100000000
 // 1100000000
     for(int i = 0; i<sortedWorld.Length-2*xAmount-xSquare;){
 
@@ -222,7 +255,7 @@ string s(int index, int num){
         }
         
         if (i%xAmount == xAmount-1-1) i += 1;
-        if (i!= 0 && i%(xSquare-xAmount-1)==0) i += 2*xAmount+1; else i+=1; 
+        if (i!= 0 && i%(xSquare-xAmount-1)==0) i += xAmount+1; else i+=1; 
         }
     }
     void applyRule(int[] cubeConnect,string[] searchList){
