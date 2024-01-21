@@ -221,7 +221,6 @@ string s(int index, int num){
                 s(1,a),s(1,e),s(1,f),s(1,d),s(2,c),
                 s(4,a+1),s(4,m+1),s(4,n+1)
                 }},
-
             // 6 connections (Vertiacal missing)
             {"134578",new string[]{
                 s(0,b),s(0,i),s(0,j),s(0,c),s(0,d),s(2,c),s(2,d),
@@ -239,7 +238,23 @@ string s(int index, int num){
    /*i,j*/      s(1,i+1),s(1,j+1),s(1,a),s(2,c),s(2,d),
                 s(5,a+1),s(7,c+1),s(7,d+1)
                 }},
-
+            // 5 connections (Horizontal missing)
+            {"12345",new string[]{
+                s(0,a),s(0,b),s(2,b+1),s(2,o+1),
+                s(4,d+1),s(4,e+1)
+                }},
+            {"12346",new string[]{
+   /*b  */      s(2,a),s(2,b),s(0,b+1),s(0,f),s(3,c),
+                s(5,m)
+                }},
+            {"12348",new string[]{
+                s(0,a),s(0,b),s(2,+1),s(2,n+1),
+                s(7,d+1),s(7,e+1)
+                }},
+            {"12347",new string[]{
+                s(0,a+1),s(0,c),s(0,n+1),s(1,a),s(1,b),
+                s(6,d+1)
+                }},
         };
 // 1100000000
 // 0100000000
