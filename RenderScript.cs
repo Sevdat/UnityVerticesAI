@@ -238,7 +238,7 @@ string s(int index, int num){
    /*i,j*/      s(1,i+1),s(1,j+1),s(1,a),s(2,c),s(2,d),
                 s(5,a+1),s(7,c+1),s(7,d+1)
                 }},
-            // 5 connections (Horizontal missing)
+            // 5 connections (Horizontal Top missing)
             {"12345",new string[]{
                 s(0,a),s(0,b),s(2,b+1),s(2,o+1),
                 s(4,d+1),s(4,e+1)
@@ -254,6 +254,23 @@ string s(int index, int num){
             {"12347",new string[]{
                 s(0,a+1),s(0,c),s(0,n+1),s(1,a),s(1,b),
                 s(6,d+1)
+                }},
+            // 5 connections (Horizontal Bottom missing)
+            {"15678",new string[]{
+                s(0,d),s(0,e),s(0,m+1),s(5,a),
+                s(7,a+1),s(7,b+1)
+                }},
+            {"25678",new string[]{
+                s(1,e),s(1,m+1),s(4,b),
+                s(4,f+1),s(5,a+1),s(5,b+1)
+                }},
+            {"45678",new string[]{
+                s(6,a),s(3,d),s(3,e),s(3,m+1),
+                s(7,a+1),s(7,b+1)
+                }},
+            {"35678",new string[]{
+                s(2,d),s(2,e),s(2,m+1),s(4,a),
+                s(6,a+1),s(6,b+1)
                 }},
         };
 // 1100000000
