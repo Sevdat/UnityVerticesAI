@@ -223,6 +223,23 @@ string s(int index, int num){
                 }},
 
             // 6 connections (Vertiacal missing)
+            {"134578",new string[]{
+                s(0,b),s(0,i),s(0,j),s(0,c),s(0,d),s(2,c),s(2,d),
+                s(7,a+1)
+                }},
+            {"123567",new string[]{
+                s(0,c),s(0,d),s(0,e),s(0,f),s(1,i),s(1,j),s(2,a),
+                s(6,a+1)
+                }},
+            {"124568",new string[]{
+   /*i,j*/      s(0,a),s(0,e),s(0,f),s(0,i+1),s(0,j+1),
+                s(4,a+1),s(7,c+1),s(7,d+1)
+                }},
+            {"234678",new string[]{
+   /*i,j*/      s(1,i+1),s(1,j+1),s(1,a),s(2,c),s(2,d),
+                s(5,a+1),s(7,c+1),s(7,d+1)
+                }},
+
         };
 // 1100000000
 // 0100000000
