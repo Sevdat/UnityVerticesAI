@@ -265,7 +265,7 @@ string s(int index, int num){
             int value = cubeConnect[num];
             if (value != minOne) validConnect +=$"{num+1}";
         }
-        if (validConnect.Length==6){
+        if (validConnect.Length==5){
         print(sides[validConnect]);
         string[] searchList = sides[validConnect];
         applyRule(cubeConnect,searchList);
@@ -399,8 +399,18 @@ string s(int index, int num){
     void printAll(List<string[]> allCorners){
         foreach (Array i in allCorners){
         string a= "";
+        string[] am = new string[]{
+            "a ","a1","b "," b1","c "," c1",
+            "d ","d1","e ","e1","f "," f1",
+            "g ","g1"," h "," h1"," i "," i1",
+            " j "," j1 "," k "," k1"," l "," l1",
+            "m","m1","n ","n1","o ","o1"
+            };
+        int count = 0;
      foreach (string e in i){
-        a+=$" {e}";
+        if (count != 0 && count % 6 ==0) a+= "\n";
+        a+=$"{am[count]}={e}  ";
+        count++;
     }
     print(a);
     }
