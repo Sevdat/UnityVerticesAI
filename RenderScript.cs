@@ -272,6 +272,24 @@ string s(int index, int num){
                 s(2,d),s(2,e),s(2,m+1),s(4,a),
                 s(6,a+1),s(6,b+1)
                 }},
+            // 5 connections (Horizontal Left missing)
+            {"12468",new string[]{
+                s(0,a),s(0,o+1),s(0,f),s(1,e),s(1,f),
+                s(5,f)
+                }},
+            {"23468",new string[]{
+                s(1,a),s(3,c),s(3,d),
+                s(7,m),s(7,c),s(7,e+1)
+                }},  
+            {"24678",new string[]{
+                s(5,a+1),s(5,o),s(5,e),s(3,e),
+                s(7,c+1),s(7,d+1)
+                }},  
+            {"24568",new string[]{
+                s(1,f+1),s(3,c),s(3,d),s(4,o),s(4,a+1),
+                s(4,f+1)
+                }},  
+            
         };
 // 1100000000
 // 0100000000
