@@ -289,13 +289,27 @@ string s(int index, int num){
                 s(1,f+1),s(3,c),s(3,d),s(4,o),s(4,a+1),
                 s(4,f+1)
                 }},  
-            
+            // 5 connections (Horizontal Right missing)
+            {"12357",new string[]{
+                s(0,c),s(0,d),s(1,b),s(1,n+1),s(1,c),s(2,e+1)
+                }},  
+            {"13457",new string[]{
+                s(0,b),s(0,d+1),s(0,n+1),s(3,f),s(2,e),s(2,f)
+                }},
+            {"13567",new string[]{
+                s(0,e),s(0,c+1),s(0,m+1),s(0,m+1),s(5,b+1),
+                s(2,e),s(2,f)
+                }},
+            {"13578",new string[]{
+                s(2,f+1),s(2,m+1),s(4,b+1),s(7,f+1),
+                s(0,c),s(0,d)
+                }},    
         };
 // 1100000000
-// 0100000000
+// 1000000000
 
-// 0100000000
-// 1100000000
+// 1000000000
+// 1000000000
     for(int i = 0; i<sortedWorld.Length-2*xAmount-xSquare;){
 
        int s1 = (sortedWorld[i]!=zero) ? i:minOne;
