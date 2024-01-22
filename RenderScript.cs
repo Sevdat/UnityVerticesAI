@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using Unity.VisualScripting.AssemblyQualifiedNameParser;
 using UnityEditor.PackageManager;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class RenderScript : MonoBehaviour
 {
@@ -44,16 +45,28 @@ public class RenderScript : MonoBehaviour
         print($"Vertices: {vertices.Length}");
         print($"xMax: {vertices[xAmount-1].x}");
         printList(vertices);
-        
-         
-        GetComponent<MeshFilter>().mesh = mesh;
     }
 
     void renderTriangles(Mesh mesh, Vector3[] vertices, int[] triangles){
          mesh.Clear();
          mesh.vertices = vertices;
          mesh.triangles = triangles;
-         mesh.RecalculateNormals();
+
+        Vector3[] vertices2 = mesh.vertices;
+
+        Color[] colors = new Color[vertices2.Length];
+
+        for (int i = 0; i < vertices2.Length; i++){
+            float random = Random.Range(0.0f,1.0f);
+            colors[i] = 
+            Color.Lerp(Color.white, Color.green,random );
+        }
+            mesh.RecalculateNormals(); /*
+            delete and use standardUnlit shader in Transparent
+            so the flickering of surfaces dont happen
+            */
+            mesh.colors = colors;
+        GetComponent<MeshFilter>().mesh = mesh;
 
     }
 
@@ -303,7 +316,9 @@ string s(int index, int num){
             {"13578",new string[]{
                 s(2,f+1),s(2,m+1),s(4,b+1),s(7,f+1),
                 s(0,c),s(0,d)
-                }},    
+                }},  
+            // 5 connections (Horizontal Right missing)                
+
         };
 // 1100000000
 // 1000000000
@@ -329,7 +344,7 @@ string s(int index, int num){
             int value = cubeConnect[num];
             if (value != minOne) validConnect +=$"{num+1}";
         }
-        if (validConnect.Length==5){
+        if (validConnect.Length==5||validConnect.Length==8){
         print(sides[validConnect]);
         string[] searchList = sides[validConnect];
         applyRule(cubeConnect,searchList);
@@ -482,9 +497,7 @@ string s(int index, int num){
     void Update()
     {
         if (Input.GetKey(KeyCode.W)){
-            vertices[26].y -=1;
-            print("lol");
-         mesh.vertices = vertices;
+            renderTriangles(mesh,vertices,triangles);
         }
         
 
