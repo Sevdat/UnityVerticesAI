@@ -317,7 +317,7 @@ string s(int index, int num){
                 s(2,f+1),s(2,m+1),s(4,b+1),s(7,f+1),
                 s(0,c),s(0,d)
                 }},  
-            // 5 connections (Bottom 2, Top 3)                
+            // 5 connections (Bottom 2 left, Top 3)                
             {"13678",new string[]{
                 s(0,m),s(0,c),s(2,d),s(2,g+1),
                 s(5,a+1),s(5,g+1)
@@ -334,12 +334,32 @@ string s(int index, int num){
                s(3,m),s(1,d),s(3,c),
                s(4,k+1),s(4,l+1),s(6,a+1)
                 }},
-        };
-// 1000000000
-// 1100000000
+            // 5 connections (Bottom 2 up, Top 3)  
+            {"12567",new string[]{
+               s(0,e),s(0,f),s(0,d),s(1,i),s(1,k+1),
+               s(6,a+1)
+                }},                
+            {"12578",new string[]{
+               s(1,c),s(1,m),s(1,k+1),s(1,l+1),
+               s(4,b+1),s(6,f+1)
+                }},
+            {"12568",new string[]{
+               s(0,h+1),s(1,c),s(1,d),s(1,e),s(4,a+1),
+               s(7,j+1)
+                }},
+            {"12678",new string[]{
+               s(0,f),s(0,g+1),s(0,h+1),s(1,e),
+               s(5,a+1),s(5,n+1)
+                }},         
 
+
+                
+        };
+// 1100000000
 // 0100000000
-// 0100000000
+
+// 0000000000
+// 1100000000
     for(int i = 0; i<sortedWorld.Length-2*xAmount-xSquare;){
 
        int s1 = (sortedWorld[i]!=zero) ? i:minOne;
