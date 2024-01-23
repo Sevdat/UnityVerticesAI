@@ -59,7 +59,7 @@ public class RenderScript : MonoBehaviour
         for (int i = 0; i < vertices2.Length; i++){
             float random = Random.Range(0.0f,1.0f);
             colors[i] = 
-            Color.Lerp(Color.white, Color.green,random );
+            Color.Lerp(Color.black, Color.white,random );
         }
             mesh.RecalculateNormals(); /*
             delete and use standardUnlit shader in Transparent
@@ -317,14 +317,29 @@ string s(int index, int num){
                 s(2,f+1),s(2,m+1),s(4,b+1),s(7,f+1),
                 s(0,c),s(0,d)
                 }},  
-            // 5 connections (Horizontal Right missing)                
-
+            // 5 connections (Bottom 2, Top 3)                
+            {"13678",new string[]{
+                s(0,m),s(0,c),s(2,d),s(2,g+1),
+                s(5,a+1),s(5,g+1)
+                }},
+            {"13568",new string[]{
+               s(0,e),s(2,f),s(2,g+1),s(2,h+1),s(2,m),
+               s(4,a+1)
+                }},
+            {"24578",new string[]{
+               s(1,m),s(1,f),s(3,e),
+               s(4,b+1),s(4,k+1),s(4,l+1),
+                }},
+            {"24567",new string[]{
+               s(3,m),s(1,d),s(3,c),
+               s(4,k+1),s(4,l+1),s(6,a+1)
+                }},
         };
+// 1000000000
 // 1100000000
-// 1000000000
 
-// 1000000000
-// 1000000000
+// 0100000000
+// 0100000000
     for(int i = 0; i<sortedWorld.Length-2*xAmount-xSquare;){
 
        int s1 = (sortedWorld[i]!=zero) ? i:minOne;
@@ -344,7 +359,7 @@ string s(int index, int num){
             int value = cubeConnect[num];
             if (value != minOne) validConnect +=$"{num+1}";
         }
-        if (validConnect.Length==5||validConnect.Length==8){
+        if (validConnect.Length==5){
         print(sides[validConnect]);
         string[] searchList = sides[validConnect];
         applyRule(cubeConnect,searchList);
@@ -497,7 +512,7 @@ string s(int index, int num){
     void Update()
     {
         if (Input.GetKey(KeyCode.W)){
-            renderTriangles(mesh,vertices,triangles);
+            printAll(allCorners);
         }
         
 
