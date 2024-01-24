@@ -368,12 +368,46 @@ string s(int index, int num){
                s(2,m),s(2,c),s(2,k+1),s(2,l+1),s(3,d),
                s(4,a+1)
                 }},
+            // 5 connections (Bottom 2 cross\, Top 3)
+            {"14568",new string[]{
+               s(0,e),s(0,i+1),s(0,j+1),s(0,o),
+               s(3,d),s(4,a+1)
+                }},
+            {"14567",new string[]{
+               s(0,o),s(0,d),s(0,e),s(0,n),s(3,m),
+               s(5,b+1)
+                }},
+            {"14578",new string[]{
+               s(0,i),s(0,j),s(0,n),s(0,d),s(3,e),
+               s(4,b+1)
+                }},
+            {"14678",new string[]{
+                s(0,m),s(0,n),s(0,o),s(3,e),s(3,d),
+                s(6,b+1)
+                }},
+            // 5 connections (Bottom 2 cross/, Top 3) (32^)
+            {"23678",new string[]{
+                s(1,e),s(1,o),s(2,i),s(2,j),s(5,a+1),
+                s(7,f+1)
+                }},
+            {"23578",new string[]{
+                s(1,o),s(2,o),s(2,d),s(2,e),
+                s(4,b+1),s(4,o+1),
+                }},
+            {"23568",new string[]{
+                s(1,d),s(1,e),s(2,m),s(2,n),s(2,o),
+                s(4,a+1)
+                }},            
+            {"23567",new string[]{
+                s(1,n),s(2,i+1),s(2,j+1),s(2,e),s(1,d),
+                s(5,b+1)
+                }},     
         };
-// 0100000000
+// 1000000000
 // 1100000000
 
-// 1100000000
-// 0000000000
+// 1000000000
+// 0100000000
     for(int i = 0; i<sortedWorld.Length-2*xAmount-xSquare;){
 
        int s1 = (sortedWorld[i]!=zero) ? i:minOne;
