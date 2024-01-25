@@ -22,6 +22,10 @@ public class RenderScript : MonoBehaviour
     string bottom = "1342";
     string top = "5786";
     List<string[]> allCorners;
+    Dictionary<string,string[]> sides8;
+    Dictionary<string,string[]> sides7;
+    Dictionary<string,string[]> sides6;
+    Dictionary<string,string[]> sides5;
     
 
 //Vector(x,y,z)  x = side, y = up/down, z = forward/backward 
@@ -38,6 +42,7 @@ public class RenderScript : MonoBehaviour
         
         allCorners = cubeCorners(bottom,top);
         renderVertices();
+        createDictionary();
         loadTriangles();  
         renderTriangles(mesh,vertices,triangles);
 
@@ -92,14 +97,17 @@ string s(int index, int num){
     return allCorners[index][num];
 }
 
-    void loadTriangles(){
-        Dictionary<string,string[]> sides = new Dictionary<string, string[]>(){
+void createDictionary(){
+
+    sides8 = new Dictionary<string, string[]>(){
             // 8 connections (All connected)
             {"12345678",new string[]{
                 s(0,a),s(0,b),s(0,c),s(0,d),s(0,e),s(0,f),
                 s(7,a+1),s(7,b+1),s(7,c+1),s(7,d+1),s(7,e+1),s(7,f+1)
                 }},
-            // 7 connections (Top missing)
+        };
+            sides7 = new Dictionary<string, string[]>(){
+        // 7 connections (Top missing)
             {"1234678",new string[]{
                 s(0,a),s(0,b),s(0,c),s(0,f),
                 s(6,b+1),s(7,c+1),s(7,d+1),s(7,e+1),s(7,f+1),s(5,n+1)      
@@ -133,7 +141,10 @@ string s(int index, int num){
                 s(1,b),s(0,c),s(0,d),s(0,e),s(0,f),
                 s(7,a+1),s(7,b+1),s(7,c+1),s(7,f+1),s(7,m+1)
                 }},
-            // 6 connections (Top Horizontal missing)
+    };
+
+    sides6 = new Dictionary<string, string[]>(){
+         // 6 connections (Top Horizontal missing)
             {"123478",new string[]{
                 s(0,a),s(0,b),s(1,k),s(1,l),
                 s(7,d+1),s(6,e+1),s(7,e+1),s(7,f+1)
@@ -251,7 +262,10 @@ string s(int index, int num){
    /*i,j*/      s(1,i+1),s(1,j+1),s(1,a),s(2,c),s(2,d),
                 s(5,a+1),s(7,c+1),s(7,d+1)
                 }},
-            // 5 connections (Horizontal Top missing)
+    };
+
+    sides5 = new Dictionary<string, string[]>(){
+        // 5 connections (Horizontal Top missing)
             {"12345",new string[]{
                 s(0,a),s(0,b),s(2,b+1),s(2,o+1),
                 s(4,d+1),s(4,e+1)
@@ -478,12 +492,15 @@ string s(int index, int num){
                s(0,c),s(0,f),s(0,m),s(2,a),
                s(5,i+1),s(5,j+1)
                 }},
-        };
+    };
+
+}
 // 1000000000
 // 0100000000
 
 // 1000000000
 // 1100000000
+void loadTriangles(){
     for(int i = 0; i<sortedWorld.Length-2*xAmount-xSquare;){
 
        int s1 = (sortedWorld[i]!=zero) ? i:minOne;
@@ -503,10 +520,20 @@ string s(int index, int num){
             int value = cubeConnect[num];
             if (value != minOne) validConnect +=$"{num+1}";
         }
-        if (validConnect.Length==5){
-        print(sides[validConnect]);
-        string[] searchList = sides[validConnect];
-        applyRule(cubeConnect,searchList);
+
+        switch (validConnect.Length){
+            case 8:
+            applyRule(cubeConnect,sides8[validConnect]);
+            break;
+            case 7:
+            applyRule(cubeConnect,sides7[validConnect]);
+            break;
+            case 6:
+            applyRule(cubeConnect,sides6[validConnect]);
+            break;
+            case 5:
+            applyRule(cubeConnect,sides5[validConnect]);
+            break;
         }
         
         if (i%xAmount == xAmount-1-1) i += 1;
