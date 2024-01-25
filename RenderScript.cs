@@ -402,7 +402,7 @@ string s(int index, int num){
                 s(1,n),s(2,i+1),s(2,j+1),s(2,e),s(1,d),
                 s(5,b+1)
                 }},    
-            // 5 connections (Bottom 3, Top 2) (36^)
+            // 5 connections (Bottom 3, Top 2 left)
             {"23457",new string[]{
                 s(1,g),s(1,h),s(1,a),s(2,o),s(2,e),
                 s(3,f)
@@ -416,10 +416,25 @@ string s(int index, int num){
                 }},            
             {"12368",new string[]{
                 s(0,k),s(0,l),s(0,f),s(1,b),s(1,e),s(2,n)
-                }},           
+                }},   
+            // 5 connections (Bottom 3, Top 2 up) (40^) 
+            {"23456",new string[]{
+                s(1,a),s(1,d),s(2,k),s(2,l),s(2,o),
+                s(5,e+1)
+                }},               
+            {"12456",new string[]{
+                s(0,a),s(0,e),s(0,f),s(3,c),s(3,j),s(4,h)
+                }},  
+            {"13456",new string[]{
+                s(0,b),s(0,e),s(0,o),s(2,f),s(2,k),s(2,l)
+                }},
+             {"12356",new string[]{
+                s(0,e),s(0,f),s(1,b),s(2,f),s(2,l),
+                s(5,i+1)
+                }},
         };
-// 0100000000
-// 0100000000
+// 0000000000
+// 1100000000
 
 // 1000000000
 // 1100000000
