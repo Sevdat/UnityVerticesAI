@@ -26,6 +26,7 @@ public class RenderScript : MonoBehaviour
     Dictionary<string,string[]> sides7;
     Dictionary<string,string[]> sides6;
     Dictionary<string,string[]> sides5;
+    Dictionary<string,string[]> sides4;
     
 
 //Vector(x,y,z)  x = side, y = up/down, z = forward/backward 
@@ -106,7 +107,7 @@ void createDictionary(){
                 s(7,a+1),s(7,b+1),s(7,c+1),s(7,d+1),s(7,e+1),s(7,f+1)
                 }},
         };
-            sides7 = new Dictionary<string, string[]>(){
+    sides7 = new Dictionary<string, string[]>(){
         // 7 connections (Top missing)
             {"1234678",new string[]{
                 s(0,a),s(0,b),s(0,c),s(0,f),
@@ -494,13 +495,75 @@ void createDictionary(){
                 }},
     };
 
+    sides4 = new Dictionary<string, string[]>(){
+            // 4 connections (Bottom 4, Top 0)
+            {"1234",new string[]{
+               s(0,a),s(0,b),s(1,a+1),s(1,b+1)
+                }},
+            // 4 connections (Bottom 3, Top 1)
+            {"1235",new string[]{
+               s(1,b),s(1,c),s(1,n+1),s(2,f)
+                }},
+            {"1236",new string[]{
+               s(0,f),s(1,b),s(2,j+1),s(5,g)
+                }},                
+            {"1238",new string[]{
+               s(0,h),s(0,k),s(1,b),s(2,n)
+                }},
+            {"1237",new string[]{
+               s(0,c),s(1,b),s(1,j),s(6,l)
+                }},
+                
+            {"1245",new string[]{
+               s(0,a),s(1,c),s(3,j),s(3,k)
+                }},
+            {"1246",new string[]{
+               s(0,a),s(0,f),s(0,o+1),s(5,e+1)
+                }},
+            {"1248",new string[]{
+               s(0,a),s(0,h),s(0,j+1),s(1,f)
+                }},
+            {"1247",new string[]{
+               s(0,a),s(0,n),s(1,k),s(1,h)
+                }},
+
+            {"2347",new string[]{
+               s(1,a),s(1,h),s(1,j+1),s(3,f)
+                }},
+            {"2348",new string[]{
+               s(1,a),s(1,f),s(2,n+1),s(2,c)
+                }},
+            {"2346",new string[]{
+               s(2,b),s(2,k),s(5,e+1),s(5,i)
+                }},
+            {"2345",new string[]{
+               s(2,b),s(2,o),s(3,h),s(3,k)
+                }},
+
+            {"1345",new string[]{
+               s(0,b),s(2,f),s(3,h),s(4,i+1)
+                }},
+            {"1346",new string[]{
+               s(0,b),s(0,o),s(2,k),s(5,g)
+                }},
+            {"1348",new string[]{
+               s(0,j),s(0,k),s(0,b),s(2,c)
+                }},
+            {"1347",new string[]{
+               s(0,b),s(0,c),s(0,n+1),s(3,f)
+                }},
+            // 4 connections (Bottom 2, Top 2)
+
+    };
+
 }
 // 1000000000
-// 0100000000
+// 0000000000
 
-// 1000000000
 // 1100000000
+// 1000000000
 void loadTriangles(){
+
     for(int i = 0; i<sortedWorld.Length-2*xAmount-xSquare;){
 
        int s1 = (sortedWorld[i]!=zero) ? i:minOne;
@@ -533,6 +596,9 @@ void loadTriangles(){
             break;
             case 5:
             applyRule(cubeConnect,sides5[validConnect]);
+            break;
+            case 4:
+            applyRule(cubeConnect,sides4[validConnect]);
             break;
         }
         
