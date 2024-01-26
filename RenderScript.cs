@@ -65,7 +65,7 @@ public class RenderScript : MonoBehaviour
         for (int i = 0; i < vertices2.Length; i++){
             float random = Random.Range(0.0f,1.0f);
             colors[i] = 
-            Color.Lerp(Color.black, Color.white,random );
+            Color.Lerp(Color.blue, Color.yellow,random );
         }
             mesh.RecalculateNormals(); /*
             delete and use standardUnlit shader in Transparent
@@ -553,15 +553,48 @@ void createDictionary(){
                s(0,b),s(0,c),s(0,n+1),s(3,f)
                 }},
             // 4 connections (Bottom 2, Top 2)
+            {"1357",new string[]{
+               s(0,c),s(0,d),s(4,c),s(4,d)
+                }},
+            {"2357",new string[]{
+               s(1,g),s(1,j),s(2,e),s(2,o)
+                }},
+            {"3457",new string[]{
+               s(2,e),s(3,l),s(3,h+1),s(6,d+1)
+                }},
+            {"1457",new string[]{
+               s(0,d),s(0,n),s(3,j+1),s(3,l)
+                }},
+            {"2457",new string[]{
+               s(1,g),s(1,h),s(3,k+1),s(3,l+1)
+                }},
+
+                
+            {"1367",new string[]{
+               s(0,c),s(0,m),s(2,h+1),s(2,i+1)
+                }},
+            {"2367",new string[]{
+               s(1,i),s(1,j),s(2,i),s(2,j)
+                }},
+            {"2467",new string[]{
+               s(1,h+1),s(1,i+1),s(3,c),s(3,m)
+                }},
+            {"3467",new string[]{
+               s(2,i),s(2,k+1),s(3,f),s(3,m)
+                }},
+            {"1467",new string[]{
+               s(0,n),s(0,o),s(6,n+1),s(6,o+1)
+                }},
 
     };
 
 }
 // 1000000000
-// 0000000000
+// 0100000000
 
-// 1100000000
+// 0100000000
 // 1000000000
+
 void loadTriangles(){
 
     for(int i = 0; i<sortedWorld.Length-2*xAmount-xSquare;){
