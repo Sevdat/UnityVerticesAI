@@ -568,8 +568,10 @@ void createDictionary(){
             {"2457",new string[]{
                s(1,g),s(1,h),s(3,k+1),s(3,l+1)
                 }},
-
-                
+            {"1257",new string[]{
+               s(1,c),s(1,g),s(1,k+1),s(6,f+1)
+                }},
+    
             {"1367",new string[]{
                s(0,c),s(0,m),s(2,h+1),s(2,i+1)
                 }},
@@ -585,16 +587,17 @@ void createDictionary(){
             {"1467",new string[]{
                s(0,n),s(0,o),s(6,n+1),s(6,o+1)
                 }},
-
+            {"1267",new string[]{
+               s(0,f),s(0,m),s(1,i),s(1,k+1)
+                }},
     };
 
 }
 // 1000000000
 // 0100000000
 
-// 0100000000
-// 1000000000
-
+// 0000000000
+// 1100000000
 void loadTriangles(){
 
     for(int i = 0; i<sortedWorld.Length-2*xAmount-xSquare;){
