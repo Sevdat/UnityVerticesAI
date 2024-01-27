@@ -554,7 +554,7 @@ void createDictionary(){
                 }},
             // 4 connections (Bottom 2, Top 2)
             {"1357",new string[]{
-            //    s(0,c),s(0,d),s(4,c),s(4,d)
+                s(0,c),s(0,d),s(4,c),s(4,d)
                 }},
             {"2357",new string[]{
                s(1,g),s(1,j),s(2,e),s(2,o)
@@ -610,11 +610,30 @@ void createDictionary(){
                s(1,e+1),s(1,f+1),s(3,c),s(3,d),
                 }},
 
+            {"1358",new string[]{
+               s(0,i),s(0,k+1),s(2,f),s(2,m)
+                }},
+            {"1458",new string[]{
+               s(0,i),s(0,j),s(3,i),s(3,j)
+                }},
+            {"2358",new string[]{
+               s(1,n),s(1,m),s(2,n),s(2,m)
+                }},
+            {"2458",new string[]{
+               s(1,f),s(4,o+1),s(3,k+1),s(3,i)
+                }},
+            {"1258",new string[]{
+               s(0,h+1),s(1,c),s(4,o+1),s(7,j+1)
+                }},
+            {"3458",new string[]{
+               s(2,c),s(2,m),s(3,h+1),s(3,i+1)
+                }},
+
     };
 
 }
 // 0100000000
-// 0100000000
+// 1000000000
 
 // 1100000000
 // 0000000000
