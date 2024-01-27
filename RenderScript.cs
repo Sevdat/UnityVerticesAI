@@ -554,7 +554,7 @@ void createDictionary(){
                 }},
             // 4 connections (Bottom 2, Top 2)
             {"1357",new string[]{
-               s(0,c),s(0,d),s(4,c),s(4,d)
+            //    s(0,c),s(0,d),s(4,c),s(4,d)
                 }},
             {"2357",new string[]{
                s(1,g),s(1,j),s(2,e),s(2,o)
@@ -590,14 +590,34 @@ void createDictionary(){
             {"1267",new string[]{
                s(0,f),s(0,m),s(1,i),s(1,k+1)
                 }},
+
+            {"1368",new string[]{
+               s(0,k),s(0,l),s(2,g+1),s(2,h+1)
+                }},
+            {"2368",new string[]{
+               s(1,e),s(1,o),s(2,g),s(2,j)
+                }},
+            {"1268",new string[]{
+               s(0,f),s(0,l),s(1,e),s(7,g+1)
+                }},
+            {"1468",new string[]{
+               s(0,j+1),s(0,l),s(3,d),s(5,m+1)
+                }},
+            {"3468",new string[]{
+               s(2,c),s(2,g),s(3,d),s(5,l+1)
+                }},
+            {"2468",new string[]{
+               s(1,e+1),s(1,f+1),s(3,c),s(3,d),
+                }},
+
     };
 
 }
-// 1000000000
+// 0100000000
 // 0100000000
 
-// 0000000000
 // 1100000000
+// 0000000000
 void loadTriangles(){
 
     for(int i = 0; i<sortedWorld.Length-2*xAmount-xSquare;){
