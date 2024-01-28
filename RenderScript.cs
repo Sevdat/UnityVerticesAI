@@ -27,6 +27,7 @@ public class RenderScript : MonoBehaviour
     Dictionary<string,string[]> sides6;
     Dictionary<string,string[]> sides5;
     Dictionary<string,string[]> sides4;
+    Dictionary<string,string[]> sides3;
     
 
 //Vector(x,y,z)  x = side, y = up/down, z = forward/backward 
@@ -498,7 +499,7 @@ void createDictionary(){
     sides4 = new Dictionary<string, string[]>(){
             // 4 connections (Bottom 4, Top 0)
             {"1234",new string[]{
-               s(0,a),s(0,b),s(1,a+1),s(1,b+1)
+                s(0,a),s(0,b),s(1,a+1),s(1,b+1)
                 }},
             // 4 connections (Bottom 3, Top 1)
             {"1235",new string[]{
@@ -718,14 +719,185 @@ void createDictionary(){
             {"4578",new string[]{
                s(3,e),s(3,i+1),s(3,l+1),s(4,b+1)
                 }},
+            // 4 connections (Bottom 1, Top 3)
+            {"5678",new string[]{
+                s(6,a),s(6,b),s(7,a+1),s(7,b+1)
+                }},
+    };
+    sides3 = new Dictionary<string, string[]>(){
+            {"124",new string[]{
+                s(0,a),s(0,a+1),
+                }},
+            {"134",new string[]{
+                s(0,b),s(0,b+1),
+                }},
+            {"137",new string[]{
+                s(0,c),s(0,c+1),
+                }},
+            {"157",new string[]{
+                s(0,d),s(0,d+1),
+                }},
+            {"156",new string[]{
+                s(0,e),s(0,e+1),
+                }},
+            {"126",new string[]{
+                s(0,f),s(0,f+1),
+                }},
+            {"178",new string[]{
+                s(0,g),s(0,g+1),
+                }},
+            {"128",new string[]{
+                s(0,h),s(0,h+1),
+                }},
+            {"158",new string[]{
+                s(0,i),s(0,i+1),
+                }},
+            {"148",new string[]{
+                s(0,j),s(0,j+1),
+                }},
+            {"138",new string[]{
+                s(0,k),s(0,k+1),
+                }},
+            {"168",new string[]{
+                s(0,l),s(0,l+1),
+                }},
+            {"167",new string[]{
+                s(0,m),s(0,m+1),
+                }},
+            {"147",new string[]{
+                s(0,n),s(0,n+1),
+                }},
+            {"146",new string[]{
+                s(0,o),s(0,o+1),
+                }},
+            {"234",new string[]{
+                s(1,a),s(1,a+1),
+                }},
+            {"123",new string[]{
+                s(1,b),s(1,b+1),
+                }},
+            {"125",new string[]{
+                s(1,c),s(1,c+1),
+                }},
+            {"256",new string[]{
+                s(1,d),s(1,d+1),
+                }},
+            {"268",new string[]{
+                s(1,e),s(1,e+1),
+                }},
+            {"248",new string[]{
+                s(1,f),s(1,f+1),
+                }},
+            {"257",new string[]{
+                s(1,g),s(1,g+1),
+                }},
+            {"247",new string[]{
+                s(1,h),s(1,h+1),
+                }},
+            {"267",new string[]{
+                s(1,i),s(1,i+1),
+                }},
+            {"237",new string[]{
+                s(1,j),s(1,j+1),
+                }},
+            {"127",new string[]{
+                s(1,k),s(1,k+1),
+                }},
+            {"278",new string[]{
+                s(1,l),s(1,l+1),
+                }},
+            {"258",new string[]{
+                s(1,m),s(1,m+1),
+                }},
+            {"235",new string[]{
+                s(1,n),s(1,n+1),
+                }},
+            {"238",new string[]{
+                s(1,o),s(1,o+1),
+                }},
+            {"348",new string[]{
+                s(2,c),s(2,c+1),
+                }},
+            {"378",new string[]{
+                s(2,d),s(2,d+1),
+                }},
+            {"357",new string[]{
+                s(2,e),s(2,e+1),
+                }},
+            {"135",new string[]{
+                s(2,f),s(2,f+1),
+                }},
+            {"368",new string[]{
+                s(2,g),s(2,g+1),
+                }},
+            {"136",new string[]{
+                s(2,h),s(2,h+1),
+                }},
+            {"367",new string[]{
+                s(2,i),s(2,i+1),
+                }},
+            {"236",new string[]{
+                s(2,j),s(2,j+1),
+                }},
+            {"346",new string[]{
+                s(2,k),s(2,k+1),
+                }},
+            {"356",new string[]{
+                s(2,l),s(2,l+1),
+                }},
+            {"358",new string[]{
+                s(2,m),s(2,m+1),
+                }},
+            {"246",new string[]{
+                s(3,c),s(3,c+1),
+                }},
+            {"468",new string[]{
+                s(3,d),s(3,d+1),
+                }},
+            {"478",new string[]{
+                s(3,e),s(3,e+1),
+                }},
+            {"347",new string[]{
+                s(3,f),s(3,f+1),
+                }},
+            {"456",new string[]{
+                s(3,g),s(3,g+1),
+                }},
+            {"345",new string[]{
+                s(3,h),s(3,h+1),
+                }},
+            {"458",new string[]{
+                s(3,i),s(3,i+1),
+                }},
+            {"145",new string[]{
+                s(3,j),s(3,j+1),
+                }},
+            {"245",new string[]{
+                s(3,k),s(3,k+1),
+                }},
+            {"457",new string[]{
+                s(3,l),s(3,l+1),
+                }},
+            {"467",new string[]{
+                s(3,m),s(3,m+1),
+                }},
+            {"568",new string[]{
+                s(4,a),s(4,a+1),
+                }},
+            {"578",new string[]{
+                s(4,b),s(4,b+1),
+                }},
+            {"678",new string[]{
+                s(5,a),s(5,a+1),
+                }},
+            {"567",new string[]{
+                s(5,b),s(5,b+1),
+                }},
+
+
     };
 
 }
-// 1100000000
-// 1000000000
-
-// 0100000000
-// 0000000000
 void loadTriangles(){
 
     for(int i = 0; i<sortedWorld.Length-2*xAmount-xSquare;){
@@ -763,6 +935,9 @@ void loadTriangles(){
             break;
             case 4:
             applyRule(cubeConnect,sides4[validConnect]);
+            break;
+            case 3:
+            applyRule(cubeConnect,sides3[validConnect]);
             break;
         }
         
@@ -1149,3 +1324,36 @@ void loadTriangles(){
         // 8467
     // new Pair('1',a),new Pair('2',b),new Pair('3',c),new Pair('4',d),
     // new Pair('5',e),new Pair('6',f),new Pair('7',g),new Pair('8',h)
+
+// automatically write 3
+// void auto(){
+//     string[] am = new string[]{
+//             "a","a","b","b","c","c","d","d",
+//             "e","e","f","f","g","g","h","h",
+//             "i","i","j","j","k","k","l","l",
+//             "m","m","n","n","o","o",
+//             };
+//     int even = 0;
+//     int count = 0;
+//     string lol = "";
+//     List<string> lk = new List<string>(){};
+//     foreach (string[] i in allCorners){
+//         foreach (string e in i){
+//             string[] loli = new string[]{$"{e[0]}",$"{e[1]}",$"{e[2]}"};
+//             Array.Sort(loli);
+//             string fi = $"{loli[0]}"+$"{loli[1]}"+$"{loli[2]}";
+//             if (even%2 == 0 && !lk.Contains(fi)){
+
+//             lol += "            "+"{"+ '"' + $"{fi}" + '"' + ",new string[]{" + "\n" +
+//             "                "+"s(" + $"{count}" + "," + $"{am[even]}" + ")," +
+//             "s(" + $"{count}" + "," + $"{am[even]}+1" + ")," + "\n" +
+//             "                "+"}},"+"\n";
+//             }
+//             lk.Add(fi);
+//             even++;
+//         }
+//         count++;
+//         even = 0;
+//     }
+//     print(lol);
+// }
