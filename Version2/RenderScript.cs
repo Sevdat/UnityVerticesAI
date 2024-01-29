@@ -15,21 +15,11 @@ public class RenderScript : MonoBehaviour
     public GameObject verticesPoint;
     Vector3[] vertices;
     int[] triangles = new int[0];
-    int[] triangleVertices;
+    List<int> tempTriangle = new List<int>();
     public GameObject meshOfObject;
-    string sortedWorld;
-    int xAmount = 4;
-    int xSquare;
-    int zero = (int)'0';
-    int minOne = -1;
     Ray ray;  
     RaycastHit hit;  
 
-    
-
-//Vector(x,y,z)  x = side, y = up/down, z = forward/backward 
-//new Vector3(0,0,0), new Vector3(0,0,1), new Vector3(1,0,0), new Vector3(1,0,1)
-//int[] triangles = new int[]{0,1,2};
     void Start()
     {
 
@@ -68,7 +58,7 @@ public class RenderScript : MonoBehaviour
                     chooseRule(cubeConnect,validConnect);
                     
                     renderTriangles(meshOfObject.GetComponent<MeshFilter>().mesh,vertices,triangles);
-                    print(validConnect);
+                    print(triangles.Length);
 
 
                 }
@@ -77,36 +67,45 @@ public class RenderScript : MonoBehaviour
     }
     
     void chooseRule(int[] cubeConnect, string validConnect){
+            triangles = new int[0];
             switch (validConnect.Length){
             case 8:
+            triangles = new int[36];
             applyRule(cubeConnect,LoadSides.sides8[validConnect]);
             break;
             case 7:
+            triangles = new int[30];
             applyRule(cubeConnect,LoadSides.sides7[validConnect]);
             break;
             case 6:
+            triangles = new int[24];
             applyRule(cubeConnect,LoadSides.sides6[validConnect]);
             break;
             case 5:
+            triangles = new int[18];
             applyRule(cubeConnect,LoadSides.sides5[validConnect]);
             break;
             case 4:
+            triangles = new int[12];
             applyRule(cubeConnect,LoadSides.sides4[validConnect]);
             break;
             case 3:
+            triangles = new int[6];
             applyRule(cubeConnect,LoadSides.sides3[validConnect]);
             break;
         }
     }
 
     void applyRule(int[] cubeConnect,string[] searchList){
+        int count = 0;
         foreach(string i in searchList){
             int a = cubeConnect[(int)char.GetNumericValue(i[0])-1];
             int b = cubeConnect[(int)char.GetNumericValue(i[1])-1];
             int c = cubeConnect[(int)char.GetNumericValue(i[2])-1];
-            triangles = createTriangles(
-                    triangles, a, b, c
-                );       
+            triangles[0+3*count] += a;
+            triangles[1+3*count] += b;
+            triangles[2+3*count] += c;
+            count++;  
         }
     }
 
@@ -147,7 +146,6 @@ public class RenderScript : MonoBehaviour
         Vector3[] vertices2 = mesh.vertices;
 
         Color[] colors = new Color[vertices2.Length];
-        print($"colors: {colors.Length}");
         for (int i = 0; i < vertices2.Length; i++){
             if (i%2==0)
             colors[i] = Color.black;else colors[i] = Color.white;
@@ -160,22 +158,4 @@ public class RenderScript : MonoBehaviour
 
     }
 
-        int[] createTriangles(
-        int[] triangleList, int a, int b, int c
-        ){
-        int size = triangleList.Length;
-        int[] newList = new int[size + 3];
-        for (int i=0; i<size; i++){
-            newList[i] = triangleList[i];
-        }
-        if (size != 0) 
-            newList[size] = a;  
-        else 
-            newList[0] = a;
-
-        newList[size+1] = b;
-        newList[size+2] = c;
-        
-        return newList;
-    }
 }
