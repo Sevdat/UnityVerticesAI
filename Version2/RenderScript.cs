@@ -29,8 +29,8 @@ public class RenderScript : MonoBehaviour
     }
 
     GameObject[] verticesPoints = new GameObject[8];
-    float duration = 1.0f;
-    string amountOfClicks = "";
+    float duration = 0.5f;
+    int amountOfClicks = 0;
     float click = -1;
     bool active  = true;
     void Update(){
@@ -51,29 +51,51 @@ public class RenderScript : MonoBehaviour
     }
 
     void clickTracker(){
-        if (click == amountOfClicks.Length){
-        amountOfClicks+="1";
-        duration = 1.0f;
-        print(amountOfClicks.Length);
+        if (click == amountOfClicks){
+        amountOfClicks+=1;
+        duration = 0.2f;
+        print(amountOfClicks);
         }
         if (duration>0) duration = duration - Time.deltaTime; 
         else {
+            clickRule(amountOfClicks);
             clickReset();
             };
     }
 
     void clickReset(){
-        duration = 1.0f;
-        amountOfClicks="";
+        duration = 0.5f;
+        amountOfClicks=0;
         click = -1;
     }
+
+    void clickRule(int amountOfClicks){
+        switch (amountOfClicks){
+            case 2:
+            Vector3 pos = new Vector3(
+                (verticesPoints[7].transform.position.x + verticesPoints[0].transform.position.x)/2,
+                (verticesPoints[7].transform.position.y + verticesPoints[0].transform.position.y)/2,
+                (verticesPoints[7].transform.position.z + verticesPoints[0].transform.position.z)/2
+                );
+                print(pos);
+            GameObject clone = Instantiate(verticesPoint);
+            clone.transform.position = pos;
+            for (int i = 0; i<8; i++){
+                verticesPoints[i].transform.RotateAround(pos, Vector3.up, 20);
+                tempVertices[i] = verticesPoints[i].transform.position;
+            }
+            renderTriangles(meshOfObject.GetComponent<MeshFilter>().mesh,tempVertices,triangles);
+            break;
+
+        }
+    }
+
 
     void tempObject(Ray ray){
         hit = new RaycastHit();
         if (Physics.Raycast(ray, out hit,Mathf.Infinity)){
             if(hit.collider.tag == "verticesPoint"){
                 active = false;
-                clickReset();
                 GameObject point = hit.collider.gameObject;
                 Material pointColor = point.GetComponent<Renderer>().material;
 
@@ -83,10 +105,9 @@ public class RenderScript : MonoBehaviour
 
                 string validConnect = "";
                 int count = 1;
-                int size = objectList.Count*8;
                 int[] cubeConnect = new int[]{
-                    0+size, 1+size, 2+size, 3+size,
-                    4+size, 5+size, 6+size, 7+size
+                    0, 1, 2, 3,
+                    4, 5, 6, 7
                     };
                 foreach (GameObject i in verticesPoints){
                     if (i.GetComponent<Renderer>().material.color == Color.blue){
@@ -103,8 +124,6 @@ public class RenderScript : MonoBehaviour
         }
     }
 
-                    //     tempTriangle.Add(triangles);
-                    // print(triangles.Length);
     void chooseRule(int[] cubeConnect, string validConnect){
             switch (validConnect.Length){
             case 8:
@@ -173,9 +192,9 @@ public class RenderScript : MonoBehaviour
 
     void renderVertices(){
         for(int i = 0; i<tempVertices.Length;i++){
-        GameObject go = Instantiate(verticesPoint);
-        go.transform.position = tempVertices[i];
-        verticesPoints[i] = go;
+        GameObject clone = Instantiate(verticesPoint);
+        clone.transform.position = tempVertices[i];
+        verticesPoints[i] = clone;
         }
     }
 
@@ -184,10 +203,10 @@ public class RenderScript : MonoBehaviour
         new Vector4(255,255,255,0),
         new Vector4(255,255,255,0),
         new Vector4(255,255,255,0),
-        new Vector4(0,0,0,0),
-        new Vector4(0,0,0,0),
-        new Vector4(0,0,0,0),
-        new Vector4(0,0,0,0),
+        new Vector4(255,255,255,0),
+        new Vector4(255,255,255,0),
+        new Vector4(255,255,255,0),
+        new Vector4(255,255,255,0),
     };
     void renderTriangles(Mesh mesh, Vector3[] vertices, int[] triangles){
          mesh.Clear();
