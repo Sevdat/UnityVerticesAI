@@ -13,9 +13,9 @@ public class RenderScript : MonoBehaviour
 {
     // Start is called before the first frame update
     public GameObject verticesPoint;
-    Vector3[] vertices;
+    Vector3[] tempVertices;
     int[] triangles = new int[0];
-    List<int[]> tempTriangle = new List<int[]>();
+    List<int[]> objectList = new List<int[]>();
     public GameObject meshOfObject;
     Ray ray;  
     RaycastHit hit;  
@@ -23,50 +23,80 @@ public class RenderScript : MonoBehaviour
     void Start()
     {
 
-        vertices = createVertices(1.0f,0.0f,0.0f,0.0f);
+        tempVertices = createVertices(1.0f,0.0f,0.0f,0.0f);
         renderVertices();
         
     }
 
     GameObject[] verticesPoints = new GameObject[8];
+    float duration = 1.0f;
+    string amountOfClicks = "";
+    float click = -1;
     void Update(){
 
         bool screenContact = 
-        Input.touchCount > 0  && 
+        Input.touchCount > 0 && 
         Input.GetTouch(0).phase == TouchPhase.Began;
+
             if(screenContact){
-            ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
-            if (Physics.Raycast(ray, out hit,Mathf.Infinity)){
-                if(hit.collider.tag == "verticesPoint"){
-                    GameObject point = hit.collider.gameObject;
-                    Material pointColor = point.GetComponent<Renderer>().material;
-                    
-                    pointColor.color = (pointColor.color == Color.white) ?
-                    pointColor.color = Color.blue:
-                    pointColor.color = Color.white;
-                    
-                    string validConnect = "";
-                    int count = 1;
-                    int[] cubeConnect = new int[]{0,1,2,3,4,5,6,7};
-                    foreach (GameObject i in verticesPoints){
-                        if (i.GetComponent<Renderer>().material.color == Color.blue){
-                            validConnect +=$"{count}";
-                        }
-                        count++;
-                    }
+                click += 1;
+                
+                ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
+                tempObject(ray);
+        } 
 
-                    chooseRule(cubeConnect,validConnect);
-                    
-                    renderTriangles(meshOfObject.GetComponent<MeshFilter>().mesh,vertices,triangles);
-                    //tempTriangle.Add(triangles);
-                    print(triangles.Length);
-
-
-                }
-            }
-        }  
+        clickTracker();
+      
     }
-    
+
+    void clickTracker(){
+        if (click == amountOfClicks.Length){
+        amountOfClicks+="1";
+        duration = 1.0f;
+        print(amountOfClicks.Length);
+        }
+        if (duration>0) duration = duration - Time.deltaTime; 
+        else {
+            duration = 1.0f;
+            amountOfClicks="";
+            click = -1;
+            };
+    }
+
+    void tempObject(Ray ray){
+        if (Physics.Raycast(ray, out hit,Mathf.Infinity)){
+            if(hit.collider.tag == "verticesPoint"){
+                GameObject point = hit.collider.gameObject;
+                Material pointColor = point.GetComponent<Renderer>().material;
+
+                pointColor.color = (pointColor.color == Color.white) ?
+                pointColor.color = Color.blue:
+                pointColor.color = Color.white;
+
+                string validConnect = "";
+                int count = 1;
+                int size = objectList.Count*8;
+                int[] cubeConnect = new int[]{
+                    0+size, 1+size, 2+size, 3+size,
+                    4+size, 5+size, 6+size, 7+size
+                    };
+                foreach (GameObject i in verticesPoints){
+                    if (i.GetComponent<Renderer>().material.color == Color.blue){
+                        validConnect +=$"{count}";
+                    }
+                    count++;
+                }
+
+                chooseRule(cubeConnect,validConnect);
+
+                renderTriangles(meshOfObject.GetComponent<MeshFilter>().mesh,tempVertices,triangles);
+
+            }
+        }
+    }
+
+                    //     tempTriangle.Add(triangles);
+                    // print(triangles.Length);
     void chooseRule(int[] cubeConnect, string validConnect){
             switch (validConnect.Length){
             case 8:
@@ -105,9 +135,10 @@ public class RenderScript : MonoBehaviour
             int a = cubeConnect[(int)char.GetNumericValue(i[0])-1];
             int b = cubeConnect[(int)char.GetNumericValue(i[1])-1];
             int c = cubeConnect[(int)char.GetNumericValue(i[2])-1];
-            triangles[0+3*count] += a;
-            triangles[1+3*count] += b;
-            triangles[2+3*count] += c;
+            int next = 3*count;
+            triangles[0+next] += a;
+            triangles[1+next] += b;
+            triangles[2+next] += c;
             count++;  
         }
     }
@@ -133,30 +164,34 @@ public class RenderScript : MonoBehaviour
     }
 
     void renderVertices(){
-        for(int i = 0; i<vertices.Length;i++){
+        for(int i = 0; i<tempVertices.Length;i++){
         GameObject go = Instantiate(verticesPoint);
-        go.transform.position = vertices[i];
+        go.transform.position = tempVertices[i];
         verticesPoints[i] = go;
         }
     }
 
-
+    Vector4[] objectRGBA = new Vector4[]{
+        new Vector4(255,255,255,0),
+        new Vector4(255,255,255,0),
+        new Vector4(255,255,255,0),
+        new Vector4(255,255,255,0),
+        new Vector4(0,0,0,0),
+        new Vector4(0,0,0,0),
+        new Vector4(0,0,0,0),
+        new Vector4(0,0,0,0),
+    };
     void renderTriangles(Mesh mesh, Vector3[] vertices, int[] triangles){
          mesh.Clear();
          mesh.vertices = vertices;
          mesh.triangles = triangles;
-
-        Vector3[] vertices2 = mesh.vertices;
-
-        Color[] colors = new Color[vertices2.Length];
-        for (int i = 0; i < vertices2.Length; i++){
-            if (i%2==0)
-            colors[i] = Color.black;else colors[i] = Color.white;
+             
+        Color[] colors = new Color[8];
+        
+        for (int i = 0; i < 8; i++){
+            colors[i] = objectRGBA[i];
         }
-            mesh.RecalculateNormals(); /*
-            delete and use standardUnlit shader in Transparent
-            so the flickering of surfaces dont happen
-            */
+            mesh.RecalculateNormals();
             mesh.colors = colors;
 
     }
