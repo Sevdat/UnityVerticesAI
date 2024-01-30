@@ -32,6 +32,7 @@ public class RenderScript : MonoBehaviour
     float duration = 1.0f;
     string amountOfClicks = "";
     float click = -1;
+    bool active  = true;
     void Update(){
 
         bool screenContact = 
@@ -45,8 +46,8 @@ public class RenderScript : MonoBehaviour
                 tempObject(ray);
         } 
 
-        clickTracker();
-      
+        if (active) clickTracker(); else clickReset();
+        active = true;
     }
 
     void clickTracker(){
@@ -57,15 +58,22 @@ public class RenderScript : MonoBehaviour
         }
         if (duration>0) duration = duration - Time.deltaTime; 
         else {
-            duration = 1.0f;
-            amountOfClicks="";
-            click = -1;
+            clickReset();
             };
     }
 
+    void clickReset(){
+        duration = 1.0f;
+        amountOfClicks="";
+        click = -1;
+    }
+
     void tempObject(Ray ray){
+        hit = new RaycastHit();
         if (Physics.Raycast(ray, out hit,Mathf.Infinity)){
             if(hit.collider.tag == "verticesPoint"){
+                active = false;
+                clickReset();
                 GameObject point = hit.collider.gameObject;
                 Material pointColor = point.GetComponent<Renderer>().material;
 
