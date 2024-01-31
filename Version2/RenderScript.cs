@@ -33,6 +33,9 @@ public class RenderScript : MonoBehaviour
     int amountOfClicks = 0;
     float click = -1;
     bool active  = true;
+
+    float oldX = 0;
+    float oldY = 0;
     void Update(){
 
         bool screenContact = 
@@ -46,6 +49,9 @@ public class RenderScript : MonoBehaviour
                 tempObject(ray);
         } 
 
+        if (Movement.moveX != oldX || Movement.moveY != oldY) rotateObject(oldX,oldY);
+        oldX = Movement.moveX;
+        oldY = Movement.moveY;
         if (active) clickTracker(); else clickReset();
         active = true;
     }
@@ -72,22 +78,24 @@ public class RenderScript : MonoBehaviour
     void clickRule(int amountOfClicks){
         switch (amountOfClicks){
             case 2:
-            Vector3 pos = new Vector3(
-                (verticesPoints[7].transform.position.x + verticesPoints[0].transform.position.x)/2,
-                (verticesPoints[7].transform.position.y + verticesPoints[0].transform.position.y)/2,
-                (verticesPoints[7].transform.position.z + verticesPoints[0].transform.position.z)/2
-                );
-                print(pos);
-            GameObject clone = Instantiate(verticesPoint);
-            clone.transform.position = pos;
-            for (int i = 0; i<8; i++){
-                verticesPoints[i].transform.RotateAround(pos, Vector3.up, 20);
-                tempVertices[i] = verticesPoints[i].transform.position;
-            }
-            renderTriangles(meshOfObject.GetComponent<MeshFilter>().mesh,tempVertices,triangles);
+            
             break;
 
         }
+    }
+
+    void rotateObject(float oldX,float oldY){
+        Vector3 pos = new Vector3(
+            (verticesPoints[7].transform.position.x + verticesPoints[0].transform.position.x)/2,
+            (verticesPoints[7].transform.position.y + verticesPoints[0].transform.position.y)/2,
+            (verticesPoints[7].transform.position.z + verticesPoints[0].transform.position.z)/2
+            );
+            for (int i = 0; i<8; i++){
+                verticesPoints[i].transform.RotateAround(pos, new Vector3(Movement.moveY - oldY,Movement.moveX - oldX,0), 2
+                );
+                tempVertices[i] = verticesPoints[i].transform.position;
+            }
+            renderTriangles(meshOfObject.GetComponent<MeshFilter>().mesh,tempVertices,triangles);
     }
 
 
@@ -199,7 +207,7 @@ public class RenderScript : MonoBehaviour
     }
 
     Vector4[] objectRGBA = new Vector4[]{
-        new Vector4(255,255,255,0),
+        new Vector4(200,255,255,0),
         new Vector4(255,255,255,0),
         new Vector4(255,255,255,0),
         new Vector4(255,255,255,0),
