@@ -91,7 +91,7 @@ public class RenderScript : MonoBehaviour
             (verticesPoints[7].transform.position.z + verticesPoints[0].transform.position.z)/2
             );
             for (int i = 0; i<8; i++){
-                verticesPoints[i].transform.RotateAround(pos, new Vector3(Movement.moveY - oldY,Movement.moveX - oldX,0), 2
+                verticesPoints[i].transform.RotateAround(pos, new Vector3(Movement.moveY-oldY,oldX - Movement.moveX,0), 2
                 );
                 tempVertices[i] = verticesPoints[i].transform.position;
             }
