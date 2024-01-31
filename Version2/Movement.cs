@@ -11,9 +11,9 @@ public class Movement : MonoBehaviour
     public CinemachineFreeLook cinemachineCam;
 
     // Update is called once per frame
-    float xLimit = 2.3f;
-    float zLimit = 2.3f;
-    float speed = 0.5f;
+    float xLimit = 3.3f;
+    float yLimit = 0.2f;
+    float currentPointZ = 0f;
     float currentPointX = 0;
     float currentPointY = 0;
     bool changePoint = false;
@@ -24,7 +24,7 @@ void Start(){
 }
 
     
-    void FixedUpdate(){
+    void Update(){
         
 if (Input.touchCount > 0) {
 	Touch touch = Input.GetTouch(0); // get first touch since touch count is greater than zero
@@ -34,14 +34,16 @@ if (Input.touchCount > 0) {
             currentPointX = touch.position.x;
             currentPointY = touch.position.y;
             }
-        moveX = Mathf.Clamp((touch.position.x - currentPointX)/Screen.width, -xLimit,xLimit); 
-        moveY = Mathf.Clamp((touch.position.y - currentPointY)/Screen.height, -zLimit,zLimit);
-        //if (Mathf.Abs(moveX) > 0.005f) cinemachineCam.m_XAxis.Value += moveX; 
+        moveX = Mathf.Clamp(2*(touch.position.x - currentPointX)/Screen.width, -xLimit,xLimit); 
+        moveY = Mathf.Clamp((touch.position.y - currentPointY)/(5*Screen.height), -yLimit,yLimit);
+        if (RenderScript.optionMobility && Mathf.Abs(moveX) > 0.001f) cinemachineCam.m_XAxis.Value += moveX;
+        if (RenderScript.optionMobility && Mathf.Abs(moveY) > 0.001f) cinemachineCam.m_YAxis.Value -= moveY/10; 
         changePoint = true;
 	}
 } else {
     changePoint = false;
     moveX = 0;
+    moveY = 0;
     
 }
         
