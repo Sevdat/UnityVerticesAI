@@ -33,6 +33,8 @@ public class RenderScript : MonoBehaviour
     int amountOfClicks = 0;
     float click = -1;
     bool active  = true;
+    public static bool optionMobility = true;
+    public static bool optionActivate = false;
     public static bool optionRotate  = false;
     public static bool optionSelect  = false;
     public static bool optionMove  = false;
@@ -51,11 +53,13 @@ public class RenderScript : MonoBehaviour
                 ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
                 tempObject(optionSelect,ray);
         } 
-
-        moveSelected(oldX,oldY);
+        moveSelected(optionMove,oldX,oldY);
         rotateObject(optionRotate,oldX,oldY);
         if (active) clickTracker(); else clickReset();
         active = true;
+        
+        oldX = Movement.moveX;
+        oldY = Movement.moveY;
     }
 
     void clickTracker(){
@@ -79,10 +83,10 @@ public class RenderScript : MonoBehaviour
     void clickRule(int amountOfClicks){
         switch (amountOfClicks){
             case 2:
-            optionSelect = !optionSelect;
+            optionMobility = !optionMobility;
+            optionMove = !optionMove;
             break;
             case 3:
-            optionMove = !optionMove;
             break;
 
         }
@@ -106,34 +110,34 @@ public class RenderScript : MonoBehaviour
             }
             renderTriangles(meshOfObject.GetComponent<MeshFilter>().mesh,tempVertices,triangles);
         }
-        oldX = Movement.moveX;
-        oldY = Movement.moveY;
     }
 
-    void moveSelected(float x, float y){
+    GameObject point;
+    void moveSelected(bool optionMove,float x, float y){
         bool change = false;
-        if (Input.touchCount> 0 &&(Movement.moveX != x || Movement.moveY != y)){
-            float yMove =  (Movement.moveY-y)*10;
-            float xMove =  Movement.moveX - x;
-            for (int i = 0; i<8; i++){
-                Color objectColor = verticesPoints[i].GetComponent<Renderer>().material.color;
-                    if (objectColor == Color.blue){
-                        tempVertices[i] += new Vector3(
-                            xMove,
-                            yMove,
-                            0
-                            );
-                        verticesPoints[i].transform.position = tempVertices[i];
-                        print(verticesPoints[i].transform.position);
-                        change = true;
+        bool touchAmount = Input.touchCount> 0;
+        if (optionMove && Physics.Raycast(ray, out hit,Mathf.Infinity)){
+            if (hit.collider.tag == "verticesPoint"){
+            point = hit.collider.gameObject;
+            }
+                if (touchAmount &&(Movement.moveX != x || Movement.moveY != y)){
+                    float yMove = (Movement.moveY-y)*50;
+                    float xMove = (Movement.moveX-x)*2;
+                        for (int i = 0; i<8; i++){ 
+                            if (verticesPoints[i] == point) { 
+                                tempVertices[i] += new Vector3(
+                                xMove,yMove,0
+                                );
+                                verticesPoints[i].transform.position = tempVertices[i];
+                                print(verticesPoints[i].transform.position);
+                                change = true;
+                        }
                     }
                 }
-        }
+        } 
+        if (!touchAmount) point= new GameObject();
         if (change)
         renderTriangles(meshOfObject.GetComponent<MeshFilter>().mesh,tempVertices,triangles);
-
-        oldX = Movement.moveX;
-        oldY = Movement.moveY;
     }
 
 
@@ -170,8 +174,6 @@ public class RenderScript : MonoBehaviour
 
             }
         }
-        oldX = Movement.moveX;
-        oldY = Movement.moveY;
     }
 
     void chooseRule(int[] cubeConnect, string validConnect){
