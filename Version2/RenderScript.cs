@@ -33,6 +33,9 @@ public class RenderScript : MonoBehaviour
     int amountOfClicks = 0;
     float click = -1;
     bool active  = true;
+    public static bool optionRotate  = false;
+    public static bool optionSelect  = false;
+    public static bool optionMove  = false;
 
     float oldX = 0;
     float oldY = 0;
@@ -46,12 +49,11 @@ public class RenderScript : MonoBehaviour
                 click += 1;
                 
                 ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
-                tempObject(ray);
+                tempObject(optionSelect,ray);
         } 
 
-        if (Movement.moveX != oldX || Movement.moveY != oldY) rotateObject(oldX,oldY);
-        oldX = Movement.moveX;
-        oldY = Movement.moveY;
+        moveSelected(oldX,oldY);
+        rotateObject(optionRotate,oldX,oldY);
         if (active) clickTracker(); else clickReset();
         active = true;
     }
@@ -60,7 +62,6 @@ public class RenderScript : MonoBehaviour
         if (click == amountOfClicks){
         amountOfClicks+=1;
         duration = 0.2f;
-        print(amountOfClicks);
         }
         if (duration>0) duration = duration - Time.deltaTime; 
         else {
@@ -78,30 +79,67 @@ public class RenderScript : MonoBehaviour
     void clickRule(int amountOfClicks){
         switch (amountOfClicks){
             case 2:
-            
+            optionSelect = !optionSelect;
+            break;
+            case 3:
+            optionMove = !optionMove;
             break;
 
         }
     }
 
-    void rotateObject(float oldX,float oldY){
+    void rotateObject(bool optionRotate,float x,float y){
+        if (optionRotate && (Movement.moveX != x || Movement.moveY != y)){
         Vector3 pos = new Vector3(
             (verticesPoints[7].transform.position.x + verticesPoints[0].transform.position.x)/2,
             (verticesPoints[7].transform.position.y + verticesPoints[0].transform.position.y)/2,
             (verticesPoints[7].transform.position.z + verticesPoints[0].transform.position.z)/2
             );
+            float yMove =  Movement.moveY-y;
+            float xMove =  x - Movement.moveX;
+            float zMove = 0;
             for (int i = 0; i<8; i++){
-                verticesPoints[i].transform.RotateAround(pos, new Vector3(Movement.moveY-oldY,oldX - Movement.moveX,0), 2
+                verticesPoints[i].transform.RotateAround(pos, new Vector3(
+                    yMove,xMove,zMove), 2
                 );
                 tempVertices[i] = verticesPoints[i].transform.position;
             }
             renderTriangles(meshOfObject.GetComponent<MeshFilter>().mesh,tempVertices,triangles);
+        }
+        oldX = Movement.moveX;
+        oldY = Movement.moveY;
+    }
+
+    void moveSelected(float x, float y){
+        bool change = false;
+        if (Input.touchCount> 0 &&(Movement.moveX != x || Movement.moveY != y)){
+            float yMove =  (Movement.moveY-y)*10;
+            float xMove =  Movement.moveX - x;
+            for (int i = 0; i<8; i++){
+                Color objectColor = verticesPoints[i].GetComponent<Renderer>().material.color;
+                    if (objectColor == Color.blue){
+                        tempVertices[i] += new Vector3(
+                            xMove,
+                            yMove,
+                            0
+                            );
+                        verticesPoints[i].transform.position = tempVertices[i];
+                        print(verticesPoints[i].transform.position);
+                        change = true;
+                    }
+                }
+        }
+        if (change)
+        renderTriangles(meshOfObject.GetComponent<MeshFilter>().mesh,tempVertices,triangles);
+
+        oldX = Movement.moveX;
+        oldY = Movement.moveY;
     }
 
 
-    void tempObject(Ray ray){
-        hit = new RaycastHit();
-        if (Physics.Raycast(ray, out hit,Mathf.Infinity)){
+    void tempObject(bool optionSelect,Ray ray){
+
+        if (optionSelect && Physics.Raycast(ray, out hit,Mathf.Infinity)){
             if(hit.collider.tag == "verticesPoint"){
                 active = false;
                 GameObject point = hit.collider.gameObject;
@@ -117,9 +155,11 @@ public class RenderScript : MonoBehaviour
                     0, 1, 2, 3,
                     4, 5, 6, 7
                     };
+
                 foreach (GameObject i in verticesPoints){
                     if (i.GetComponent<Renderer>().material.color == Color.blue){
                         validConnect +=$"{count}";
+
                     }
                     count++;
                 }
@@ -130,6 +170,8 @@ public class RenderScript : MonoBehaviour
 
             }
         }
+        oldX = Movement.moveX;
+        oldY = Movement.moveY;
     }
 
     void chooseRule(int[] cubeConnect, string validConnect){
