@@ -35,7 +35,7 @@ public class RenderScript : MonoBehaviour
         "Mobility","select","move","rotate","color",
     };
     public static string option = "move";
-    float time = 0;
+    bool timerBool;
     float oldX = 0;
     float oldY = 0;
     void Update(){
@@ -45,24 +45,48 @@ public class RenderScript : MonoBehaviour
         Input.GetTouch(0).phase == TouchPhase.Began;
 
             if(screenContact){
+                click +=1;
+                timerBool = true;
                 ray = 
                 Camera.main.ScreenPointToRay(
                     Input.GetTouch(0).position
                     );
                     active = true;
-        if (Input.touchCount>1){
-            oneTouch = false;
-        } else oneTouch = true;
-        } 
+                if (Input.touchCount>1){
+                    oneTouch = false;
+                } else oneTouch = true;
+
+            } 
+
+        if (timerBool) clickTracker();
 
         if (oneTouch) chooseOption(option);
-        print(Movement.moveX);
+        
         oldX = Movement.moveX;
         oldY = Movement.moveY;
 
     }
-    bool oneTouch = false;
+    float duration = 0.5f;
+    int amountOfClicks = 0;
+    float click = -1;
+    bool pickOption = false;
+    void clickTracker(){
+        if (click == amountOfClicks){
+            amountOfClicks+=1;
+            duration = 0.2f;
+        }
+        duration = (duration>0)? 
+            duration - Time.deltaTime : clickReset();
+    }
 
+    float clickReset(){
+        amountOfClicks=0;
+        click = -1;
+        timerBool = false;
+        return duration = 0.5f;
+    }
+
+    bool oneTouch = false;
     void chooseOption(string option){
         switch (option){
             case "select":
