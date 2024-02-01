@@ -29,16 +29,13 @@ public class RenderScript : MonoBehaviour
     }
 
     GameObject[] verticesPoints = new GameObject[8];
-    float duration = 0.5f;
-    int amountOfClicks = 0;
-    float click = -1;
     bool active  = true;
-    public static bool optionMobility = true;
-    public static bool optionActivate = false;
-    public static bool optionRotate  = false;
-    public static bool optionSelect  = false;
-    public static bool optionMove  = false;
 
+    string[] optionArray = new string[]{
+        "Mobility","select","move","rotate","color",
+    };
+    public static string option = "move";
+    float time = 0;
     float oldX = 0;
     float oldY = 0;
     void Update(){
@@ -48,52 +45,47 @@ public class RenderScript : MonoBehaviour
         Input.GetTouch(0).phase == TouchPhase.Began;
 
             if(screenContact){
-                click += 1;
-                
-                ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
-                tempObject(optionSelect,ray);
+                ray = 
+                Camera.main.ScreenPointToRay(
+                    Input.GetTouch(0).position
+                    );
+                    active = true;
+        if (Input.touchCount>1){
+            oneTouch = false;
+        } else oneTouch = true;
         } 
-        moveSelected(optionMove,oldX,oldY);
-        rotateObject(optionRotate,oldX,oldY);
-        if (active) clickTracker(); else clickReset();
-        active = true;
-        
+
+        if (oneTouch) chooseOption(option);
+        print(Movement.moveX);
         oldX = Movement.moveX;
         oldY = Movement.moveY;
-    }
 
-    void clickTracker(){
-        if (click == amountOfClicks){
-        amountOfClicks+=1;
-        duration = 0.2f;
-        }
-        if (duration>0) duration = duration - Time.deltaTime; 
-        else {
-            clickRule(amountOfClicks);
-            clickReset();
-            };
     }
+    bool oneTouch = false;
 
-    void clickReset(){
-        duration = 0.5f;
-        amountOfClicks=0;
-        click = -1;
-    }
-
-    void clickRule(int amountOfClicks){
-        switch (amountOfClicks){
-            case 2:
-            optionMobility = !optionMobility;
-            optionMove = !optionMove;
+    void chooseOption(string option){
+        switch (option){
+            case "select":
+            select(active,ray);
+            active = false;
             break;
-            case 3:
+            
+            case "move":
+            moveSelected(oldX,oldY);
+            break;
+            
+            case "rotate":
+            rotateObject(oldX,oldY);
+            break;
+            
+            case "color":
             break;
 
         }
     }
 
-    void rotateObject(bool optionRotate,float x,float y){
-        if (optionRotate && (Movement.moveX != x || Movement.moveY != y)){
+    void rotateObject(float x,float y){
+        if (Movement.moveX != x || Movement.moveY != y){
         Vector3 pos = new Vector3(
             (verticesPoints[7].transform.position.x + verticesPoints[0].transform.position.x)/2,
             (verticesPoints[7].transform.position.y + verticesPoints[0].transform.position.y)/2,
@@ -113,16 +105,16 @@ public class RenderScript : MonoBehaviour
     }
 
     GameObject point;
-    void moveSelected(bool optionMove,float x, float y){
+    void moveSelected(float x, float y){
         bool change = false;
-        bool touchAmount = Input.touchCount> 0;
-        if (optionMove && Physics.Raycast(ray, out hit,Mathf.Infinity)){
+        bool touchAmount = Input.touchCount==1;
+        if (Physics.Raycast(ray, out hit,Mathf.Infinity)){
             if (hit.collider.tag == "verticesPoint"){
             point = hit.collider.gameObject;
             }
                 if (touchAmount &&(Movement.moveX != x || Movement.moveY != y)){
                     float yMove = (Movement.moveY-y)*50;
-                    float xMove = (Movement.moveX-x)*2;
+                    float xMove = (Movement.moveX-x)*5;
                         for (int i = 0; i<8; i++){ 
                             if (verticesPoints[i] == point) { 
                                 tempVertices[i] += new Vector3(
@@ -135,17 +127,15 @@ public class RenderScript : MonoBehaviour
                     }
                 }
         } 
-        if (!touchAmount) point= new GameObject();
         if (change)
         renderTriangles(meshOfObject.GetComponent<MeshFilter>().mesh,tempVertices,triangles);
     }
 
 
-    void tempObject(bool optionSelect,Ray ray){
+    void select(bool active, Ray ray){
 
-        if (optionSelect && Physics.Raycast(ray, out hit,Mathf.Infinity)){
+        if (active && Physics.Raycast(ray, out hit,Mathf.Infinity)){
             if(hit.collider.tag == "verticesPoint"){
-                active = false;
                 GameObject point = hit.collider.gameObject;
                 Material pointColor = point.GetComponent<Renderer>().material;
 
@@ -171,7 +161,6 @@ public class RenderScript : MonoBehaviour
                 chooseRule(cubeConnect,validConnect);
 
                 renderTriangles(meshOfObject.GetComponent<MeshFilter>().mesh,tempVertices,triangles);
-
             }
         }
     }
