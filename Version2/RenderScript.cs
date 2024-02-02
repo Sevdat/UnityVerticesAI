@@ -32,12 +32,14 @@ public class RenderScript : MonoBehaviour
     bool active  = true;
 
     string[] optionArray = new string[]{
-        "Mobility","select","move","rotate","color",
+        "select","move","rotate","color",
     };
     public static string option = "move";
+    public static bool mobility = true;
     bool timerBool;
     float oldX = 0;
     float oldY = 0;
+    float oldZ = 0;
     void Update(){
 
         bool screenContact = 
@@ -60,10 +62,11 @@ public class RenderScript : MonoBehaviour
 
         if (timerBool) clickTracker();
 
-        if (oneTouch) chooseOption(option);
+        if (!mobility) chooseOption(option);
         
         oldX = Movement.moveX;
         oldY = Movement.moveY;
+        oldZ = Movement.moveZ;
 
     }
     float duration = 0.5f;
@@ -80,6 +83,10 @@ public class RenderScript : MonoBehaviour
     }
 
     float clickReset(){
+        if (amountOfClicks == 2) {
+            point = new GameObject();
+            mobility = !mobility;
+            }
         amountOfClicks=0;
         click = -1;
         timerBool = false;
@@ -95,7 +102,7 @@ public class RenderScript : MonoBehaviour
             break;
             
             case "move":
-            moveSelected(oldX,oldY);
+            moveSelected(oldX,oldY,oldZ);
             break;
             
             case "rotate":
@@ -129,30 +136,32 @@ public class RenderScript : MonoBehaviour
     }
 
     GameObject point;
-    void moveSelected(float x, float y){
-        bool change = false;
-        bool touchAmount = Input.touchCount==1;
+    void moveSelected(float x, float y, float z){
+
+        bool touchAmount = Input.touchCount!=0;
         if (Physics.Raycast(ray, out hit,Mathf.Infinity)){
             if (hit.collider.tag == "verticesPoint"){
             point = hit.collider.gameObject;
             }
-                if (touchAmount &&(Movement.moveX != x || Movement.moveY != y)){
+                if (touchAmount && (Movement.moveX != x || Movement.moveY != y|| Movement.moveZ != z)){
                     float yMove = (Movement.moveY-y)*50;
                     float xMove = (Movement.moveX-x)*5;
+                    float zMove = (Movement.moveZ-z)*20;
                         for (int i = 0; i<8; i++){ 
                             if (verticesPoints[i] == point) { 
+                                if (Input.touchCount >1)
                                 tempVertices[i] += new Vector3(
+                                xMove,yMove,zMove
+                                ); else tempVertices[i] += new Vector3(
                                 xMove,yMove,0
                                 );
                                 verticesPoints[i].transform.position = tempVertices[i];
                                 print(verticesPoints[i].transform.position);
-                                change = true;
+                                renderTriangles(meshOfObject.GetComponent<MeshFilter>().mesh,tempVertices,triangles);
                         }
                     }
                 }
         } 
-        if (change)
-        renderTriangles(meshOfObject.GetComponent<MeshFilter>().mesh,tempVertices,triangles);
     }
 
 
