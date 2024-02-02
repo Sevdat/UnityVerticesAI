@@ -21,7 +21,7 @@ public class Movement : MonoBehaviour
     bool changePointDouble = false;
     public static float moveX = 0;
     public static float moveY = 0;
-    public static float front = 0;
+    public static float moveZ = 0;
     public static float side = 0;
 
     
@@ -47,18 +47,18 @@ void Start(){
             if (changePointDouble == false) {
                 currentPointX = touch.position.x;
                 currentPointY = touch.position.y;
-                currentPoint2X = touch2.position.y;
-                currentPoint2Y = touch2.position.x;
+                currentPoint2Y = touch2.position.y;
+                currentPoint2X = touch2.position.x;
                 }
             moveX = Mathf.Clamp((touch.position.x - currentPointX)/175, -xLimit,xLimit); 
             moveY = Mathf.Clamp((touch.position.y - currentPointY)/3300, -yLimit,yLimit);
-            if (Mathf.Abs(moveX) > 0.001f) cinemachineCam.m_XAxis.Value += moveX;
-            if (Mathf.Abs(moveY) > 0.001f) cinemachineCam.m_YAxis.Value -= moveY/10; 
+            if (RenderScript.mobility && Mathf.Abs(moveX) > 0.001f) cinemachineCam.m_XAxis.Value += moveX;
+            if (RenderScript.mobility && Mathf.Abs(moveY) > 0.001f) cinemachineCam.m_YAxis.Value -= moveY/15; 
             
-            front = Mathf.Clamp((touch2.position.y - currentPoint2X)/4000, -xLimit,xLimit);
-            side = Mathf.Clamp((touch2.position.x - currentPoint2Y)/4000, -yLimit,yLimit);
-            if (Mathf.Abs(front) > 0.001f) forkLiftMovement.transform.position +=  cam.transform.forward*front;
-            if (Mathf.Abs(side) > 0.001f) forkLiftMovement.transform.position +=  cam.transform.right*side;  
+            moveZ = Mathf.Clamp((touch2.position.y - currentPoint2Y)/4000, -xLimit,xLimit);
+            side = Mathf.Clamp((touch2.position.x - currentPoint2X)/4000, -yLimit,yLimit);
+            if (RenderScript.mobility && Mathf.Abs(moveZ) > 0.001f) forkLiftMovement.transform.position +=  cam.transform.forward*moveZ;
+            if (RenderScript.mobility && Mathf.Abs(side) > 0.001f) forkLiftMovement.transform.position +=  cam.transform.right*side;  
             changePointDouble = true;
 	    }
     }
@@ -72,7 +72,7 @@ void Start(){
                 changePointDouble = false;
                 moveX = 0;
                 moveY = 0;
-                front = 0;
+                moveZ = 0;
                 side = 0;  
             }
     }
