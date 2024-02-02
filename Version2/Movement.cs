@@ -14,10 +14,10 @@ public class Movement : MonoBehaviour
     float xLimit = 3.3f;
     float yLimit = 0.3f;
     bool reposition = true;
-    float currentPoint2X = 0f;
-    float currentPoint2Y = 0f;
-    float currentPointX = 0;
-    float currentPointY = 0;
+    float rightOriginX = 0f;
+    float rightOriginY = 0f;
+    float leftOriginX = 0;
+    float leftOriginY = 0;
     public static float moveX = 0;
     public static float moveY = 0;
     public static float moveZ = 0;
@@ -25,8 +25,8 @@ public class Movement : MonoBehaviour
     public static float singleX = 0;
     public static float singleY = 0;
     float screenWidth = 0;
-    Touch touchLeft;
     Touch touchRight;
+    Touch touchLeft;
     Touch touchSingle;
 
 
@@ -40,7 +40,7 @@ void singleTouch(){
     
     touchSingle = Input.GetTouch(0);
     if (touchSingle.phase == TouchPhase.Stationary || touchSingle.phase == TouchPhase.Moved) {
-        singleX = touchSingle.deltaPosition.x/100; 
+        singleX = touchSingle.deltaPosition.x/20; 
         singleY = touchSingle.deltaPosition.y/100; 
     }
     
@@ -48,48 +48,53 @@ void singleTouch(){
     moveY = 0;
     moveZ = 0;
     side = 0;
-    reposition = false; 
+    reposition = true; 
 }
 
 void doubleTouch(){
     
-    touchLeft = Input.GetTouch(0);
-    touchRight = Input.GetTouch(1);
-    touchLeft = 
-        (touchLeft.position.x>screenWidth) ? 
-            Input.GetTouch(0):Input.GetTouch(1);
+    touchRight = Input.GetTouch(0);
+    touchLeft = Input.GetTouch(1);
     touchRight = 
-        (touchRight.position.x<screenWidth) ? 
+        (touchRight.position.x>screenWidth) ? 
+            Input.GetTouch(0):Input.GetTouch(1);
+    touchLeft = 
+        (touchLeft.position.x<screenWidth) ? 
             Input.GetTouch(1):Input.GetTouch(0);
     bool leftBool = 
-            touchLeft.phase == TouchPhase.Stationary 
-                || touchLeft.phase == TouchPhase.Moved;
-    bool rightBool = 
             touchRight.phase == TouchPhase.Stationary 
                 || touchRight.phase == TouchPhase.Moved;
+    bool rightBool = 
+            touchLeft.phase == TouchPhase.Stationary 
+                || touchLeft.phase == TouchPhase.Moved;
                 
     if (reposition) {
-        currentPointX = touchLeft.position.x;
-        currentPointY = touchLeft.position.y;
-        currentPoint2Y = touchRight.position.y;
-        currentPoint2X = touchRight.position.x;
+        rightOriginX = touchRight.position.x;
+        rightOriginY = touchRight.position.y;
+        leftOriginY = touchLeft.position.y;
+        leftOriginX = touchLeft.position.x;
         }
 
     if (leftBool || rightBool) {
-        moveX = touchLeft.deltaPosition.x/20;
-        moveY = touchLeft.deltaPosition.y/100;
-        if (RenderScript.mobility) cinemachineCam.m_XAxis.Value += moveX;
-        if (RenderScript.mobility) cinemachineCam.m_YAxis.Value -= moveY/15; 
+        moveX = touchRight.deltaPosition.x/20;
+        moveY = touchRight.deltaPosition.y/100;
+        if (RenderScript.mobility) cinemachineCam.m_XAxis.Value += (touchRight.position.x - rightOriginX)/200;
+        if (RenderScript.mobility) cinemachineCam.m_YAxis.Value -= (touchRight.position.y - rightOriginY)/20000; 
 
-        moveZ = touchRight.deltaPosition.y/300;
-        side = touchRight.deltaPosition.x/300;
-        if (RenderScript.mobility) player.transform.position +=  cam.transform.forward*moveZ;
-        if (RenderScript.mobility) player.transform.position +=  cam.transform.right*side;  
+        moveZ = touchLeft.deltaPosition.y/300;
+        side = touchLeft.deltaPosition.x/300;
+        if (RenderScript.mobility) 
+            player.transform.position 
+                += cam.transform.forward*((touchLeft.position.y - leftOriginY)/6000);
+        if (RenderScript.mobility) 
+            player.transform.position 
+                += cam.transform.right*((touchLeft.position.x - leftOriginX)/6000); 
+                print((touchLeft.position.x - leftOriginX)/100); 
         }
 
     singleX = 0;
     singleY = 0;
-    reposition = true;
+    reposition = false;
 }
 
     void Update(){
@@ -101,7 +106,7 @@ void doubleTouch(){
                     side = 0;
                     singleX = 0;
                     singleY = 0;
-                    reposition = false;
+                    reposition = true;
             }
     }
 }
