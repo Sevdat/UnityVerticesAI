@@ -12,6 +12,7 @@ using Random = UnityEngine.Random;
 public class RenderScript : MonoBehaviour
 {
     // Start is called before the first frame update
+    public GameObject player;
     public GameObject verticesPoint;
     Vector3[] tempVertices;
     int[] triangles = new int[0];
@@ -34,7 +35,7 @@ public class RenderScript : MonoBehaviour
     string[] optionArray = new string[]{
         "select","move","rotate","color",
     };
-    public static string option = "move";
+    public static string option = "rotate";
     public static bool mobility = true;
     bool timerBool;
     float oldX = 0;
@@ -63,10 +64,6 @@ public class RenderScript : MonoBehaviour
         if (timerBool) clickTracker();
 
         if (!mobility) chooseOption(option);
-        
-        oldX = Movement.moveX;
-        oldY = Movement.moveY;
-        oldZ = Movement.moveZ;
 
     }
     float duration = 0.5f;
@@ -102,7 +99,7 @@ public class RenderScript : MonoBehaviour
             break;
             
             case "move":
-            moveSelected(oldX,oldY,oldZ);
+            moveSelected();
             break;
             
             case "rotate":
@@ -116,18 +113,19 @@ public class RenderScript : MonoBehaviour
     }
 
     void rotateObject(float x,float y){
-        if (Movement.moveX != x || Movement.moveY != y){
+        if (Input.touchCount >1) {
         Vector3 pos = new Vector3(
             (verticesPoints[7].transform.position.x + verticesPoints[0].transform.position.x)/2,
             (verticesPoints[7].transform.position.y + verticesPoints[0].transform.position.y)/2,
             (verticesPoints[7].transform.position.z + verticesPoints[0].transform.position.z)/2
             );
-            float yMove =  Movement.moveY-y;
-            float xMove =  x - Movement.moveX;
-            float zMove = 0;
+            float xMove = Movement.moveY;
+            float yMove = -Movement.moveX;
+            float zMove = -Movement.side;
+            float side = Movement.moveZ;
             for (int i = 0; i<8; i++){
                 verticesPoints[i].transform.RotateAround(pos, new Vector3(
-                    yMove,xMove,zMove), 2
+                    xMove+side,yMove,zMove), 0.25f
                 );
                 tempVertices[i] = verticesPoints[i].transform.position;
             }
@@ -136,31 +134,27 @@ public class RenderScript : MonoBehaviour
     }
 
     GameObject point;
-    void moveSelected(float x, float y, float z){
-
-        bool touchAmount = Input.touchCount!=0;
+    void moveSelected(){
         if (Physics.Raycast(ray, out hit,Mathf.Infinity)){
             if (hit.collider.tag == "verticesPoint"){
             point = hit.collider.gameObject;
             }
-                if (touchAmount && (Movement.moveX != x || Movement.moveY != y|| Movement.moveZ != z)){
-                    float yMove = (Movement.moveY-y)*50;
-                    float xMove = (Movement.moveX-x)*5;
-                    float zMove = (Movement.moveZ-z)*20;
-                        for (int i = 0; i<8; i++){ 
-                            if (verticesPoints[i] == point) { 
-                                if (Input.touchCount >1)
-                                tempVertices[i] += new Vector3(
-                                xMove,yMove,zMove
-                                ); else tempVertices[i] += new Vector3(
-                                xMove,yMove,0
-                                );
-                                verticesPoints[i].transform.position = tempVertices[i];
-                                print(verticesPoints[i].transform.position);
-                                renderTriangles(meshOfObject.GetComponent<MeshFilter>().mesh,tempVertices,triangles);
-                        }
+            if (Input.touchCount >1){
+                float xMove =  Movement.moveX/10;
+                float yMove =  Movement.moveY/10;
+                float zMove =  Movement.moveZ/5;
+                float side =  Movement.side/5;
+                    for (int i = 0; i<8; i++){
+                        if (verticesPoints[i] == point) { 
+                            tempVertices[i] += new Vector3(
+                            xMove+side,yMove,zMove
+                            );
+                            verticesPoints[i].transform.position = tempVertices[i];
+                            print(verticesPoints[i].transform.position);
+                            renderTriangles(meshOfObject.GetComponent<MeshFilter>().mesh,tempVertices,triangles);
                     }
                 }
+            }
         } 
     }
 
