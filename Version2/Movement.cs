@@ -5,16 +5,13 @@ using Cinemachine;
 
 public class Movement : MonoBehaviour
 {
-        // Start is called before the first frame update
     public GameObject player;
     public Camera cam;
     public CinemachineFreeLook cinemachineCam;
-
-    // Update is called once per frame
-    float xLimit = 3.3f;
-    float yLimit = 0.3f;
     bool doubleReposition = true;
     bool singleReposition = true;
+    float screenWidth = 0;
+    float touchCount = 0;
     public static float rightOriginX = 0f;
     public static float rightOriginY = 0f;
     public static float leftOriginX = 0;
@@ -27,7 +24,6 @@ public class Movement : MonoBehaviour
     public static float side = 0;
     public static float singleX = 0;
     public static float singleY = 0;
-    float screenWidth = 0;
     public static Touch touchRight;
     public static Touch touchLeft;
     public static Touch touchSingle;
@@ -67,10 +63,10 @@ void doubleTouch(){
     touchLeft = Input.GetTouch(1);
     touchRight = 
         (touchRight.position.x>screenWidth) ? 
-            Input.GetTouch(0):Input.GetTouch(1);
+            touchRight:touchLeft;
     touchLeft = 
         (touchLeft.position.x<screenWidth) ? 
-            Input.GetTouch(1):Input.GetTouch(0);
+            touchLeft:touchRight;
     bool leftBool = 
             touchRight.phase == TouchPhase.Stationary 
                 || touchRight.phase == TouchPhase.Moved;
@@ -90,7 +86,6 @@ void doubleTouch(){
         moveY = touchRight.deltaPosition.y;
         if (RenderScript.mobility) cinemachineCam.m_XAxis.Value += (touchRight.position.x - rightOriginX)/200;
         if (RenderScript.mobility) cinemachineCam.m_YAxis.Value -= (touchRight.position.y - rightOriginY)/20000; 
-
         moveZ = touchLeft.deltaPosition.y;
         side = touchLeft.deltaPosition.x;
         if (RenderScript.mobility) 
@@ -108,8 +103,9 @@ void doubleTouch(){
 }
 
     void Update(){
-        if (Input.touchCount>1) doubleTouch(); 
-            else if (Input.touchCount>0) singleTouch(); else {
+        touchCount = (Input.touchCount>0) ? Input.touchCount:0;
+        if (touchCount>1) doubleTouch(); 
+            else if (touchCount>0) singleTouch(); else {
                     moveX = 0;
                     moveY = 0;
                     moveZ = 0;
