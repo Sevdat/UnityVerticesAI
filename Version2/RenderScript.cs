@@ -13,6 +13,7 @@ public class RenderScript : MonoBehaviour
 {
     // Start is called before the first frame update
     public GameObject player;
+    public Camera cam;
     public GameObject verticesPoint;
     Vector3[] tempVertices;
     int[] triangles = new int[0];
@@ -35,7 +36,7 @@ public class RenderScript : MonoBehaviour
     string[] optionArray = new string[]{
         "select","move","rotate","color",
     };
-    public static string option = "rotate";
+    public static string option = "move";
     public static bool mobility = true;
     bool timerBool;
     float oldX = 0;
@@ -113,7 +114,7 @@ public class RenderScript : MonoBehaviour
     }
 
     void rotateObject(float x,float y){
-        if (Input.touchCount >1) {
+        if (Input.touchCount >1) { 
         Vector3 pos = new Vector3(
             (verticesPoints[7].transform.position.x + verticesPoints[0].transform.position.x)/2,
             (verticesPoints[7].transform.position.y + verticesPoints[0].transform.position.y)/2,
@@ -124,8 +125,8 @@ public class RenderScript : MonoBehaviour
             float zMove = -Movement.side;
             float side = Movement.moveZ;
             for (int i = 0; i<8; i++){
-                verticesPoints[i].transform.RotateAround(pos, new Vector3(
-                    xMove+side,yMove,zMove), 0.25f
+                verticesPoints[i].transform.RotateAround(pos, cam.transform.TransformDirection(new Vector3(
+                    xMove+side,yMove,zMove)), 0.25f
                 );
                 tempVertices[i] = verticesPoints[i].transform.position;
             }
@@ -140,15 +141,15 @@ public class RenderScript : MonoBehaviour
             point = hit.collider.gameObject;
             }
             if (Input.touchCount >1){
-                float xMove =  Movement.moveX/10;
-                float yMove =  Movement.moveY/10;
-                float zMove =  Movement.moveZ/5;
-                float side =  Movement.side/5;
+                float xMove =  Movement.moveX/300;
+                float yMove =  Movement.moveY/300;
+                float zMove =  Movement.moveZ/400;
+                float side =  Movement.side/400;
                     for (int i = 0; i<8; i++){
                         if (verticesPoints[i] == point) { 
-                            tempVertices[i] += new Vector3(
+                            tempVertices[i] += cam.transform.TransformDirection(new Vector3(
                             xMove+side,yMove,zMove
-                            );
+                            ));
                             verticesPoints[i].transform.position = tempVertices[i];
                             print(verticesPoints[i].transform.position);
                             renderTriangles(meshOfObject.GetComponent<MeshFilter>().mesh,tempVertices,triangles);
