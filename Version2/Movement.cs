@@ -13,11 +13,14 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     float xLimit = 3.3f;
     float yLimit = 0.3f;
-    bool reposition = true;
-    float rightOriginX = 0f;
-    float rightOriginY = 0f;
-    float leftOriginX = 0;
-    float leftOriginY = 0;
+    bool doubleReposition = true;
+    bool singleReposition = true;
+    public static float rightOriginX = 0f;
+    public static float rightOriginY = 0f;
+    public static float leftOriginX = 0;
+    public static float leftOriginY = 0;
+    public static float singleOriginX = 0;
+    public static float singleOriginY = 0;
     public static float moveX = 0;
     public static float moveY = 0;
     public static float moveZ = 0;
@@ -25,9 +28,9 @@ public class Movement : MonoBehaviour
     public static float singleX = 0;
     public static float singleY = 0;
     float screenWidth = 0;
-    Touch touchRight;
-    Touch touchLeft;
-    Touch touchSingle;
+    public static Touch touchRight;
+    public static Touch touchLeft;
+    public static Touch touchSingle;
 
 
     
@@ -39,6 +42,12 @@ void Start(){
 void singleTouch(){
     
     touchSingle = Input.GetTouch(0);
+
+        if (singleReposition) {
+        singleOriginX = touchSingle.position.x;
+        singleOriginY = touchSingle.position.y;
+        }
+
     if (touchSingle.phase == TouchPhase.Stationary || touchSingle.phase == TouchPhase.Moved) {
         singleX = touchSingle.deltaPosition.x/20; 
         singleY = touchSingle.deltaPosition.y/100; 
@@ -48,7 +57,8 @@ void singleTouch(){
     moveY = 0;
     moveZ = 0;
     side = 0;
-    reposition = true; 
+    singleReposition = false;
+    doubleReposition = true; 
 }
 
 void doubleTouch(){
@@ -68,7 +78,7 @@ void doubleTouch(){
             touchLeft.phase == TouchPhase.Stationary 
                 || touchLeft.phase == TouchPhase.Moved;
                 
-    if (reposition) {
+    if (doubleReposition) {
         rightOriginX = touchRight.position.x;
         rightOriginY = touchRight.position.y;
         leftOriginY = touchLeft.position.y;
@@ -93,7 +103,8 @@ void doubleTouch(){
 
     singleX = 0;
     singleY = 0;
-    reposition = false;
+    singleReposition = true;
+    doubleReposition = false;
 }
 
     void Update(){
@@ -105,7 +116,8 @@ void doubleTouch(){
                     side = 0;
                     singleX = 0;
                     singleY = 0;
-                    reposition = true;
+                    singleReposition = true;
+                    doubleReposition = true;
             }
     }
 }
