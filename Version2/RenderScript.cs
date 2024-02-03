@@ -22,6 +22,7 @@ public class RenderScript : MonoBehaviour
     public GameObject meshOfObject;
     Ray ray;  
     RaycastHit hit;  
+    float touchCount = 0;
 
     void Start()
     {
@@ -36,19 +37,15 @@ public class RenderScript : MonoBehaviour
     bool active  = true;
 
     string[] optionArray = new string[]{
-        "select","move","rotate","color",
+        "selectPoint","movePoint","rotate","color"
     };
     public static string option = "select";
     public static bool mobility = true;
     bool timerBool;
-    float oldX = 0;
-    float oldY = 0;
-    float oldZ = 0;
-    float oldSide= 0;
     void Update(){
-
+        touchCount = (Input.touchCount>0) ? Input.touchCount:0;
         bool screenContact = 
-        Input.touchCount > 0 && 
+        touchCount > 0 && 
         Input.GetTouch(0).phase == TouchPhase.Began;
 
             if(screenContact){
@@ -62,7 +59,7 @@ public class RenderScript : MonoBehaviour
             } 
 
         if (timerBool) clickTracker();
-        if (!mobility && Input.touchCount==1) chooseOption();
+        if (!mobility && touchCount==1) chooseOption();
         if (!mobility) activeOption(option);
 
     }
@@ -89,21 +86,38 @@ public class RenderScript : MonoBehaviour
         return duration = 0.5f;
     }
     void chooseOption(){
-        float xMove =  (Movement.touchSingle.position.x -  Movement.singleOriginX)/10;
-        float yMove =  (Movement.touchSingle.position.y - Movement.singleOriginY)/10;
+        float xMove =  (Movement.touchSingle.position.x -  Movement.singleOriginX)/100;
+        float yMove =  (Movement.touchSingle.position.y - Movement.singleOriginY)/100;
+        int xSign = 0;
+        int ySign = 0;
+        if (xMove > 0.2f) xSign = 1;
+           else if (xMove < -0.3f) xSign = -1;
 
-        if (yMove>0.5f) option = optionArray[0];
-        if (yMove<-0.5f) option = optionArray[3];
-        print(option);
+        if (yMove > 0.2f) ySign = 1;
+           else if (yMove < -0.2f) ySign = -1;
+
+           if (xSign == 0 && ySign == 1) option = optionArray[0];
+           if (xSign == 0 && ySign == -1) option = optionArray[3];
+
+           if (xSign == 1 && ySign == 0) option = optionArray[1];
+           if (xSign == -1 && ySign == 0) option = optionArray[2];
+           
+           if (xSign == 1 && ySign == -1) option ="1-1";
+           if (xSign == -1 && ySign == 1) option = "-11";
+           
+           if (xSign == 1 && ySign == 1) option = "11";
+           if (xSign == -1 && ySign == -1) option = "-1-1";
+
+           print(option);
     }
     void activeOption(string option){
         switch (option){
-            case "select":
+            case "selectPoint":
             select(active,ray);
             active = false;
             break;
             
-            case "move":
+            case "movePoint":
             moveSelected();
             break;
             
@@ -119,7 +133,7 @@ public class RenderScript : MonoBehaviour
     }
 
     void rotateObject(){
-        if (Input.touchCount >1) { 
+        if (touchCount >1) { 
         Vector3 pos = new Vector3(
             (verticesPoints[7].transform.position.x + verticesPoints[0].transform.position.x)/2,
             (verticesPoints[7].transform.position.y + verticesPoints[0].transform.position.y)/2,
@@ -145,7 +159,7 @@ public class RenderScript : MonoBehaviour
             if (hit.collider.tag == "verticesPoint"){
             point = hit.collider.gameObject;
             }
-            if (Input.touchCount >1){
+            if (touchCount >1){
                 float xMove =  Movement.moveX/300;
                 float yMove =  Movement.moveY/300;
                 float zMove =  Movement.moveZ/400;
@@ -288,7 +302,8 @@ public class RenderScript : MonoBehaviour
         if (hit.collider.tag == "verticesPoint"){
         point = hit.collider.gameObject;
         }
-        if (Input.touchCount >1){
+        if (touchCount >1){
+            print(touchCount);
             float xMove = (Movement.touchRight.position.x -  Movement.rightOriginX)/100;
             float yMove = (Movement.touchRight.position.y - Movement.rightOriginY)/100;
             float zMove = (Movement.touchLeft.position.y - Movement.leftOriginY)/100;
