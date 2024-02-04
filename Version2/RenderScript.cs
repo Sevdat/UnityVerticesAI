@@ -15,31 +15,38 @@ public class RenderScript : MonoBehaviour
     public GameObject player;
     public Camera cam;
     public GameObject verticesPoint;
-    Vector3[] tempVertices = new Vector3[8];
-    Color32[] colors = new Color32[8];
-    int[] triangles;
-    List<int[]> objectList = new List<int[]>();
     public GameObject meshOfObject;
+    List<int[]> objectList = new List<int[]>();
+    int[] triangles = new int[0];
+    Vector3[] tempVertices = new Vector3[0];
+    GameObject[] verticesPoints = new GameObject[0];
+    Color32[] colors = new Color32[0];
+    Color32[] objectRGBA = new Color32[]{
+        new Color32(25,25,25,0),
+        new Color32(25,25,25,0),
+        new Color32(25,25,25,0),
+        new Color32(25,25,25,0),
+        new Color32(25,25,25,0),
+        new Color32(25,25,25,0),
+        new Color32(25,25,25,0),
+        new Color32(25,25,25,0),
+    };
     Ray ray;  
-    RaycastHit hit;  
+    RaycastHit hit; 
+    GameObject point; 
     float touchCount = 0;
+    
 
     void Start()
     {
-
-        tempVertices = createVertices(1.0f,0.0f,0.0f,0.0f);
-        colors = objectRGBA;
-        renderVertices();
         
     }
-
-    GameObject[] verticesPoints = new GameObject[8];
     bool active  = true;
 
     string[] optionArray = new string[]{
-        "selectPoint","movePoint","rotate","color"
+        "selectPoint","movePoint","rotate","color","create"
     };
-    public static string option = "select";
+    public static string option = "create";
     public static bool mobility = true;
     bool timerBool;
     void Update(){
@@ -77,7 +84,7 @@ public class RenderScript : MonoBehaviour
 
     float clickReset(){
         if (amountOfClicks == 2) {
-            point = new GameObject();
+            point = null;
             mobility = !mobility;
             }
         amountOfClicks=0;
@@ -102,13 +109,13 @@ public class RenderScript : MonoBehaviour
            if (xSign == 1 && ySign == 0) option = optionArray[1];
            if (xSign == -1 && ySign == 0) option = optionArray[2];
            
-           if (xSign == 1 && ySign == -1) option ="1-1";
+           if (xSign == 1 && ySign == -1) option =optionArray[4];
            if (xSign == -1 && ySign == 1) option = "-11";
            
            if (xSign == 1 && ySign == 1) option = "11";
            if (xSign == -1 && ySign == -1) option = "-1-1";
 
-           print(option);
+           //print(option);
     }
     void activeOption(string option){
         switch (option){
@@ -129,7 +136,24 @@ public class RenderScript : MonoBehaviour
             color();
             break;
 
+            case "create":
+            create(active);
+            break;
+
+
         }
+    }
+
+    void create(bool active){
+            
+            float xMove = Movement.moveX/100;
+            float yMove = Movement.moveY/100;
+            float zMove = Movement.moveZ/100;
+            float side = Movement.side/100;
+            Vector3 direction = cam.transform.TransformDirection(new Vector3(xMove,yMove,zMove));
+            tempVertices = createVertices(side,direction.x,direction.y,direction.z);
+            colors = objectRGBA;
+            renderVertices(); 
     }
 
     void rotateObject(){
@@ -153,7 +177,6 @@ public class RenderScript : MonoBehaviour
         }
     }
 
-    GameObject point;
     void moveSelected(){
         if (Physics.Raycast(ray, out hit,Mathf.Infinity)){
             if (hit.collider.tag == "verticesPoint"){
@@ -177,7 +200,6 @@ public class RenderScript : MonoBehaviour
             }
         } 
     }
-
 
     void select(bool active, Ray ray){
 
@@ -212,34 +234,58 @@ public class RenderScript : MonoBehaviour
         }
     }
 
+    void color(){
+        if (Physics.Raycast(ray, out hit,Mathf.Infinity)){
+
+            if (hit.collider.tag == "verticesPoint"){
+                point = hit.collider.gameObject;
+            }
+            if (touchCount >1){
+
+                float xMove = (Movement.touchRight.position.x -  Movement.rightOriginX)/100;
+                float yMove = (Movement.touchRight.position.y - Movement.rightOriginY)/100;
+                float zMove = (Movement.touchLeft.position.y - Movement.leftOriginY)/100;
+                float side = (Movement.touchLeft.position.x - Movement.leftOriginX)/100;
+
+                xMove = (xMove<0)? Mathf.Abs(xMove):0;
+                for (int i = 0; i<8; i++){
+                    if (verticesPoints[i] == point) { 
+                        objectRGBA[i] = new Color(
+                        yMove,xMove,zMove,side
+                        );
+                        colors[i] =  Color32.Lerp(objectRGBA[i], objectRGBA[i] , tempVertices[i].y);
+                        renderTriangles(meshOfObject.GetComponent<MeshFilter>().mesh,tempVertices,triangles,colors);
+                    }
+                }
+            }
+        }
+    }
+
     void chooseRule(int[] cubeConnect, string validConnect){
             switch (validConnect.Length){
             case 8:
-            triangles = new int[36];
+            if (triangles.Length != 36) triangles = new int[36];
             applyRule(cubeConnect,LoadSides.sides8[validConnect]);
             break;
             case 7:
-            triangles = new int[30];
+            if (triangles.Length != 30) triangles = new int[30];
             applyRule(cubeConnect,LoadSides.sides7[validConnect]);
             break;
             case 6:
-            triangles = new int[24];
+            if (triangles.Length != 24) triangles = new int[24];
             applyRule(cubeConnect,LoadSides.sides6[validConnect]);
             break;
             case 5:
-            triangles = new int[18];
+            if (triangles.Length != 18) triangles = new int[18];
             applyRule(cubeConnect,LoadSides.sides5[validConnect]);
             break;
             case 4:
-            triangles = new int[12];
+            if (triangles.Length != 12) triangles = new int[12];
             applyRule(cubeConnect,LoadSides.sides4[validConnect]);
             break;
             case 3:
-            triangles = new int[6];
+            if (triangles.Length != 6) triangles = new int[6];
             applyRule(cubeConnect,LoadSides.sides3[validConnect]);
-            break;
-            default:
-            triangles = new int[0];
             break;
         }
     }
@@ -260,70 +306,56 @@ public class RenderScript : MonoBehaviour
 
     Vector3[] createVertices(float size, float x, float y, float z){
 
-        Vector3 s1 = new Vector3(x,z,y);
-        Vector3 s2 = new Vector3(size+x,z,y);
-        Vector3 s3 = new Vector3(x,z,size+y);
-        Vector3 s4 = new Vector3(size+x,z,size+y);
+        Vector3 s1Current = new Vector3(0,0,0);
+        Vector3 s2Current = new Vector3(0,0,0);
+        Vector3 s3Current = new Vector3(0,0,0);
+        Vector3 s4Current = new Vector3(0,0,0);
+        Vector3 s5Current = new Vector3(0,0,0);
+        Vector3 s6Current = new Vector3(0,0,0);
+        Vector3 s7Current = new Vector3(0,0,0);
+        Vector3 s8Current = new Vector3(0,0,0);
         
-        Vector3 s5 = new Vector3(x,size+z,y);
-        Vector3 s6 = new Vector3(size+x,size+z,y);
-        Vector3 s7 = new Vector3(x,size+z,size+y);
-        Vector3 s8 = new Vector3(size+x,size+z,size+y);
+        if (verticesPoints.Length != 0){
+            s1Current = verticesPoints[0].transform.position;
+            s2Current = verticesPoints[1].transform.position;
+            s3Current = verticesPoints[2].transform.position;
+            s4Current = verticesPoints[3].transform.position;
+            s5Current = verticesPoints[4].transform.position;
+            s6Current = verticesPoints[5].transform.position;
+            s7Current = verticesPoints[6].transform.position;
+            s8Current = verticesPoints[7].transform.position;
+        }
+
+        Vector3 s1 = s1Current + new Vector3(x,y,z);
+        Vector3 s2 = s2Current + new Vector3(size+x,y,z);
+        Vector3 s3 = s3Current + new Vector3(x,size+y,z);
+        Vector3 s4 = s4Current + new Vector3(size+x,size+y,z);
+        
+        Vector3 s5 = s5Current + new Vector3(x,y,size+z);
+        Vector3 s6 = s6Current + new Vector3(size+x,y,size+z);
+        Vector3 s7 = s7Current + new Vector3(x,size+y,size+z);
+        Vector3 s8 = s8Current + new Vector3(size+x,size+y,size+z);
 
         Vector3[] vertices = 
-        new Vector3[]{
-            s1,s2,s3,s4,s5,s6,s7,s8
+            new Vector3[]{
+                s1,s2,s3,s4,s5,s6,s7,s8
         };
 
         return vertices;
     }
 
     void renderVertices(){
+        foreach (GameObject i in verticesPoints){
+            Destroy(i);
+        }
+
+        verticesPoints = new GameObject[8];
         for(int i = 0; i<tempVertices.Length;i++){
-        GameObject clone = Instantiate(verticesPoint);
-        clone.transform.position = tempVertices[i];
-        verticesPoints[i] = clone;
+            GameObject clone = Instantiate(verticesPoint.gameObject);
+            verticesPoints[i] = clone;
+            clone.transform.position = tempVertices[i];
         }
     }
-
-    Color32[] objectRGBA = new Color32[]{
-        new Color(0.5f,0.5f,0.5f,1),
-        new Color(0.5f,0.5f,0.5f,1),
-        new Color(0.5f,0.5f,0.5f,1),
-        new Color(0.5f,0.5f,0.5f,1),
-        new Color(0.5f,0.5f,0.5f,1),
-        new Color(0.5f,0.5f,0.5f,1),
-        new Color(0.5f,0.5f,0.5f,1),
-        new Color(0.5f,0.5f,0.5f,1),
-    };
-
-    void color(){
-        if (Physics.Raycast(ray, out hit,Mathf.Infinity)){
-        if (hit.collider.tag == "verticesPoint"){
-        point = hit.collider.gameObject;
-        }
-        if (touchCount >1){
-            print(touchCount);
-            float xMove = (Movement.touchRight.position.x -  Movement.rightOriginX)/100;
-            float yMove = (Movement.touchRight.position.y - Movement.rightOriginY)/100;
-            float zMove = (Movement.touchLeft.position.y - Movement.leftOriginY)/100;
-            float side = (Movement.touchLeft.position.x - Movement.leftOriginX)/100;
-
-            xMove = (xMove<0)? Mathf.Abs(xMove):0;
-                for (int i = 0; i<8; i++){
-                    if (verticesPoints[i] == point) { 
-                        objectRGBA[i] = new Color(
-                        yMove,xMove,zMove,side
-                        );
-                        colors[i] =  Color32.Lerp(objectRGBA[i], objectRGBA[i] , tempVertices[i].y);
-                        print(colors[i]);
-                        renderTriangles(meshOfObject.GetComponent<MeshFilter>().mesh,tempVertices,triangles,colors);
-                    }
-                }
-            }
-        }
-    }
-
     void renderTriangles(Mesh mesh, Vector3[] vertices, int[] triangles,Color32[] colors){
          mesh.Clear();
          mesh.vertices = vertices;
