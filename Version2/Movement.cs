@@ -84,17 +84,20 @@ void doubleTouch(){
     if (leftBool || rightBool) {
         moveX = touchRight.deltaPosition.x;
         moveY = touchRight.deltaPosition.y;
-        if (RenderScript.mobility) cinemachineCam.m_XAxis.Value += (touchRight.position.x - rightOriginX)/200;
-        if (RenderScript.mobility) cinemachineCam.m_YAxis.Value -= (touchRight.position.y - rightOriginY)/20000; 
         moveZ = touchLeft.deltaPosition.y;
         side = touchLeft.deltaPosition.x;
-        if (RenderScript.mobility) 
-            player.transform.position 
-                += cam.transform.forward*((touchLeft.position.y - leftOriginY)/6000);
-        if (RenderScript.mobility) 
-            player.transform.position 
-                += cam.transform.right*((touchLeft.position.x - leftOriginX)/6000); 
-        }
+
+        if (RenderScript.mobility || (!RenderScript.mobility&&RenderScript.moveInCreate)){
+            cinemachineCam.m_XAxis.Value += 
+                (touchRight.position.x - rightOriginX)/200;
+            cinemachineCam.m_YAxis.Value -= 
+                (touchRight.position.y - rightOriginY)/20000;
+            player.transform.position += 
+                cam.transform.forward*((touchLeft.position.y - leftOriginY)/6000);
+            player.transform.position +=
+                cam.transform.right*((touchLeft.position.x - leftOriginX)/6000);
+        } 
+    }
 
     singleX = 0;
     singleY = 0;
