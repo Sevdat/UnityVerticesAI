@@ -35,12 +35,6 @@ public class RenderScript : MonoBehaviour
     RaycastHit hit; 
     GameObject point; 
     float touchCount = 0;
-    
-
-    void Start()
-    {
-        
-    }
     bool active  = true;
 
     string[] optionArray = new string[]{
@@ -49,6 +43,14 @@ public class RenderScript : MonoBehaviour
     public static string option = "create";
     public static bool mobility = true;
     bool timerBool;
+    float duration = 0.5f;
+    int amountOfClicks = 0;
+    float click = -1;
+
+    void Start()
+    {
+        
+    }
     void Update(){
         touchCount = (Input.touchCount>0) ? Input.touchCount:0;
         bool screenContact = 
@@ -70,9 +72,6 @@ public class RenderScript : MonoBehaviour
         if (!mobility) activeOption(option);
 
     }
-    float duration = 0.5f;
-    int amountOfClicks = 0;
-    float click = -1;
     void clickTracker(){
         if (click == amountOfClicks){
             amountOfClicks+=1;
@@ -98,7 +97,7 @@ public class RenderScript : MonoBehaviour
         int xSign = 0;
         int ySign = 0;
         if (xMove > 0.2f) xSign = 1;
-           else if (xMove < -0.3f) xSign = -1;
+           else if (xMove < -0.2f) xSign = -1;
 
         if (yMove > 0.2f) ySign = 1;
            else if (yMove < -0.2f) ySign = -1;
@@ -139,21 +138,23 @@ public class RenderScript : MonoBehaviour
             case "create":
             create(active);
             break;
-
-
         }
     }
 
     void create(bool active){
             
-            float xMove = Movement.moveX/100;
-            float yMove = Movement.moveY/100;
-            float zMove = Movement.moveZ/100;
-            float side = Movement.side/100;
-            Vector3 direction = cam.transform.TransformDirection(new Vector3(xMove,yMove,zMove));
-            tempVertices = createVertices(side,direction.x,direction.y,direction.z);
-            colors = objectRGBA;
-            renderVertices(); 
+        float xMove = Movement.moveX/100;
+        float yMove = Movement.moveY/100;
+        float zMove = Movement.moveZ/100;
+        float side = Movement.side/100;
+        Vector3 direction = cam.transform.TransformDirection(new Vector3(xMove,yMove,zMove));
+        Vector3 front = Camera.main.transform.position + Camera.main.transform.forward*5;
+        tempVertices = createVertices(
+            side,direction.x,direction.y,direction.z,
+            front.x,front.y,front.z
+            );
+        colors = objectRGBA;
+        renderVertices(); 
     }
 
     void rotateObject(){
@@ -163,13 +164,13 @@ public class RenderScript : MonoBehaviour
             (verticesPoints[7].transform.position.y + verticesPoints[0].transform.position.y)/2,
             (verticesPoints[7].transform.position.z + verticesPoints[0].transform.position.z)/2
             );
-            float xMove = Movement.moveY;
-            float yMove = -Movement.moveX;
+            float yMove = Movement.moveY;
+            float xMove = -Movement.moveX;
             float zMove = -Movement.side;
             float side = Movement.moveZ;
             for (int i = 0; i<8; i++){
                 verticesPoints[i].transform.RotateAround(pos, cam.transform.TransformDirection(new Vector3(
-                    xMove+side,yMove,zMove)), 0.25f
+                    yMove+side,xMove,zMove)), 0.25f
                 );
                 tempVertices[i] = verticesPoints[i].transform.position;
             }
@@ -304,16 +305,20 @@ public class RenderScript : MonoBehaviour
         }
     }
 
-    Vector3[] createVertices(float size, float x, float y, float z){
+    Vector3[] createVertices(
+        float size, float x, float y, float z,
+        float cx, float cy, float cz
+        ){
 
-        Vector3 s1Current = new Vector3(0,0,0);
-        Vector3 s2Current = new Vector3(0,0,0);
-        Vector3 s3Current = new Vector3(0,0,0);
-        Vector3 s4Current = new Vector3(0,0,0);
-        Vector3 s5Current = new Vector3(0,0,0);
-        Vector3 s6Current = new Vector3(0,0,0);
-        Vector3 s7Current = new Vector3(0,0,0);
-        Vector3 s8Current = new Vector3(0,0,0);
+        Vector3 s1Current;
+        Vector3 s2Current;
+        Vector3 s3Current;
+        Vector3 s4Current;
+
+        Vector3 s5Current;
+        Vector3 s6Current;
+        Vector3 s7Current;
+        Vector3 s8Current;
         
         if (verticesPoints.Length != 0){
             s1Current = verticesPoints[0].transform.position;
@@ -324,6 +329,15 @@ public class RenderScript : MonoBehaviour
             s6Current = verticesPoints[5].transform.position;
             s7Current = verticesPoints[6].transform.position;
             s8Current = verticesPoints[7].transform.position;
+        } else {
+            s1Current = new Vector3(cx,cy,cz);
+            s2Current = new Vector3(size+cx,cy,cz);
+            s3Current = new Vector3(cx,size+cy,cz);
+            s4Current = new Vector3(size+cx,size+cy,cz);
+            s5Current = new Vector3(cx,cy,size+cz);
+            s6Current = new Vector3(size+cx,cy,size+cz);
+            s7Current = new Vector3(cx,size+cy,size+cz);
+            s8Current = new Vector3(size+cx,size+cy,size+cz);
         }
 
         Vector3 s1 = s1Current + new Vector3(x,y,z);
