@@ -42,14 +42,16 @@ public class RenderScript : MonoBehaviour
     };
     public static string option = "create";
     public static bool mobility = true;
+    public static bool moveInCreate = false;
     bool timerBool;
     float duration = 0.5f;
     int amountOfClicks = 0;
     float click = -1;
+    Vector3 oldCamPos;
 
     void Start()
     {
-        
+        oldCamPos = cam.transform.position;
     }
     void Update(){
         touchCount = (Input.touchCount>0) ? Input.touchCount:0;
@@ -58,24 +60,24 @@ public class RenderScript : MonoBehaviour
         Input.GetTouch(0).phase == TouchPhase.Began;
 
             if(screenContact){
-                click +=1;
-                timerBool = true;
                 ray = 
                 Camera.main.ScreenPointToRay(
                     Input.GetTouch(0).position
                     );
-                    active = true;
+                active = true;
+                timerBool = true;
+                click +=1;
             } 
 
         if (timerBool) clickTracker();
         if (!mobility && touchCount==1) chooseOption();
         if (!mobility) activeOption(option);
-
+        oldCamPos = cam.transform.position;
     }
     void clickTracker(){
         if (click == amountOfClicks){
             amountOfClicks+=1;
-            duration = 0.2f;
+            duration = (!mobility) ? 0.5f:0.2f;
         }
         duration = (duration>0)? 
             duration - Time.deltaTime : clickReset();
@@ -85,6 +87,12 @@ public class RenderScript : MonoBehaviour
         if (amountOfClicks == 2) {
             point = null;
             mobility = !mobility;
+            } else if (
+                option == "create" && 
+                    !mobility && 
+                        amountOfClicks == 1 && touchCount<1) {
+            moveInCreate = !moveInCreate;
+            print("lol");
             }
         amountOfClicks=0;
         click = -1;
@@ -92,8 +100,8 @@ public class RenderScript : MonoBehaviour
         return duration = 0.5f;
     }
     void chooseOption(){
-        float xMove =  (Movement.touchSingle.position.x -  Movement.singleOriginX)/100;
-        float yMove =  (Movement.touchSingle.position.y - Movement.singleOriginY)/100;
+        float xMove = (Movement.touchSingle.position.x -  Movement.singleOriginX)/100;
+        float yMove = (Movement.touchSingle.position.y - Movement.singleOriginY)/100;
         int xSign = 0;
         int ySign = 0;
         if (xMove > 0.2f) xSign = 1;
@@ -140,7 +148,7 @@ public class RenderScript : MonoBehaviour
             break;
         }
     }
-
+    
     void create(bool active){
             
         float xMove = Movement.moveX/100;
@@ -309,18 +317,19 @@ public class RenderScript : MonoBehaviour
         float size, float x, float y, float z,
         float cx, float cy, float cz
         ){
-
-        Vector3 s1Current;
-        Vector3 s2Current;
-        Vector3 s3Current;
-        Vector3 s4Current;
-
-        Vector3 s5Current;
-        Vector3 s6Current;
-        Vector3 s7Current;
-        Vector3 s8Current;
+        
+        Vector3 s1Current,s2Current,s3Current,s4Current,
+                s5Current,s6Current,s7Current,s8Current
+                ;
         
         if (verticesPoints.Length != 0){
+            if (moveInCreate && touchCount >1){
+                for (int i = 0; i<8; i++){
+                    verticesPoints[i].transform.RotateAround(
+                        oldCamPos, Vector3.up, (Movement.touchRight.position.x - Movement.rightOriginX)/220
+                    );
+                }
+            }
             s1Current = verticesPoints[0].transform.position;
             s2Current = verticesPoints[1].transform.position;
             s3Current = verticesPoints[2].transform.position;
@@ -340,20 +349,36 @@ public class RenderScript : MonoBehaviour
             s8Current = new Vector3(size+cx,size+cy,size+cz);
         }
 
-        Vector3 s1 = s1Current + new Vector3(x,y,z);
-        Vector3 s2 = s2Current + new Vector3(size+x,y,z);
-        Vector3 s3 = s3Current + new Vector3(x,size+y,z);
-        Vector3 s4 = s4Current + new Vector3(size+x,size+y,z);
-        
-        Vector3 s5 = s5Current + new Vector3(x,y,size+z);
-        Vector3 s6 = s6Current + new Vector3(size+x,y,size+z);
-        Vector3 s7 = s7Current + new Vector3(x,size+y,size+z);
-        Vector3 s8 = s8Current + new Vector3(size+x,size+y,size+z);
+        Vector3 s1,s2,s3,s4,
+                s5,s6,s7,s8
+                ;
+                
+        if (!moveInCreate){
+            s1 = s1Current + new Vector3(x,y,z);
+            s2 = s2Current + new Vector3(size+x,y,z);
+            s3 = s3Current + new Vector3(x,size+y,z);
+            s4 = s4Current + new Vector3(size+x,size+y,z);    
+            s5 = s5Current + new Vector3(x,y,size+z);
+            s6 = s6Current + new Vector3(size+x,y,size+z);
+            s7 = s7Current + new Vector3(x,size+y,size+z);
+            s8 = s8Current + new Vector3(size+x,size+y,size+z);
+        } else {
+            Vector3 move = cam.transform.position - oldCamPos;
+            s1 = s1Current + move;
+            s2 = s2Current + move;
+            s3 = s3Current + move;
+            s4 = s4Current + move;
+            s5 = s5Current + move;
+            s6 = s6Current + move;
+            s7 = s7Current + move;
+            s8 = s8Current + move;
+        }
 
         Vector3[] vertices = 
             new Vector3[]{
                 s1,s2,s3,s4,s5,s6,s7,s8
         };
+
 
         return vertices;
     }
