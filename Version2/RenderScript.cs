@@ -12,15 +12,16 @@ using Random = UnityEngine.Random;
 public class RenderScript : MonoBehaviour
 {
     // Start is called before the first frame update
-    public GameObject player;
     public Camera cam;
+    public GameObject player;
     public GameObject verticesPoint;
-    public GameObject meshOfObject;
+    public GameObject tempMesh;
+    public GameObject savedMesh;
     List<saveFormat> objectList = new List<saveFormat>();
-    int[] triangles = new int[0];
+    GameObject[] tempVerticesPoints = new GameObject[0];
     Vector3[] tempVertices = new Vector3[0];
-    GameObject[] verticesPoints = new GameObject[0];
-    Color32[] colors = new Color32[0];
+    int[] triangles = new int[0];
+    Color32[] tempColors = new Color32[0];
     Color32[] objectRGBA = new Color32[]{
         new Color32(25,25,25,0),
         new Color32(25,25,25,0),
@@ -52,25 +53,56 @@ public class RenderScript : MonoBehaviour
 
     void Start()
     {
-        oldCamPos = cam.transform.position;
-        saveFormat lol = 
-            new saveFormat(new int[1],new int[1],new Color32[1]);
-        objectList.Add(lol);
-        print(objectList.Count);
-            
+        oldCamPos = cam.transform.position;   
     }
 
     struct saveFormat{
-        public int[] vertices;
+        public Vector3[] vertices;
         public int[] triangles;
         public Color32[] color;
 
-        public saveFormat(int[] vertices,int[] triangles,Color32[] color){
+        public saveFormat(Vector3[] vertices,int[] triangles,Color32[] color){
             this.vertices = vertices;
             this.triangles = triangles;
             this.color = color;
         }
 
+    }
+
+    void save(){
+        if (touchCount<1){
+        saveFormat saveTemp = 
+            new saveFormat(tempVertices,triangles,tempColors);
+        objectList.Add(saveTemp);
+        List<Vector3> savedVertices = new List<Vector3>();
+        List<int> savedTriangles = new List<int>();
+        List<Color32> savedColors = new List<Color32>();
+        for (int i = 0; i < objectList.Count;i++){
+           Vector3[] temp1 = objectList[i].vertices;
+           int[] temp2 = objectList[i].triangles;
+           Color32[] temp3 = objectList[i].color;
+           foreach(Vector3 vec in temp1) savedVertices.Add(vec);
+           foreach(int trig in temp2) savedTriangles.Add(trig);
+           foreach(Color32 col in temp3) savedColors.Add(col);
+        }
+        renderTriangles(
+            savedMesh.GetComponent<MeshFilter>().mesh,
+            savedVertices.ToArray(),
+            savedTriangles.ToArray(),
+            savedColors.ToArray()
+            );
+        
+        tempVertices = new Vector3[0];
+        foreach (GameObject i in tempVerticesPoints){
+            Destroy(i);
+        }
+        tempVerticesPoints = new GameObject[0];
+        triangles = new int[0];
+        tempColors = objectRGBA;
+
+        tempMesh.GetComponent<MeshFilter>().mesh.Clear();
+        option = "";
+        }
     }
 
     void Update(){
@@ -157,6 +189,7 @@ public class RenderScript : MonoBehaviour
             break;
 
             case "save":
+            save();
             break;
 
             case "delete":
@@ -193,30 +226,30 @@ public class RenderScript : MonoBehaviour
             side,direction.x,direction.y,direction.z,
             front.x,front.y,front.z
             );
-        colors = objectRGBA;
+        tempColors = objectRGBA;
         renderVertices();
-        renderTriangles(meshOfObject.GetComponent<MeshFilter>().mesh,tempVertices,triangles,colors);
+        renderTriangles(tempMesh.GetComponent<MeshFilter>().mesh,tempVertices,triangles,tempColors);
 
     }
 
     void rotateObject(){
         if (touchCount >1) { 
         Vector3 pos = new Vector3(
-            (verticesPoints[7].transform.position.x + verticesPoints[0].transform.position.x)/2,
-            (verticesPoints[7].transform.position.y + verticesPoints[0].transform.position.y)/2,
-            (verticesPoints[7].transform.position.z + verticesPoints[0].transform.position.z)/2
+            (tempVerticesPoints[7].transform.position.x + tempVerticesPoints[0].transform.position.x)/2,
+            (tempVerticesPoints[7].transform.position.y + tempVerticesPoints[0].transform.position.y)/2,
+            (tempVerticesPoints[7].transform.position.z + tempVerticesPoints[0].transform.position.z)/2
             );
             float yMove = Movement.moveY;
             float xMove = -Movement.moveX;
             float zMove = -Movement.side;
             float side = Movement.moveZ;
             for (int i = 0; i<8; i++){
-                verticesPoints[i].transform.RotateAround(pos, cam.transform.TransformDirection(new Vector3(
+                tempVerticesPoints[i].transform.RotateAround(pos, cam.transform.TransformDirection(new Vector3(
                     yMove+side,xMove,zMove)), 0.25f
                 );
-                tempVertices[i] = verticesPoints[i].transform.position;
+                tempVertices[i] = tempVerticesPoints[i].transform.position;
             }
-            renderTriangles(meshOfObject.GetComponent<MeshFilter>().mesh,tempVertices,triangles,colors);
+            renderTriangles(tempMesh.GetComponent<MeshFilter>().mesh,tempVertices,triangles,tempColors);
         }
     }
 
@@ -231,13 +264,13 @@ public class RenderScript : MonoBehaviour
                 float zMove =  Movement.moveZ/400;
                 float side =  Movement.side/400;
                     for (int i = 0; i<8; i++){
-                        if (verticesPoints[i] == point) { 
+                        if (tempVerticesPoints[i] == point) { 
                             tempVertices[i] += cam.transform.TransformDirection(new Vector3(
                             xMove+side,yMove,zMove
                             ));
-                            verticesPoints[i].transform.position = tempVertices[i];
-                            print(verticesPoints[i].transform.position);
-                            renderTriangles(meshOfObject.GetComponent<MeshFilter>().mesh,tempVertices,triangles,colors);
+                            tempVerticesPoints[i].transform.position = tempVertices[i];
+                            print(tempVerticesPoints[i].transform.position);
+                            renderTriangles(tempMesh.GetComponent<MeshFilter>().mesh,tempVertices,triangles,tempColors);
                     }
                 }
             }
@@ -262,7 +295,7 @@ public class RenderScript : MonoBehaviour
                     4, 5, 6, 7
                     };
 
-                foreach (GameObject i in verticesPoints){
+                foreach (GameObject i in tempVerticesPoints){
                     if (i.GetComponent<Renderer>().material.color == Color.blue){
                         validConnect +=$"{count}";
 
@@ -272,7 +305,7 @@ public class RenderScript : MonoBehaviour
 
                 chooseRule(cubeConnect,validConnect);
 
-                renderTriangles(meshOfObject.GetComponent<MeshFilter>().mesh,tempVertices,triangles,colors);
+                renderTriangles(tempMesh.GetComponent<MeshFilter>().mesh,tempVertices,triangles,tempColors);
             }
         }
     }
@@ -292,12 +325,12 @@ public class RenderScript : MonoBehaviour
 
                 xMove = (xMove<0)? Mathf.Abs(xMove):0;
                 for (int i = 0; i<8; i++){
-                    if (verticesPoints[i] == point) { 
+                    if (tempVerticesPoints[i] == point) { 
                         objectRGBA[i] = new Color(
                         yMove,xMove,zMove,side
                         );
-                        colors[i] =  Color32.Lerp(objectRGBA[i], objectRGBA[i] , tempVertices[i].y);
-                        renderTriangles(meshOfObject.GetComponent<MeshFilter>().mesh,tempVertices,triangles,colors);
+                        tempColors[i] =  Color32.Lerp(objectRGBA[i], objectRGBA[i] , tempVertices[i].y);
+                        renderTriangles(tempMesh.GetComponent<MeshFilter>().mesh,tempVertices,triangles,tempColors);
                     }
                 }
             }
@@ -356,25 +389,25 @@ public class RenderScript : MonoBehaviour
                 s5Current,s6Current,s7Current,s8Current
                 ;
         
-        if (verticesPoints.Length != 0){
+        if (tempVerticesPoints.Length != 0){
             if (moveInCreate && touchCount >1){
                 for (int i = 0; i<8; i++){
-                    verticesPoints[i].transform.RotateAround(
+                    tempVerticesPoints[i].transform.RotateAround(
                         oldCamPos, cam.transform.up, (Movement.touchRight.position.x - Movement.rightOriginX)/210
                     );
-                    verticesPoints[i].transform.RotateAround(
+                    tempVerticesPoints[i].transform.RotateAround(
                         oldCamPos, cam.transform.right, -(Movement.touchRight.position.y - Movement.rightOriginY)/170
                     );
                 }
             }
-            s1Current = verticesPoints[0].transform.position;
-            s2Current = verticesPoints[1].transform.position;
-            s3Current = verticesPoints[2].transform.position;
-            s4Current = verticesPoints[3].transform.position;
-            s5Current = verticesPoints[4].transform.position;
-            s6Current = verticesPoints[5].transform.position;
-            s7Current = verticesPoints[6].transform.position;
-            s8Current = verticesPoints[7].transform.position;
+            s1Current = tempVerticesPoints[0].transform.position;
+            s2Current = tempVerticesPoints[1].transform.position;
+            s3Current = tempVerticesPoints[2].transform.position;
+            s4Current = tempVerticesPoints[3].transform.position;
+            s5Current = tempVerticesPoints[4].transform.position;
+            s6Current = tempVerticesPoints[5].transform.position;
+            s7Current = tempVerticesPoints[6].transform.position;
+            s8Current = tempVerticesPoints[7].transform.position;
         } else {
             s1Current = new Vector3(cx,cy,cz);
             s2Current = new Vector3(size+cx,cy,cz);
@@ -421,29 +454,22 @@ public class RenderScript : MonoBehaviour
     }
 
     void renderVertices(){
-        foreach (GameObject i in verticesPoints){
+        foreach (GameObject i in tempVerticesPoints){
             Destroy(i);
         }
 
-        verticesPoints = new GameObject[8];
+        tempVerticesPoints = new GameObject[8];
         for(int i = 0; i<tempVertices.Length;i++){
             GameObject clone = Instantiate(verticesPoint.gameObject);
-            verticesPoints[i] = clone;
+            tempVerticesPoints[i] = clone;
             clone.transform.position = tempVertices[i];
         }
     }
     void renderTriangles(Mesh mesh, Vector3[] vertices, int[] triangles,Color32[] colors){
          mesh.Clear();
-         if (objectList.Count!=0){
-            mesh.vertices = vertices;
-            mesh.triangles = triangles;
-            mesh.colors32 = colors;
-         } else{
-            mesh.vertices = vertices;
-            mesh.triangles = triangles;
-            mesh.colors32 = colors;
-         }
-
+         mesh.vertices = vertices;
+         mesh.triangles = triangles;
+         mesh.colors32 = colors;
     }
 
 }
