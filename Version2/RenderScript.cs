@@ -16,7 +16,7 @@ public class RenderScript : MonoBehaviour
     public Camera cam;
     public GameObject verticesPoint;
     public GameObject meshOfObject;
-    List<int[]> objectList = new List<int[]>();
+    List<saveFormat> objectList = new List<saveFormat>();
     int[] triangles = new int[0];
     Vector3[] tempVertices = new Vector3[0];
     GameObject[] verticesPoints = new GameObject[0];
@@ -38,7 +38,8 @@ public class RenderScript : MonoBehaviour
     bool active  = true;
 
     string[] optionArray = new string[]{
-        "selectPoint","movePoint","rotate","color","create"
+         "create","save","delete","selectPoint","movePoint",
+         "rotate","color",
     };
     public static string option = "create";
     public static bool mobility = true;
@@ -52,7 +53,26 @@ public class RenderScript : MonoBehaviour
     void Start()
     {
         oldCamPos = cam.transform.position;
+        saveFormat lol = 
+            new saveFormat(new int[1],new int[1],new Color32[1]);
+        objectList.Add(lol);
+        print(objectList.Count);
+            
     }
+
+    struct saveFormat{
+        public int[] vertices;
+        public int[] triangles;
+        public Color32[] color;
+
+        public saveFormat(int[] vertices,int[] triangles,Color32[] color){
+            this.vertices = vertices;
+            this.triangles = triangles;
+            this.color = color;
+        }
+
+    }
+
     void Update(){
         touchCount = (Input.touchCount>0) ? Input.touchCount:0;
         bool screenContact = 
@@ -68,12 +88,15 @@ public class RenderScript : MonoBehaviour
                 timerBool = true;
                 click +=1;
             } 
-
+        if (option!="create"&& moveInCreate) moveInCreate = false;
         if (timerBool) clickTracker();
         if (!mobility && touchCount==1) chooseOption();
         if (!mobility) activeOption(option);
         oldCamPos = cam.transform.position;
     }
+
+
+
     void clickTracker(){
         if (click == amountOfClicks){
             amountOfClicks+=1;
@@ -92,7 +115,6 @@ public class RenderScript : MonoBehaviour
                     !mobility && 
                         amountOfClicks == 1 && touchCount<1) {
             moveInCreate = !moveInCreate;
-            print("lol");
             }
         amountOfClicks=0;
         click = -1;
@@ -110,22 +132,36 @@ public class RenderScript : MonoBehaviour
         if (yMove > 0.2f) ySign = 1;
            else if (yMove < -0.2f) ySign = -1;
 
-           if (xSign == 0 && ySign == 1) option = optionArray[0];
-           if (xSign == 0 && ySign == -1) option = optionArray[3];
-
-           if (xSign == 1 && ySign == 0) option = optionArray[1];
+           if (xSign == 1 && ySign == 0) option = optionArray[0];
            if (xSign == -1 && ySign == 0) option = optionArray[2];
+
+           if (xSign == 0 && ySign == 1) option = optionArray[1];
+           if (xSign == 0 && ySign == -1) option = optionArray[6];
            
-           if (xSign == 1 && ySign == -1) option =optionArray[4];
-           if (xSign == -1 && ySign == 1) option = "-11";
+           if (xSign == 1 && ySign == -1) option = optionArray[3];
+           if (xSign == -1 && ySign == 1) option = optionArray[5];
            
-           if (xSign == 1 && ySign == 1) option = "11";
+           if (xSign == 1 && ySign == 1) option = optionArray[4];
            if (xSign == -1 && ySign == -1) option = "-1-1";
 
-           //print(option);
+           print(option);
     }
+    //     string[] optionArray = new string[]{
+    //     "create","save","delete","selectPoint","movePoint",
+    //     "rotate","color",
+    // };
     void activeOption(string option){
         switch (option){
+            case "create":
+            create(active);
+            break;
+
+            case "save":
+            break;
+
+            case "delete":
+            break;
+
             case "selectPoint":
             select(active,ray);
             active = false;
@@ -141,10 +177,6 @@ public class RenderScript : MonoBehaviour
             
             case "color":
             color();
-            break;
-
-            case "create":
-            create(active);
             break;
         }
     }
@@ -162,7 +194,9 @@ public class RenderScript : MonoBehaviour
             front.x,front.y,front.z
             );
         colors = objectRGBA;
-        renderVertices(); 
+        renderVertices();
+        renderTriangles(meshOfObject.GetComponent<MeshFilter>().mesh,tempVertices,triangles,colors);
+
     }
 
     void rotateObject(){
@@ -326,7 +360,10 @@ public class RenderScript : MonoBehaviour
             if (moveInCreate && touchCount >1){
                 for (int i = 0; i<8; i++){
                     verticesPoints[i].transform.RotateAround(
-                        oldCamPos, Vector3.up, (Movement.touchRight.position.x - Movement.rightOriginX)/220
+                        oldCamPos, cam.transform.up, (Movement.touchRight.position.x - Movement.rightOriginX)/210
+                    );
+                    verticesPoints[i].transform.RotateAround(
+                        oldCamPos, cam.transform.right, -(Movement.touchRight.position.y - Movement.rightOriginY)/170
                     );
                 }
             }
@@ -397,9 +434,15 @@ public class RenderScript : MonoBehaviour
     }
     void renderTriangles(Mesh mesh, Vector3[] vertices, int[] triangles,Color32[] colors){
          mesh.Clear();
-         mesh.vertices = vertices;
-         mesh.triangles = triangles;
-         mesh.colors32 = colors;
+         if (objectList.Count!=0){
+            mesh.vertices = vertices;
+            mesh.triangles = triangles;
+            mesh.colors32 = colors;
+         } else{
+            mesh.vertices = vertices;
+            mesh.triangles = triangles;
+            mesh.colors32 = colors;
+         }
 
     }
 
