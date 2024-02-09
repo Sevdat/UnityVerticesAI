@@ -1,13 +1,6 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
-using Unity.VisualScripting.AssemblyQualifiedNameParser;
-using UnityEditor.PackageManager;
+using TMPro;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
-using Random = UnityEngine.Random;
 
 public class RenderScript : MonoBehaviour
 {
@@ -17,6 +10,7 @@ public class RenderScript : MonoBehaviour
     public GameObject verticesPoint;
     public GameObject tempMesh;
     public GameObject savedMesh;
+    public TMP_Text text;
     List<saveFormat> objectList = new List<saveFormat>();
     GameObject[] tempVerticesPoints = new GameObject[0];
     Vector3[] tempVertices = new Vector3[0];
@@ -42,7 +36,8 @@ public class RenderScript : MonoBehaviour
          "create","save","delete","selectPoint","movePoint",
          "rotate","color",
     };
-    public static string option = "create";
+    public static string option = "lol";
+    string oldOption = ""; 
     public static bool mobility = true;
     public static bool moveInCreate = false;
     bool timerBool;
@@ -54,55 +49,6 @@ public class RenderScript : MonoBehaviour
     void Start()
     {
         oldCamPos = cam.transform.position;   
-    }
-
-    struct saveFormat{
-        public Vector3[] vertices;
-        public int[] triangles;
-        public Color32[] color;
-
-        public saveFormat(Vector3[] vertices,int[] triangles,Color32[] color){
-            this.vertices = vertices;
-            this.triangles = triangles;
-            this.color = color;
-        }
-
-    }
-
-    void save(){
-        if (touchCount<1){
-        saveFormat saveTemp = 
-            new saveFormat(tempVertices,triangles,tempColors);
-        objectList.Add(saveTemp);
-        List<Vector3> savedVertices = new List<Vector3>();
-        List<int> savedTriangles = new List<int>();
-        List<Color32> savedColors = new List<Color32>();
-        for (int i = 0; i < objectList.Count;i++){
-           Vector3[] temp1 = objectList[i].vertices;
-           int[] temp2 = objectList[i].triangles;
-           Color32[] temp3 = objectList[i].color;
-           foreach(Vector3 vec in temp1) savedVertices.Add(vec);
-           foreach(int trig in temp2) savedTriangles.Add(trig);
-           foreach(Color32 col in temp3) savedColors.Add(col);
-        }
-        renderTriangles(
-            savedMesh.GetComponent<MeshFilter>().mesh,
-            savedVertices.ToArray(),
-            savedTriangles.ToArray(),
-            savedColors.ToArray()
-            );
-        
-        tempVertices = new Vector3[0];
-        foreach (GameObject i in tempVerticesPoints){
-            Destroy(i);
-        }
-        tempVerticesPoints = new GameObject[0];
-        triangles = new int[0];
-        tempColors = objectRGBA;
-
-        tempMesh.GetComponent<MeshFilter>().mesh.Clear();
-        option = "";
-        }
     }
 
     void Update(){
@@ -124,7 +70,10 @@ public class RenderScript : MonoBehaviour
         if (timerBool) clickTracker();
         if (!mobility && touchCount==1) chooseOption();
         if (!mobility) activeOption(option);
+        if (mobility&& option!= "") option = "";
+        if (oldOption != option) text.text = option;
         oldCamPos = cam.transform.position;
+        oldOption = option;
     }
 
 
@@ -132,7 +81,7 @@ public class RenderScript : MonoBehaviour
     void clickTracker(){
         if (click == amountOfClicks){
             amountOfClicks+=1;
-            duration = (!mobility) ? 0.5f:0.2f;
+            duration = (!mobility) ? 0.3f:0.2f;
         }
         duration = (duration>0)? 
             duration - Time.deltaTime : clickReset();
@@ -178,10 +127,7 @@ public class RenderScript : MonoBehaviour
 
            print(option);
     }
-    //     string[] optionArray = new string[]{
-    //     "create","save","delete","selectPoint","movePoint",
-    //     "rotate","color",
-    // };
+
     void activeOption(string option){
         switch (option){
             case "create":
@@ -193,6 +139,7 @@ public class RenderScript : MonoBehaviour
             break;
 
             case "delete":
+            delete();
             break;
 
             case "selectPoint":
@@ -213,13 +160,88 @@ public class RenderScript : MonoBehaviour
             break;
         }
     }
+    struct saveFormat{
+        public Vector3[] vertices;
+        public int[] triangles;
+        public Color32[] color;
+
+        public saveFormat(Vector3[] vertices,int[] triangles,Color32[] color){
+            this.vertices = vertices;
+            this.triangles = triangles;
+            this.color = color;
+        }
+
+    }
+
+    void save(){
+        if (touchCount<1){
+            saveFormat saveTemp = 
+                new saveFormat(tempVertices,triangles,tempColors);
+            objectList.Add(saveTemp);
+            List<Vector3> savedVertices = new List<Vector3>();
+            List<int> savedTriangles = new List<int>();
+            List<Color32> savedColors = new List<Color32>();
+            for (int i = 0; i < objectList.Count;i++){
+                Vector3[] temp1 = objectList[i].vertices;
+                int[] temp2 = objectList[i].triangles;
+                Color32[] temp3 = objectList[i].color;
+                foreach(Vector3 vec in temp1) savedVertices.Add(vec);
+                foreach(int trig in temp2) savedTriangles.Add(trig);
+                foreach(Color32 col in temp3) savedColors.Add(col);
+            }
+        renderTriangles(
+            savedMesh.GetComponent<MeshFilter>().mesh,
+            savedVertices.ToArray(),
+            savedTriangles.ToArray(),
+            savedColors.ToArray()
+            );
+        
+        tempVertices = new Vector3[0];
+        foreach (GameObject i in tempVerticesPoints){
+            Destroy(i);
+        }
+        tempVerticesPoints = new GameObject[0];
+        triangles = new int[0];
+        tempColors = objectRGBA;
+
+        tempMesh.GetComponent<MeshFilter>().mesh.Clear();
+        option = "";
+        }
+    }
+    void delete(){
+        if (touchCount<1 && objectList.Count != 0){
+            objectList.RemoveAt(objectList.Count-1);
+            List<Vector3> savedVertices = new List<Vector3>();
+            List<int> savedTriangles = new List<int>();
+            List<Color32> savedColors = new List<Color32>();
+            for (int i = 0; i < objectList.Count;i++){
+                    Vector3[] temp1 = objectList[i].vertices;
+                    int[] temp2 = objectList[i].triangles;
+                    Color32[] temp3 = objectList[i].color;
+                    foreach(Vector3 vec in temp1) savedVertices.Add(vec);
+                    foreach(int trig in temp2) savedTriangles.Add(trig);
+                    foreach(Color32 col in temp3) savedColors.Add(col);
+                }
+            if (objectList.Count == 0) {
+                savedMesh.GetComponent<MeshFilter>().mesh.Clear();
+            } else
+            renderTriangles(
+                savedMesh.GetComponent<MeshFilter>().mesh,
+                savedVertices.ToArray(),
+                savedTriangles.ToArray(),
+                savedColors.ToArray()
+                );
+
+            option = "";
+        }
+    }
     
     void create(bool active){
             
-        float xMove = Movement.moveX/100;
-        float yMove = Movement.moveY/100;
-        float zMove = Movement.moveZ/100;
-        float side = Movement.side/100;
+        float xMove = Movement.moveX/60;
+        float yMove = Movement.moveY/60;
+        float zMove = Movement.moveZ/60;
+        float side = Movement.side/60;
         Vector3 direction = cam.transform.TransformDirection(new Vector3(xMove,yMove,zMove));
         Vector3 front = Camera.main.transform.position + Camera.main.transform.forward*5;
         tempVertices = createVertices(
@@ -245,7 +267,7 @@ public class RenderScript : MonoBehaviour
             float side = Movement.moveZ;
             for (int i = 0; i<8; i++){
                 tempVerticesPoints[i].transform.RotateAround(pos, cam.transform.TransformDirection(new Vector3(
-                    yMove+side,xMove,zMove)), 0.25f
+                    yMove+side,xMove,zMove)), 4f
                 );
                 tempVertices[i] = tempVerticesPoints[i].transform.position;
             }
@@ -259,17 +281,16 @@ public class RenderScript : MonoBehaviour
             point = hit.collider.gameObject;
             }
             if (touchCount >1){
-                float xMove =  Movement.moveX/300;
-                float yMove =  Movement.moveY/300;
-                float zMove =  Movement.moveZ/400;
-                float side =  Movement.side/400;
+                float xMove =  Movement.moveX/150;
+                float yMove =  Movement.moveY/150;
+                float zMove =  Movement.moveZ/250;
+                float side =  Movement.side/250;
                     for (int i = 0; i<8; i++){
                         if (tempVerticesPoints[i] == point) { 
                             tempVertices[i] += cam.transform.TransformDirection(new Vector3(
                             xMove+side,yMove,zMove
                             ));
                             tempVerticesPoints[i].transform.position = tempVertices[i];
-                            print(tempVerticesPoints[i].transform.position);
                             renderTriangles(tempMesh.GetComponent<MeshFilter>().mesh,tempVertices,triangles,tempColors);
                     }
                 }
@@ -393,10 +414,10 @@ public class RenderScript : MonoBehaviour
             if (moveInCreate && touchCount >1){
                 for (int i = 0; i<8; i++){
                     tempVerticesPoints[i].transform.RotateAround(
-                        oldCamPos, cam.transform.up, (Movement.touchRight.position.x - Movement.rightOriginX)/210
+                        oldCamPos, cam.transform.up, Movement.rightTouchX/80
                     );
                     tempVerticesPoints[i].transform.RotateAround(
-                        oldCamPos, cam.transform.right, -(Movement.touchRight.position.y - Movement.rightOriginY)/170
+                        oldCamPos, cam.transform.right, -Movement.rightTouchY/80
                     );
                 }
             }
@@ -454,15 +475,17 @@ public class RenderScript : MonoBehaviour
     }
 
     void renderVertices(){
-        foreach (GameObject i in tempVerticesPoints){
-            Destroy(i);
-        }
-
-        tempVerticesPoints = new GameObject[8];
-        for(int i = 0; i<tempVertices.Length;i++){
-            GameObject clone = Instantiate(verticesPoint.gameObject);
-            tempVerticesPoints[i] = clone;
-            clone.transform.position = tempVertices[i];
+        if (tempVerticesPoints.Length == 0){
+            tempVerticesPoints = new GameObject[8];
+            for(int i = 0; i<tempVertices.Length;i++){
+                GameObject clone = Instantiate(verticesPoint.gameObject);
+                tempVerticesPoints[i] = clone;
+                clone.transform.position = tempVertices[i];
+            }
+        } else {
+             for(int i = 0; i<tempVertices.Length;i++){
+                tempVerticesPoints[i].transform.position = tempVertices[i];
+            }
         }
     }
     void renderTriangles(Mesh mesh, Vector3[] vertices, int[] triangles,Color32[] colors){
