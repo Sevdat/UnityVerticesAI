@@ -24,6 +24,10 @@ public class Movement : MonoBehaviour
     public static float side = 0;
     public static float singleX = 0;
     public static float singleY = 0;
+    public static float rightTouchX = 0;
+    public static float rightTouchY = 0;
+    public static float leftTouchX = 0;
+    public static float leftTouchY = 0;
     public static Touch touchRight;
     public static Touch touchLeft;
     public static Touch touchSingle;
@@ -88,14 +92,16 @@ void doubleTouch(){
         side = touchLeft.deltaPosition.x;
 
         if (RenderScript.mobility || (!RenderScript.mobility&&RenderScript.moveInCreate)){
-            cinemachineCam.m_XAxis.Value += 
-                (touchRight.position.x - rightOriginX)/200;
-            cinemachineCam.m_YAxis.Value -= 
-                (touchRight.position.y - rightOriginY)/20000;
+            rightTouchX = touchRight.position.x - rightOriginX;
+            rightTouchY = touchRight.position.y - rightOriginY;
+            leftTouchX = touchLeft.position.x - leftOriginX;
+            leftTouchY = touchLeft.position.y - leftOriginY;
+            cinemachineCam.m_XAxis.Value += rightTouchX/80;
+            cinemachineCam.m_YAxis.Value -= rightTouchY/8000;
             player.transform.position += 
-                cam.transform.forward*((touchLeft.position.y - leftOriginY)/6000);
+                cam.transform.forward*(leftTouchY/1000);
             player.transform.position +=
-                cam.transform.right*((touchLeft.position.x - leftOriginX)/6000);
+                cam.transform.right*(leftTouchX/1000);
         } 
     }
 
@@ -107,8 +113,8 @@ void doubleTouch(){
 
     void Update(){
         touchCount = (Input.touchCount>0) ? Input.touchCount:0;
-        if (touchCount>1) doubleTouch(); 
-            else if (touchCount>0) singleTouch(); else {
+        if (touchCount==2) doubleTouch(); 
+            else if (touchCount==1) singleTouch(); else {
                     moveX = 0;
                     moveY = 0;
                     moveZ = 0;
