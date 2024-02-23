@@ -6,7 +6,7 @@ using Unity.VisualScripting.AssemblyQualifiedNameParser;
 using UnityEditor.PackageManager;
 using UnityEngine;
 using Random = UnityEngine.Random;
-
+ 
 public class RenderScript : MonoBehaviour
 {
     // Start is called before the first frame update
