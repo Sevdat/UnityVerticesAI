@@ -13,13 +13,18 @@ public class ballVisible : MonoBehaviour
     void Start()
     { 
         success = int.TryParse(gameObject.name, out index);
-        if (success)
+        if (success){
         transform.position = WorldBuilder.worldDimensions[index];
+        value = WorldBuilder.ballLocations[index];
+        }
+        if (success && value == 48) 
+            GetComponent<MeshFilter>().mesh.Clear();
+            
     }
     // Update is called once per frame
     void Update()
     {
-        value = WorldBuilder.ballLocations[index];
+        if (success) value = WorldBuilder.ballLocations[index];
         if (success && checkOnce && value == 49) {
             GetComponent<MeshFilter>().mesh = WorldBuilder.ballMesh;
             checkOnce = false;
