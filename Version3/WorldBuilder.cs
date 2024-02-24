@@ -10,26 +10,23 @@ public class WorldBuilder : MonoBehaviour
     public GameObject ball;
     public static Mesh ballMesh;
     public TextAsset textDoc;
-    public static List<int> ballLocations = new List<int>(); 
     public static Vector3[] worldDimensions;
     int arraySize;
-    int arrayWidth;
+    int arrayWidth = 8;
     bool readAtBegin = false;
-    int zero = 48;
-    int one = 49;
-    BitArray bitArray = new BitArray(16);
-    BitArray tempByte;
+    public static BitArray bitArray = new BitArray(16);
     void Awake()
     {
-        // ballMesh = ball.GetComponent<MeshFilter>().mesh;
-        // if (readAtBegin) binaryReader(); else {
-        //     arraySize = (int)Math.Pow(arrayWidth,3f);
-        //     for (int i = 0; i< arraySize;i++){
-        //         ballLocations.Add(zero);
-        //     }
-        //     binaryWriter();
-        // }
-        binaryReader();
+        ballMesh = ball.GetComponent<MeshFilter>().mesh;
+        if (readAtBegin) binaryReader(); else {
+            arraySize = (int)Math.Pow(arrayWidth,3f);
+            bitArray = new BitArray(arraySize);
+            for (int i=0; i<arraySize;i++){
+                bitArray[i] = true;
+            }
+            binaryWriter();
+        }
+        binaryGet();
         Cursor.lockState = CursorLockMode.Locked;
     }
 
@@ -53,7 +50,7 @@ public class WorldBuilder : MonoBehaviour
         {
             byte value = 0;
             byte bit = 128; //0x80
-            for (int i = 0; i < bitArray.Length; i++){
+            for (int i = 0; i < arraySize; i++){
                 if (bitArray[i]) value += bit;
                 bit /= 2;
                 if (bit == 0) {
@@ -66,7 +63,7 @@ public class WorldBuilder : MonoBehaviour
     }
 
     void binaryGet(){
-        arraySize = ballLocations.Count;
+        arraySize = bitArray.Count;
         arrayWidth = (int)Math.Cbrt(arraySize);
         worldDimensions = new Vector3[arraySize];
         float x = 0;
@@ -82,7 +79,6 @@ public class WorldBuilder : MonoBehaviour
         }
     }
 
-    int index = 0;
     void Update()
     {
         if (Input.GetKeyDown("up"))
