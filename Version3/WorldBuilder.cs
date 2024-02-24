@@ -47,28 +47,28 @@ public class WorldBuilder : MonoBehaviour
                 index += 8;
             }
         }
-        for (int i = 0; i<16;i++){
-            print(bitArray[i]);
-        }
+        byte lol = 0;
+        byte bit = 128;
+        for (int i = 0; i < bitArray.Length; i++){
+            if (bitArray[i]) lol += bit;
+                bit /= 2;
+            if (bit == 0) bit = 128;
+            }
+
     }
     void binaryWriter(){
         using (StreamWriter writer = new StreamWriter("Assets/v3/binaryWorld.txt"))
         {
-            string c = "";
-            string p = "";
-            int one = 49;
-            int paragraph = 0;
-            int newTile = 0;
-            for (int i = 0; i < arraySize; i++){
-                paragraph++;
-                if (paragraph == arrayWidth) {
-                    p = $"\n"; paragraph = 0; newTile += 1; 
-                    } else p = "";
-                if (newTile == arrayWidth) {
-                    p = $"\n\n"; newTile = 0;
-                        }
-                if (ballLocations[i] == one) c = "1"; else c = "0";
-                writer.Write($"{c}{p}");
+            byte value = 0;
+            byte bit = 128;
+            for (int i = 0; i < bitArray.Length; i++){
+                if (bitArray[i]) value += bit;
+                bit /= 2;
+                if (bit == 0) {
+                writer.Write((char)value);
+                print((char)value);
+                value = 0; bit = 128;
+                }
             }
         }
     }
