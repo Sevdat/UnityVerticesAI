@@ -12,24 +12,26 @@ public class WorldBuilder : MonoBehaviour
     public TextAsset textDoc;
     public static Vector3[] worldDimensions;
     int arraySize;
-    int arrayWidth = 8;
-    bool readAtBegin = false;
-    public static BitArray bitArray = new BitArray(16);
+    int arrayWidth = 100;
+    public static BitArray bitArray;
     void Awake()
     {
         ballMesh = ball.GetComponent<MeshFilter>().mesh;
-        if (readAtBegin) binaryReader(); else {
-            arraySize = (int)Math.Pow(arrayWidth,3f);
-            bitArray = new BitArray(arraySize);
-            for (int i=0; i<arraySize;i++){
-                bitArray[i] = true;
-            }
-            binaryWriter();
-        }
-        binaryGet();
+        begin(false);
+        createBalls();
         Cursor.lockState = CursorLockMode.Locked;
     }
-
+    void begin(bool readAtBegin){
+        if (readAtBegin) binaryReader(); 
+            else {
+                arraySize = (int)Math.Pow(arrayWidth,3f);
+                bitArray = new BitArray(arraySize);
+                for (int i=0; i<arraySize;i++){
+                    bitArray[i] = false;
+                }
+                binaryWriter();
+            }
+    }
     void binaryReader(){
         using (StreamReader reader = new StreamReader("Assets/v3/binaryWorld.txt"))
         {
@@ -62,7 +64,7 @@ public class WorldBuilder : MonoBehaviour
         }
     }
 
-    void binaryGet(){
+    void createBalls(){
         arraySize = bitArray.Count;
         arrayWidth = (int)Math.Cbrt(arraySize);
         worldDimensions = new Vector3[arraySize];
@@ -70,9 +72,12 @@ public class WorldBuilder : MonoBehaviour
         float y = 0;
         float z = 0;
         for (int i = 0; i<arraySize; i++){
-            GameObject clone = Instantiate(ball);
-            clone.name = $"{i}";
-            worldDimensions[i] = new Vector3(x,y,z);
+            GameObject clone = new GameObject{
+                name = $"{i}" 
+            };
+            Vector3 vec = new Vector3(x,y,z);
+            worldDimensions[i] = vec;
+            clone.transform.position = vec;
             x+=1;
             if (z > arrayWidth-2 && x > arrayWidth-1) {x = 0; z = 0; y += 1;}
             if (x > arrayWidth-1) {x = 0; z+=1;}; 
