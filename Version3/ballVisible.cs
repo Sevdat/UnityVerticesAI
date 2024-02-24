@@ -7,7 +7,7 @@ public class ballVisible : MonoBehaviour
 {
     // Start is called before the first frame update
     int index;
-    int value;
+    bool value;
     bool checkOnce = true;
     bool success;
     void Start()
@@ -15,20 +15,20 @@ public class ballVisible : MonoBehaviour
         success = int.TryParse(gameObject.name, out index);
         if (success){
         transform.position = WorldBuilder.worldDimensions[index];
-        value = WorldBuilder.ballLocations[index];
+        value = WorldBuilder.bitArray[index];
         }
-        if (success && value == 48) 
+        if (success && value) 
             GetComponent<MeshFilter>().mesh.Clear();
             
     }
     // Update is called once per frame
     void Update()
     {
-        if (success) value = WorldBuilder.ballLocations[index];
-        if (success && checkOnce && value == 49) {
+        if (success) value = WorldBuilder.bitArray[index];
+        if (success && checkOnce && value) {
             GetComponent<MeshFilter>().mesh = WorldBuilder.ballMesh;
             checkOnce = false;
-        } else if (success && !checkOnce && value == 48) {
+        } else if (success && !checkOnce && !value) {
             GetComponent<MeshFilter>().mesh.Clear();
             checkOnce = true;
             }
