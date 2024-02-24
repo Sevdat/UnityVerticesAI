@@ -47,20 +47,12 @@ public class WorldBuilder : MonoBehaviour
                 index += 8;
             }
         }
-        byte lol = 0;
-        byte bit = 128;
-        for (int i = 0; i < bitArray.Length; i++){
-            if (bitArray[i]) lol += bit;
-                bit /= 2;
-            if (bit == 0) bit = 128;
-            }
-
     }
     void binaryWriter(){
         using (StreamWriter writer = new StreamWriter("Assets/v3/binaryWorld.txt"))
         {
             byte value = 0;
-            byte bit = 128;
+            byte bit = 128; //0x80
             for (int i = 0; i < bitArray.Length; i++){
                 if (bitArray[i]) value += bit;
                 bit /= 2;
