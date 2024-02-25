@@ -4,15 +4,17 @@ using System.IO;
 using UnityEngine;
 using System;
 using System.Text;
+using UnityEngine.PlayerLoop;
+using Unity.VisualScripting;
 
 public class WorldBuilder : MonoBehaviour
 {
     public GameObject ball;
     public static Mesh ballMesh;
     public TextAsset textDoc;
-    public static Vector3[] worldDimensions;
     int arraySize;
-    int arrayWidth = 100;
+    int arrayWidth = 50;
+
     public static BitArray bitArray;
     void Awake()
     {
@@ -20,6 +22,7 @@ public class WorldBuilder : MonoBehaviour
         begin(false);
         createBalls();
         Cursor.lockState = CursorLockMode.Locked;
+        print(bitArray.Count);
     }
     void begin(bool readAtBegin){
         if (readAtBegin) binaryReader(); 
@@ -27,7 +30,7 @@ public class WorldBuilder : MonoBehaviour
                 arraySize = (int)Math.Pow(arrayWidth,3f);
                 bitArray = new BitArray(arraySize);
                 for (int i=0; i<arraySize;i++){
-                    bitArray[i] = false;
+                    bitArray[i] = true;
                 }
                 binaryWriter();
             }
@@ -57,7 +60,6 @@ public class WorldBuilder : MonoBehaviour
                 bit /= 2;
                 if (bit == 0) {
                 writer.Write((char)value);
-                print((char)value);
                 value = 0; bit = 128;
                 }
             }
@@ -67,16 +69,20 @@ public class WorldBuilder : MonoBehaviour
     void createBalls(){
         arraySize = bitArray.Count;
         arrayWidth = (int)Math.Cbrt(arraySize);
-        worldDimensions = new Vector3[arraySize];
         float x = 0;
         float y = 0;
         float z = 0;
+        GameObject cloneHierarchy = new GameObject(){
+            name = "cloneHierarchy"
+        };
         for (int i = 0; i<arraySize; i++){
-            GameObject clone = new GameObject{
-                name = $"{i}" 
-            };
+            GameObject clone = Instantiate(
+                ball, cloneHierarchy.transform
+                );
+            if (!bitArray[i])
+            clone.GetComponent<MeshFilter>().mesh.Clear();
+            clone.name = $"{i}";
             Vector3 vec = new Vector3(x,y,z);
-            worldDimensions[i] = vec;
             clone.transform.position = vec;
             x+=1;
             if (z > arrayWidth-2 && x > arrayWidth-1) {x = 0; z = 0; y += 1;}
