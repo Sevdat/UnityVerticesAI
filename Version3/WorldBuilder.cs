@@ -15,15 +15,7 @@ public class WorldBuilder : MonoBehaviour
     int arraySize;
     int arrayWidth;
     public static BitArray bitArray;
-    int[] dimensions = new int[]{
-        (int)Math.Pow(8,0f),//1x1x1
-        (int)Math.Pow(8,1f),//2x2x2
-        (int)Math.Pow(8,2f),//4x4x4
-        (int)Math.Pow(8,3f),//8x8x8
-        (int)Math.Pow(8,4f),//16x16x16
-        (int)Math.Pow(8,5f),//32x32x32
-        (int)Math.Pow(8,6f) //64x64x64
-        };
+    Vector3 dimension = new Vector3(2f,1,2f);
     void Awake()
     {
         ballMesh = ball.GetComponent<MeshFilter>().mesh;
@@ -35,10 +27,10 @@ public class WorldBuilder : MonoBehaviour
         if (readAtBegin) {
             binaryReader();
             } else {
-                arraySize = dimensions[5];
+                arraySize = (int)(dimension.x*dimension.y*dimension.z);
                 bitArray = new BitArray(arraySize);
                 for (int i=0; i<arraySize;i++){
-                    bitArray[i] = false;
+                    bitArray[i] = true;
                 }
                 binaryWriter();
             }
@@ -73,7 +65,7 @@ public class WorldBuilder : MonoBehaviour
             for (int i = 0; i < arraySize; i++){
                 if (bitArray[i]) value += bit;
                 bit /= 2;
-                if (bit == 0) {
+                if (bit == 0 || i == arraySize-1) {
                 writer.Write((char)value);
                 value = 0; bit = 128;
                 }
@@ -100,8 +92,8 @@ public class WorldBuilder : MonoBehaviour
             Vector3 vec = new Vector3(x,y,z);
             clone.transform.position = vec;
             x+=1;
-            if (z > arrayWidth-2 && x > arrayWidth-1) {x = 0; z = 0; y += 1;}
-            if (x > arrayWidth-1) {x = 0; z+=1;}; 
+            if (z >dimension.z-2 && x > dimension.x-1) {x = 0; z = 0; y += 1;}
+            if (x > dimension.x-1) {x = 0; z+=1;}; 
         }
     }
 
