@@ -30,7 +30,7 @@ public class WorldBuilder : MonoBehaviour
                 arraySize = (int)(dimension.x*dimension.y*dimension.z);
                 bitArray = new BitArray(arraySize);
                 for (int i=0; i<arraySize;i++){
-                    bitArray[i] = true;
+                    bitArray[i] = false;
                 }
                 binaryWriter();
             }
