@@ -94,7 +94,7 @@ public class WorldBuilder : MonoBehaviour
                 );
             if (!bitArray[i])
                 clone.GetComponent<MeshFilter>().mesh.Clear();
-            clone.name = $"{i}";
+            clone.name = $"{i}: ({x},{y},{z})";
             Vector3 vec = new Vector3(x,y,z);
             clone.transform.position = vec;
             x+=1;
