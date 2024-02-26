@@ -15,36 +15,39 @@ public class WorldBuilder : MonoBehaviour
     int arraySize;
     int arrayWidth;
     public static BitArray bitArray;
-    Vector3 dimension = new Vector3(2f,1,2f);
+    Vector3 dimension = new Vector3(5f,15f,6f);
     void Awake()
     {
         ballMesh = ball.GetComponent<MeshFilter>().mesh;
-        begin(false);
+        rewriteFile(true);
         createBalls();
         Cursor.lockState = CursorLockMode.Locked;
     }
-    void begin(bool readAtBegin){
-        if (readAtBegin) {
-            binaryReader();
+    void rewriteFile(bool rewriteAtBegin){
+        if (rewriteAtBegin) {
+            arraySize = (int)(dimension.x*dimension.y*dimension.z);
+            bitArray = new BitArray(arraySize);
+            for (int i=0; i<arraySize;i++) {
+                bitArray[i] = true;
+                } 
+            binaryWriter();
             } else {
-                arraySize = (int)(dimension.x*dimension.y*dimension.z);
-                bitArray = new BitArray(arraySize);
-                for (int i=0; i<arraySize;i++){
-                    bitArray[i] = false;
-                }
-                binaryWriter();
+            binaryReader();
             }
     }
     void binaryReader(){
         using (StreamReader reader = new StreamReader("Assets/v3/binaryWorld.txt"))
         {
+            dimension.x = reader.Read();//x
+            dimension.y = reader.Read();//y (first 3 values in text file)
+            dimension.z = reader.Read();//z
             while (reader.Read() != -1) {
                 arrayWidth++;
             }
             arraySize = arrayWidth*8;
             bitArray = new BitArray(arraySize);
             reader.DiscardBufferedData();
-            reader.BaseStream.Seek(0, SeekOrigin.Begin);
+            reader.BaseStream.Seek(3, SeekOrigin.Begin);
             int check;
             int index = 0;
             while ((check = reader.Read()) != -1) {
@@ -60,6 +63,9 @@ public class WorldBuilder : MonoBehaviour
     void binaryWriter(){
         using (StreamWriter writer = new StreamWriter("Assets/v3/binaryWorld.txt"))
         {
+            writer.Write((char)dimension.x);
+            writer.Write((char)dimension.y);
+            writer.Write((char)dimension.z);
             byte value = 0;
             byte bit = 128; //0x80
             for (int i = 0; i < arraySize; i++){
