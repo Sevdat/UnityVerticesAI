@@ -13,24 +13,32 @@ public class WorldBuilder : MonoBehaviour
     public static Mesh ballMesh;
     public TextAsset textDoc;
     int arraySize;
-    int arrayWidth = 50;
-
+    int arrayWidth;
     public static BitArray bitArray;
+    int[] dimensions = new int[]{
+        (int)Math.Pow(8,0f),//1x1x1
+        (int)Math.Pow(8,1f),//2x2x2
+        (int)Math.Pow(8,2f),//4x4x4
+        (int)Math.Pow(8,3f),//8x8x8
+        (int)Math.Pow(8,4f),//16x16x16
+        (int)Math.Pow(8,5f),//32x32x32
+        (int)Math.Pow(8,6f) //64x64x64
+        };
     void Awake()
     {
         ballMesh = ball.GetComponent<MeshFilter>().mesh;
         begin(false);
         createBalls();
         Cursor.lockState = CursorLockMode.Locked;
-        print(bitArray.Count);
     }
     void begin(bool readAtBegin){
-        if (readAtBegin) binaryReader(); 
-            else {
-                arraySize = (int)Math.Pow(arrayWidth,3f);
+        if (readAtBegin) {
+            binaryReader();
+            } else {
+                arraySize = dimensions[5];
                 bitArray = new BitArray(arraySize);
                 for (int i=0; i<arraySize;i++){
-                    bitArray[i] = true;
+                    bitArray[i] = false;
                 }
                 binaryWriter();
             }
@@ -38,7 +46,14 @@ public class WorldBuilder : MonoBehaviour
     void binaryReader(){
         using (StreamReader reader = new StreamReader("Assets/v3/binaryWorld.txt"))
         {
-            int check = 0;
+            while (reader.Read() != -1) {
+                arrayWidth++;
+            }
+            arraySize = arrayWidth*8;
+            bitArray = new BitArray(arraySize);
+            reader.DiscardBufferedData();
+            reader.BaseStream.Seek(0, SeekOrigin.Begin);
+            int check;
             int index = 0;
             while ((check = reader.Read()) != -1) {
                 for(int i = 0; i<8;i++){
@@ -80,7 +95,7 @@ public class WorldBuilder : MonoBehaviour
                 ball, cloneHierarchy.transform
                 );
             if (!bitArray[i])
-            clone.GetComponent<MeshFilter>().mesh.Clear();
+                clone.GetComponent<MeshFilter>().mesh.Clear();
             clone.name = $"{i}";
             Vector3 vec = new Vector3(x,y,z);
             clone.transform.position = vec;
