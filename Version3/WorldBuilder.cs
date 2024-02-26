@@ -15,12 +15,14 @@ public class WorldBuilder : MonoBehaviour
     int arraySize;
     int arrayWidth;
     public static BitArray bitArray;
-    Vector3 dimension = new Vector3(5f,15f,6f);
+    Vector3 dimension = new Vector3(11f,11f,11f);
+    GameObject cloneHierarchy;
     void Awake()
     {
         ballMesh = ball.GetComponent<MeshFilter>().mesh;
         rewriteFile(true);
         createBalls();
+        ballCreator = cloneHierarchy.transform.GetChild(0);
         Cursor.lockState = CursorLockMode.Locked;
     }
     void rewriteFile(bool rewriteAtBegin){
@@ -28,7 +30,7 @@ public class WorldBuilder : MonoBehaviour
             arraySize = (int)(dimension.x*dimension.y*dimension.z);
             bitArray = new BitArray(arraySize);
             for (int i=0; i<arraySize;i++) {
-                bitArray[i] = true;
+                bitArray[i] = false;
                 } 
             binaryWriter();
             } else {
@@ -85,7 +87,7 @@ public class WorldBuilder : MonoBehaviour
         float x = 0;
         float y = 0;
         float z = 0;
-        GameObject cloneHierarchy = new GameObject(){
+        cloneHierarchy = new GameObject(){
             name = "cloneHierarchy"
         };
         for (int i = 0; i<arraySize; i++){
@@ -102,27 +104,27 @@ public class WorldBuilder : MonoBehaviour
             if (x > dimension.x-1) {x = 0; z+=1;}; 
         }
     }
-
+    
+    int index = 0;
+    Transform ballCreator;
     void Update()
     {
-        if (Input.GetKeyDown("up"))
-        {
+        if (Input.GetKeyDown("up")){
+            ballCreator.GetComponent<MeshFilter>().mesh.Clear();
+            ballCreator = cloneHierarchy.transform.GetChild(index);
+            ballCreator.GetComponent<MeshFilter>().mesh = ballMesh;
+            index +=1;
+        }
+        if (Input.GetKeyDown("down")){
             
         }
-        if (Input.GetKeyDown("down"))
-        {
+        if (Input.GetKeyDown("right")){
             
         }
-        if (Input.GetKeyDown("right"))
-        {
+        if (Input.GetKeyDown("left")){
             
         }
-        if (Input.GetKeyDown("left"))
-        {
-            
-        }
-        if (Input.GetKeyDown("p"))
-        {
+        if (Input.GetKeyDown("p")){
             binaryWriter();
         }
     }
