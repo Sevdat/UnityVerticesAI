@@ -15,14 +15,15 @@ public class WorldBuilder : MonoBehaviour
     int arraySize;
     int arrayWidth;
     public static BitArray bitArray;
-    Vector3 dimension = new Vector3(11f,11f,11f);
+    Vector3 dimension = new Vector3(5f,9f,6f);
     GameObject cloneHierarchy;
+    int index = 0;
+    Transform ballCreator;
     void Awake()
     {
         ballMesh = ball.GetComponent<MeshFilter>().mesh;
         rewriteFile(true);
         createBalls();
-        ballCreator = cloneHierarchy.transform.GetChild(0);
         Cursor.lockState = CursorLockMode.Locked;
     }
     void rewriteFile(bool rewriteAtBegin){
@@ -84,29 +85,45 @@ public class WorldBuilder : MonoBehaviour
     void createBalls(){
         arraySize = bitArray.Count;
         arrayWidth = (int)Math.Cbrt(arraySize);
-        float x = 0;
-        float y = 0;
-        float z = 0;
         cloneHierarchy = new GameObject(){
             name = "cloneHierarchy"
         };
         for (int i = 0; i<arraySize; i++){
+            if (!bitArray[i]){
             GameObject clone = Instantiate(
                 ball, cloneHierarchy.transform
                 );
-            if (!bitArray[i])
-                clone.GetComponent<MeshFilter>().mesh.Clear();
-            clone.name = $"{i}: ({x},{y},{z})";
-            Vector3 vec = new Vector3(x,y,z);
-            clone.transform.position = vec;
-            x+=1;
-            if (z >dimension.z-2 && x > dimension.x-1) {x = 0; z = 0; y += 1;}
-            if (x > dimension.x-1) {x = 0; z+=1;}; 
+            Vector3 vec = vectorFromInt(i,dimension);
+            clone.name = $"{i}: {vec.x},{vec.y},{vec.z}";
+            clone.transform.position = vectorFromInt(i,dimension);
+            }
+        }
+        ballCreator = cloneHierarchy.transform.GetChild(0);
+    } 
+
+    Vector3 vectorFromInt(int location, Vector3 dimension){
+        // right + (front)*(z) + (up)*(x*y) = int
+        float dimensionXY = dimension.x*dimension.z;
+
+        float[] up = amountOfFullDevision(
+            location, dimensionXY
+            );
+        float[] front = amountOfFullDevision(
+            up[0], dimension.z
+            );
+
+        return new Vector3(front[0],up[1],front[1]);
+    }
+    float[] amountOfFullDevision(float copyLocation,float dimension){
+        for (int i =0;true;i++){
+            if (copyLocation<0) {
+                if (copyLocation<0) copyLocation += dimension;
+                return new float[]{copyLocation,i-1};
+            }
+            copyLocation -= dimension;
         }
     }
-    
-    int index = 0;
-    Transform ballCreator;
+
     void Update()
     {
         if (Input.GetKeyDown("up")){
@@ -129,3 +146,28 @@ public class WorldBuilder : MonoBehaviour
         }
     }
 }
+
+    // void createBalls(){
+    //     arraySize = bitArray.Count;
+    //     arrayWidth = (int)Math.Cbrt(arraySize);
+    //     float x = 0;
+    //     float y = 0;
+    //     float z = 0;
+    //     cloneHierarchy = new GameObject(){
+    //         name = "cloneHierarchy"
+    //     };
+    //     for (int i = 0; i<arraySize; i++){
+    //         if (!bitArray[i]){
+    //         GameObject clone = Instantiate(
+    //             ball, cloneHierarchy.transform
+    //             );
+    //         clone.name = $"{i}: ({x},{y},{z})";
+    //         Vector3 vec = new Vector3(x,y,z);
+    //         clone.transform.position = vec;
+    //         }
+    //         x+=1;
+    //         if (z >dimension.z-2 && x > dimension.x-1) {x = 0; z = 0; y += 1;}
+    //         if (x > dimension.x-1) {x = 0; z+=1;}; 
+    //     }
+    //     ballCreator = cloneHierarchy.transform.GetChild(0);
+    // } 
