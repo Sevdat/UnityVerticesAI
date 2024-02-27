@@ -95,7 +95,7 @@ public class WorldBuilder : MonoBehaviour
             GameObject clone = Instantiate(
                 ball, cloneHierarchy.transform
                 );
-            clone.name = $"{i}: ({x},{y},{z})";
+            clone.name = $"{i}";
             Vector3 vec = new Vector3(x,y,z);
             clone.transform.position = vec;
             }
@@ -103,32 +103,34 @@ public class WorldBuilder : MonoBehaviour
             if (z >dimension.z-2 && x > dimension.x-1) {x = 0; z = 0; y += 1;}
             if (x > dimension.x-1) {x = 0; z+=1;}; 
         }
-        ballCreator = cloneHierarchy.transform.GetChild(0);
     } 
-    void randomBallManipulator(int ballNumber){
-        if (bitArray[ballNumber]){
-            GameObject clone = Instantiate(
-                ball, cloneHierarchy.transform
-                );
-            Vector3 vec = vectorFromInt(ballNumber,dimension);
-            clone.name = $"{ballNumber}: {vec.x},{vec.y},{vec.z}";
-            clone.transform.position = 
-                vectorFromInt(ballNumber,dimension);
+    void randomBallManipulator(int ballNumber, bool bitArrayBool){
+        if (!bitArray[ballNumber] && bitArrayBool){
+                bitArray[ballNumber] = true;
+                GameObject clone = Instantiate(
+                    ball, cloneHierarchy.transform
+                    );
+                clone.name = $"{ballNumber}";
+                clone.transform.position = 
+                    vectorFromInt(ballNumber,dimension);
+            } else if (bitArray[ballNumber] && !bitArrayBool) {
+                bitArray[ballNumber] = false;
+                Destroy(
+                    cloneHierarchy.transform
+                        .Find($"{ballNumber}").gameObject
+                    );
             }
-        ballCreator = cloneHierarchy.transform.GetChild(0);
     } 
 
     Vector3 vectorFromInt(int location, Vector3 dimension){
         // right + (front)*(z) + (up)*(x*y) = int
         float dimensionXY = dimension.x*dimension.z;
-
         float[] up = amountOfFullDevision(
             location, dimensionXY
             );
         float[] front = amountOfFullDevision(
             up[0], dimension.z
             );
-
         return new Vector3(front[0],up[1],front[1]);
     }
     float[] amountOfFullDevision(float copyLocation,float dimension){
@@ -140,13 +142,10 @@ public class WorldBuilder : MonoBehaviour
             copyLocation -= dimension;
         }
     }
-
+    bool delete = false;
     void Update()
     {
         if (Input.GetKeyDown("up")){
-            ballCreator.GetComponent<MeshFilter>().mesh.Clear();
-            ballCreator = cloneHierarchy.transform.GetChild(index);
-            ballCreator.GetComponent<MeshFilter>().mesh = ballMesh;
             index +=1;
         }
         if (Input.GetKeyDown("down")){
@@ -160,6 +159,12 @@ public class WorldBuilder : MonoBehaviour
         }
         if (Input.GetKeyDown("p")){
             binaryWriter();
+        }
+        if (Input.GetKey("enter")){
+            randomBallManipulator(10,delete);
+        }
+        if (Input.GetKey("shift")){
+            delete = true;
         }
     }
 }
