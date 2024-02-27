@@ -81,23 +81,40 @@ public class WorldBuilder : MonoBehaviour
             }
         }
     }
-
     void createBalls(){
         arraySize = bitArray.Count;
         arrayWidth = (int)Math.Cbrt(arraySize);
+        float x = 0;
+        float y = 0;
+        float z = 0;
         cloneHierarchy = new GameObject(){
             name = "cloneHierarchy"
         };
         for (int i = 0; i<arraySize; i++){
-            if (!bitArray[i]){
+            if (bitArray[i]){
             GameObject clone = Instantiate(
                 ball, cloneHierarchy.transform
                 );
-            Vector3 vec = vectorFromInt(i,dimension);
-            clone.name = $"{i}: {vec.x},{vec.y},{vec.z}";
-            clone.transform.position = vectorFromInt(i,dimension);
+            clone.name = $"{i}: ({x},{y},{z})";
+            Vector3 vec = new Vector3(x,y,z);
+            clone.transform.position = vec;
             }
+            x+=1;
+            if (z >dimension.z-2 && x > dimension.x-1) {x = 0; z = 0; y += 1;}
+            if (x > dimension.x-1) {x = 0; z+=1;}; 
         }
+        ballCreator = cloneHierarchy.transform.GetChild(0);
+    } 
+    void randomBallManipulator(int ballNumber){
+        if (bitArray[ballNumber]){
+            GameObject clone = Instantiate(
+                ball, cloneHierarchy.transform
+                );
+            Vector3 vec = vectorFromInt(ballNumber,dimension);
+            clone.name = $"{ballNumber}: {vec.x},{vec.y},{vec.z}";
+            clone.transform.position = 
+                vectorFromInt(ballNumber,dimension);
+            }
         ballCreator = cloneHierarchy.transform.GetChild(0);
     } 
 
@@ -146,28 +163,3 @@ public class WorldBuilder : MonoBehaviour
         }
     }
 }
-
-    // void createBalls(){
-    //     arraySize = bitArray.Count;
-    //     arrayWidth = (int)Math.Cbrt(arraySize);
-    //     float x = 0;
-    //     float y = 0;
-    //     float z = 0;
-    //     cloneHierarchy = new GameObject(){
-    //         name = "cloneHierarchy"
-    //     };
-    //     for (int i = 0; i<arraySize; i++){
-    //         if (!bitArray[i]){
-    //         GameObject clone = Instantiate(
-    //             ball, cloneHierarchy.transform
-    //             );
-    //         clone.name = $"{i}: ({x},{y},{z})";
-    //         Vector3 vec = new Vector3(x,y,z);
-    //         clone.transform.position = vec;
-    //         }
-    //         x+=1;
-    //         if (z >dimension.z-2 && x > dimension.x-1) {x = 0; z = 0; y += 1;}
-    //         if (x > dimension.x-1) {x = 0; z+=1;}; 
-    //     }
-    //     ballCreator = cloneHierarchy.transform.GetChild(0);
-    // } 
