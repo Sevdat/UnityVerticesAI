@@ -19,11 +19,19 @@ public class WorldBuilder : MonoBehaviour
     GameObject cloneHierarchy;
     int index = 0;
     Transform ballCreator;
+    float dimensionXY;
+    float dimensionZ;
+    public static bool disablePlayerControls = false;
+    int right = 0;
+    int front = 0;
+    int up = 0;
     void Awake()
     {
         ballMesh = ball.GetComponent<MeshFilter>().mesh;
         rewriteFile(true);
         createBalls();
+        dimensionXY = dimension.x*dimension.z;
+        dimensionZ = dimension.z;
         Cursor.lockState = CursorLockMode.Locked;
     }
     void rewriteFile(bool rewriteAtBegin){
@@ -104,15 +112,15 @@ public class WorldBuilder : MonoBehaviour
             if (x > dimension.x-1) {x = 0; z+=1;}; 
         }
     } 
-    void randomBallManipulator(int ballNumber, bool bitArrayBool){
+    void randomBallManipulator(int ballNumber, bool bitArrayBool, Vector3? vec){
         if (!bitArray[ballNumber] && bitArrayBool){
                 bitArray[ballNumber] = true;
                 GameObject clone = Instantiate(
                     ball, cloneHierarchy.transform
                     );
                 clone.name = $"{ballNumber}";
-                clone.transform.position = 
-                    vectorFromInt(ballNumber,dimension);
+                clone.transform.position = (vec != null) ? (Vector3)vec:
+                        vectorFromInt(ballNumber,dimension);
             } else if (bitArray[ballNumber] && !bitArrayBool) {
                 bitArray[ballNumber] = false;
                 Destroy(
@@ -123,8 +131,7 @@ public class WorldBuilder : MonoBehaviour
     } 
 
     Vector3 vectorFromInt(int location, Vector3 dimension){
-        // right + (front)*(z) + (up)*(x*y) = int
-        float dimensionXY = dimension.x*dimension.z;
+        // right + (front)*(z) + (up)*(x*z) = int
         float[] up = amountOfFullDevision(
             location, dimensionXY
             );
@@ -142,29 +149,49 @@ public class WorldBuilder : MonoBehaviour
             copyLocation -= dimension;
         }
     }
-    bool delete = false;
-    void Update()
-    {
-        if (Input.GetKeyDown("up")){
-            index +=1;
+    void worldBuilderControls(){
+        if (Input.GetKeyDown("w")){
+            front += 1;
         }
-        if (Input.GetKeyDown("down")){
-            
+        if (Input.GetKeyDown("s")){
+            front -= 1;
         }
-        if (Input.GetKeyDown("right")){
-            
+        if (Input.GetKeyDown("d")){
+            right += 1;
         }
-        if (Input.GetKeyDown("left")){
-            
+        if (Input.GetKeyDown("a")){
+            right -= 1;
+        }
+        if (Input.GetKeyDown("q")){
+            up += 1;
+        }
+        if (Input.GetKeyDown("e")){
+            up -= 1;
         }
         if (Input.GetKeyDown("p")){
             binaryWriter();
         }
-        if (Input.GetKey("enter")){
-            randomBallManipulator(10,delete);
+        if (Input.GetKeyDown("return")){
+            randomBallManipulator(
+                (int)(right + front*dimensionZ + up*dimensionXY)
+                ,true, new Vector3(right,up,front)
+                );
         }
-        if (Input.GetKey("shift")){
-            delete = true;
+        if (Input.GetKey("space")){
+            randomBallManipulator(
+                (int)(right + front*dimensionZ + up*dimensionXY)
+                , false, null
+                );
+        }
+    }
+    void Update()
+    {
+       if(disablePlayerControls) worldBuilderControls();
+       if (Input.GetKeyDown("[")){
+            disablePlayerControls= true;
+        }
+       if (Input.GetKeyDown("]")){
+            disablePlayerControls= false;
         }
     }
 }
