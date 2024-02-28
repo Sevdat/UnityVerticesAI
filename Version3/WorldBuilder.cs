@@ -9,16 +9,13 @@ using Unity.VisualScripting;
 
 public class WorldBuilder : MonoBehaviour
 {
+    GameObject cloneHierarchy;
     public GameObject ball;
     public static Mesh ballMesh;
-    public TextAsset textDoc;
+    public static BitArray bitArray;
     int arraySize;
     int arrayWidth;
-    public static BitArray bitArray;
     Vector3 dimension = new Vector3(5f,9f,6f);
-    GameObject cloneHierarchy;
-    int index = 0;
-    Transform ballCreator;
     float dimensionXY;
     float dimensionZ;
     public static bool disablePlayerControls = false;
@@ -188,10 +185,10 @@ public class WorldBuilder : MonoBehaviour
     {
        if(disablePlayerControls) worldBuilderControls();
        if (Input.GetKeyDown("[")){
-            disablePlayerControls= true;
+            disablePlayerControls = true;
         }
        if (Input.GetKeyDown("]")){
-            disablePlayerControls= false;
+            disablePlayerControls = false;
         }
     }
 }
