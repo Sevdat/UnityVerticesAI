@@ -16,7 +16,9 @@ public class WorldBuilder : MonoBehaviour
     int arraySize;
     int arrayWidth;
     Vector3 dimension = new Vector3(5f,9f,6f);
-    float dimensionXY;
+    float dimensionXZ;
+    float dimensionX;
+    float dimensionY;
     float dimensionZ;
     public static bool disablePlayerControls = false;
     int right = 0;
@@ -25,10 +27,12 @@ public class WorldBuilder : MonoBehaviour
     void Awake()
     {
         ballMesh = ball.GetComponent<MeshFilter>().mesh;
+        dimensionXZ = dimension.x*dimension.z;
+        dimensionX = dimension.x-1;
+        dimensionY = dimension.y-1;
+        dimensionZ = dimension.z-1;
         rewriteFile(true);
         createBalls();
-        dimensionXY = dimension.x*dimension.z;
-        dimensionZ = dimension.z;
         Cursor.lockState = CursorLockMode.Locked;
     }
     void rewriteFile(bool rewriteAtBegin){
@@ -36,7 +40,7 @@ public class WorldBuilder : MonoBehaviour
             arraySize = (int)(dimension.x*dimension.y*dimension.z);
             bitArray = new BitArray(arraySize);
             for (int i=0; i<arraySize;i++) {
-                bitArray[i] = false;
+                bitArray[i] = true;
                 } 
             binaryWriter();
             } else {
@@ -100,8 +104,8 @@ public class WorldBuilder : MonoBehaviour
             GameObject clone = Instantiate(
                 ball, cloneHierarchy.transform
                 );
-            clone.name = $"{i}";
             Vector3 vec = new Vector3(x,y,z);
+            clone.name = $"{i}";
             clone.transform.position = vec;
             }
             x+=1;
@@ -109,15 +113,14 @@ public class WorldBuilder : MonoBehaviour
             if (x > dimension.x-1) {x = 0; z+=1;}; 
         }
     } 
-    void randomBallManipulator(int ballNumber, bool bitArrayBool, Vector3? vec){
+    void randomBallManipulator(int ballNumber, Vector3 vec, bool bitArrayBool){
         if (!bitArray[ballNumber] && bitArrayBool){
                 bitArray[ballNumber] = true;
                 GameObject clone = Instantiate(
                     ball, cloneHierarchy.transform
                     );
                 clone.name = $"{ballNumber}";
-                clone.transform.position = (vec != null) ? (Vector3)vec:
-                        vectorFromInt(ballNumber,dimension);
+                clone.transform.position = vec;
             } else if (bitArray[ballNumber] && !bitArrayBool) {
                 bitArray[ballNumber] = false;
                 Destroy(
@@ -126,58 +129,53 @@ public class WorldBuilder : MonoBehaviour
                     );
             }
     } 
-
-    Vector3 vectorFromInt(int location, Vector3 dimension){
-        // right + (front)*(z) + (up)*(x*z) = int
-        float[] up = amountOfFullDevision(
-            location, dimensionXY
-            );
-        float[] front = amountOfFullDevision(
-            up[0], dimension.z
-            );
-        return new Vector3(front[0],up[1],front[1]);
-    }
-    float[] amountOfFullDevision(float copyLocation,float dimension){
-        for (int i =0;true;i++){
-            if (copyLocation<0) {
-                if (copyLocation<0) copyLocation += dimension;
-                return new float[]{copyLocation,i-1};
-            }
-            copyLocation -= dimension;
-        }
-    }
     void worldBuilderControls(){
         if (Input.GetKeyDown("w")){
-            front += 1;
+            front = (front < dimensionZ) ? 
+                front +=1: front = 0;
+            print($"right: {right + front*dimensionZ + up*dimensionXZ}");
         }
         if (Input.GetKeyDown("s")){
-            front -= 1;
+            front = (front > 0) ? 
+                front -=1: front = (int)dimensionZ;
+            print($"front: {right + front*dimensionZ + up*dimensionXZ}");
         }
+
         if (Input.GetKeyDown("d")){
-            right += 1;
+            right =(right < dimensionX) ? 
+                right+=1: right = 0;
+            print($"right: {right + front*dimensionZ + up*dimensionXZ}");
         }
         if (Input.GetKeyDown("a")){
-            right -= 1;
+            right = (right > 0) ? 
+                right-=1: right = (int)dimensionX;
+            print($"right: {right + front*dimensionZ + up*dimensionXZ}");
+        }
+
+        if (Input.GetKeyDown("e")){
+            up = (up < dimensionY) ? 
+                up+=1: up = 0;
+            print($"up: {right + front*dimensionZ + up*dimensionXZ}");
         }
         if (Input.GetKeyDown("q")){
-            up += 1;
+            up = (up > 0) ? 
+                up-=1: up = (int)dimensionY;
+            print($"up: {right + front*dimensionZ + up*dimensionXZ}");
         }
-        if (Input.GetKeyDown("e")){
-            up -= 1;
-        }
+
         if (Input.GetKeyDown("p")){
             binaryWriter();
         }
-        if (Input.GetKeyDown("return")){
+        if (Input.GetKeyDown("space")){
             randomBallManipulator(
-                (int)(right + front*dimensionZ + up*dimensionXY)
-                ,true, new Vector3(right,up,front)
+                (int)(right + front*dimensionZ + up*dimensionXZ)
+                ,new Vector3(right,up,front), true
                 );
         }
-        if (Input.GetKey("space")){
+        if (Input.GetKey("return")){
             randomBallManipulator(
-                (int)(right + front*dimensionZ + up*dimensionXY)
-                , false, null
+                (int)(right + front*dimensionZ + up*dimensionXZ)
+                ,new Vector3(right,up,front), false
                 );
         }
     }
@@ -192,3 +190,27 @@ public class WorldBuilder : MonoBehaviour
         }
     }
 }
+
+
+/* Find vector from Integer value*/
+
+    // Vector3 vectorFromInt(int location, Vector3 dimension){
+    //     // right + (front)*(z) + (up)*(x*z) = int
+    //     float[] up = amountOfFullDevision(
+    //         location, dimensionXZ
+    //         );
+    //     float[] front = amountOfFullDevision(
+    //         up[0], dimension.x
+    //         );
+    //         print(front[0]);
+    //     return new Vector3(front[0],up[1],front[1]);
+    // }
+    // float[] amountOfFullDevision(float copyLocation,float dimension){
+    //     for (int i =0;true;i++){
+    //         if (copyLocation<0) {
+    //             if (copyLocation<0) copyLocation += dimension;
+    //             return new float[]{copyLocation,i-1};
+    //         }
+    //         copyLocation -= dimension;
+    //     }
+    // }
