@@ -80,21 +80,14 @@ public class WorldBuilder : MonoBehaviour
             writer.Write((char)dimension.z);
             byte value = 0;
             byte bit = 128; //0x80
-            string lol = "";
             for (int i = 0; i < arraySize; i++){
                 if (bitArray[i]) value += bit;
                 bit /= 2;
                 if (bit == 0 || i == arraySize-1) {
-                    if (i == arraySize-1) print(lol);
                     writer.Write(Convert.ToChar(value));
                     value = 0; bit = 128;
                 }
             }
-        }
-    }
-    void printBinary(){
-        for (int i = 0;i<arraySize;i++){
-            print($"{i}: {bitArray[i]}");
         }
     }
     void createBalls(){
