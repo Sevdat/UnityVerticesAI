@@ -9,10 +9,10 @@ using Unity.VisualScripting;
 
 public class WorldBuilder : MonoBehaviour
 {
-    GameObject cloneHierarchy;
-    public GameObject dynamicClone;
-    public GameObject staticClone;
-    public static Mesh ballMesh;
+    public GameObject originalObject;
+    public static GameObject cloneHierarchy;
+    public static GameObject dynamicClone;
+    public static GameObject staticClone;
     public static BitArray bitArray;
     int arraySize;
     int arrayWidth;
@@ -28,7 +28,9 @@ public class WorldBuilder : MonoBehaviour
     int up = 0;
     void Awake()
     {
-        ballMesh = dynamicClone.GetComponent<MeshFilter>().mesh;
+        dynamicClone = originalObject;
+        staticClone = originalObject;
+        staticClone.isStatic = true;
         cubeXZ = dimension.x*dimension.z;
         cubeX = dimension.x;
         dimensionX = dimension.x-1;
@@ -117,7 +119,7 @@ public class WorldBuilder : MonoBehaviour
             if (x > dimension.x-1) {x = 0; z+=1;}; 
         }
     } 
-    void randomBallManipulator(int ballNumber, Vector3 vec, bool bitArrayBool){
+    public static void randomBallManipulator(int ballNumber, Vector3 vec, bool bitArrayBool){
         if (!bitArray[ballNumber] && bitArrayBool){
                 bitArray[ballNumber] = true;
                 GameObject clone = Instantiate(
