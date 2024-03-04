@@ -16,10 +16,11 @@ public class WorldBuilder : MonoBehaviour
     int arraySize;
     int arrayWidth;
     Vector3 dimension = new Vector3(5f,4f,3f);
-    float dimensionXZ;
     float dimensionX;
     float dimensionY;
     float dimensionZ;
+    float cubeXZ;
+    float cubeX;
     public static bool disablePlayerControls = false;
     int right = 0;
     int front = 0;
@@ -27,12 +28,14 @@ public class WorldBuilder : MonoBehaviour
     void Awake()
     {
         ballMesh = ball.GetComponent<MeshFilter>().mesh;
-        dimensionXZ = dimension.x*dimension.z;
+        cubeXZ = dimension.x*dimension.z;
+        cubeX = dimension.x;
         dimensionX = dimension.x-1;
         dimensionY = dimension.y-1;
         dimensionZ = dimension.z-1;
         rewriteFile(false);
         createBalls();
+        print(cloneHierarchy.transform.GetChild(1).name);
         Cursor.lockState = CursorLockMode.Locked;
     }
     void rewriteFile(bool rewriteAtBegin){
@@ -162,13 +165,14 @@ public class WorldBuilder : MonoBehaviour
         }
         if (Input.GetKeyDown("space")){
             randomBallManipulator(
-                (int)(right + front*dimensionX + up*dimensionXZ)+front
+                (int)(right + front*cubeX + up*cubeXZ)
                 ,new Vector3(right,up,front), true
                 );
         }
+
         if (Input.GetKey("return")){
             randomBallManipulator(
-                (int)(right + front*dimensionX + up*dimensionXZ)+front
+                (int)(right + front*cubeX + up*cubeXZ)
                 ,new Vector3(right,up,front), false
                 );
         }
