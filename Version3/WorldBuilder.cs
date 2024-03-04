@@ -10,12 +10,13 @@ using Unity.VisualScripting;
 public class WorldBuilder : MonoBehaviour
 {
     GameObject cloneHierarchy;
-    public GameObject ball;
+    public GameObject dynamicClone;
+    public GameObject staticClone;
     public static Mesh ballMesh;
     public static BitArray bitArray;
     int arraySize;
     int arrayWidth;
-    Vector3 dimension = new Vector3(5f,4f,3f);
+    Vector3 dimension = new Vector3(100f,100f,100f);
     float dimensionX;
     float dimensionY;
     float dimensionZ;
@@ -27,15 +28,14 @@ public class WorldBuilder : MonoBehaviour
     int up = 0;
     void Awake()
     {
-        ballMesh = ball.GetComponent<MeshFilter>().mesh;
+        ballMesh = dynamicClone.GetComponent<MeshFilter>().mesh;
         cubeXZ = dimension.x*dimension.z;
         cubeX = dimension.x;
         dimensionX = dimension.x-1;
         dimensionY = dimension.y-1;
         dimensionZ = dimension.z-1;
-        rewriteFile(false);
+        rewriteFile(true);
         createBalls();
-        print(cloneHierarchy.transform.GetChild(1).name);
         Cursor.lockState = CursorLockMode.Locked;
     }
     void rewriteFile(bool rewriteAtBegin){
@@ -100,12 +100,13 @@ public class WorldBuilder : MonoBehaviour
         float y = 0;
         float z = 0;
         cloneHierarchy = new GameObject(){
-            name = "cloneHierarchy"
+            name = "cloneHierarchy",
+            isStatic = true
         };
         for (int i = 0; i<arraySize; i++){
             if (bitArray[i]){
             GameObject clone = Instantiate(
-                ball, cloneHierarchy.transform
+                staticClone, cloneHierarchy.transform
                 );
             Vector3 vec = new Vector3(x,y,z);
             clone.name = $"{i}";
@@ -120,7 +121,7 @@ public class WorldBuilder : MonoBehaviour
         if (!bitArray[ballNumber] && bitArrayBool){
                 bitArray[ballNumber] = true;
                 GameObject clone = Instantiate(
-                    ball, cloneHierarchy.transform
+                    dynamicClone, cloneHierarchy.transform
                     );
                 clone.name = $"{ballNumber}";
                 clone.transform.position = vec;
