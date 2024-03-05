@@ -119,7 +119,7 @@ public class WorldBuilder : MonoBehaviour
             if (x > dimension.x-1) {x = 0; z+=1;}; 
         }
     } 
-    public static void randomBallManipulator(int ballNumber, Vector3 vec, bool bitArrayBool){
+    public static void cloneCreator(int ballNumber, Vector3 vec, bool bitArrayBool){
         if (!bitArray[ballNumber] && bitArrayBool){
                 bitArray[ballNumber] = true;
                 GameObject clone = Instantiate(
@@ -170,14 +170,14 @@ public class WorldBuilder : MonoBehaviour
             binaryWriter();
         }
         if (Input.GetKeyDown("space")){
-            randomBallManipulator(
+            cloneCreator(
                 vecToInt(right, front, up)
                 ,new Vector3(right,up,front), true
                 );
         }
 
         if (Input.GetKey("return")){
-            randomBallManipulator(
+            cloneCreator(
                 vecToInt(right, front, up)
                 ,new Vector3(right,up,front), false
                 );
