@@ -14,14 +14,14 @@ public class WorldBuilder : MonoBehaviour
     public static GameObject dynamicClone;
     public static GameObject staticClone;
     public static BitArray bitArray;
-    int arraySize;
-    int arrayWidth;
-    Vector3 dimension = new Vector3(100f,100f,100f);
-    float dimensionX;
-    float dimensionY;
-    float dimensionZ;
-    float cubeXZ;
-    float cubeX;
+    public static int arraySize;
+    public static int arrayWidth;
+    public static Vector3 dimension = new Vector3(10f,10f,10f);
+    public static int dimensionX;
+    public static int dimensionY;
+    public static int dimensionZ;
+    public static int cubeXZ;
+    public static int cubeX;
     public static bool disablePlayerControls = false;
     int right = 0;
     int front = 0;
@@ -31,11 +31,11 @@ public class WorldBuilder : MonoBehaviour
         dynamicClone = originalObject;
         staticClone = originalObject;
         staticClone.isStatic = true;
-        cubeXZ = dimension.x*dimension.z;
-        cubeX = dimension.x;
-        dimensionX = dimension.x-1;
-        dimensionY = dimension.y-1;
-        dimensionZ = dimension.z-1;
+        cubeXZ = (int)(dimension.x*dimension.z);
+        cubeX = (int)dimension.x;
+        dimensionX = (int)dimension.x-1;
+        dimensionY = (int)dimension.y-1;
+        dimensionZ = (int)dimension.z-1;
         rewriteFile(true);
         createBalls();
         Cursor.lockState = CursorLockMode.Locked;
@@ -45,7 +45,7 @@ public class WorldBuilder : MonoBehaviour
             arraySize = (int)(dimension.x*dimension.y*dimension.z);
             bitArray = new BitArray(arraySize);
             for (int i=0; i<arraySize;i++) {
-                bitArray[i] = false;
+                bitArray[i] = true;
                 } 
             binaryWriter();
             } else {
@@ -77,7 +77,7 @@ public class WorldBuilder : MonoBehaviour
             }
         }
     }
-    void binaryWriter(){
+    public static void binaryWriter(){
         using (StreamWriter writer = new StreamWriter("Assets/v3/binaryWorld.txt"))
         {
             writer.Write((char)dimension.x);
@@ -135,6 +135,9 @@ public class WorldBuilder : MonoBehaviour
                     );
             }
     } 
+    public static int vecToInt(int right,int front, int up){
+        return right + front*cubeX + up*cubeXZ;
+    }
     void worldBuilderControls(){
         if (Input.GetKeyDown("w")){
             front = (front < dimensionZ) ? 
@@ -142,7 +145,7 @@ public class WorldBuilder : MonoBehaviour
         }
         if (Input.GetKeyDown("s")){
             front = (front > 0) ? 
-                front -=1: front = (int)dimensionZ;
+                front -=1: front = dimensionZ;
         }
 
         if (Input.GetKeyDown("d")){
@@ -151,7 +154,7 @@ public class WorldBuilder : MonoBehaviour
         }
         if (Input.GetKeyDown("a")){
             right = (right > 0) ? 
-                right-=1: right = (int)dimensionX;
+                right-=1: right = dimensionX;
         }
 
         if (Input.GetKeyDown("e")){
@@ -160,7 +163,7 @@ public class WorldBuilder : MonoBehaviour
         }
         if (Input.GetKeyDown("q")){
             up = (up > 0) ? 
-                up-=1: up = (int)dimensionY;
+                up-=1: up = dimensionY;
         }
 
         if (Input.GetKeyDown("p")){
@@ -168,14 +171,14 @@ public class WorldBuilder : MonoBehaviour
         }
         if (Input.GetKeyDown("space")){
             randomBallManipulator(
-                (int)(right + front*cubeX + up*cubeXZ)
+                vecToInt(right, front, up)
                 ,new Vector3(right,up,front), true
                 );
         }
 
         if (Input.GetKey("return")){
             randomBallManipulator(
-                (int)(right + front*cubeX + up*cubeXZ)
+                vecToInt(right, front, up)
                 ,new Vector3(right,up,front), false
                 );
         }
