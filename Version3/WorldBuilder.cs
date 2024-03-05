@@ -36,16 +36,16 @@ public class WorldBuilder : MonoBehaviour
         dimensionX = (int)dimension.x-1;
         dimensionY = (int)dimension.y-1;
         dimensionZ = (int)dimension.z-1;
-        rewriteFile(true);
+        rewriteFile(true, false);
         createBalls();
         Cursor.lockState = CursorLockMode.Locked;
     }
-    void rewriteFile(bool rewriteAtBegin){
+    void rewriteFile(bool rewriteAtBegin, bool fill){
         if (rewriteAtBegin) {
             arraySize = (int)(dimension.x*dimension.y*dimension.z);
             bitArray = new BitArray(arraySize);
             for (int i=0; i<arraySize;i++) {
-                bitArray[i] = true;
+                bitArray[i] = fill;
                 } 
             binaryWriter();
             } else {
