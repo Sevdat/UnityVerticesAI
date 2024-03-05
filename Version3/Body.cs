@@ -11,13 +11,11 @@ public class Body : MonoBehaviour
         int y = WorldBuilder.dimensionY/2;
         int z = WorldBuilder.dimensionZ/2;
         for (int i = 0; i <chest.Length;i++){
-            Vector3 lol2 = new Vector3(x,y,z);
-            
-            int[] a = WorldBuilder.boundry(x,y,z);
-            x = a[0];
-            y = a[1];
-            z = a[2];
+            x = WorldBuilder.boundryX(x);
+            y = WorldBuilder.boundryY(y);
+            z = WorldBuilder.boundryZ(z);
             int lol = WorldBuilder.vecToInt(x,y,z);
+            Vector3 lol2 = new Vector3(x,y,z);
             WorldBuilder.cloneCreator(lol,lol2,true);
             y+=1;
             z+=1;
