@@ -138,26 +138,13 @@ public class WorldBuilder : MonoBehaviour
     public static int vecToInt(int right, int front, int up){
         return right + front*cubeX + up*cubeXZ;
     }
-    public static int boundryX(int right,int value){
-        right += value;
-        if (right > dimensionX) right = Math.Abs(right % dimensionX);
-            else if (right < 0) right = dimensionX - Math.Abs(right % dimensionX);
-
-        return right;
-    }
-    public static int boundryY(int up,int value){
-        up+=value;
-        if (up > dimensionY) up = Math.Abs(up % dimensionY);
-            else if (up < 0) up = dimensionY-Math.Abs(up % dimensionY);
-            
-        return up;
-    }
-    public static int boundryZ(int front, int value){
-        front += value;
-        if (front > dimensionZ) front = Math.Abs(front % dimensionZ);
-            else if (front < 0) front = dimensionZ - Math.Abs(front % dimensionZ);
-               
-        return front;
+    public static int boundry(int direction,int add,int dimension){
+        direction+=add;
+        if (direction > dimension) 
+                direction = Math.Abs(direction % dimension);
+            else if (direction < 0) 
+                direction = dimension-Math.Abs(direction % dimension);
+        return direction;
     }
 
     void worldBuilderControls(){
