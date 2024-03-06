@@ -141,9 +141,9 @@ public class WorldBuilder : MonoBehaviour
     public static int boundry(int direction,int add,int dimension){
         direction+=add;
         if (direction > dimension) 
-                direction = Math.Abs(direction % dimension);
+                direction = Math.Abs(direction % (dimension+1));
             else if (direction < 0) 
-                direction = dimension-Math.Abs(direction % dimension);
+                direction = dimension+1-Math.Abs(direction % (dimension+1));
         return direction;
     }
 
