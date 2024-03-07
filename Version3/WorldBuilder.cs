@@ -16,7 +16,7 @@ public class WorldBuilder : MonoBehaviour
     public static BitArray bitArray;
     public static int arraySize;
     public static int arrayWidth;
-    public static Vector3 dimension = new Vector3(10f,10f,10f);
+    public static Vector3Int dimension = new Vector3Int(10,10,10);
     public static int dimensionX;
     public static int dimensionY;
     public static int dimensionZ;
