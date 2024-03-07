@@ -31,11 +31,11 @@ public class WorldBuilder : MonoBehaviour
         dynamicClone = originalObject;
         staticClone = originalObject;
         staticClone.isStatic = true;
-        cubeXZ = (int)(dimension.x*dimension.z);
-        cubeX = (int)dimension.x;
-        dimensionX = (int)dimension.x-1;
-        dimensionY = (int)dimension.y-1;
-        dimensionZ = (int)dimension.z-1;
+        cubeXZ = dimension.x*dimension.z;
+        cubeX = dimension.x;
+        dimensionX = dimension.x-1;
+        dimensionY = dimension.y-1;
+        dimensionZ = dimension.z-1;
         rewriteFile(false, false);
         createBalls();
         Cursor.lockState = CursorLockMode.Locked;
