@@ -10,7 +10,7 @@ public class Body : MonoBehaviour
          new Vector3Int(4,4,4)
          };
     void Start(){
-        WorldBuilder.move(chest[0],-1,-1,6);
+        WorldBuilder.move(chest[0],new Vector3Int(-1,-1,6),true);
     }
 
     // Update is called once per frame
