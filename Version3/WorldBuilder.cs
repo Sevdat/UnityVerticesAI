@@ -146,7 +146,17 @@ public class WorldBuilder : MonoBehaviour
                 direction = dimension+1-Math.Abs(direction % (dimension+1));
         return direction;
     }
-
+    public static void move(
+            int [] intArray,int index, 
+            int moveX,int moveY,int moveZ
+            ){
+            int x = boundry(intArray[0+3*index],moveX,dimensionX);
+            int y = boundry(intArray[1+3*index],moveY,dimensionY);
+            int z = boundry(intArray[2+3*index],moveZ,dimensionZ);
+            int num = vecToInt(x,y,z);
+            Vector3 vec = new Vector3(x,y,z);
+            cloneCreator(num,vec,true);
+        }
     void worldBuilderControls(){
         if (Input.GetKeyDown("w")){
             front = (front < dimensionZ) ? 
