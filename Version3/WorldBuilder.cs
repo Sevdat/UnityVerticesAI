@@ -119,7 +119,7 @@ public class WorldBuilder : MonoBehaviour
             if (x > dimension.x-1) {x = 0; z+=1;}; 
         }
     } 
-    public static void cloneCreator(int ballNumber, Vector3 vec, bool bitArrayBool){
+    public static void cloneCreator(int ballNumber, Vector3Int vec, bool bitArrayBool){
         if (!bitArray[ballNumber] && bitArrayBool){
                 bitArray[ballNumber] = true;
                 GameObject clone = Instantiate(
@@ -147,14 +147,14 @@ public class WorldBuilder : MonoBehaviour
         return direction;
     }
     public static void move(
-            int [] intArray,int index, 
+            Vector3Int intVector,
             int moveX,int moveY,int moveZ
             ){
-            int x = boundry(intArray[0+3*index],moveX,dimensionX);
-            int y = boundry(intArray[1+3*index],moveY,dimensionY);
-            int z = boundry(intArray[2+3*index],moveZ,dimensionZ);
+            int x = boundry(intVector.x,moveX,dimensionX);
+            int y = boundry(intVector.y,moveY,dimensionY);
+            int z = boundry(intVector.z,moveZ,dimensionZ);
             int num = vecToInt(x,y,z);
-            Vector3 vec = new Vector3(x,y,z);
+            Vector3Int vec = new Vector3Int(x,y,z);
             cloneCreator(num,vec,true);
         }
     void worldBuilderControls(){
@@ -191,14 +191,14 @@ public class WorldBuilder : MonoBehaviour
         if (Input.GetKeyDown("space")){
             cloneCreator(
                 vecToInt(right, front, up)
-                ,new Vector3(right,up,front), true
+                ,new Vector3Int(right,up,front), true
                 );
         }
 
         if (Input.GetKey("return")){
             cloneCreator(
                 vecToInt(right, front, up)
-                ,new Vector3(right,up,front), false
+                ,new Vector3Int(right,up,front), false
                 );
         }
     }
