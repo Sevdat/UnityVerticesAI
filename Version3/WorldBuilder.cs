@@ -149,13 +149,13 @@ public class WorldBuilder : MonoBehaviour
         return direction;
     }
     public static void move(
-            Vector3Int intVector,
+            Vector3Int currentPos,
             Vector3Int vecMove,
             bool boolCreate
             ){
-            int x = boundry(intVector.x, vecMove.x, dimensionX);
-            int y = boundry(intVector.y, vecMove.y, dimensionY);
-            int z = boundry(intVector.z, vecMove.z, dimensionZ);
+            int x = boundry(currentPos.x, vecMove.x, dimensionX);
+            int y = boundry(currentPos.y, vecMove.y, dimensionY);
+            int z = boundry(currentPos.z, vecMove.z, dimensionZ);
             int num = vecToInt(x,y,z);
             Vector3Int vec = new Vector3Int(x,y,z);
             cloneCreator(num,vec,boolCreate);
