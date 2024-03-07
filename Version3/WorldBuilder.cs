@@ -142,8 +142,10 @@ public class WorldBuilder : MonoBehaviour
         direction+=add;
         if (direction > dimension) 
                 direction = Math.Abs(direction % (dimension+1));
-            else if (direction < 0) 
-                direction = dimension+1-Math.Abs(direction % (dimension+1));
+            else if (direction < 0) {
+                int size = dimension+1;
+                direction = size-Math.Abs(direction % size);
+            }
         return direction;
     }
     public static void move(
