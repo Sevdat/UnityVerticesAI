@@ -42,7 +42,7 @@ public class WorldBuilder : MonoBehaviour
     }
     void rewriteFile(bool rewriteAtBegin, bool fillWithOne){
         if (rewriteAtBegin) {
-            arraySize = (int)(dimension.x*dimension.y*dimension.z);
+            arraySize = dimension.x*dimension.y*dimension.z;
             bitArray = new BitArray(arraySize);
             for (int i=0; i<arraySize;i++) {
                 bitArray[i] = fillWithOne;
@@ -116,7 +116,7 @@ public class WorldBuilder : MonoBehaviour
             }
             x+=1;
             if (z >dimension.z-2 && x > dimension.x-1) {x = 0; z = 0; y += 1;}
-            if (x > dimension.x-1) {x = 0; z+=1;}; 
+            if (x > dimension.x-1) {x = 0; z+=1;} 
         }
     } 
     public static void cloneCreator(int ballNumber, Vector3Int vec, bool bitArrayBool){
@@ -148,17 +148,15 @@ public class WorldBuilder : MonoBehaviour
             }
         return direction;
     }
-    public static void move(
+    public static Vector3Int createVector(
             Vector3Int currentPos,
-            Vector3Int vecMove,
-            bool boolCreate
+            Vector3Int vecMove
             ){
             int x = boundry(currentPos.x, vecMove.x, dimensionX);
             int y = boundry(currentPos.y, vecMove.y, dimensionY);
             int z = boundry(currentPos.z, vecMove.z, dimensionZ);
-            int num = vecToInt(x,y,z);
             Vector3Int vec = new Vector3Int(x,y,z);
-            cloneCreator(num,vec,boolCreate);
+            return vec;
         }
     void worldBuilderControls(){
         if (Input.GetKeyDown("w")){
