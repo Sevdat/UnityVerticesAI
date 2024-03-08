@@ -7,11 +7,14 @@ public class Body : MonoBehaviour
 {
     // Start is called before the first frame update
     public static Vector3Int[] chest = new Vector3Int[]{
-         new Vector3Int(4,4,5),new Vector3Int(4,4,4),
+         new Vector3Int(4,4,5),new Vector3Int(4,4,4)
          };
+    public static Vector3Int[] move = new Vector3Int[]{
+         new Vector3Int(0,0,1),new Vector3Int(0,0,1)
+         }; 
+    public static Vector3Int[] tempChest;     
     void Start(){
-            chest[0] = WorldBuilder.createVector(chest[0],new Vector3Int(0,0,0));
-            chest[1] = WorldBuilder.createVector(chest[1],new Vector3Int(0,0,0));
+            tempChest = chest;
     }
 
     // Update is called once per frame
@@ -19,8 +22,10 @@ public class Body : MonoBehaviour
     void Update(){
         time += Time.deltaTime;
         if (time > 2f){
-            chest[0] = WorldBuilder.createVector(chest[0],new Vector3Int(0,0,1));
-            chest[1] = WorldBuilder.createVector(chest[1],new Vector3Int(0,0,-1));
+            WorldBuilder.createFromVector(chest,false);
+            tempChest = WorldBuilder.createVector(chest,move);
+            chest = tempChest;
+            WorldBuilder.createFromVector(chest,true);
             time = 0;
         }
     }
