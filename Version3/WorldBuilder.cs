@@ -148,16 +148,34 @@ public class WorldBuilder : MonoBehaviour
             }
         return direction;
     }
-    public static Vector3Int createVector(
-            Vector3Int currentPos,
-            Vector3Int vecMove
-            ){
-            int x = boundry(currentPos.x, vecMove.x, dimensionX);
-            int y = boundry(currentPos.y, vecMove.y, dimensionY);
-            int z = boundry(currentPos.z, vecMove.z, dimensionZ);
-            Vector3Int vec = new Vector3Int(x,y,z);
-            return vec;
+    public static Vector3Int[] createVector(
+        Vector3Int[] currentPos,
+        Vector3Int[] vecMove
+        ){
+        int size = currentPos.Length;
+        Vector3Int[] vec = new Vector3Int[size];
+        for (int i = 0; i <currentPos.Length;i++){
+            Vector3Int pos = currentPos[i];
+            Vector3Int mov = vecMove[i];
+            int x = boundry(pos.x, mov.x, dimensionX);
+            int y = boundry(pos.y, mov.y, dimensionY);
+            int z = boundry(pos.z, mov.z, dimensionZ);
+            vec[i] += new Vector3Int(x,y,z);
         }
+        return vec;
+    }
+    public static void createFromVector(
+        Vector3Int[] pos, bool createOrDelete
+        ){
+            for (int i = 0; i<pos.Length;i++){
+                Vector3Int v = pos[i];
+                cloneCreator(
+                    vecToInt(v.x, v.y, v.z),
+                    v, 
+                    createOrDelete
+                    );
+            }
+    }
     void worldBuilderControls(){
         if (Input.GetKeyDown("w")){
             front = (front < dimensionZ) ? 
