@@ -119,7 +119,8 @@ public class WorldBuilder : MonoBehaviour
             if (x > dimension.x-1) {x = 0; z+=1;} 
         }
     } 
-    public static void cloneCreator(int ballNumber, Vector3Int vec, bool bitArrayBool){
+    public static void cloneCreator(Vector3Int vec, bool bitArrayBool){
+        int ballNumber = vecToInt(vec.x, vec.y, vec.z);
         if (!bitArray[ballNumber] && bitArrayBool){
                 bitArray[ballNumber] = true;
                 GameObject clone = Instantiate(
@@ -138,7 +139,7 @@ public class WorldBuilder : MonoBehaviour
     public static int vecToInt(int right, int front, int up){
         return right + front*cubeX + up*cubeXZ;
     }
-    public static int boundry(int direction,int add,int dimension){
+    public static float boundry(float direction,float add,int dimension){
         direction+=add;
         if (direction > dimension) 
                 direction = Math.Abs(direction % (dimension+1));
@@ -148,33 +149,20 @@ public class WorldBuilder : MonoBehaviour
             }
         return direction;
     }
-    public static Vector3Int[] createVector(
-        Vector3Int[] currentPos,
-        Vector3Int[] vecMove
-        ){
-        int size = currentPos.Length;
-        Vector3Int[] vec = new Vector3Int[size];
-        for (int i = 0; i <currentPos.Length;i++){
-            Vector3Int pos = currentPos[i];
-            Vector3Int mov = vecMove[i];
-            int x = boundry(pos.x, mov.x, dimensionX);
-            int y = boundry(pos.y, mov.y, dimensionY);
-            int z = boundry(pos.z, mov.z, dimensionZ);
-            vec[i] += new Vector3Int(x,y,z);
-        }
-        return vec;
+    public static Vector3 createVector(Vector3 pos,Vector3 vecMove){
+        float x = boundry(pos.x, vecMove.x, dimensionX);
+        float y = boundry(pos.y, vecMove.y, dimensionY);
+        float z = boundry(pos.z, vecMove.z, dimensionZ);
+        return new Vector3(x,y,z);
     }
     public static void createFromVector(
-        Vector3Int[] pos, bool createOrDelete
-        ){
-            for (int i = 0; i<pos.Length;i++){
-                Vector3Int v = pos[i];
-                cloneCreator(
-                    vecToInt(v.x, v.y, v.z),
-                    v, 
-                    createOrDelete
-                    );
-            }
+        Vector3 currentPos, bool createOrDelete, Vector3 vecMove
+        ){     
+        Vector3 vector = createVector(currentPos, vecMove);
+        Vector3Int intVector = new Vector3Int(
+            (int)vector.x, (int)vector.y, (int)vector.z
+            );
+        cloneCreator(intVector, createOrDelete);
     }
     void worldBuilderControls(){
         if (Input.GetKeyDown("w")){
@@ -209,15 +197,13 @@ public class WorldBuilder : MonoBehaviour
         }
         if (Input.GetKeyDown("space")){
             cloneCreator(
-                vecToInt(right, front, up)
-                ,new Vector3Int(right,up,front), true
+                new Vector3Int(right,up,front), true
                 );
         }
 
         if (Input.GetKey("return")){
             cloneCreator(
-                vecToInt(right, front, up)
-                ,new Vector3Int(right,up,front), false
+                new Vector3Int(right,up,front), false
                 );
         }
     }
