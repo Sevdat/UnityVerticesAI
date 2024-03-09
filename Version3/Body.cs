@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,13 +7,11 @@ using UnityEngine;
 public class Body : MonoBehaviour
 {
     // Start is called before the first frame update
-    public static Vector3Int[] chest = new Vector3Int[]{
-         new Vector3Int(4,4,5),new Vector3Int(4,4,4)
+    public static Vector3[] chest = new Vector3[]{
+         new Vector3(4,4,5),new Vector3(4,4,4)
          };
-    public static Vector3Int[] move = new Vector3Int[]{
-         new Vector3Int(0,0,1),new Vector3Int(0,0,1)
-         }; 
-    public static Vector3Int[] tempChest;     
+    public static Vector3 move = new Vector3(0,0,1); 
+    public static Vector3[] tempChest;     
     void Start(){
             tempChest = chest;
     }
@@ -21,11 +20,12 @@ public class Body : MonoBehaviour
     float time = 0;
     void Update(){
         time += Time.deltaTime;
-        if (time > 2f){
-            WorldBuilder.createFromVector(chest,false);
-            tempChest = WorldBuilder.createVector(chest,move);
+        if (time > 0.4f){
+            WorldBuilder.createFromVector(chest[0],false,move);
+            tempChest[0] += move;
+            print(tempChest[0]);
             chest = tempChest;
-            WorldBuilder.createFromVector(chest,true);
+            WorldBuilder.createFromVector(chest[0],true,move);
             time = 0;
         }
     }
