@@ -119,7 +119,7 @@ public class WorldBuilder : MonoBehaviour
             if (x > dimension.x-1) {x = 0; z+=1;} 
         }
     } 
-    public static void cloneCreator(Vector3Int vec, bool bitArrayBool){
+    public static void createOrDelete(Vector3Int vec, bool bitArrayBool){
         int ballNumber = vecToInt(vec.x, vec.y, vec.z);
         if (!bitArray[ballNumber] && bitArrayBool){
                 bitArray[ballNumber] = true;
@@ -149,20 +149,21 @@ public class WorldBuilder : MonoBehaviour
             }
         return direction;
     }
-    public static Vector3 createVector(Vector3 pos,Vector3 vecMove){
+    public static Vector3 setVectorInBoundry(Vector3 pos,Vector3 vecMove){
         float x = boundry(pos.x, vecMove.x, dimensionX);
         float y = boundry(pos.y, vecMove.y, dimensionY);
         float z = boundry(pos.z, vecMove.z, dimensionZ);
         return new Vector3(x,y,z);
     }
-    public static void createFromVector(
-        Vector3 currentPos, bool createOrDelete, Vector3 vecMove
+    public static Vector3 createInBoundry(
+        Vector3 currentPos, Vector3 vecMove
         ){     
-        Vector3 vector = createVector(currentPos, vecMove);
+        Vector3 vector = setVectorInBoundry(currentPos, vecMove);
         Vector3Int intVector = new Vector3Int(
             (int)vector.x, (int)vector.y, (int)vector.z
             );
-        cloneCreator(intVector, createOrDelete);
+        createOrDelete(intVector, true);
+        return currentPos + vecMove;
     }
     void worldBuilderControls(){
         if (Input.GetKeyDown("w")){
@@ -196,13 +197,13 @@ public class WorldBuilder : MonoBehaviour
             binaryWriter();
         }
         if (Input.GetKeyDown("space")){
-            cloneCreator(
+            createOrDelete(
                 new Vector3Int(right,up,front), true
                 );
         }
 
         if (Input.GetKey("return")){
-            cloneCreator(
+            createOrDelete(
                 new Vector3Int(right,up,front), false
                 );
         }
