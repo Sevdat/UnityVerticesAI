@@ -98,9 +98,9 @@ public class WorldBuilder : MonoBehaviour
     void createBalls(){
         arraySize = bitArray.Count;
         arrayWidth = (int)Math.Cbrt(arraySize);
-        float x = 0;
-        float y = 0;
-        float z = 0;
+        int x = 0;
+        int y = 0;
+        int z = 0;
         cloneHierarchy = new GameObject(){
             name = "cloneHierarchy",
             isStatic = true
@@ -110,7 +110,7 @@ public class WorldBuilder : MonoBehaviour
             GameObject clone = Instantiate(
                 staticClone, cloneHierarchy.transform
                 );
-            Vector3 vec = new Vector3(x,y,z);
+            Vector3Int vec = new Vector3Int(x,y,z);
             clone.name = $"{i}";
             clone.transform.position = vec;
             }
@@ -119,6 +119,9 @@ public class WorldBuilder : MonoBehaviour
             if (x > dimension.x-1) {x = 0; z+=1;} 
         }
     } 
+    public static int vecToInt(int right, int front, int up){
+        return right + front*cubeX + up*cubeXZ;
+    }
     public static void createOrDelete(Vector3Int vec, bool bitArrayBool){
         int ballNumber = vecToInt(vec.x, vec.y, vec.z);
         if (!bitArray[ballNumber] && bitArrayBool){
@@ -136,10 +139,7 @@ public class WorldBuilder : MonoBehaviour
                     );
             }
     } 
-    public static int vecToInt(int right, int front, int up){
-        return right + front*cubeX + up*cubeXZ;
-    }
-    public static float boundry(float direction,float add,int dimension){
+    public static int boundry(int direction,int add,int dimension){
         direction+=add;
         if (direction > dimension) 
                 direction = Math.Abs(direction % (dimension+1));
@@ -149,20 +149,17 @@ public class WorldBuilder : MonoBehaviour
             }
         return direction;
     }
-    public static Vector3 setVectorInBoundry(Vector3 pos,Vector3 vecMove){
-        float x = boundry(pos.x, vecMove.x, dimensionX);
-        float y = boundry(pos.y, vecMove.y, dimensionY);
-        float z = boundry(pos.z, vecMove.z, dimensionZ);
-        return new Vector3(x,y,z);
+    public static Vector3Int setVectorInBoundry(Vector3Int pos,Vector3Int vecMove){
+        int x = boundry(pos.x, vecMove.x, dimensionX);
+        int y = boundry(pos.y, vecMove.y, dimensionY);
+        int z = boundry(pos.z, vecMove.z, dimensionZ);
+        return new Vector3Int(x,y,z);
     }
-    public static Vector3 createInBoundry(
-        Vector3 currentPos, Vector3 vecMove
+    public static Vector3Int createInBoundry(
+        Vector3Int currentPos, Vector3Int vecMove
         ){     
-        Vector3 vector = setVectorInBoundry(currentPos, vecMove);
-        Vector3Int intVector = new Vector3Int(
-            (int)vector.x, (int)vector.y, (int)vector.z
-            );
-        createOrDelete(intVector, true);
+        Vector3Int vector = setVectorInBoundry(currentPos, vecMove);
+        createOrDelete(vector, true);
         return currentPos + vecMove;
     }
     void worldBuilderControls(){
