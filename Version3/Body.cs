@@ -7,11 +7,11 @@ using UnityEngine;
 public class Body : MonoBehaviour
 {
     // Start is called before the first frame update
-    public static Vector3[] chest = new Vector3[]{
-         new Vector3(4,4,5),new Vector3(4,4,4)
+    public static Vector3Int[] chest = new Vector3Int[]{
+         new Vector3Int(4,4,5),new Vector3Int(4,4,4)
          };
-    public static Vector3 move = new Vector3(0,0,1); 
-    public static Vector3[] tempChest;     
+    public static Vector3Int move = new Vector3Int(0,0,1); 
+    public static Vector3Int[] tempChest;     
     void Start(){
             tempChest = chest;
     }
@@ -21,11 +21,12 @@ public class Body : MonoBehaviour
     void Update(){
         time += Time.deltaTime;
         if (time > 0.4f){
-            WorldBuilder.createFromVector(chest[0],false,move);
-            tempChest[0] += move;
-            print(tempChest[0]);
-            chest = tempChest;
-            WorldBuilder.createFromVector(chest[0],true,move);
+            WorldBuilder.createOrDelete(
+                WorldBuilder.setVectorInBoundry(
+                    chest[0],new Vector3Int(0,0,0)),false
+                    );
+            print(chest[0]);
+            chest[0] = WorldBuilder.createInBoundry(chest[0], move);;
             time = 0;
         }
     }
