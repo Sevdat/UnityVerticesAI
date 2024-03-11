@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Numerics;
 using UnityEngine;
 
 
@@ -41,9 +40,10 @@ public class Body : MonoBehaviour
         );
         float sin = Mathf.Sin(angleXY*Mathf.PI/180);
         float cos = Mathf.Cos(angleXY*Mathf.PI/180);
-        angleZ -= 90;
+   
         float sinZ = Mathf.Sin(angleZ*Mathf.PI/180);
         float cosZ = Mathf.Cos(angleZ*Mathf.PI/180);
+
         float x = radius*cos*sinZ;
         int x1 = (x>0)? (int)(x +0.5f):(int)(x -0.5f);
 
@@ -53,14 +53,17 @@ public class Body : MonoBehaviour
         float z = radius*cosZ;
         int z1 = (z>0)? (int)(z +0.5f):(int)(z -0.5f);
         return new Vector3Int(x1,y1,z1);
-    }
+    } 
+    // yxz = right(positive goes forward)
+    // zxy = front(positive goes forward)
+    
     int l = -90;
     void Update(){
         time += Time.deltaTime;
         if (i<361){
             WorldBuilder.createOrDelete(
                 WorldBuilder.setVectorInBoundry(
-                    chest[0], rotate(-30,i,chest[0],chest[1])
+                    chest[0], rotate(40,i,chest[0],chest[1])
                     ),true
                 );
                 i++;
