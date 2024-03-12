@@ -38,11 +38,15 @@ public class Body : MonoBehaviour
             Mathf.Pow(origin.y-point.y,2)+
             Mathf.Pow(origin.z-point.z,2)
         );
-        float sin = Mathf.Sin(angleXY*Mathf.PI/180);
-        float cos = Mathf.Cos(angleXY*Mathf.PI/180);
+        float faceXY =
+            angleXY*Mathf.PI/180 + MathF.Asin((origin.y-point.y)/radius);
+        float faceZ = 
+            angleZ*Mathf.PI/180 + MathF.Atan((origin.x-point.x)/(origin.z-point.z));
+        float sin = Mathf.Sin(faceXY);
+        float cos = Mathf.Cos(faceXY);
    
-        float sinZ = Mathf.Sin(angleZ*Mathf.PI/180);
-        float cosZ = Mathf.Cos(angleZ*Mathf.PI/180);
+        float sinZ = Mathf.Sin(faceZ);
+        float cosZ = Mathf.Cos(faceZ);
 
         float x = radius*cos*sinZ;
         int x1 = (x>0)? (int)(x +0.5f):(int)(x -0.5f);
@@ -63,7 +67,7 @@ public class Body : MonoBehaviour
         if (i<361){
             WorldBuilder.createOrDelete(
                 WorldBuilder.setVectorInBoundry(
-                    chest[0], rotate(40,i,chest[0],chest[1])
+                    chest[0], rotate(0,30,chest[0],chest[1])
                     ),true
                 );
                 i++;
