@@ -33,33 +33,30 @@ public class Body : MonoBehaviour
         int angleXY, int angleZ,
         Vector3Int point, Vector3Int origin
          ){
+        int lineX = origin.x-point.x;
+        int lineY = origin.y-point.y;
+        int lineZ = origin.z-point.z;
         float radius = MathF.Sqrt(
-            Mathf.Pow(origin.x-point.x,2)+
-            Mathf.Pow(origin.y-point.y,2)+
-            Mathf.Pow(origin.z-point.z,2)
+            Mathf.Pow(lineX,2)+
+            Mathf.Pow(lineY,2)+
+            Mathf.Pow(lineZ,2)
         );
-        float faceXY =
-            angleXY*Mathf.PI/180 + MathF.Asin((origin.y-point.y)/radius);
-        float faceZ = 
-            angleZ*Mathf.PI/180 + MathF.Atan((origin.x-point.x)/(origin.z-point.z));
+        
+        float faceXY = angleXY*Mathf.PI/180 + MathF.Asin(lineY/radius);
+        float faceZ = angleZ*Mathf.PI/180 + MathF.Atan(lineX/lineZ);
         float sin = Mathf.Sin(faceXY);
         float cos = Mathf.Cos(faceXY);
-   
         float sinZ = Mathf.Sin(faceZ);
         float cosZ = Mathf.Cos(faceZ);
 
         float x = radius*cos*sinZ;
-        int x1 = (x>0)? (int)(x +0.5f):(int)(x -0.5f);
-
         float y = radius*sin*sinZ;
-        int y1 = (y>0)? (int)(y +0.5f):(int)(y -0.5f);
-        
         float z = radius*cosZ;
+        int x1 = (x>0)? (int)(x +0.5f):(int)(x -0.5f);
+        int y1 = (y>0)? (int)(y +0.5f):(int)(y -0.5f);
         int z1 = (z>0)? (int)(z +0.5f):(int)(z -0.5f);
         return new Vector3Int(x1,y1,z1);
     } 
-    // yxz = right(positive goes forward)
-    // zxy = front(positive goes forward)
     
     int l = -90;
     void Update(){
@@ -67,7 +64,7 @@ public class Body : MonoBehaviour
         if (i<361){
             WorldBuilder.createOrDelete(
                 WorldBuilder.setVectorInBoundry(
-                    chest[0], rotate(0,30,chest[0],chest[1])
+                    chest[0], rotate(0,i,chest[0],chest[1])
                     ),true
                 );
                 i++;
