@@ -8,7 +8,7 @@ public class Body : MonoBehaviour
 {
     // Start is called before the first frame update
     public static Vector3Int[] chest = new Vector3Int[]{
-         new Vector3Int(3,3,5),new Vector3Int(3,3,2)
+         new Vector3Int(3,3,5),new Vector3Int(4,5,2)
          };
     public static Vector3Int move = new Vector3Int(0,0,1); 
     public static Vector3Int[] tempChest;     
@@ -30,20 +30,22 @@ public class Body : MonoBehaviour
     int i = 0;
     //https://stackoverflow.com/questions/20313363/trigonometry-3d-rotation-around-center-point
     Vector3Int rotate(
-        int angleXY, int angleZ,
-        Vector3Int point, Vector3Int origin
+        float angleXY, float angleZ,
+        Vector3Int origin,Vector3Int point
          ){
-        int lineX = origin.x-point.x;
-        int lineY = origin.y-point.y;
-        int lineZ = origin.z-point.z;
+        float lineX = origin.x-point.x;
+        float lineY = origin.y-point.y;
+        float lineZ = origin.z-point.z;
         float radius = MathF.Sqrt(
             Mathf.Pow(lineX,2)+
             Mathf.Pow(lineY,2)+
             Mathf.Pow(lineZ,2)
         );
         
-        float faceXY = angleXY*Mathf.PI/180 + MathF.Asin(lineY/radius);
-        float faceZ = angleZ*Mathf.PI/180 + MathF.Atan(lineX/lineZ);
+        float faceXY = angleXY*Mathf.PI/180 - MathF.Asin(lineY/radius);
+        float faceZ = angleZ*Mathf.PI/180 - MathF.Atan(lineX/lineZ);
+        print(faceXY);
+        print(faceZ);
         float sin = Mathf.Sin(faceXY);
         float cos = Mathf.Cos(faceXY);
         float sinZ = Mathf.Sin(faceZ);
