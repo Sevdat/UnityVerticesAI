@@ -30,7 +30,7 @@ public class Body : MonoBehaviour
     int i = 0;
     //https://stackoverflow.com/questions/20313363/trigonometry-3d-rotation-around-center-point
     Vector3Int rotate(
-        float angleXY, float angleZ,
+        float angleY, float angleZ,
         Vector3Int origin,Vector3Int point
          ){
         float lineX = origin.x-point.x;
@@ -42,18 +42,16 @@ public class Body : MonoBehaviour
             Mathf.Pow(lineZ,2)
         );
         
-        float faceXY = angleXY*Mathf.PI/180 - MathF.Asin(lineY/radius);
-        float faceZ = angleZ*Mathf.PI/180 - MathF.Atan(lineX/lineZ);
-        print(faceXY);
-        print(faceZ);
-        float sin = Mathf.Sin(faceXY);
-        float cos = Mathf.Cos(faceXY);
-        float sinZ = Mathf.Sin(faceZ);
-        float cosZ = Mathf.Cos(faceZ);
+        float angleToRadian = Mathf.PI/180;
+        float faceY = angleY*angleToRadian;
+        float faceZ = angleZ*angleToRadian;
+        float deg90 = 90*angleToRadian;
+        float adjacent = radius*Mathf.Cos(faceY);
 
-        float x = radius*cos*sinZ;
-        float y = radius*sin*sinZ;
-        float z = radius*cosZ;
+        float x = adjacent*Mathf.Cos(deg90-faceZ);
+        float y = radius*Mathf.Sin(faceY);
+        float z = adjacent*Mathf.Cos(faceZ);
+
         int x1 = (x>0)? (int)(x +0.5f):(int)(x -0.5f);
         int y1 = (y>0)? (int)(y +0.5f):(int)(y -0.5f);
         int z1 = (z>0)? (int)(z +0.5f):(int)(z -0.5f);
