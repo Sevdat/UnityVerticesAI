@@ -47,6 +47,8 @@ public class Body : MonoBehaviour
         float faceZ = angleZ*angleToRadian;
         float deg90 = 90*angleToRadian;
         float adjacent = radius*Mathf.Cos(faceY);
+        faceZ +=  Mathf.Cos(adjacent/lineZ);
+        faceY +=  Mathf.Cos(adjacent/radius);
 
         float x = adjacent*Mathf.Cos(deg90-faceZ);
         float y = radius*Mathf.Sin(faceY);
@@ -64,7 +66,7 @@ public class Body : MonoBehaviour
         if (i<361){
             WorldBuilder.createOrDelete(
                 WorldBuilder.setVectorInBoundry(
-                    chest[0], rotate(0,i,chest[0],chest[1])
+                    chest[0], rotate(0,0,chest[0],chest[1])
                     ),true
                 );
                 i++;
