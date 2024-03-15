@@ -42,9 +42,8 @@ public class Body : MonoBehaviour
             Mathf.Pow(lineZ,2)
         );
         float angleToRadian = Mathf.PI/180;
-        float deg90 = 90*angleToRadian;
         float curAnglY = Mathf.Asin(lineY/radius);
-        float adjacent = radius*Mathf.Cos(angleY);
+        float adjacent = radius*Mathf.Cos(curAnglY);
         float curAnglZ = Mathf.Acos(lineZ/adjacent);
 
         float faceY = angleY*angleToRadian + curAnglY;
