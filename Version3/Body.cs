@@ -30,7 +30,7 @@ public class Body : MonoBehaviour
     int i = 0;
     //https://stackoverflow.com/questions/20313363/trigonometry-3d-rotation-around-center-point
     Vector3Int rotate(
-        float angleY, float angleZ,
+        float height, float rotation,
         Vector3Int origin,Vector3Int point
          ){
         float lineX = point.x-origin.x;
@@ -46,9 +46,8 @@ public class Body : MonoBehaviour
         float adjacent = radius*Mathf.Cos(curAnglY);
         float curAnglZ = Mathf.Acos(lineZ/adjacent);
 
-        float faceY = angleY*angleToRadian + curAnglY;
-        float faceZ = angleZ*angleToRadian + curAnglZ;
-
+        float faceY = height*angleToRadian + curAnglY;
+        float faceZ = rotation*angleToRadian + curAnglZ;
         float x = adjacent*Mathf.Sin(faceZ)*MathF.Cos(faceY);
         float z = adjacent*Mathf.Cos(faceZ)*MathF.Cos(faceY);
         float y = radius*Mathf.Sin(faceY);
@@ -62,14 +61,13 @@ public class Body : MonoBehaviour
     int l = -90;
     void Update(){
         time += Time.deltaTime;
-        if (i<361){
+        if (i<360){
             WorldBuilder.createOrDelete(
                 WorldBuilder.setVectorInBoundry(
-                    chest[0], rotate(10,i,chest[0],chest[1])
+                    chest[0], rotate(0,0,chest[0],chest[1])
                     ),true
                 );
                 i++;
-            if (i>=360 && l <90) {i =0;l+=10;};
         }
     }
 }
