@@ -33,9 +33,9 @@ public class Body : MonoBehaviour
         float angleY, float angleZ,
         Vector3Int origin,Vector3Int point
          ){
-        float lineX = origin.x-point.x;
-        float lineY = origin.y-point.y;
-        float lineZ = origin.z-point.z;
+        float lineX = point.x-origin.x;
+        float lineY = point.y-origin.y;
+        float lineZ = point.z-origin.z;
         float radius = MathF.Sqrt(
             Mathf.Pow(lineX,2)+
             Mathf.Pow(lineY,2)+
@@ -43,16 +43,16 @@ public class Body : MonoBehaviour
         );
         float angleToRadian = Mathf.PI/180;
         float deg90 = 90*angleToRadian;
-        float curAnglY = deg90 - Mathf.Acos(lineY/radius);
-        float adjacent = radius*Mathf.Cos(curAnglY+angleY);
+        float curAnglY = Mathf.Asin(lineY/radius);
+        float adjacent = radius*Mathf.Cos(angleY);
         float curAnglZ = Mathf.Acos(lineZ/adjacent);
 
         float faceY = angleY*angleToRadian + curAnglY;
         float faceZ = angleZ*angleToRadian + curAnglZ;
 
-        float x = adjacent*Mathf.Cos(deg90-faceZ);
-        float y = radius*Mathf.Sin(faceY);
+        float x = adjacent*Mathf.Sin(faceZ);
         float z = adjacent*Mathf.Cos(faceZ);
+        float y = radius*Mathf.Sin(faceY);
 
         int x1 = (x>0)? (int)(x +0.5f):(int)(x -0.5f);
         int y1 = (y>0)? (int)(y +0.5f):(int)(y -0.5f);
