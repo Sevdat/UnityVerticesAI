@@ -8,7 +8,7 @@ public class Body : MonoBehaviour
 {
     // Start is called before the first frame update
     public static Vector3Int[] chest = new Vector3Int[]{
-         new Vector3Int(3,3,5),new Vector3Int(4,5,2)
+         new Vector3Int(5,3,5),new Vector3Int(3,5,10)
          };
     public static Vector3Int move = new Vector3Int(0,0,1); 
     public static Vector3Int[] tempChest;     
@@ -29,8 +29,9 @@ public class Body : MonoBehaviour
     float time = 0;
     int i = 0;
     //https://stackoverflow.com/questions/20313363/trigonometry-3d-rotation-around-center-point
-    Vector3Int rotate(
-        float height, float rotation,
+
+    Vector3Int rotateZX(
+        float theta, float alpha,
         Vector3Int origin,Vector3Int point
          ){
         float lineX = point.x-origin.x;
@@ -42,15 +43,44 @@ public class Body : MonoBehaviour
             Mathf.Pow(lineZ,2)
         );
         float angleToRadian = Mathf.PI/180;
-        float curAnglY = Mathf.Asin(lineY/radius);
-        float adjacent = radius*Mathf.Cos(curAnglY);
-        float curAnglZ = Mathf.Acos(lineZ/adjacent);
+        float currentTheta = Mathf.Asin(lineY/radius);
+        float adjacent = radius*Mathf.Cos(currentTheta);
+        float currentAlpha = Mathf.Acos(lineZ/adjacent);
 
-        float faceY = height*angleToRadian + curAnglY;
-        float faceZ = rotation*angleToRadian + curAnglZ;
-        float x = adjacent*Mathf.Sin(faceZ)*MathF.Cos(faceY);
-        float z = adjacent*Mathf.Cos(faceZ)*MathF.Cos(faceY);
-        float y = radius*Mathf.Sin(faceY);
+        alpha = alpha*angleToRadian + currentAlpha;
+        theta = theta*angleToRadian + currentTheta;
+        float x = adjacent*Mathf.Sin(alpha);
+        float z = adjacent*Mathf.Cos(alpha);
+        float y = radius*Mathf.Sin(theta);
+
+        int x1 = (x>0)? (int)(x +0.5f):(int)(x -0.5f);
+        int y1 = (y>0)? (int)(y +0.5f):(int)(y -0.5f);
+        int z1 = (z>0)? (int)(z +0.5f):(int)(z -0.5f);
+        return new Vector3Int(x1,y1,z1);
+    } 
+
+    Vector3Int rotateXY(
+        float theta, float alpha,
+        Vector3Int origin,Vector3Int point
+         ){
+        float lineX = point.x-origin.x;
+        float lineY = point.y-origin.y;
+        float lineZ = point.z-origin.z;
+        float radius = MathF.Sqrt(
+            Mathf.Pow(lineX,2)+
+            Mathf.Pow(lineY,2)+
+            Mathf.Pow(lineZ,2)
+        );
+        float angleToRadian = Mathf.PI/180;
+        float currentTheta = Mathf.Asin(lineZ/radius);
+        float adjacent = radius*Mathf.Cos(currentTheta);
+        float currentAlpha = Mathf.Acos(lineX/adjacent);
+
+        alpha = alpha*angleToRadian + currentAlpha;
+        theta = theta*angleToRadian + currentTheta;
+        float y = adjacent*Mathf.Sin(alpha);
+        float x = adjacent*Mathf.Cos(alpha);
+        float z = radius*Mathf.Sin(theta);
 
         int x1 = (x>0)? (int)(x +0.5f):(int)(x -0.5f);
         int y1 = (y>0)? (int)(y +0.5f):(int)(y -0.5f);
@@ -64,7 +94,7 @@ public class Body : MonoBehaviour
         if (i<360){
             WorldBuilder.createOrDelete(
                 WorldBuilder.setVectorInBoundry(
-                    chest[0], rotate(0,0,chest[0],chest[1])
+                    chest[0], rotateZX(0,i,chest[0],chest[1])
                     ),true
                 );
                 i++;
