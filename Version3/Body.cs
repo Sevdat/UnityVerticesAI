@@ -76,7 +76,7 @@ public class Body : MonoBehaviour
                     currentTheta = Mathf.Asin(lineX/radius);
                     adjacent = radius*Mathf.Cos(currentTheta);
                     currentAlpha = Mathf.Acos(lineZ/adjacent);
-                    alpha = alpha*angleToRadian + Mathf.Sign(lineY)*currentAlpha;
+                    alpha = alpha*angleToRadian + Mathf.Sign(lineZ)*currentAlpha;
                     theta = theta*angleToRadian + currentTheta;
                     y = adjacent*Mathf.Sin(alpha);
                     z = adjacent*Mathf.Cos(alpha);
@@ -96,7 +96,7 @@ public class Body : MonoBehaviour
         if (i<360){
             WorldBuilder.createOrDelete(
                 WorldBuilder.setVectorInBoundry(
-                    chest[0], rotate(0,0,chest[0],chest[1],1)
+                    chest[0], rotate(0,0,chest[0],chest[1],2)
                     ),true
                 );
                 i++;
