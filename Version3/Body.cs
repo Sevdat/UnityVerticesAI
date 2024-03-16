@@ -28,7 +28,6 @@ public class Body : MonoBehaviour
     // Update is called once per frame
     float time = 0;
     int i = 0;
-    //https://stackoverflow.com/questions/20313363/trigonometry-3d-rotation-around-center-point
 
     Vector3Int rotateZX(
         float theta, float alpha,
