@@ -9,7 +9,7 @@ public class Body : MonoBehaviour
 {
     // Start is called before the first frame update
     public static Vector3Int[] chest = new Vector3Int[]{
-         new Vector3Int(7,3,5),new Vector3Int(3,5,10)
+         new Vector3Int(7,3,5),new Vector3Int(4,1,7)
          };
     public static Vector3Int move = new Vector3Int(0,0,1); 
     public static Vector3Int[] tempChest;     
@@ -65,7 +65,7 @@ public class Body : MonoBehaviour
                     currentTheta = Mathf.Asin(lineX/radius);
                     adjacent = radius*Mathf.Cos(currentTheta);
                     currentAlpha = Mathf.Acos(lineZ/adjacent);
-                    alpha = alpha*angleToRadian + Mathf.Sign(lineZ)*currentAlpha;
+                    alpha = alpha*angleToRadian + Mathf.Sign(lineY)*currentAlpha;
                     theta = theta*angleToRadian + currentTheta;
                     y = adjacent*Mathf.Sin(alpha);
                     z = adjacent*Mathf.Cos(alpha);
@@ -75,7 +75,6 @@ public class Body : MonoBehaviour
                     currentTheta = Mathf.Asin(lineY/radius);
                     adjacent = radius*Mathf.Cos(currentTheta);
                     currentAlpha = Mathf.Acos(lineZ/adjacent);
-                    print(currentAlpha);
                     alpha = alpha*angleToRadian + Mathf.Sign(lineX)*currentAlpha;
                     theta = theta*angleToRadian + currentTheta;
                     x = adjacent*Mathf.Sin(alpha);
@@ -90,13 +89,13 @@ public class Body : MonoBehaviour
             return new Vector3Int(x1,y1,z1);
          }
     
-    int l = -90;
+    int l = 0;
     void Update(){
         time += Time.deltaTime;
         if (i<360){
             WorldBuilder.createOrDelete(
                 WorldBuilder.setVectorInBoundry(
-                    chest[0], rotate(0,0,chest[0],chest[1],0)
+                    chest[0], rotate(0,0,chest[0],chest[1],1)
                     ),true
                 );
                 i++;
