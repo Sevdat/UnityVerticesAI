@@ -29,9 +29,9 @@ public class Body : MonoBehaviour
     // Update is called once per frame
         float time = 0;
         int i = 0;
-        const int rotateY = 0;
-        const int rotateZ = 1;
-        const int rotateX = 2;
+        const int rotateX = 0;
+        const int rotateY = 1;
+        const int rotateZ = 2;
       Vector3Int rotate(
         float theta, float alpha,
         Vector3Int origin,Vector3Int point,
@@ -51,17 +51,6 @@ public class Body : MonoBehaviour
             float y = 0;
             float z = 0;
             switch(direction){
-                case rotateZ:
-                    currentTheta = Mathf.Asin(lineY/radius);
-                    adjacent = radius*Mathf.Cos(currentTheta);
-                    currentAlpha = Mathf.Acos(lineZ/adjacent);
-                    print(currentAlpha);
-                    alpha = alpha*angleToRadian + Mathf.Sign(lineX)*currentAlpha;
-                    theta = theta*angleToRadian + currentTheta;
-                    x = adjacent*Mathf.Sin(alpha);
-                    z = adjacent*Mathf.Cos(alpha);
-                    y = radius*Mathf.Sin(theta);
-                break;
                 case rotateX:
                     currentTheta = Mathf.Asin(lineZ/radius);
                     adjacent = radius*Mathf.Cos(currentTheta);
@@ -82,6 +71,17 @@ public class Body : MonoBehaviour
                     z = adjacent*Mathf.Cos(alpha);
                     x = radius*Mathf.Sin(theta);
                 break;
+                case rotateZ:
+                    currentTheta = Mathf.Asin(lineY/radius);
+                    adjacent = radius*Mathf.Cos(currentTheta);
+                    currentAlpha = Mathf.Acos(lineZ/adjacent);
+                    print(currentAlpha);
+                    alpha = alpha*angleToRadian + Mathf.Sign(lineX)*currentAlpha;
+                    theta = theta*angleToRadian + currentTheta;
+                    x = adjacent*Mathf.Sin(alpha);
+                    z = adjacent*Mathf.Cos(alpha);
+                    y = radius*Mathf.Sin(theta);
+                break;
             }
             int x1 = (x>0)? (int)(x +0.5f):(int)(x -0.5f);
             int y1 = (y>0)? (int)(y +0.5f):(int)(y -0.5f);
@@ -96,7 +96,7 @@ public class Body : MonoBehaviour
         if (i<360){
             WorldBuilder.createOrDelete(
                 WorldBuilder.setVectorInBoundry(
-                    chest[0], rotate(0,0,chest[0],chest[1],2)
+                    chest[0], rotate(0,0,chest[0],chest[1],0)
                     ),true
                 );
                 i++;
