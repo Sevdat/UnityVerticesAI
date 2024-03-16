@@ -86,7 +86,36 @@ public class Body : MonoBehaviour
         int y1 = (y>0)? (int)(y +0.5f):(int)(y -0.5f);
         int z1 = (z>0)? (int)(z +0.5f):(int)(z -0.5f);
         return new Vector3Int(x1,y1,z1);
-    } 
+    }
+
+    Vector3Int rotateYZ(
+        float theta, float alpha,
+        Vector3Int origin,Vector3Int point
+         ){
+        float lineX = point.x-origin.x;
+        float lineY = point.y-origin.y;
+        float lineZ = point.z-origin.z;
+        float radius = MathF.Sqrt(
+            Mathf.Pow(lineX,2)+
+            Mathf.Pow(lineY,2)+
+            Mathf.Pow(lineZ,2)
+        );
+        float angleToRadian = Mathf.PI/180;
+        float currentTheta = Mathf.Asin(lineX/radius);
+        float adjacent = radius*Mathf.Cos(currentTheta);
+        float currentAlpha = Mathf.Acos(lineZ/adjacent);
+
+        alpha = alpha*angleToRadian + currentAlpha;
+        theta = theta*angleToRadian + currentTheta;
+        float y = adjacent*Mathf.Sin(alpha);
+        float z = adjacent*Mathf.Cos(alpha);
+        float x = radius*Mathf.Sin(theta);
+
+        int x1 = (x>0)? (int)(x +0.5f):(int)(x -0.5f);
+        int y1 = (y>0)? (int)(y +0.5f):(int)(y -0.5f);
+        int z1 = (z>0)? (int)(z +0.5f):(int)(z -0.5f);
+        return new Vector3Int(x1,y1,z1);
+    }  
     
     int l = -90;
     void Update(){
@@ -94,7 +123,7 @@ public class Body : MonoBehaviour
         if (i<360){
             WorldBuilder.createOrDelete(
                 WorldBuilder.setVectorInBoundry(
-                    chest[0], rotateZX(0,i,chest[0],chest[1])
+                    chest[0], rotateYZ(0,0,chest[0],chest[1])
                     ),true
                 );
                 i++;
