@@ -55,7 +55,8 @@ public class Body : MonoBehaviour
                     currentTheta = Mathf.Asin(lineY/radius);
                     adjacent = radius*Mathf.Cos(currentTheta);
                     currentAlpha = Mathf.Acos(lineZ/adjacent);
-                    alpha = alpha*angleToRadian - currentAlpha;
+                    print(currentAlpha);
+                    alpha = alpha*angleToRadian + Mathf.Sign(lineX)*currentAlpha;
                     theta = theta*angleToRadian + currentTheta;
                     x = adjacent*Mathf.Sin(alpha);
                     z = adjacent*Mathf.Cos(alpha);
@@ -65,7 +66,7 @@ public class Body : MonoBehaviour
                     currentTheta = Mathf.Asin(lineZ/radius);
                     adjacent = radius*Mathf.Cos(currentTheta);
                     currentAlpha = Mathf.Acos(lineX/adjacent);
-                    alpha = alpha*angleToRadian + currentAlpha;
+                    alpha = alpha*angleToRadian + Mathf.Sign(lineY)*currentAlpha;
                     theta = theta*angleToRadian + currentTheta;
                     y = adjacent*Mathf.Sin(alpha);
                     x = adjacent*Mathf.Cos(alpha);
@@ -75,7 +76,7 @@ public class Body : MonoBehaviour
                     currentTheta = Mathf.Asin(lineX/radius);
                     adjacent = radius*Mathf.Cos(currentTheta);
                     currentAlpha = Mathf.Acos(lineZ/adjacent);
-                    alpha = alpha*angleToRadian + currentAlpha;
+                    alpha = alpha*angleToRadian + Mathf.Sign(lineY)*currentAlpha;
                     theta = theta*angleToRadian + currentTheta;
                     y = adjacent*Mathf.Sin(alpha);
                     z = adjacent*Mathf.Cos(alpha);
