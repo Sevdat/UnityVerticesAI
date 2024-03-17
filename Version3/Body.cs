@@ -9,7 +9,7 @@ public class Body : MonoBehaviour
 {
     // Start is called before the first frame update
     public static Vector3Int[] chest = new Vector3Int[]{
-         new Vector3Int(7,3,5),new Vector3Int(4,1,7)
+         new Vector3Int(3,5,5),new Vector3Int(7,2,1)
          };
     public static Vector3Int move = new Vector3Int(0,0,1); 
     public static Vector3Int[] tempChest;     
@@ -55,8 +55,8 @@ public class Body : MonoBehaviour
                     currentTheta = Mathf.Asin(lineZ/radius);
                     adjacent = radius*Mathf.Cos(currentTheta);
                     currentAlpha = Mathf.Acos(lineX/adjacent);
-                    alpha = alpha*angleToRadian + Mathf.Sign(lineY)*currentAlpha;
-                    theta = theta*angleToRadian + currentTheta;
+                    alpha = -alpha*angleToRadian; //+ Mathf.Sign(lineY)*currentAlpha;
+                    theta = theta*angleToRadian; //+ currentTheta;
                     y = adjacent*Mathf.Sin(alpha);
                     x = adjacent*Mathf.Cos(alpha);
                     z = radius*Mathf.Sin(theta);
@@ -64,11 +64,11 @@ public class Body : MonoBehaviour
                 case rotateY:
                     currentTheta = Mathf.Asin(lineX/radius);
                     adjacent = radius*Mathf.Cos(currentTheta);
-                    currentAlpha = Mathf.Acos(lineZ/adjacent);
-                    alpha = alpha*angleToRadian + Mathf.Sign(lineY)*currentAlpha;
+                    currentAlpha = Mathf.Acos(lineY/adjacent);
+                    alpha = alpha*angleToRadian + Mathf.Sign(lineZ)*currentAlpha;
                     theta = theta*angleToRadian + currentTheta;
-                    y = adjacent*Mathf.Sin(alpha);
-                    z = adjacent*Mathf.Cos(alpha);
+                    z = adjacent*Mathf.Sin(alpha);
+                    y = adjacent*Mathf.Cos(alpha);
                     x = radius*Mathf.Sin(theta);
                 break;
                 case rotateZ:
