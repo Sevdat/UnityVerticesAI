@@ -16,7 +16,7 @@ public class WorldBuilder : MonoBehaviour
     public static BitArray bitArray;
     public static int arraySize;
     public static int arrayWidth;
-    public static Vector3Int dimension = new Vector3Int(10,10,10);
+    public static Vector3Int dimension = new Vector3Int(20,20,20);
     public static int dimensionX;
     public static int dimensionY;
     public static int dimensionZ;
@@ -26,6 +26,10 @@ public class WorldBuilder : MonoBehaviour
     int right = 0;
     int front = 0;
     int up = 0;
+    public static float angleToRadian = Mathf.PI/180;
+    public const int rotateX = 0;
+    public const int rotateY = 1;
+    public const int rotateZ = 2;
     void Awake()
     {
         dynamicClone = originalObject;
@@ -155,13 +159,86 @@ public class WorldBuilder : MonoBehaviour
         int z = boundry(pos.z, vecMove.z, dimensionZ);
         return new Vector3Int(x,y,z);
     }
-    public static Vector3Int createInBoundry(
+    public static Vector3Int moveVector(
         Vector3Int currentPos, Vector3Int vecMove
         ){     
         Vector3Int vector = setVectorInBoundry(currentPos, vecMove);
         createOrDelete(vector, true);
         return currentPos + vecMove;
     }
+    public static Vector3Int vecToVecInt(Vector3 vec, bool rotation){
+        float x = vec.x;
+        float y = vec.y;
+        float z = vec.z;
+        if (rotation){
+        x = (x>0)? x +0.5f:x -0.5f;
+        y = (y>0)? y +0.5f:y -0.5f;
+        z = (z>0)? z +0.5f:z -0.5f;
+        }
+        return new Vector3Int((int)x,(int)y,(int)z);
+    }
+    public static float[] vectorDirections(Vector3 origin, Vector3 point){
+        float lineX = point.x-origin.x;
+        float lineY = point.y-origin.y;
+        float lineZ = point.z-origin.z;
+        return new float[]{lineX,lineY,lineZ};
+        }
+    public static float vectorRadius(float[] vectorDirections){
+        float radius = MathF.Sqrt(
+            Mathf.Pow(vectorDirections[0],2)+
+            Mathf.Pow(vectorDirections[1],2)+
+            Mathf.Pow(vectorDirections[2],2)
+        );
+        return radius;
+    }
+    public static float[] locatePoint(float radius,float opposite,float axisAdjacent,float rotatingAxis){
+        float currentTheta = Mathf.Asin(opposite/radius);
+        float adjacent = radius*Mathf.Cos(currentTheta);
+        float currentAlpha = Mathf.Acos(axisAdjacent/adjacent);
+        float rotationSide = Mathf.Sign(rotatingAxis);
+        return new float[]{
+            rotationSide*currentAlpha,
+            currentTheta,
+            adjacent
+            };
+    }
+    public static Vector3 rotate(
+        float theta, float alpha,
+        float radius, float[] vectorDirections,
+        int rotationDirection
+         ){
+            float lineX = vectorDirections[0];
+            float lineY = vectorDirections[1];
+            float lineZ = vectorDirections[2];
+            Vector3 rotatedVec = new Vector3();
+            switch(rotationDirection){
+                case rotateX:
+                    float[] xValues = locatePoint(radius,lineZ,lineY,lineX);
+                    alpha = alpha*angleToRadian + xValues[0];
+                    theta = theta*angleToRadian + xValues[1];
+                    rotatedVec.x = xValues[2]*Mathf.Sin(alpha);
+                    rotatedVec.y = xValues[2]*Mathf.Cos(alpha);
+                    rotatedVec.z = radius*Mathf.Sin(theta);
+                break;
+                case rotateY:
+                    float[] yValues = locatePoint(radius,lineX,lineY,lineZ);
+                    alpha = alpha*angleToRadian + yValues[0];
+                    theta = theta*angleToRadian + yValues[1];
+                    rotatedVec.z = yValues[2]*Mathf.Sin(alpha);
+                    rotatedVec.y = yValues[2]*Mathf.Cos(alpha);
+                    rotatedVec.x = radius*Mathf.Sin(theta);
+                break;
+                case rotateZ:
+                    float[] zValues = locatePoint(radius,lineY,lineZ,lineX);
+                    alpha = alpha*angleToRadian + zValues[0];
+                    theta = theta*angleToRadian + zValues[1];
+                    rotatedVec.x = zValues[2]*Mathf.Sin(alpha);
+                    rotatedVec.z = zValues[2]*Mathf.Cos(alpha);
+                    rotatedVec.y = radius*Mathf.Sin(theta);
+                break;
+            }
+            return rotatedVec;
+         }
     void worldBuilderControls(){
         if (Input.GetKeyDown("w")){
             front = (front < dimensionZ) ? 
