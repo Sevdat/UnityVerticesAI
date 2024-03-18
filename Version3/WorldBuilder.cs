@@ -191,7 +191,11 @@ public class WorldBuilder : MonoBehaviour
         );
         return radius;
     }
-    public static float[] locatePoint(float radius,float opposite,float axisAdjacent,float rotatingAxis){
+    public static float[] locatePoint(
+        float radius,
+        float opposite, float axisAdjacent,
+        float rotatingAxis
+        ){
         float currentTheta = Mathf.Asin(opposite/radius);
         float adjacent = radius*Mathf.Cos(currentTheta);
         float currentAlpha = Mathf.Acos(axisAdjacent/adjacent);
