@@ -9,7 +9,7 @@ public class Body : MonoBehaviour
 {
     // Start is called before the first frame update
     public static Vector3[] chest = new Vector3[]{
-         new Vector3(3,5,5),new Vector3(1,8,8)
+         new Vector3(5,5,5),new Vector3(8,8,8)
          };
     public static Vector3 move = new Vector3(0,0,1); 
     public static Vector3[] tempChest;     
@@ -29,23 +29,32 @@ public class Body : MonoBehaviour
     // Update is called once per frame
         float time = 0;
         int i = 0;
-        public const int rotateX = 0;
-        public const int rotateY = 1;
-        public const int rotateZ = 2;
-      Vector3 rotate(
+    public static float angleToRadian = Mathf.PI/180;
+    public const int rotateX = 0;
+    public const int rotateY = 1;
+    public const int rotateZ = 2;
+    float[] vectorDirections(Vector3 origin, Vector3 point){
+        float lineX = point.x-origin.x;
+        float lineY = point.y-origin.y;
+        float lineZ = point.z-origin.z;
+        return new float[]{lineX,lineY,lineZ};
+        }
+    float vectorRadius(float[] vectorDirections){
+        float radius = MathF.Sqrt(
+            Mathf.Pow(vectorDirections[0],2)+
+            Mathf.Pow(vectorDirections[1],2)+
+            Mathf.Pow(vectorDirections[2],2)
+        );
+        return radius;
+    }
+    Vector3 rotate(
         float theta, float alpha,
-        Vector3 origin,Vector3 point,
+        float radius, float[] vectorDirections,
         int direction
          ){
-            float lineX = point.x-origin.x;
-            float lineY = point.y-origin.y;
-            float lineZ = point.z-origin.z;
-            float radius = MathF.Sqrt(
-                Mathf.Pow(lineX,2)+
-                Mathf.Pow(lineY,2)+
-                Mathf.Pow(lineZ,2)
-            );
-            float angleToRadian = Mathf.PI/180;
+            float lineX = vectorDirections[0];
+            float lineY = vectorDirections[1];
+            float lineZ = vectorDirections[2];
             float currentTheta,adjacent,currentAlpha;
             float x = 0;
             float y = 0;
@@ -82,7 +91,6 @@ public class Body : MonoBehaviour
                     y = radius*Mathf.Sin(theta);
                 break;
             }
-
             return new Vector3(x,y,z);
          }
          Vector3Int convert(Vector3 vec, bool rotation){
@@ -101,10 +109,13 @@ public class Body : MonoBehaviour
     void Update(){
         time += Time.deltaTime;
         if (i<360){
+            float[] direc = vectorDirections(chest[0],chest[1]);
             WorldBuilder.createOrDelete(
-                WorldBuilder.setVectorInBoundry(
+                WorldBuilder.moveVector(
                     convert(chest[0],false), 
-                    convert(rotate(0,i,chest[0],chest[1],2),true)
+                    convert(
+                        rotate(0,i,vectorRadius(direc),direc,rotateZ),true
+                        )
                     ),true
                 );
                 i++;
