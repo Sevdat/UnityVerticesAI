@@ -8,20 +8,20 @@ using UnityEngine;
 public class Body : MonoBehaviour
 {
     // Start is called before the first frame update
-    public static Vector3Int[] chest = new Vector3Int[]{
-         new Vector3Int(3,5,5),new Vector3Int(1,8,8)
+    public static Vector3[] chest = new Vector3[]{
+         new Vector3(3,5,5),new Vector3(1,8,8)
          };
-    public static Vector3Int move = new Vector3Int(0,0,1); 
-    public static Vector3Int[] tempChest;     
+    public static Vector3 move = new Vector3(0,0,1); 
+    public static Vector3[] tempChest;     
     void Start(){
         WorldBuilder.createOrDelete(
                 WorldBuilder.setVectorInBoundry(
-                    chest[1], new Vector3Int(0,0,0)
+                    convert(chest[1],false), new Vector3Int(0,0,0)
                     ),true
                 );
         WorldBuilder.createOrDelete(
                 WorldBuilder.setVectorInBoundry(
-                    chest[0], new Vector3Int(0,0,0)
+                    convert(chest[0],false), new Vector3Int(0,0,0)
                     ),true
                 );
     }
@@ -29,12 +29,12 @@ public class Body : MonoBehaviour
     // Update is called once per frame
         float time = 0;
         int i = 0;
-        const int rotateX = 0;
-        const int rotateY = 1;
-        const int rotateZ = 2;
-      Vector3Int rotate(
+        public const int rotateX = 0;
+        public const int rotateY = 1;
+        public const int rotateZ = 2;
+      Vector3 rotate(
         float theta, float alpha,
-        Vector3Int origin,Vector3Int point,
+        Vector3 origin,Vector3 point,
         int direction
          ){
             float lineX = point.x-origin.x;
@@ -82,11 +82,19 @@ public class Body : MonoBehaviour
                     y = radius*Mathf.Sin(theta);
                 break;
             }
-            int x1 = (x>0)? (int)(x +0.5f):(int)(x -0.5f);
-            int y1 = (y>0)? (int)(y +0.5f):(int)(y -0.5f);
-            int z1 = (z>0)? (int)(z +0.5f):(int)(z -0.5f);
 
-            return new Vector3Int(x1,y1,z1);
+            return new Vector3(x,y,z);
+         }
+         Vector3Int convert(Vector3 vec, bool rotation){
+            float x = vec.x;
+            float y = vec.y;
+            float z = vec.z;
+            if (rotation){
+            x = (x>0)? x +0.5f:x -0.5f;
+            y = (y>0)? y +0.5f:y -0.5f;
+            z = (z>0)? z +0.5f:z -0.5f;
+            }
+            return new Vector3Int((int)x,(int)y,(int)z);
          }
     
     int l = 0;
@@ -95,7 +103,8 @@ public class Body : MonoBehaviour
         if (i<360){
             WorldBuilder.createOrDelete(
                 WorldBuilder.setVectorInBoundry(
-                    chest[0], rotate(0,i,chest[0],chest[1],2)
+                    convert(chest[0],false), 
+                    convert(rotate(0,i,chest[0],chest[1],2),true)
                     ),true
                 );
                 i++;
