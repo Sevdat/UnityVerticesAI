@@ -30,6 +30,7 @@ public class WorldBuilder : MonoBehaviour
     public const int rotateX = 0;
     public const int rotateY = 1;
     public const int rotateZ = 2;
+    public static float roundUp = 0.49f;
     void Awake()
     {
         dynamicClone = originalObject;
@@ -143,38 +144,36 @@ public class WorldBuilder : MonoBehaviour
                     );
             }
     } 
-    public static int boundry(int direction,int add,int dimension){
-        direction+=add;
-        if (direction > dimension) 
-                direction = Math.Abs(direction % (dimension+1));
-            else if (direction < 0) {
-                int size = dimension+1;
-                direction = size-Math.Abs(direction % size);
+    public static float boundry(float location, float dimension){
+        if (location > dimension) 
+                location = Math.Abs(location % (dimension+1));
+            else if (location < 0) {
+                float size = dimension+1;
+                location = size-Math.Abs(location % size);
             }
-        return direction;
+        return location;
     }
-    public static Vector3Int setVectorInBoundry(Vector3Int pos,Vector3Int vecMove){
-        int x = boundry(pos.x, vecMove.x, dimensionX);
-        int y = boundry(pos.y, vecMove.y, dimensionY);
-        int z = boundry(pos.z, vecMove.z, dimensionZ);
-        return new Vector3Int(x,y,z);
+    public static Vector3 setVectorInBoundry(Vector3 pos){
+        float x = boundry(pos.x, dimensionX);
+        float y = boundry(pos.y, dimensionY);
+        float z = boundry(pos.z, dimensionZ);
+        return new Vector3(x,y,z);
     }
-    public static Vector3Int moveVector(
-        Vector3Int currentPos, Vector3Int vecMove
-        ){     
-        Vector3Int vector = setVectorInBoundry(currentPos, vecMove);
-        createOrDelete(vector, true);
-        return currentPos + vecMove;
+    public static void createOrDeleteObject(
+        Vector3[] obj, bool create
+        ){ 
+        for (int i = 0; i < obj.Length; i++){
+            Vector3 vector = setVectorInBoundry(obj[i]);
+            createOrDelete(vecToVecInt(vector),create);
+        }
     }
-    public static Vector3Int vecToVecInt(Vector3 vec, bool rotation){
+    public static Vector3Int vecToVecInt(Vector3 vec){
         float x = vec.x;
         float y = vec.y;
         float z = vec.z;
-        if (rotation){
-        x = (x>0)? x +0.5f:x -0.5f;
-        y = (y>0)? y +0.5f:y -0.5f;
-        z = (z>0)? z +0.5f:z -0.5f;
-        }
+        x = (x>0)? x +roundUp : x -roundUp;
+        y = (y>0)? y +roundUp : y -roundUp;
+        z = (z>0)? z +roundUp : z -roundUp;
         return new Vector3Int((int)x,(int)y,(int)z);
     }
     public static float[] vectorDirections(Vector3 origin, Vector3 point){
@@ -243,6 +242,22 @@ public class WorldBuilder : MonoBehaviour
             }
             return rotatedVec;
          }
+    public static Vector3[] rotateObject(
+        float theta, float alpha, int rotationDirection, 
+        Vector3 origin,Vector3[] obj
+        ){
+        Vector3[] rotatedObj = new Vector3[obj.Length];
+        for (int i = 0; i < rotatedObj.Length; i++){
+            float[] direc = vectorDirections(origin,obj[i]);
+            rotatedObj[i] = 
+                origin + rotate(
+                            theta,alpha,vectorRadius(direc),
+                            direc,rotationDirection
+                            );
+            }
+        return rotatedObj;
+    }
+
     void worldBuilderControls(){
         if (Input.GetKeyDown("w")){
             front = (front < dimensionZ) ? 
