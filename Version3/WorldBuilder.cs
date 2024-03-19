@@ -209,7 +209,7 @@ public class WorldBuilder : MonoBehaviour
         float theta, float alpha,
         float radius, float[] vectorDirections,
         int rotationDirection
-         ){
+        ){
             float lineX = vectorDirections[0];
             float lineY = vectorDirections[1];
             float lineZ = vectorDirections[2];
@@ -251,11 +251,12 @@ public class WorldBuilder : MonoBehaviour
                 break;
             }
             return rotatedVec;
-         }
+    }
     public static Vector3[] rotateObject(
         float theta, float alpha, int rotationDirection, 
         Vector3 origin,Vector3[] obj
         ){
+        createOrDeleteObject(obj, false);
         Vector3[] rotatedObj = new Vector3[obj.Length];
         for (int i = 0; i < rotatedObj.Length; i++){
             float[] direc = vectorDirections(origin,obj[i]);
@@ -265,6 +266,7 @@ public class WorldBuilder : MonoBehaviour
                             direc,rotationDirection
                             );
             }
+        createOrDeleteObject(rotatedObj, true);
         return rotatedObj;
     }
 
