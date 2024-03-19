@@ -159,21 +159,6 @@ public class WorldBuilder : MonoBehaviour
         float z = boundry(pos.z, dimensionZ);
         return new Vector3(x,y,z);
     }
-    public static Vector3 round(Vector3 vec){
-        float x = vec.x;
-        float y = vec.y;
-        float z = vec.z;
-        x = (x>0)? x +roundUp : x -roundUp;
-        y = (y>0)? y +roundUp : y -roundUp;
-        z = (z>0)? z +roundUp : z -roundUp;
-        return new Vector3(x,y,z);
-    }
-    public static Vector3Int vecToVecInt(Vector3 vec){
-        float x = vec.x;
-        float y = vec.y;
-        float z = vec.z;
-        return new Vector3Int((int)x,(int)y,(int)z);
-    }
     public static float[] vectorDirections(Vector3 origin, Vector3 point){
         float lineX = point.x-origin.x;
         float lineY = point.y-origin.y;
@@ -249,6 +234,21 @@ public class WorldBuilder : MonoBehaviour
                 break;
             }
             return rotatedVec;
+    }
+    public static Vector3 round(Vector3 vec){
+        float x = vec.x;
+        float y = vec.y;
+        float z = vec.z;
+        x = (x>0)? x +roundUp : x -roundUp;
+        y = (y>0)? y +roundUp : y -roundUp;
+        z = (z>0)? z +roundUp : z -roundUp;
+        return new Vector3(x,y,z);
+    }
+    public static Vector3Int vecToVecInt(Vector3 vec){
+        float x = vec.x;
+        float y = vec.y;
+        float z = vec.z;
+        return new Vector3Int((int)x,(int)y,(int)z);
     }
     public static void createOrDeleteObject(
         Vector3[] obj, bool create
