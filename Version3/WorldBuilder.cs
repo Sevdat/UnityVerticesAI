@@ -146,9 +146,9 @@ public class WorldBuilder : MonoBehaviour
     } 
     public static float boundry(float location, float dimension){
         if (location > dimension) 
-                location = Math.Abs(location % (dimension+1));
-            else if (location < 0) {
-                float size = dimension+1;
+                location = Math.Abs(location % (dimension+1.0f));
+            else if (location < 0.0f) {
+                float size = dimension+1.0f;
                 location = size-Math.Abs(location % size);
             }
         return location;
@@ -159,21 +159,19 @@ public class WorldBuilder : MonoBehaviour
         float z = boundry(pos.z, dimensionZ);
         return new Vector3(x,y,z);
     }
-    public static void createOrDeleteObject(
-        Vector3[] obj, bool create
-        ){ 
-        for (int i = 0; i < obj.Length; i++){
-            Vector3 vector = setVectorInBoundry(obj[i]);
-            createOrDelete(vecToVecInt(vector),create);
-        }
-    }
-    public static Vector3Int vecToVecInt(Vector3 vec){
+    public static Vector3 round(Vector3 vec){
         float x = vec.x;
         float y = vec.y;
         float z = vec.z;
         x = (x>0)? x +roundUp : x -roundUp;
         y = (y>0)? y +roundUp : y -roundUp;
         z = (z>0)? z +roundUp : z -roundUp;
+        return new Vector3(x,y,z);
+    }
+    public static Vector3Int vecToVecInt(Vector3 vec){
+        float x = vec.x;
+        float y = vec.y;
+        float z = vec.z;
         return new Vector3Int((int)x,(int)y,(int)z);
     }
     public static float[] vectorDirections(Vector3 origin, Vector3 point){
@@ -252,6 +250,14 @@ public class WorldBuilder : MonoBehaviour
             }
             return rotatedVec;
     }
+    public static void createOrDeleteObject(
+        Vector3[] obj, bool create
+        ){ 
+        for (int i = 0; i < obj.Length; i++){
+            Vector3 vector = setVectorInBoundry(round(obj[i]));
+            createOrDelete(vecToVecInt(vector),create);
+        }
+    }
     public static Vector3[] rotateObject(
         float theta, float alpha, int rotationDirection, 
         Vector3 origin,Vector3[] obj
@@ -268,6 +274,17 @@ public class WorldBuilder : MonoBehaviour
             }
         createOrDeleteObject(rotatedObj, true);
         return rotatedObj;
+    }
+    public static Vector3[] moveObject(
+        Vector3 move, Vector3[] obj
+        ){
+        createOrDeleteObject(obj, false);
+        Vector3[] movedObj = new Vector3[obj.Length];
+        for (int i = 0; i < movedObj.Length; i++){
+            movedObj[i] = obj[i]+move; 
+            }
+        createOrDeleteObject(movedObj, true);
+        return movedObj;
     }
 
     void worldBuilderControls(){
