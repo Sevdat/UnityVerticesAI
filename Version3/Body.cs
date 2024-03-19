@@ -9,9 +9,9 @@ public class Body : MonoBehaviour
 {
     // Start is called before the first frame update
      Vector3[] chest = new Vector3[]{
-         new Vector3(5,7,2),new Vector3(2,2,8)
+         new Vector3(5,5,2),new Vector3(2,2,8)
          };
-    public static Vector3 move = new Vector3(8,8,8); 
+    public static Vector3 move = new Vector3(6,6,6); 
     public static Vector3[] tempChest;     
     void Start(){
         WorldBuilder.createOrDeleteObject(chest,true);
@@ -24,13 +24,9 @@ public class Body : MonoBehaviour
     int l = 0;
     void Update(){
         time += Time.deltaTime;
-        if (time > 0.1){
             chest = WorldBuilder.rotateObject(
-                0,1,WorldBuilder.rotateX,move,chest
+                0,1,WorldBuilder.rotateZ,move,chest
             );
-           
-            WorldBuilder.createOrDeleteObject(chest, true);
             time = 0;
-        }
     }
 }
