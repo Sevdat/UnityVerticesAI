@@ -214,30 +214,40 @@ public class WorldBuilder : MonoBehaviour
             float lineY = vectorDirections[1];
             float lineZ = vectorDirections[2];
             Vector3 rotatedVec = new Vector3();
+            float x,y,z;
             switch(rotationDirection){
                 case rotateX:
                     float[] xValues = locatePoint(radius,lineZ,lineY,lineX);
                     alpha = alpha*angleToRadian + xValues[0];
                     theta = theta*angleToRadian + xValues[1];
-                    rotatedVec.x = xValues[2]*Mathf.Sin(alpha);
-                    rotatedVec.y = xValues[2]*Mathf.Cos(alpha);
-                    rotatedVec.z = radius*Mathf.Sin(theta);
+                    x = xValues[2]*Mathf.Sin(alpha);
+                    y = xValues[2]*Mathf.Cos(alpha);
+                    z = radius*Mathf.Sin(theta);
+                    rotatedVec.x = float.IsNaN(x)? 0: x;
+                    rotatedVec.y = float.IsNaN(y)? 0: y;
+                    rotatedVec.z = float.IsNaN(z)? 0: z;
                 break;
                 case rotateY:
                     float[] yValues = locatePoint(radius,lineX,lineY,lineZ);
                     alpha = alpha*angleToRadian + yValues[0];
                     theta = theta*angleToRadian + yValues[1];
-                    rotatedVec.z = yValues[2]*Mathf.Sin(alpha);
-                    rotatedVec.y = yValues[2]*Mathf.Cos(alpha);
-                    rotatedVec.x = radius*Mathf.Sin(theta);
+                    z = yValues[2]*Mathf.Sin(alpha);
+                    y = yValues[2]*Mathf.Cos(alpha);
+                    x = radius*Mathf.Sin(theta);
+                    rotatedVec.z = float.IsNaN(z)? 0: z;
+                    rotatedVec.y = float.IsNaN(y)? 0: y;
+                    rotatedVec.x = float.IsNaN(x)? 0: x;
                 break;
                 case rotateZ:
                     float[] zValues = locatePoint(radius,lineY,lineZ,lineX);
                     alpha = alpha*angleToRadian + zValues[0];
                     theta = theta*angleToRadian + zValues[1];
-                    rotatedVec.x = zValues[2]*Mathf.Sin(alpha);
-                    rotatedVec.z = zValues[2]*Mathf.Cos(alpha);
-                    rotatedVec.y = radius*Mathf.Sin(theta);
+                    x = zValues[2]*Mathf.Sin(alpha);
+                    z = zValues[2]*Mathf.Cos(alpha);
+                    y = radius*Mathf.Sin(theta);
+                    rotatedVec.x = float.IsNaN(x)? 0: x;
+                    rotatedVec.z = float.IsNaN(z)? 0: z;
+                    rotatedVec.y = float.IsNaN(y)? 0: y;
                 break;
             }
             return rotatedVec;
