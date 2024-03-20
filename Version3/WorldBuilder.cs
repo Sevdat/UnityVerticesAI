@@ -30,7 +30,7 @@ public class WorldBuilder : MonoBehaviour
     public const int rotateX = 0;
     public const int rotateY = 1;
     public const int rotateZ = 2;
-    public static float roundUp = 0.49f;
+    public static float roundUp = 0.5f;
     void Awake()
     {
         dynamicClone = originalObject;
@@ -285,6 +285,29 @@ public class WorldBuilder : MonoBehaviour
             }
         createOrDeleteObject(movedObj, true);
         return movedObj;
+    }
+    public static Vector3[] diagonal(Vector3[] vec, float step){
+        float x0 = vec[0].x;
+        float x1 = vec[1].x;
+        float y0 = vec[0].y;
+        float y1 = vec[1].y;
+        float z0 = vec[0].z;
+        float z1 = vec[1].z;
+        float x = x1-x0;
+        float y = y1-y0;
+        float z = z1-z0;
+        int size = (int)((1/step)+roundUp);
+        Vector3[] diagonalArray = new Vector3[size];
+        for (int i = 0; i < size; i++){ 
+            float f = i*step;
+            diagonalArray[i] = new Vector3(
+                x*f+x0,
+                y*f+y0,
+                z*f+z0
+                );
+        }
+        createOrDeleteObject(diagonalArray,true);
+        return diagonalArray;
     }
 
     void worldBuilderControls(){
