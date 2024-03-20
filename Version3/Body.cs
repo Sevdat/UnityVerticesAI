@@ -12,10 +12,12 @@ public class Body : MonoBehaviour
          new Vector3(8f,2f,8f),new Vector3(5f,10f,2f)
          };
     public static Vector3 move = new Vector3(6f,6f,6f); 
-    public static Vector3[] tempChest;     
+    public static Vector3[] tempChest = new Vector3[]{
+        new Vector3(0f,0f,0f)
+        };     
     void Start(){
         WorldBuilder.createOrDeleteObject(chest,true);
-        tempChest = WorldBuilder.diagonal(chest,0.05f);
+        tempChest = WorldBuilder.diagonal(chest,tempChest,0.05f);
     }
 
     // Update is called once per frame
