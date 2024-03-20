@@ -286,13 +286,17 @@ public class WorldBuilder : MonoBehaviour
         createOrDeleteObject(movedObj, true);
         return movedObj;
     }
-    public static Vector3[] diagonal(Vector3[] vec, float step){
-        float x0 = vec[0].x;
-        float x1 = vec[1].x;
-        float y0 = vec[0].y;
-        float y1 = vec[1].y;
-        float z0 = vec[0].z;
-        float z1 = vec[1].z;
+    public static Vector3[] diagonal(
+        Vector3[] points, Vector3[] oldDiagonal, 
+        float step
+        ){
+        createOrDeleteObject(oldDiagonal,false);
+        float x0 = points[0].x;
+        float x1 = points[1].x;
+        float y0 = points[0].y;
+        float y1 = points[1].y;
+        float z0 = points[0].z;
+        float z1 = points[1].z;
         float x = x1-x0;
         float y = y1-y0;
         float z = z1-z0;
