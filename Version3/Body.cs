@@ -8,6 +8,7 @@ using UnityEngine;
 public class Body : MonoBehaviour
 {
     // Start is called before the first frame update
+    float[] radius = new float[]{6,5,4};
     Vector3[] chest = new Vector3[]{
          new Vector3(8f,2f,8f),new Vector3(5f,10f,2f)
          };
