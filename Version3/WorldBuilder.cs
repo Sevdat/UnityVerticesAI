@@ -300,7 +300,7 @@ public class WorldBuilder : MonoBehaviour
         float x = x1-x0;
         float y = y1-y0;
         float z = z1-z0;
-        int size = (int)((1/step)+roundUp);
+        int size = (int)(1/step);
         Vector3[] diagonalArray = new Vector3[size];
         for (int i = 0; i < size; i++){ 
             float f = i*step;
