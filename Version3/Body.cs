@@ -24,7 +24,14 @@ public class Body : MonoBehaviour
     float time = 0;
     void Update(){
         time += Time.deltaTime;
-        if (time >0.1f){
+        if (time >0.05f){
+        chest = WorldBuilder.moveObject(
+            new Vector3(0f,0f,-1f),chest
+        );
+        chest = WorldBuilder.rotateObject(
+            0,1,WorldBuilder.rotateZ,chest[0],chest
+        );
+        tempChest = WorldBuilder.diagonal(chest,tempChest,0.05f);
         time = 0;
         }
     }
