@@ -180,7 +180,9 @@ public class WorldBuilder : MonoBehaviour
         ){
         float currentTheta = Mathf.Asin(opposite/radius);
         float adjacent = radius*Mathf.Cos(currentTheta);
-        float currentAlpha = Mathf.Acos(axisAdjacent/adjacent);
+        float alphaCorrection = axisAdjacent/adjacent;
+        alphaCorrection = Mathf.Abs(alphaCorrection)>1? MathF.Sign(alphaCorrection):alphaCorrection;
+        float currentAlpha = Mathf.Acos(alphaCorrection);
         float rotationSide = Mathf.Sign(rotatingAxis);
         return new float[]{
             rotationSide*currentAlpha,
@@ -196,7 +198,7 @@ public class WorldBuilder : MonoBehaviour
             float lineX = vectorDirections[0];
             float lineY = vectorDirections[1];
             float lineZ = vectorDirections[2];
-            Vector3 rotatedVec = new Vector3();
+            Vector3 rotatedVec;
             float x,y,z;
             switch(rotationDirection){
                 case rotateX:
@@ -206,9 +208,6 @@ public class WorldBuilder : MonoBehaviour
                     x = xValues[2]*Mathf.Sin(alpha);
                     y = xValues[2]*Mathf.Cos(alpha);
                     z = radius*Mathf.Sin(theta);
-                    rotatedVec.x = float.IsNaN(x)? 0: x;
-                    rotatedVec.y = float.IsNaN(y)? 0: y;
-                    rotatedVec.z = float.IsNaN(z)? 0: z;
                 break;
                 case rotateY:
                     float[] yValues = locatePoint(radius,lineX,lineY,lineZ);
@@ -217,9 +216,6 @@ public class WorldBuilder : MonoBehaviour
                     z = yValues[2]*Mathf.Sin(alpha);
                     y = yValues[2]*Mathf.Cos(alpha);
                     x = radius*Mathf.Sin(theta);
-                    rotatedVec.z = float.IsNaN(z)? 0: z;
-                    rotatedVec.y = float.IsNaN(y)? 0: y;
-                    rotatedVec.x = float.IsNaN(x)? 0: x;
                 break;
                 case rotateZ:
                     float[] zValues = locatePoint(radius,lineY,lineZ,lineX);
@@ -228,11 +224,14 @@ public class WorldBuilder : MonoBehaviour
                     x = zValues[2]*Mathf.Sin(alpha);
                     z = zValues[2]*Mathf.Cos(alpha);
                     y = radius*Mathf.Sin(theta);
-                    rotatedVec.x = float.IsNaN(x)? 0: x;
-                    rotatedVec.z = float.IsNaN(z)? 0: z;
-                    rotatedVec.y = float.IsNaN(y)? 0: y;
+                break;
+                default:
+                x= 0;
+                y= 0;
+                z= 0;
                 break;
             }
+            rotatedVec = new Vector3(x,y,z);
             return rotatedVec;
     }
     public static Vector3 round(Vector3 vec){
