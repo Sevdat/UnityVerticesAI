@@ -14,14 +14,15 @@ public class Body : MonoBehaviour
         public Vector3[] knee;
         public Vector3[] foot;
 
-        public void moveHip(){
+        public void moveHipY(){
             hip = rotateObject(
-                0,50,rotateY,hip[0],hip
+                0,10,rotateY,hip[0],hip
             );
+        }
+        public void moveHipZ(){
             hip = rotateObject(
-                0,50,rotateZ,hip[0],hip
+                0,10,rotateZ,hip[0],hip
             );
-            updateBody();
         }
         public void updateBody(
             ){
@@ -31,24 +32,27 @@ public class Body : MonoBehaviour
         }
     }
     Vector3[] bodyComponents = new Vector3[]{
-         new Vector3(10f,12f,10f),
-         new Vector3(10f,7f,10f),
-         new Vector3(10f,2f,10f),
-         new Vector3(10f,2f,13f)
+         new Vector3(10f,12f,13f),
+         new Vector3(10f,7f,13f),
+         new Vector3(10f,2f,13f),
+         new Vector3(10f,2f,16f)
          };    
     void Start(){
         joints = new bodyStructure(){
         hip = bodyComponents   
         };
-        WorldBuilder.createOrDeleteObject(joints.hip,true);
     }
-
+    IEnumerator Lol(){
+        joints.moveHipY();
+        yield return new WaitForSeconds(2f);
+        joints.moveHipZ();
+    }
     // Update is called once per frame
     float time = 0;
     void Update(){
         time += Time.deltaTime;
-        if (time >1f){
-            joints.moveHip();
+        if (time >2f){
+            StartCoroutine(Lol());
         time = 0;
         }
     }
@@ -59,3 +63,4 @@ public class Body : MonoBehaviour
         // chest = WorldBuilder.rotateObject(
         //     0,1,WorldBuilder.rotateZ,move,chest
         // );
+        // WorldBuilder.createOrDeleteObject(joints.hip,true);
