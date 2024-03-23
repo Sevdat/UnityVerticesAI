@@ -237,15 +237,6 @@ public class WorldBuilder : MonoBehaviour
         } else rotatedVec = new Vector3(0,0,0);
         return rotatedVec;
     }
-    public static Vector3 round(Vector3 vec){
-        float x = vec.x;
-        float y = vec.y;
-        float z = vec.z;
-        x = (x>0)? x +roundUp : x -roundUp;
-        y = (y>0)? y +roundUp : y -roundUp;
-        z = (z>0)? z +roundUp : z -roundUp;
-        return new Vector3(x,y,z);
-    }
     public static Vector3Int vecToVecInt(Vector3 vec){
         float x = vec.x;
         float y = vec.y;
@@ -256,7 +247,7 @@ public class WorldBuilder : MonoBehaviour
         Vector3[] obj, bool create
         ){ 
         for (int i = 0; i < obj.Length; i++){
-            Vector3 vector = setVectorInBoundry(round(obj[i]));
+            Vector3 vector = setVectorInBoundry(obj[i]);
             createOrDelete(vecToVecInt(vector),create);
         }
     }
@@ -393,4 +384,14 @@ public class WorldBuilder : MonoBehaviour
     //         }
     //         copyLocation -= dimension;
     //     }
+    // }
+
+    // public static Vector3 round(Vector3 vec){
+    //     float x = vec.x;
+    //     float y = vec.y;
+    //     float z = vec.z;
+    //     x = (x>0)? x +roundUp : x -roundUp;
+    //     y = (y>0)? y +roundUp : y -roundUp;
+    //     z = (z>0)? z +roundUp : z -roundUp;
+    //     return new Vector3(x,y,z);
     // }
