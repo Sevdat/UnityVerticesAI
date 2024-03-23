@@ -181,7 +181,8 @@ public class WorldBuilder : MonoBehaviour
         float currentTheta = Mathf.Asin(opposite/radius);
         float adjacent = radius*Mathf.Cos(currentTheta);
         float alphaCorrection = axisAdjacent/adjacent;
-        alphaCorrection = Mathf.Abs(alphaCorrection)>1? MathF.Sign(alphaCorrection):alphaCorrection;
+        alphaCorrection = Mathf.Abs(alphaCorrection)>1? 
+            MathF.Sign(alphaCorrection) : alphaCorrection;
         float currentAlpha = Mathf.Acos(alphaCorrection);
         float rotationSide = Mathf.Sign(rotatingAxis);
         return new float[]{
@@ -195,11 +196,12 @@ public class WorldBuilder : MonoBehaviour
         float radius, float[] vectorDirections,
         int rotationDirection
         ){
-            float lineX = vectorDirections[0];
-            float lineY = vectorDirections[1];
-            float lineZ = vectorDirections[2];
-            Vector3 rotatedVec;
-            float x,y,z;
+        float lineX = vectorDirections[0];
+        float lineY = vectorDirections[1];
+        float lineZ = vectorDirections[2];
+        Vector3 rotatedVec;
+        float x,y,z;
+        if (lineX + lineY + lineZ != 0){
             switch(rotationDirection){
                 case rotateX:
                     float[] xValues = locatePoint(radius,lineZ,lineY,lineX);
@@ -232,7 +234,8 @@ public class WorldBuilder : MonoBehaviour
                 break;
             }
             rotatedVec = new Vector3(x,y,z);
-            return rotatedVec;
+        } else rotatedVec = new Vector3(0,0,0);
+        return rotatedVec;
     }
     public static Vector3 round(Vector3 vec){
         float x = vec.x;
