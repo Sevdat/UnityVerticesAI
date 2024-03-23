@@ -8,37 +8,39 @@ using UnityEngine;
 public class Body : MonoBehaviour
 {
     // Start is called before the first frame update
-    float[] radius = new float[]{6,5,4};
-    public struct bodyStructure{
+    bodyStructure joints;
+    public class bodyStructure : WorldBuilder{
         public Vector3[] hip;
         public Vector3[] knee;
         public Vector3[] foot;
-        public void movehip(
-            Vector3[] hip
+
+        public void moveHip(){
+            hip = rotateObject(
+                0,50,rotateY,hip[0],hip
+            );
+            hip = rotateObject(
+                0,50,rotateZ,hip[0],hip
+            );
+            updateBody();
+        }
+        public void updateBody(
             ){
                 knee = new Vector3[]{hip[1],hip[2],hip[3]};
                 foot = new Vector3[]{knee[1],knee[2]};
+                hip = new Vector3[]{hip[0],knee[0],foot[0],foot[1]};
         }
     }
-    Vector3[] chest = new Vector3[]{
+    Vector3[] bodyComponents = new Vector3[]{
          new Vector3(10f,12f,10f),
          new Vector3(10f,7f,10f),
          new Vector3(10f,2f,10f),
          new Vector3(10f,2f,13f)
-         };
-    public static Vector3 move = new Vector3(6f,6f,6f); 
-    public static Vector3[] tempChest = new Vector3[]{
-        new Vector3(0f,0f,0f)
-        };     
-    bodyStructure lol;
+         };    
     void Start(){
-        lol = new bodyStructure(){
-         hip = chest   
+        joints = new bodyStructure(){
+        hip = bodyComponents   
         };
-        WorldBuilder.createOrDeleteObject(lol.hip,true);
-        lol.hip = WorldBuilder.rotateObject(
-            0,50,WorldBuilder.rotateY,lol.hip[0],lol.hip
-        );
+        WorldBuilder.createOrDeleteObject(joints.hip,true);
     }
 
     // Update is called once per frame
@@ -46,10 +48,7 @@ public class Body : MonoBehaviour
     void Update(){
         time += Time.deltaTime;
         if (time >1f){
-        lol.movehip(lol.hip);
-        lol.hip = WorldBuilder.rotateObject(
-            0,50,WorldBuilder.rotateZ,lol.hip[0],lol.hip
-        );
+            joints.moveHip();
         time = 0;
         }
     }
