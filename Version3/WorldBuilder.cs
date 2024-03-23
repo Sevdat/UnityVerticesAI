@@ -198,6 +198,7 @@ public class WorldBuilder : MonoBehaviour
             float lineX = vectorDirections[0];
             float lineY = vectorDirections[1];
             float lineZ = vectorDirections[2];
+            Vector3 rotatedVec;
             float x,y,z;
             switch(rotationDirection){
                 case rotateX:
@@ -230,7 +231,8 @@ public class WorldBuilder : MonoBehaviour
                 z= 0;
                 break;
             }
-            return new Vector3(x,y,z);
+            rotatedVec = new Vector3(x,y,z);
+            return rotatedVec;
     }
     public static Vector3 round(Vector3 vec){
         float x = vec.x;
