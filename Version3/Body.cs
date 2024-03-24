@@ -10,48 +10,46 @@ public class Body : MonoBehaviour
     // Start is called before the first frame update
     bodyStructure joints;
     public class bodyStructure : WorldBuilder{
-        public Vector3[] hip;
-        public Vector3[] knee;
-        public Vector3[] foot;
+        public Vector3[] fullBody = new Vector3[]{
+         new Vector3(15f,12f,13f),
+         new Vector3(15f,7f,13f),
+         new Vector3(15f,2f,13f),
+         new Vector3(15f,2f,16f)
+         };
+        public int[] hip = new int[]{0,1,2,3};
+        public int[] knee = new int[]{1,2,3};
+        public int[] foot = new int[]{2,3};
 
-        public Vector3[] moveHipY(){
-            hip = rotateObject(new Vector3(0,10,0),hip[0],hip);
-            updateBody();
-            return hip;
+        public Vector3[] loadParts(int[] bodyPart){
+            int size = bodyPart.Length;
+            Vector3[] vec = new Vector3[size];
+            for (int i = 0; i < size; i++){
+                vec[i] = fullBody[bodyPart[i]];
+            }
+            return vec;
         }
-        public Vector3[] moveHipZ(){
-            hip = rotateObject(new Vector3(0,0,10),hip[0],hip);
-            updateBody();
-            return hip;
+        public void movePart(Vector3 angles, int[] bodyPart){
+            Vector3[] bodyVec = loadParts(bodyPart);
+            Vector3[] rotatedVec = 
+                rotateObject(angles,bodyVec[0],bodyVec);
+            for (int i = 0; i< bodyVec.Length; i++){
+                fullBody[bodyPart[i]] = rotatedVec[i];
+            }
         }
         public void drawBody(){
-            createOrDeleteObject(hip, true);
+            createOrDeleteObject(fullBody, true);
         }
-        public void updateBody(
-            ){
-                knee = new Vector3[]{hip[1],hip[2],hip[3]};
-                foot = new Vector3[]{knee[1],knee[2]};
-                hip = new Vector3[]{hip[0],knee[0],foot[0],foot[1]};
-        }
-    }
-    Vector3[] bodyComponents = new Vector3[]{
-         new Vector3(10f,12f,13f),
-         new Vector3(10f,7f,13f),
-         new Vector3(10f,2f,13f),
-         new Vector3(10f,2f,16f)
-         };    
+    }  
     void Start(){
-        joints = new bodyStructure(){
-        hip = bodyComponents   
+        joints = new bodyStructure(){ 
         };
     }
     // Update is called once per frame
     float time = 0;
     void Update(){
         time += Time.deltaTime;
-        if (time >1f){
-            joints.moveHipY();
-            joints.moveHipZ();
+        if (time >2f){
+            joints.movePart(new Vector3(0,10,10),joints.knee);
             joints.drawBody();
         time = 0;
         }
