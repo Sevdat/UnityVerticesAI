@@ -14,13 +14,13 @@ public class Body : MonoBehaviour
         public Vector3[] knee;
         public Vector3[] foot;
 
-        public void moveHipY(){
-            hip = rotateObject(
+        public Vector3[] moveHipY(){
+            return hip = rotateObject(
                 0,10,rotateY,hip[0],hip
             );
         }
-        public void moveHipZ(){
-            hip = rotateObject(
+        public Vector3[] moveHipZ(){
+            return hip = rotateObject(
                 0,10,rotateZ,hip[0],hip
             );
         }
@@ -43,16 +43,21 @@ public class Body : MonoBehaviour
         };
     }
     IEnumerator Lol(){
-        joints.moveHipY();
-        yield return new WaitForSeconds(2f);
-        joints.moveHipZ();
+        yield return joints.moveHipY();
+        yield return joints.moveHipZ();
     }
     // Update is called once per frame
     float time = 0;
     void Update(){
         time += Time.deltaTime;
-        if (time >2f){
-            StartCoroutine(Lol());
+        if (time >1f){
+            bodyComponents = WorldBuilder.rotateObject(
+                0,10,WorldBuilder.rotateY,bodyComponents[0],bodyComponents
+            );
+            bodyComponents = WorldBuilder.rotateObject(
+                0,10,WorldBuilder.rotateZ,bodyComponents[0],bodyComponents
+            );
+            WorldBuilder.createOrDeleteObject(bodyComponents, true);
         time = 0;
         }
     }
