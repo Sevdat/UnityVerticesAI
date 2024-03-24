@@ -16,7 +16,7 @@ public class WorldBuilder : MonoBehaviour
     public static BitArray bitArray;
     public static int arraySize;
     public static int arrayWidth;
-    public static Vector3Int dimension = new Vector3Int(20,20,20);
+    public static Vector3Int dimension = new Vector3Int(30,30,30);
     public static int dimensionX;
     public static int dimensionY;
     public static int dimensionZ;
@@ -129,6 +129,7 @@ public class WorldBuilder : MonoBehaviour
     }
     public static void createOrDelete(Vector3Int vec, bool bitArrayBool){
         int ballNumber = vecToInt(vec.x, vec.y, vec.z);
+        print(ballNumber); 
         if (!bitArray[ballNumber] && bitArrayBool){
                 bitArray[ballNumber] = true;
                 GameObject clone = Instantiate(
@@ -265,7 +266,6 @@ public class WorldBuilder : MonoBehaviour
                             direc,rotationDirection
                             );
             }
-        createOrDeleteObject(rotatedObj, true);
         return rotatedObj;
     }
     public static Vector3[] moveObject(
@@ -276,7 +276,6 @@ public class WorldBuilder : MonoBehaviour
         for (int i = 0; i < movedObj.Length; i++){
             movedObj[i] = obj[i]+move; 
             }
-        createOrDeleteObject(movedObj, true);
         return movedObj;
     }
     public static Vector3[] diagonal(
@@ -303,7 +302,6 @@ public class WorldBuilder : MonoBehaviour
                 z*f+z0
                 );
         }
-        createOrDeleteObject(diagonalArray,true);
         return diagonalArray;
     }
 
