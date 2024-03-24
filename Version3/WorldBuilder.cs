@@ -192,46 +192,49 @@ public class WorldBuilder : MonoBehaviour
             };
     }
     public static Vector3 rotate(
-        float alpha,
-        float radius, float[] vectorDirections,
-        int rotationDirection
+        Vector3 alphaAngles,float radius, 
+        Vector3 origin, float[] vectorDirection
         ){
-        float lineX = vectorDirections[0];
-        float lineY = vectorDirections[1];
-        float lineZ = vectorDirections[2];
-        Vector3 rotatedVec;
-        float x,y,z;
-        if (lineX + lineY + lineZ != 0){
-            switch(rotationDirection){
-                case rotateX:
-                    float[] xValues = locatePoint(radius,lineZ,lineY,lineX);
-                    alpha = alpha*angleToRadian + xValues[0];
-                    x = xValues[1]*Mathf.Sin(alpha);
-                    y = xValues[1]*Mathf.Cos(alpha);
-                    z = lineZ;
-                break;
-                case rotateY:
-                    float[] yValues = locatePoint(radius,lineX,lineY,lineZ);
-                    alpha = alpha*angleToRadian + yValues[0];
-                    z = yValues[1]*Mathf.Sin(alpha);
-                    y = yValues[1]*Mathf.Cos(alpha);
-                    x = lineX;
-                break;
-                case rotateZ:
-                    float[] zValues = locatePoint(radius,lineY,lineZ,lineX);
-                    alpha = alpha*angleToRadian + zValues[0];
-                    x = zValues[1]*Mathf.Sin(alpha);
-                    z = zValues[1]*Mathf.Cos(alpha);
-                    y = lineY;
-                break;
-                default:
-                x= 0;
-                y= 0;
-                z= 0;
-                break;
-            }
-            rotatedVec = new Vector3(x,y,z);
-        } else rotatedVec = new Vector3(0,0,0);
+        float alpha;
+        float x = 0;
+        float y = 0;
+        float z = 0;
+        Vector3 rotatedVec = origin + new Vector3(x,y,z);
+        float lineX = vectorDirection[0];
+        float lineY = vectorDirection[1];
+        float lineZ = vectorDirection[2];
+        if (alphaAngles.x % 360f != 0 && lineX + lineY + lineZ != 0) {
+            float[] xValues = locatePoint(radius,lineZ,lineY,lineX);
+            alpha = alphaAngles.x*angleToRadian + xValues[0];
+            x = xValues[1]*Mathf.Sin(alpha);
+            y = xValues[1]*Mathf.Cos(alpha);
+            z = lineZ;
+            rotatedVec = origin + new Vector3(x,y,z);
+            vectorDirection = vectorDirections(origin,rotatedVec);
+            lineX = vectorDirection[0];
+            lineY = vectorDirection[1];
+            lineZ = vectorDirection[2];
+        }
+        if (alphaAngles.y % 360f != 0 && lineX + lineY + lineZ != 0) {
+            float[] yValues = locatePoint(radius,lineX,lineY,lineZ);
+            alpha = alphaAngles.y*angleToRadian + yValues[0];
+            z = yValues[1]*Mathf.Sin(alpha);
+            y = yValues[1]*Mathf.Cos(alpha);
+            x = lineX;
+            rotatedVec = origin + new Vector3(x,y,z);
+            vectorDirection = vectorDirections(origin,rotatedVec);
+            lineX = vectorDirection[0];
+            lineY = vectorDirection[1];
+            lineZ = vectorDirection[2];
+        }
+        if (alphaAngles.z % 360f != 0 && lineX + lineY + lineZ != 0) {
+            float[] zValues = locatePoint(radius,lineY,lineZ,lineX);
+            alpha = alphaAngles.z*angleToRadian + zValues[0];
+            x = zValues[1]*Mathf.Sin(alpha);
+            z = zValues[1]*Mathf.Cos(alpha);
+            y = lineY;
+            rotatedVec = origin + new Vector3(x,y,z);
+        }
         return rotatedVec;
     }
     public static Vector3Int vecToVecInt(Vector3 vec){
@@ -249,18 +252,16 @@ public class WorldBuilder : MonoBehaviour
         }
     }
     public static Vector3[] rotateObject(
-        float alpha, int rotationDirection, 
-        Vector3 origin,Vector3[] obj
+        Vector3 alpha, Vector3 origin,Vector3[] obj
         ){
         createOrDeleteObject(obj, false);
         Vector3[] rotatedObj = new Vector3[obj.Length];
         for (int i = 0; i < rotatedObj.Length; i++){
             float[] direc = vectorDirections(origin,obj[i]);
-            rotatedObj[i] = 
-                origin + rotate(
-                            alpha,vectorRadius(direc),
-                            direc,rotationDirection
-                            );
+            rotatedObj[i] = rotate(
+                                alpha,vectorRadius(direc),
+                                origin, direc
+                                );
             }
         return rotatedObj;
     }
@@ -388,4 +389,48 @@ public class WorldBuilder : MonoBehaviour
     //     y = (y>0)? y +roundUp : y -roundUp;
     //     z = (z>0)? z +roundUp : z -roundUp;
     //     return new Vector3(x,y,z);
+    // }
+
+    // public static Vector3 rotate(
+    //     float alpha,
+    //     float radius, float[] vectorDirections,
+    //     int rotationDirection
+    //     ){
+    //     float lineX = vectorDirections[0];
+    //     float lineY = vectorDirections[1];
+    //     float lineZ = vectorDirections[2];
+    //     Vector3 rotatedVec;
+    //     float x,y,z;
+    //     if (lineX + lineY + lineZ != 0){
+    //         switch(rotationDirection){
+    //             case rotateX:
+    //                 float[] xValues = locatePoint(radius,lineZ,lineY,lineX);
+    //                 alpha = alpha*angleToRadian + xValues[0];
+    //                 x = xValues[1]*Mathf.Sin(alpha);
+    //                 y = xValues[1]*Mathf.Cos(alpha);
+    //                 z = lineZ;
+    //             break;
+    //             case rotateY:
+    //                 float[] yValues = locatePoint(radius,lineX,lineY,lineZ);
+    //                 alpha = alpha*angleToRadian + yValues[0];
+    //                 z = yValues[1]*Mathf.Sin(alpha);
+    //                 y = yValues[1]*Mathf.Cos(alpha);
+    //                 x = lineX;
+    //             break;
+    //             case rotateZ:
+    //                 float[] zValues = locatePoint(radius,lineY,lineZ,lineX);
+    //                 alpha = alpha*angleToRadian + zValues[0];
+    //                 x = zValues[1]*Mathf.Sin(alpha);
+    //                 z = zValues[1]*Mathf.Cos(alpha);
+    //                 y = lineY;
+    //             break;
+    //             default:
+    //             x= 0;
+    //             y= 0;
+    //             z= 0;
+    //             break;
+    //         }
+    //         rotatedVec = new Vector3(x,y,z);
+    //     } else rotatedVec = new Vector3(0,0,0);
+    //     return rotatedVec;
     // }
