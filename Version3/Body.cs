@@ -15,12 +15,12 @@ public class Body : MonoBehaviour
         public Vector3[] foot;
 
         public Vector3[] moveHipY(){
-            hip = rotateObject(10,rotateY,hip[0],hip);
+            hip = rotateObject(new Vector3(0,10,0),hip[0],hip);
             updateBody();
             return hip;
         }
         public Vector3[] moveHipZ(){
-            hip = rotateObject(10,rotateZ,hip[0],hip);
+            hip = rotateObject(new Vector3(0,0,10),hip[0],hip);
             updateBody();
             return hip;
         }
