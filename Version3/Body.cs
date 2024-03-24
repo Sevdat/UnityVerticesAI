@@ -43,13 +43,16 @@ public class Body : MonoBehaviour
     void Start(){
         joints = new bodyStructure(){ 
         };
+        joints.movePart(new Vector3(0,0,z),joints.knee);
     }
     // Update is called once per frame
-    float time = 0;
+    float time = 10;
+    float z = 0f;
     void Update(){
+        float l = z*WorldBuilder.angleToRadian;
         time += Time.deltaTime;
-        if (time >2f){
-            joints.movePart(new Vector3(0,10,10),joints.knee);
+        if (time >0.2f){
+            joints.movePart(new Vector3(10*MathF.Sin(l),10*MathF.Cos(l),0),joints.hip);
             joints.drawBody();
         time = 0;
         }
