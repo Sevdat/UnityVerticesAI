@@ -15,14 +15,17 @@ public class Body : MonoBehaviour
         public Vector3[] foot;
 
         public Vector3[] moveHipY(){
-            return hip = rotateObject(
-                0,10,rotateY,hip[0],hip
-            );
+            hip = rotateObject(10,rotateY,hip[0],hip);
+            updateBody();
+            return hip;
         }
         public Vector3[] moveHipZ(){
-            return hip = rotateObject(
-                0,10,rotateZ,hip[0],hip
-            );
+            hip = rotateObject(10,rotateZ,hip[0],hip);
+            updateBody();
+            return hip;
+        }
+        public void drawBody(){
+            createOrDeleteObject(hip, true);
         }
         public void updateBody(
             ){
@@ -42,22 +45,14 @@ public class Body : MonoBehaviour
         hip = bodyComponents   
         };
     }
-    IEnumerator Lol(){
-        yield return joints.moveHipY();
-        yield return joints.moveHipZ();
-    }
     // Update is called once per frame
     float time = 0;
     void Update(){
         time += Time.deltaTime;
         if (time >1f){
-            bodyComponents = WorldBuilder.rotateObject(
-                0,10,WorldBuilder.rotateY,bodyComponents[0],bodyComponents
-            );
-            bodyComponents = WorldBuilder.rotateObject(
-                0,10,WorldBuilder.rotateZ,bodyComponents[0],bodyComponents
-            );
-            WorldBuilder.createOrDeleteObject(bodyComponents, true);
+            joints.moveHipY();
+            joints.moveHipZ();
+            joints.drawBody();
         time = 0;
         }
     }
@@ -69,3 +64,8 @@ public class Body : MonoBehaviour
         //     0,1,WorldBuilder.rotateZ,move,chest
         // );
         // WorldBuilder.createOrDeleteObject(joints.hip,true);
+
+    //         IEnumerator Lol(){
+    //     yield return joints.moveHipY();
+    //     yield return joints.moveHipZ();
+    // }
