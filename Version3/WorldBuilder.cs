@@ -188,12 +188,11 @@ public class WorldBuilder : MonoBehaviour
         float rotationSide = Mathf.Sign(rotatingAxis);
         return new float[]{
             rotationSide*currentAlpha,
-            currentTheta,
             adjacent
             };
     }
     public static Vector3 rotate(
-        float theta, float alpha,
+        float alpha,
         float radius, float[] vectorDirections,
         int rotationDirection
         ){
@@ -207,26 +206,23 @@ public class WorldBuilder : MonoBehaviour
                 case rotateX:
                     float[] xValues = locatePoint(radius,lineZ,lineY,lineX);
                     alpha = alpha*angleToRadian + xValues[0];
-                    theta = theta*angleToRadian + xValues[1];
-                    x = xValues[2]*Mathf.Sin(alpha);
-                    y = xValues[2]*Mathf.Cos(alpha);
-                    z = radius*Mathf.Sin(theta);
+                    x = xValues[1]*Mathf.Sin(alpha);
+                    y = xValues[1]*Mathf.Cos(alpha);
+                    z = lineZ;
                 break;
                 case rotateY:
                     float[] yValues = locatePoint(radius,lineX,lineY,lineZ);
                     alpha = alpha*angleToRadian + yValues[0];
-                    theta = theta*angleToRadian + yValues[1];
-                    z = yValues[2]*Mathf.Sin(alpha);
-                    y = yValues[2]*Mathf.Cos(alpha);
-                    x = radius*Mathf.Sin(theta);
+                    z = yValues[1]*Mathf.Sin(alpha);
+                    y = yValues[1]*Mathf.Cos(alpha);
+                    x = lineX;
                 break;
                 case rotateZ:
                     float[] zValues = locatePoint(radius,lineY,lineZ,lineX);
                     alpha = alpha*angleToRadian + zValues[0];
-                    theta = theta*angleToRadian + zValues[1];
-                    x = zValues[2]*Mathf.Sin(alpha);
-                    z = zValues[2]*Mathf.Cos(alpha);
-                    y = radius*Mathf.Sin(theta);
+                    x = zValues[1]*Mathf.Sin(alpha);
+                    z = zValues[1]*Mathf.Cos(alpha);
+                    y = lineY;
                 break;
                 default:
                 x= 0;
@@ -253,7 +249,7 @@ public class WorldBuilder : MonoBehaviour
         }
     }
     public static Vector3[] rotateObject(
-        float theta, float alpha, int rotationDirection, 
+        float alpha, int rotationDirection, 
         Vector3 origin,Vector3[] obj
         ){
         createOrDeleteObject(obj, false);
@@ -262,7 +258,7 @@ public class WorldBuilder : MonoBehaviour
             float[] direc = vectorDirections(origin,obj[i]);
             rotatedObj[i] = 
                 origin + rotate(
-                            theta,alpha,vectorRadius(direc),
+                            alpha,vectorRadius(direc),
                             direc,rotationDirection
                             );
             }
