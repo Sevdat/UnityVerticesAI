@@ -10,18 +10,18 @@ public class Body : MonoBehaviour
     // Start is called before the first frame update
     bodyStructure joints;
     public class bodyStructure : WorldBuilder{
-        public Vector3 globalAngles = new Vector3();
+        public Vector3 globalAngles = new Vector3(0,0,0);
         public Vector3[] globalBody = new Vector3[]{
          new Vector3(15f,12f,13f),
          new Vector3(15f,7f,13f),
          new Vector3(15f,2f,13f),
          new Vector3(15f,2f,16f)
          };
-        public Vector3 localHip = new Vector3();
+        public Vector3 localHipAngles = new Vector3(0,0,0);
         public int[] hip = new int[]{0,1,2,3};
-        public Vector3 localKnee = new Vector3();
+        public Vector3 localKneeAngles = new Vector3(0,0,0);
         public int[] knee = new int[]{1,2,3};
-        public Vector3 localFoot = new Vector3();
+        public Vector3 localFootAngles = new Vector3(0,0,0);
         public int[] foot = new int[]{2,3};
 
         public Vector3[] loadParts(int[] bodyPart){
