@@ -51,14 +51,15 @@ public class Body : MonoBehaviour
     }
     // Update is called once per frame
     float time = 10;
-    float x = 60*WorldBuilder.angleToRadian;
-    float y = 60*WorldBuilder.angleToRadian;
-    float z = 20*WorldBuilder.angleToRadian;
+    float x = 10*MathF.Sin(60*WorldBuilder.angleToRadian);
+    float y = 10*MathF.Cos(50*WorldBuilder.angleToRadian);
+    static float zK = 20*WorldBuilder.angleToRadian;
+    float z = 10*MathF.Sin(zK)*MathF.Cos(zK);
 
     void Update(){
         time += Time.deltaTime;
         if (time >0.1f){
-            joints.movePart(new Vector3(10*MathF.Sin(x),10*MathF.Cos(y),10*MathF.Sin(z)*MathF.Cos(z)),joints.hip);
+            joints.movePart(new Vector3(x,y,z),joints.hip);
             joints.drawBody();
         time = 0;
         }
