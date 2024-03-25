@@ -51,8 +51,8 @@ public class Body : MonoBehaviour
     void Update(){
         float l = z*WorldBuilder.angleToRadian;
         time += Time.deltaTime;
-        if (time >0.2f){
-            joints.movePart(new Vector3(10*MathF.Sin(l),10*MathF.Cos(l),0),joints.hip);
+        if (time >0.5f){
+            joints.movePart(new Vector3(0*MathF.Sin(l),10*MathF.Cos(l),0),joints.hip);
             joints.drawBody();
         time = 0;
         }
