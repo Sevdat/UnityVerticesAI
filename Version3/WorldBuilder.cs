@@ -31,6 +31,9 @@ public class WorldBuilder : MonoBehaviour
     public const int rotateY = 1;
     public const int rotateZ = 2;
     public static float roundUp = 0.5f;
+    public static float floatError = 0.01f;
+    public static Vector3 floatCorrection = 
+                new Vector3(floatError,floatError,floatError);
     void Awake()
     {
         dynamicClone = originalObject;
@@ -247,9 +250,6 @@ public class WorldBuilder : MonoBehaviour
         Vector3[] obj, bool create
         ){ 
         for (int i = 0; i < obj.Length; i++){
-            float floatError = 0.01f;
-            Vector3 floatCorrection = 
-                new Vector3(floatError,floatError,floatError);
             Vector3 vector = setVectorInBoundry(
                 obj[i]+floatCorrection
                 );
