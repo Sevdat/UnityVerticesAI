@@ -10,21 +10,25 @@ public class Body : MonoBehaviour
     // Start is called before the first frame update
     bodyStructure joints;
     public class bodyStructure : WorldBuilder{
-        public Vector3[] fullBody = new Vector3[]{
+        public Vector3 globalAngles = new Vector3();
+        public Vector3[] globalBody = new Vector3[]{
          new Vector3(15f,12f,13f),
          new Vector3(15f,7f,13f),
          new Vector3(15f,2f,13f),
          new Vector3(15f,2f,16f)
          };
+        public Vector3 localHip = new Vector3();
         public int[] hip = new int[]{0,1,2,3};
+        public Vector3 localKnee = new Vector3();
         public int[] knee = new int[]{1,2,3};
+        public Vector3 localFoot = new Vector3();
         public int[] foot = new int[]{2,3};
 
         public Vector3[] loadParts(int[] bodyPart){
             int size = bodyPart.Length;
             Vector3[] vec = new Vector3[size];
             for (int i = 0; i < size; i++){
-                vec[i] = fullBody[bodyPart[i]];
+                vec[i] = globalBody[bodyPart[i]];
             }
             return vec;
         }
@@ -33,11 +37,11 @@ public class Body : MonoBehaviour
             Vector3[] rotatedVec = 
                 rotateObject(angles,bodyVec[0],bodyVec);
             for (int i = 0; i< bodyVec.Length; i++){
-                fullBody[bodyPart[i]] = rotatedVec[i];
+                globalBody[bodyPart[i]] = rotatedVec[i];
             }
         }
         public void drawBody(){
-            createOrDeleteObject(fullBody, true);
+            createOrDeleteObject(globalBody, true);
         }
     }  
     void Start(){
@@ -47,12 +51,12 @@ public class Body : MonoBehaviour
     }
     // Update is called once per frame
     float time = 10;
-    float z = 0f;
+    float z = 60f;
     void Update(){
         float l = z*WorldBuilder.angleToRadian;
         time += Time.deltaTime;
-        if (time >0.5f){
-            joints.movePart(new Vector3(0*MathF.Sin(l),10*MathF.Cos(l),0),joints.hip);
+        if (time >0.1f){
+            joints.movePart(new Vector3(10*MathF.Sin(l),10*MathF.Cos(l),10*MathF.Sin(l)*MathF.Cos(l)),joints.hip);
             joints.drawBody();
         time = 0;
         }
