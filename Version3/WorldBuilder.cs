@@ -247,11 +247,11 @@ public class WorldBuilder : MonoBehaviour
         Vector3[] obj, bool create
         ){ 
         for (int i = 0; i < obj.Length; i++){
-            float minBeforeBug = 0.001f;
-            Vector3 conversionBugCorrection_15Float_14Int = 
-                new Vector3(minBeforeBug,minBeforeBug,minBeforeBug);
+            float floatError = 0.01f;
+            Vector3 floatCorrection = 
+                new Vector3(floatError,floatError,floatError);
             Vector3 vector = setVectorInBoundry(
-                obj[i]+conversionBugCorrection_15Float_14Int
+                obj[i]+floatCorrection
                 );
             createOrDelete(vecToVecInt(vector),create);
         }
