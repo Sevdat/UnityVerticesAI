@@ -144,20 +144,34 @@ public class WorldBuilder : MonoBehaviour
                     );
             }
     } 
-    public static float boundry(float location, float dimension){
+    public static int boundry(int location, int dimension){
         if (location > dimension) 
-                location = Math.Abs(location % (dimension+1.0f));
+                location = Math.Abs(location % (dimension+1));
             else if (location < 0.0f) {
-                float size = dimension+1.0f;
+                int size = dimension+1;
                 location = size-Math.Abs(location % size);
             }
         return location;
     }
-    public static Vector3 setVectorInBoundry(Vector3 pos){
-        float x = boundry(pos.x, dimensionX);
-        float y = boundry(pos.y, dimensionY);
-        float z = boundry(pos.z, dimensionZ);
-        return new Vector3(x,y,z);
+    public static Vector3Int setVectorInBoundry(Vector3Int pos){
+        int x = boundry(pos.x, dimensionX);
+        int y = boundry(pos.y, dimensionY);
+        int z = boundry(pos.z, dimensionZ);
+        return new Vector3Int(x,y,z);
+    }
+    public static void createOrDeleteObject(
+        Vector3[] obj, bool create
+        ){ 
+        for (int i = 0; i < obj.Length; i++){
+            Vector3Int vector = setVectorInBoundry(
+                new Vector3Int(
+                    Mathf.RoundToInt(obj[i].x),
+                    Mathf.RoundToInt(obj[i].y),
+                    Mathf.RoundToInt(obj[i].z)
+                )
+                );
+            createOrDelete(vector,create);
+        }
     }
     public static float[] vectorDirections(Vector3 origin, Vector3 point){
         float lineX = point.x-origin.x;
@@ -236,26 +250,6 @@ public class WorldBuilder : MonoBehaviour
             }
         }
         return rotatedVec;
-    }
-    public static Vector3Int vecToVecInt(Vector3 vec){
-        float x = vec.x;
-        float y = vec.y;
-        float z = vec.z;
-        return new Vector3Int((int)x,(int)y,(int)z);
-    }
-    public static void createOrDeleteObject(
-        Vector3[] obj, bool create
-        ){ 
-        for (int i = 0; i < obj.Length; i++){
-            Vector3 vector = setVectorInBoundry(
-                new Vector3(
-                    Mathf.Round(obj[i].x),
-                    Mathf.Round(obj[i].y),
-                    Mathf.Round(obj[i].z)
-                )
-                );
-            createOrDelete(vecToVecInt(vector),create);
-        }
     }
     public static Vector3[] rotateObject(
         Vector3 alpha, Vector3 origin,Vector3[] obj
@@ -439,4 +433,11 @@ public class WorldBuilder : MonoBehaviour
     //         rotatedVec = new Vector3(x,y,z);
     //     } else rotatedVec = new Vector3(0,0,0);
     //     return rotatedVec;
+    // }
+
+    //  public static Vector3Int vecToVecInt(Vector3 vec){
+    //     float x = vec.x;
+    //     float y = vec.y;
+    //     float z = vec.z;
+    //     return new Vector3Int((int)x,(int)y,(int)z);
     // }
