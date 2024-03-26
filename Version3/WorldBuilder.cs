@@ -147,7 +147,7 @@ public class WorldBuilder : MonoBehaviour
     public static int boundry(int location, int dimension){
         if (location > dimension) 
                 location = Math.Abs(location % (dimension+1));
-            else if (location < 0.0f) {
+            else if (location < 0) {
                 int size = dimension+1;
                 location = size-Math.Abs(location % size);
             }
@@ -159,6 +159,7 @@ public class WorldBuilder : MonoBehaviour
         int z = boundry(pos.z, dimensionZ);
         return new Vector3Int(x,y,z);
     }
+
     public static void createOrDeleteObject(
         Vector3[] obj, bool create
         ){ 
@@ -170,6 +171,7 @@ public class WorldBuilder : MonoBehaviour
                     Mathf.RoundToInt(obj[i].z)
                 )
                 );
+                // print($"{obj[i]} : {vector}");
             createOrDelete(vector,create);
         }
     }
@@ -189,16 +191,22 @@ public class WorldBuilder : MonoBehaviour
     }
     public static float[] locatePoint(
         float radius,
-        float opposite, float axisAdjacent,
-        float rotatingAxis
+        float constantOpposite, float axisAdjacent,
+        float axisOpposite
         ){
-        float currentTheta = Mathf.Asin(opposite/radius);
+        float currentTheta = constantOpposite/radius;
+        float checkSin = Mathf.Asin(currentTheta);
+        currentTheta = float.IsNaN(checkSin)? 
+            MathF.Sign(currentTheta) : checkSin;
+
         float adjacent = radius*Mathf.Cos(currentTheta);
-        float alphaCorrection = axisAdjacent/adjacent;
-        alphaCorrection = Mathf.Abs(alphaCorrection)>1? 
-            MathF.Sign(alphaCorrection) : alphaCorrection;
-        float currentAlpha = Mathf.Acos(alphaCorrection);
-        float rotationSide = Mathf.Sign(rotatingAxis);
+
+        float currentAlpha = axisAdjacent/adjacent;
+        float checkCos = Mathf.Acos(currentAlpha);
+        currentAlpha = float.IsNaN(checkCos)? 
+            MathF.Sign(currentAlpha) : checkCos;
+
+        float rotationSide = Mathf.Sign(axisOpposite);
         return new float[]{
             rotationSide*currentAlpha,
             adjacent
@@ -216,13 +224,16 @@ public class WorldBuilder : MonoBehaviour
         float lineX = vectorDirection[0];
         float lineY = vectorDirection[1];
         float lineZ = vectorDirection[2];
+        
+        // constantOpposite, axisAdjacent, axisOpposite
         if (lineX + lineY + lineZ != 0){
-                float[] xValues = locatePoint(radius,lineZ,lineY,lineX);
+                float[] xValues = locatePoint(radius,lineY,lineZ,lineX);
                 alpha = alphaAngles.x*angleToRadian + xValues[0];
                 x = xValues[1]*Mathf.Sin(alpha);
-                y = xValues[1]*Mathf.Cos(alpha);
-                z = lineZ;
+                z = xValues[1]*Mathf.Cos(alpha);
+                y = lineY;
                 rotatedVec = origin + new Vector3(x,y,z);
+            
             
             if (alphaAngles.y % 360f != 0) {
                 vectorDirection = vectorDirections(origin,rotatedVec);
@@ -241,11 +252,11 @@ public class WorldBuilder : MonoBehaviour
                 lineX = vectorDirection[0];
                 lineY = vectorDirection[1];
                 lineZ = vectorDirection[2];
-                float[] zValues = locatePoint(radius,lineY,lineZ,lineX);
+                float[] zValues = locatePoint(radius,lineZ,lineX,lineY);
                 alpha = alphaAngles.z*angleToRadian + zValues[0];
-                x = zValues[1]*Mathf.Sin(alpha);
-                z = zValues[1]*Mathf.Cos(alpha);
-                y = lineY;
+                y = zValues[1]*Mathf.Sin(alpha);
+                x = zValues[1]*Mathf.Cos(alpha);
+                z = lineZ;
                 rotatedVec = origin + new Vector3(x,y,z);
             }
         }
@@ -440,4 +451,26 @@ public class WorldBuilder : MonoBehaviour
     //     float y = vec.y;
     //     float z = vec.z;
     //     return new Vector3Int((int)x,(int)y,(int)z);
+    // }
+
+// verty strange behavior with floats
+
+    //     public static float[] locatePoint2(
+    //     float radius,
+    //     float opposite, float axisAdjacent,
+    //     float rotatingAxis
+    //     ){
+    //     float currentTheta = Mathf.Asin(opposite/radius);
+        
+    //     float adjacent = radius*Mathf.Cos(currentTheta);
+
+    //     float alphaCorrection = axisAdjacent/adjacent;
+    //     alphaCorrection = Mathf.Abs(alphaCorrection)>1? 
+    //         MathF.Sign(alphaCorrection) : alphaCorrection;
+    //     float currentAlpha = Mathf.Acos(alphaCorrection);
+    //     float rotationSide = Mathf.Sign(rotatingAxis);
+    //     return new float[]{
+    //         rotationSide*currentAlpha,
+    //         adjacent
+    //         };
     // }
