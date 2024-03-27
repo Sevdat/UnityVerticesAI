@@ -48,17 +48,34 @@ public class Body : MonoBehaviour
         joints = new bodyStructure(){ 
         };
         joints.movePart(new Vector3(0,0,z),joints.knee);
+        // Vector3 lo = WorldBuilder.rotate(
+        //     new Vector3(0,0,0),
+        //     WorldBuilder.vectorRadius(WorldBuilder.vectorDirections(joints.globalBody[0],joints.globalBody[3])),
+        //     joints.globalBody[0],
+        // WorldBuilder.vectorDirections(joints.globalBody[0],joints.globalBody[3])
+        // );
+        // Vector3[] li = new Vector3[2]{
+        //     joints.globalBody[0], lo
+        //  };
+        // Vector3[] lj = new Vector3[2]{
+        //     joints.globalBody[0], joints.globalBody[3]
+        // };
+        //  WorldBuilder.createOrDeleteObject(li, true);
+        //  WorldBuilder.createOrDeleteObject(lj, true);
     }
     // Update is called once per frame
     float time = 10;
-    float x = 10*MathF.Sin(60*WorldBuilder.angleToRadian);
-    float y = 10*MathF.Cos(50*WorldBuilder.angleToRadian);
-    static float zK = 20*WorldBuilder.angleToRadian;
-    float z = 10*MathF.Sin(zK)*MathF.Cos(zK);
+    static float zx = 90.0f*WorldBuilder.angleToRadian;
+    static float zy = 60.0f*WorldBuilder.angleToRadian;
+    static float zz = 90.0f*WorldBuilder.angleToRadian;
+    float x = 10.0f*MathF.Sin(zx);
+    float y = 10.0f*MathF.Sin(zy);
+    float z = 10.0f*MathF.Sin(zz);
 
     void Update(){
         time += Time.deltaTime;
-        if (time >0.1f){
+        if (time >0.09f){
+            WorldBuilder.createOrDeleteObject(joints.globalBody, false);
             joints.movePart(new Vector3(x,y,z),joints.hip);
             joints.drawBody();
         time = 0;
