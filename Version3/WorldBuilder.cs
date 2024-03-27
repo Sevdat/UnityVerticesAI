@@ -226,25 +226,25 @@ public class WorldBuilder : MonoBehaviour
         Vector3 rotatedVec = origin + new Vector3(x,y,z);
         // constantOpposite, axisAdjacent, axisOpposite
         if (lineX + lineY + lineZ != 0.0f){
-                float radius = vectorRadius(vectorDirection);
-                float[] xValues = locatePoint(radius,lineY,lineZ,lineX);
-                alpha = alphaAngles.x*angleToRadian + xValues[0];
-                x = xValues[1]*Mathf.Sin(alpha);
-                z = xValues[1]*Mathf.Cos(alpha);
-                y = lineY;
-                rotatedVec = origin + new Vector3(x,y,z);
-            if (/*alphaAngles.y % 360f != 0*/!false) {
-                vectorDirection = vectorDirections(origin,rotatedVec);
-                lineX = vectorDirection[0];
-                lineY = vectorDirection[1];
-                lineZ = vectorDirection[2];
+            float radius = vectorRadius(vectorDirection);
                 float[] yValues = locatePoint(radius,lineX,lineY,lineZ);
                 alpha = alphaAngles.y*angleToRadian + yValues[0];
                 z = yValues[1]*Mathf.Sin(alpha);
                 y = yValues[1]*Mathf.Cos(alpha);
                 x = lineX;
                 rotatedVec = origin + new Vector3(x,y,z);
-            }           
+                if (/*alphaAngles.y % 360f != 0*/!false) {
+                vectorDirection = vectorDirections(origin,rotatedVec);
+                lineX = vectorDirection[0];
+                lineY = vectorDirection[1];
+                lineZ = vectorDirection[2];
+                float[] xValues = locatePoint(radius,lineY,lineZ,lineX);
+                alpha = alphaAngles.x*angleToRadian + xValues[0];
+                x = xValues[1]*Mathf.Sin(alpha);
+                z = xValues[1]*Mathf.Cos(alpha);
+                y = lineY;
+                rotatedVec = origin + new Vector3(x,y,z);   
+                }        
             if (/*alphaAngles.z % 360f != 0*/!false) {
                 vectorDirection = vectorDirections(origin,rotatedVec);
                 lineX = vectorDirection[0];
