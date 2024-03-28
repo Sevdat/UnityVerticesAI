@@ -203,7 +203,6 @@ public class WorldBuilder : MonoBehaviour
 
         float currentAlpha = axisAdjacent/adjacent;
         float checkCos = Mathf.Acos(currentAlpha);
-        if (float.IsNaN(checkCos)) print(currentAlpha);
         currentAlpha = float.IsNaN(checkCos)? 
             Mathf.Acos(adjacent/axisAdjacent) : checkCos;
 
