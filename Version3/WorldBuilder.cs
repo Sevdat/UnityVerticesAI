@@ -197,15 +197,15 @@ public class WorldBuilder : MonoBehaviour
         float currentTheta = constantOpposite/radius;
         float checkSin = Mathf.Asin(currentTheta);
         currentTheta = float.IsNaN(checkSin)? 
-            MathF.Sign(currentTheta) : checkSin;
+            Mathf.Asin(radius/constantOpposite) : checkSin;
 
         float adjacent = radius*Mathf.Cos(currentTheta);
 
         float currentAlpha = axisAdjacent/adjacent;
         float checkCos = Mathf.Acos(currentAlpha);
-        if (float.IsNaN(checkCos)) print("lol");
+        if (float.IsNaN(checkCos)) print(currentAlpha);
         currentAlpha = float.IsNaN(checkCos)? 
-            MathF.Sign(currentAlpha) : checkCos;
+            Mathf.Acos(adjacent/axisAdjacent) : checkCos;
 
         float rotationSide = Mathf.Sign(axisOpposite);
         return new float[]{
