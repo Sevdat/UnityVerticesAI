@@ -203,6 +203,7 @@ public class WorldBuilder : MonoBehaviour
 
         float currentAlpha = axisAdjacent/adjacent;
         float checkCos = Mathf.Acos(currentAlpha);
+        if (float.IsNaN(checkCos)) print("lol");
         currentAlpha = float.IsNaN(checkCos)? 
             MathF.Sign(currentAlpha) : checkCos;
 
@@ -217,7 +218,7 @@ public class WorldBuilder : MonoBehaviour
         ){
         Vector3 rotatedVec = origin;
         if (point != origin){
-
+            
             float alpha,x,y,z;
             float[] vectorDirection = vectorDirections(origin,point);
             float lineX = vectorDirection[0];
@@ -231,7 +232,6 @@ public class WorldBuilder : MonoBehaviour
             z = xValues[1]*Mathf.Cos(alpha);
             y = lineY;
             rotatedVec = origin + new Vector3(x,y,z);
-            
             if (alphaAngles.y % 360f != 0) {
                 vectorDirection = vectorDirections(origin,rotatedVec);
                 lineX = vectorDirection[0];
