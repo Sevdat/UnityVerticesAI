@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using UnityEngine;
 
 
@@ -40,8 +41,23 @@ public class Body : MonoBehaviour
                 globalBody[bodyPart[i]] = rotatedVec[i];
             }
         }
+        public Vector3[] temp = new Vector3[]{new Vector3(0,0,0)};
+        public void tempArray(Vector3[] globalBody, float step){
+            int size = globalBody.Length-1;
+            int stepSize = (int)(1/step);
+            createOrDeleteObject(temp,false);
+            temp = new Vector3[(int)(1/step)*size];
+            for (int i = 0; i < globalBody.Length-1; i++){
+                Vector3[] t = diagonal(
+                    new Vector3[]{globalBody[i],globalBody[i+1]},
+                    step);
+                for(int e = 0; e < t.Length; e++){
+                    temp[e + i*stepSize] = t[e];
+                }
+            }
+        }
         public void drawBody(){
-            createOrDeleteObject(globalBody, true);
+            createOrDeleteObject(temp, true);
         }
     }  
     void Start(){
@@ -74,9 +90,10 @@ public class Body : MonoBehaviour
 
     void Update(){
         time += Time.deltaTime;
-        if (time >0.01f){
+        if (time >0.05f){
             WorldBuilder.createOrDeleteObject(joints.globalBody, false);
             joints.movePart(new Vector3(x,y,z),joints.hip);
+            joints.tempArray(joints.globalBody,0.1f);
             joints.drawBody();
         time = 0;
         }
