@@ -7,4 +7,4 @@ This is the geometry I used to render between 4 vertices
 ![Untitled](https://github.com/Sevdat/UnityVerticesAI/assets/55320710/8e7072e9-cf49-449d-b915-4a547e4fd89f)
 
 This is how I calculated the spherical rotation 
-![vtcYO4SUOdc](https://github.com/Sevdat/UnityVerticesAI/assets/55320710/a5f3ab06-bb81-40b5-97f5-deaab3ddc031)
+![3d rotation with point location](https://github.com/Sevdat/UnityVerticesAI/assets/55320710/8b8473db-46e4-4c14-9da2-4dc54e5d10b1)
