@@ -17,8 +17,8 @@ public class Body : MonoBehaviour
          new Vector3(15f,7f,13f),
          new Vector3(15f,2f,13f),
          new Vector3(15f,2f,16f)
-         };
-        public Vector3 localHipAngles = new Vector3(0,0,0);
+        };
+        public Vector3 localHipAngle = new Vector3(0,0,0);
         public int[] hip = new int[]{0,1,2,3};
         public Vector3 localKneeAngles = new Vector3(0,0,0);
         public int[] knee = new int[]{1,2,3};
@@ -33,13 +33,14 @@ public class Body : MonoBehaviour
             }
             return vec;
         }
-        public void movePart(Vector3 angles, int[] bodyPart){
+        public Vector3 movePart(Vector3 angles, int[] bodyPart){
             Vector3[] bodyVec = loadParts(bodyPart);
-            Vector3[] rotatedVec = 
+            Vector3[] angleAndVec = 
                 rotateObject(angles,bodyVec[0],bodyVec);
             for (int i = 0; i< bodyVec.Length; i++){
-                globalBody[bodyPart[i]] = rotatedVec[i];
+                globalBody[bodyPart[i]] = angleAndVec[i+1];
             }
+            return angleAndVec[0];
         }
         public Vector3[] temp = new Vector3[]{new Vector3(0,0,0)};
         public void tempArray(Vector3[] globalBody, float step){
@@ -57,27 +58,13 @@ public class Body : MonoBehaviour
             }
         }
         public void drawBody(){
-            createOrDeleteObject(temp, true);
+            createOrDeleteObject(globalBody, true);
         }
     }  
     void Start(){
         joints = new bodyStructure(){ 
         };
         joints.movePart(new Vector3(0,0,z),joints.knee);
-        // Vector3 lo = WorldBuilder.rotate(
-        //     new Vector3(0,0,0),
-        //     WorldBuilder.vectorRadius(WorldBuilder.vectorDirections(joints.globalBody[0],joints.globalBody[3])),
-        //     joints.globalBody[0],
-        // WorldBuilder.vectorDirections(joints.globalBody[0],joints.globalBody[3])
-        // );
-        // Vector3[] li = new Vector3[2]{
-        //     joints.globalBody[0], lo
-        //  };
-        // Vector3[] lj = new Vector3[2]{
-        //     joints.globalBody[0], joints.globalBody[3]
-        // };
-        //  WorldBuilder.createOrDeleteObject(li, true);
-        //  WorldBuilder.createOrDeleteObject(lj, true);
     }
     // Update is called once per frame
     float time = 10;
@@ -92,7 +79,8 @@ public class Body : MonoBehaviour
         time += Time.deltaTime;
         if (time >0.05f){
             WorldBuilder.createOrDeleteObject(joints.globalBody, false);
-            joints.movePart(new Vector3(x,y,z),joints.hip);
+            joints.localKneeAngles = joints.movePart(new Vector3(x,y,z),joints.knee);
+            print(joints.localKneeAngles);
             joints.tempArray(joints.globalBody,0.1f);
             joints.drawBody();
         time = 0;
