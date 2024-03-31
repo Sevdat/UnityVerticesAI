@@ -11,19 +11,32 @@ public class Body : MonoBehaviour
     // Start is called before the first frame update
     bodyStructure joints;
     public class bodyStructure : WorldBuilder{
-        public Vector3 globalAngles = new Vector3(0,0,0);
+        public Vector3 globalAngles;
         public Vector3[] globalBody = new Vector3[]{
          new Vector3(15f,12f,13f),
          new Vector3(15f,7f,13f),
          new Vector3(15f,2f,13f),
          new Vector3(15f,2f,16f)
         };
-        public Vector3 localHipAngle = new Vector3(0,0,0);
+        public Vector3 localHipAngle;
         public int[] hip = new int[]{0,1,2,3};
-        public Vector3 localKneeAngle = new Vector3(0,0,0);
+        public Vector3 localKneeAngle;
         public int[] knee = new int[]{1,2,3};
-        public Vector3 localFootAngle = new Vector3(0,0,0);
+        public Vector3 localFootAngle;
         public int[] foot = new int[]{2,3};
+
+        public void moveHip(Vector3 alphaAngles){
+            movePart(alphaAngles,hip);
+            localHipAngle = getAngles(globalBody[hip[0]],globalBody[hip[1]]);
+        }
+        public void moveKnee(Vector3 alphaAngles){
+            movePart(alphaAngles,knee);
+            localKneeAngle = getAngles(globalBody[knee[0]],globalBody[knee[1]]);
+        }
+        public void moveFoot(Vector3 alphaAngles){
+            movePart(alphaAngles,foot);
+            localFootAngle = getAngles(globalBody[foot[0]],globalBody[foot[1]]);
+        }
 
         public Vector3[] loadParts(int[] bodyPart){
             int size = bodyPart.Length;
@@ -72,8 +85,8 @@ public class Body : MonoBehaviour
     // Update is called once per frame
     float time = 10;
     static float zx = 100.0f*WorldBuilder.angleToRadian;
-    static float zy = 0.0f*WorldBuilder.angleToRadian;
-    static float zz = 0.0f*WorldBuilder.angleToRadian;
+    static float zy = 100.0f*WorldBuilder.angleToRadian;
+    static float zz = 100.0f*WorldBuilder.angleToRadian;
     float x = 10.0f*MathF.Sin(zx);
     float y = 10.0f*MathF.Sin(zy);
     float z = 10.0f*MathF.Sin(zz);
@@ -82,8 +95,9 @@ public class Body : MonoBehaviour
         time += Time.deltaTime;
         if (time >0.5f){
             WorldBuilder.createOrDeleteObject(joints.globalBody, false);
-            joints.movePart(new Vector3(x,y,z),joints.hip);
-            print(WorldBuilder.getAngles(joints.globalBody[0],joints.globalBody[1]));
+            joints.moveHip(new Vector3(x,y,z));
+            joints.moveKnee(new Vector3(x,y,z));
+            joints.moveFoot(new Vector3(x,y,z));
             joints.tempArray(joints.globalBody,0.1f);
             joints.drawBody();
         time = 0f;
