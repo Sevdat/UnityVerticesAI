@@ -14,15 +14,15 @@ public class Body : MonoBehaviour
         public Vector3 globalAngles = new Vector3(0,0,0);
         public Vector3[] globalBody = new Vector3[]{
          new Vector3(15f,12f,13f),
-         new Vector3(15f,12f,10f),
+         new Vector3(15f,7f,13f),
          new Vector3(15f,2f,13f),
          new Vector3(15f,2f,16f)
         };
         public Vector3 localHipAngle = new Vector3(0,0,0);
         public int[] hip = new int[]{0,1,2,3};
-        public Vector3 localKneeAngles = new Vector3(0,0,0);
+        public Vector3 localKneeAngle = new Vector3(0,0,0);
         public int[] knee = new int[]{1,2,3};
-        public Vector3 localFootAngles = new Vector3(0,0,0);
+        public Vector3 localFootAngle = new Vector3(0,0,0);
         public int[] foot = new int[]{2,3};
 
         public Vector3[] loadParts(int[] bodyPart){
@@ -64,29 +64,29 @@ public class Body : MonoBehaviour
     void Start(){
         joints = new bodyStructure(){ 
         };
-        WorldBuilder.createOrDeleteObject(joints.globalBody, false);
-        joints.localHipAngle = joints.movePart(new Vector3(x,y,z),joints.hip);
-        print(joints.localHipAngle);
-        joints.tempArray(joints.globalBody,0.1f);
-        joints.drawBody();
+        // WorldBuilder.createOrDeleteObject(joints.globalBody, false);
+        // joints.localHipAngle = joints.movePart(new Vector3(x,y,z),joints.hip);
+        // print(joints.localHipAngle);
+        // joints.tempArray(joints.globalBody,0.1f);
+        // joints.drawBody();
     }
     // Update is called once per frame
     float time = 10;
     static float zx = 0.0f*WorldBuilder.angleToRadian;
     static float zy = 0.0f*WorldBuilder.angleToRadian;
-    static float zz = 0.0f*WorldBuilder.angleToRadian;
+    static float zz = 100.0f*WorldBuilder.angleToRadian;
     float x = 10.0f*MathF.Sin(zx);
     float y = 10.0f*MathF.Sin(zy);
     float z = 10.0f*MathF.Sin(zz);
 
     void Update(){
         time += Time.deltaTime;
-        if (time >1f){
-            // WorldBuilder.createOrDeleteObject(joints.globalBody, false);
-            // joints.localHipAngle = joints.movePart(new Vector3(x,y,z),joints.hip);
+        if (time >0.5f){
+            WorldBuilder.createOrDeleteObject(joints.globalBody, false);
+            joints.localHipAngle = joints.movePart(new Vector3(x,y,z),joints.hip);
             // print(joints.localHipAngle);
-            // joints.tempArray(joints.globalBody,0.1f);
-            // joints.drawBody();
+            joints.tempArray(joints.globalBody,0.1f);
+            joints.drawBody();
         time = 0f;
         }
     }
