@@ -227,15 +227,15 @@ public class WorldBuilder : MonoBehaviour
             float lineZ = vectorDirection[2];
             float radius = vectorRadius(vectorDirection);
 
-            float[] xValues = locatePoint(radius,lineY,lineZ,lineX);
-            alpha = alphaAngles.x*angleToRadian + xValues[0];
-            rotatedAlpha.x = alpha*radianToAngle;
-            x = xValues[1]*Mathf.Sin(alpha);
-            z = xValues[1]*Mathf.Cos(alpha);
+            float[] zValues = locatePoint(radius,lineY,lineZ,lineX);
+            alpha = alphaAngles.z*angleToRadian + zValues[0];
+            rotatedAlpha.z = alpha*radianToAngle;
+            x = zValues[1]*Mathf.Sin(alpha);
+            z = zValues[1]*Mathf.Cos(alpha);
             y = lineY;
             rotatedVec = origin + new Vector3(x,y,z);
             
-            if (alphaAngles.y % 360f != 0) {
+            if (true) {
                 vectorDirection = vectorDirections(origin,rotatedVec);
                 lineX = vectorDirection[0];
                 lineY = vectorDirection[1];
@@ -248,16 +248,16 @@ public class WorldBuilder : MonoBehaviour
                 x = lineX;
                 rotatedVec = origin + new Vector3(x,y,z);
             }           
-            if (alphaAngles.z % 360f != 0) {
+            if (true) {
                 vectorDirection = vectorDirections(origin,rotatedVec);
                 lineX = vectorDirection[0];
                 lineY = vectorDirection[1];
                 lineZ = vectorDirection[2];
-                float[] zValues = locatePoint(radius,lineZ,lineX,lineY);
-                alpha = alphaAngles.z*angleToRadian + zValues[0];
-                rotatedAlpha.z = alpha*radianToAngle;
-                y = zValues[1]*Mathf.Sin(alpha);
-                x = zValues[1]*Mathf.Cos(alpha);
+                float[] xValues = locatePoint(radius,lineZ,lineY,lineX);
+                alpha = alphaAngles.x*angleToRadian + xValues[0];
+                rotatedAlpha.x = alpha*radianToAngle;
+                x = xValues[1]*Mathf.Sin(alpha);
+                y = xValues[1]*Mathf.Cos(alpha);
                 z = lineZ;
                 rotatedVec = origin + new Vector3(x,y,z);
             }
