@@ -235,7 +235,7 @@ public class WorldBuilder : MonoBehaviour
             y = lineY;
             rotatedVec = origin + new Vector3(x,y,z);
             
-            if (true) {
+            if (rotatedAlpha.y %360.0 != 0.0f) {
                 vectorDirection = vectorDirections(origin,rotatedVec);
                 lineX = vectorDirection[0];
                 lineY = vectorDirection[1];
@@ -248,7 +248,7 @@ public class WorldBuilder : MonoBehaviour
                 x = lineX;
                 rotatedVec = origin + new Vector3(x,y,z);
             }           
-            if (true) {
+            if (rotatedAlpha.x %360.0 != 0.0f) {
                 vectorDirection = vectorDirections(origin,rotatedVec);
                 lineX = vectorDirection[0];
                 lineY = vectorDirection[1];
