@@ -33,14 +33,13 @@ public class Body : MonoBehaviour
             }
             return vec;
         }
-        public Vector3 movePart(Vector3 angles, int[] bodyPart){
+        public void movePart(Vector3 angles, int[] bodyPart){
             Vector3[] bodyVec = loadParts(bodyPart);
-            Vector3[] angleAndVec = 
-                rotateObject(angles,bodyVec[0],bodyVec);
+            Vector3 bodyOrigin = bodyVec[0];
+            Vector3[] rotatedVec = rotateObject(angles,bodyOrigin,bodyVec);
             for (int i = 0; i< bodyVec.Length; i++){
-                globalBody[bodyPart[i]] = angleAndVec[i+1];
+                globalBody[bodyPart[i]] = rotatedVec[i];
             }
-            return angleAndVec[0];
         }
         public Vector3[] temp = new Vector3[]{new Vector3(0,0,0)};
         public void tempArray(Vector3[] globalBody, float step){
@@ -72,9 +71,9 @@ public class Body : MonoBehaviour
     }
     // Update is called once per frame
     float time = 10;
-    static float zx = 0.0f*WorldBuilder.angleToRadian;
+    static float zx = 100.0f*WorldBuilder.angleToRadian;
     static float zy = 0.0f*WorldBuilder.angleToRadian;
-    static float zz = 100.0f*WorldBuilder.angleToRadian;
+    static float zz = 0.0f*WorldBuilder.angleToRadian;
     float x = 10.0f*MathF.Sin(zx);
     float y = 10.0f*MathF.Sin(zy);
     float z = 10.0f*MathF.Sin(zz);
@@ -83,8 +82,8 @@ public class Body : MonoBehaviour
         time += Time.deltaTime;
         if (time >0.5f){
             WorldBuilder.createOrDeleteObject(joints.globalBody, false);
-            joints.localHipAngle = joints.movePart(new Vector3(x,y,z),joints.hip);
-            // print(joints.localHipAngle);
+            joints.movePart(new Vector3(x,y,z),joints.hip);
+            print(WorldBuilder.getAngles(joints.globalBody[0],joints.globalBody[1]));
             joints.tempArray(joints.globalBody,0.1f);
             joints.drawBody();
         time = 0f;
