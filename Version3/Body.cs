@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Drawing;
 using UnityEngine;
 
-
 public class Body : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -13,17 +12,18 @@ public class Body : MonoBehaviour
     public class bodyStructure : WorldBuilder{
         public Vector3 globalAngles;
         public Vector3[] globalBody = new Vector3[]{
-         new Vector3(15f,12f,13f),
-         new Vector3(15f,7f,13f),
-         new Vector3(15f,2f,13f),
-         new Vector3(15f,2f,16f)
+         new Vector3(20f,18f,20f),
+         new Vector3(20f,12f,20f),
+         new Vector3(20f,4f,20f),
+         new Vector3(20f,2f,20f),
+         new Vector3(20f,2f,25f)
         };
         public Vector3 localHipAngle;
-        public int[] hip = new int[]{0,1,2,3};
+        public int[] hip = new int[]{0,1,2,3,4};
         public Vector3 localKneeAngle;
-        public int[] knee = new int[]{1,2,3};
+        public int[] knee = new int[]{1,2,3,4};
         public Vector3 localFootAngle;
-        public int[] foot = new int[]{2,3};
+        public int[] foot = new int[]{2,3,4};
 
         public void moveHip(Vector3 alphaAngles){
             movePart(alphaAngles,hip);
@@ -37,7 +37,15 @@ public class Body : MonoBehaviour
             movePart(alphaAngles,foot);
             localFootAngle = getAngles(globalBody[foot[0]],globalBody[foot[1]]);
         }
-
+        // public Vector3 rotateBody(Vector3 rot){
+        //     float zx = rot.x*angleToRadian;
+        //     float zy = rot.y*angleToRadian;
+        //     float zz = rot.z*angleToRadian;
+        //     float x = zx*Mathf.Cos()*MathF.Sin(globalAngles.x);
+        //     float y = zy*Mathf.Cos()*MathF.Sin(globalAngles.y);
+        //     float z = zz*MathF.Sin(globalAngles.z);
+        //     return new Vector3();
+        // }
         public Vector3[] loadParts(int[] bodyPart){
             int size = bodyPart.Length;
             Vector3[] vec = new Vector3[size];
@@ -69,6 +77,12 @@ public class Body : MonoBehaviour
                 }
             }
         }
+        public void initBody(){
+            globalAngles = new Vector3(0,0,0);
+            localHipAngle = getAngles(globalBody[hip[0]],globalBody[hip[1]]);
+            localKneeAngle = getAngles(globalBody[knee[0]],globalBody[knee[1]]);
+            localFootAngle = getAngles(globalBody[foot[0]],globalBody[foot[1]]);
+        }
         public void drawBody(){
             createOrDeleteObject(globalBody, true);
         }
@@ -76,28 +90,25 @@ public class Body : MonoBehaviour
     void Start(){
         joints = new bodyStructure(){ 
         };
-        // WorldBuilder.createOrDeleteObject(joints.globalBody, false);
-        // joints.localHipAngle = joints.movePart(new Vector3(x,y,z),joints.hip);
-        // print(joints.localHipAngle);
-        // joints.tempArray(joints.globalBody,0.1f);
-        // joints.drawBody();
+        joints.initBody();
+        joints.moveFoot(new Vector3(0f,0,0f));
+        joints.moveHip(new Vector3(0f,0,zz));
+        joints.drawBody();
     }
     // Update is called once per frame
     float time = 10;
-    static float zx = 100.0f*WorldBuilder.angleToRadian;
-    static float zy = 100.0f*WorldBuilder.angleToRadian;
-    static float zz = 100.0f*WorldBuilder.angleToRadian;
-    float x = 10.0f*MathF.Sin(zx);
-    float y = 10.0f*MathF.Sin(zy);
-    float z = 10.0f*MathF.Sin(zz);
+    static float zx = 50.0f*WorldBuilder.angleToRadian;
+    static float zz = 90.0f;
+    float x = 10.0f*MathF.Sin(zx)*MathF.Sin(zz*WorldBuilder.angleToRadian);
+    float y = 10.0f*MathF.Cos(zx)*MathF.Cos(zz*WorldBuilder.angleToRadian);
+    float z = 0.0f*MathF.Sin(zz);
 
     void Update(){
         time += Time.deltaTime;
-        if (time >0.5f){
+        if (time >0.3f){
             WorldBuilder.createOrDeleteObject(joints.globalBody, false);
-            joints.moveHip(new Vector3(x,y,z));
+            print(joints.localKneeAngle);
             joints.moveKnee(new Vector3(x,y,z));
-            joints.moveFoot(new Vector3(x,y,z));
             joints.tempArray(joints.globalBody,0.1f);
             joints.drawBody();
         time = 0f;
