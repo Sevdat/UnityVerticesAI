@@ -231,7 +231,6 @@ public class WorldBuilder : MonoBehaviour
             x = zValues[1]*Mathf.Sin(alpha);
             z = zValues[1]*Mathf.Cos(alpha);
             y = lineY;
-            rotatedVec = origin + new Vector3(x,y,z);
             
             if (alphaAngles.y % 360.0 != 0.0f) {
                 lineX = x;
@@ -242,7 +241,6 @@ public class WorldBuilder : MonoBehaviour
                 z = yValues[1]*Mathf.Sin(alpha);
                 y = yValues[1]*Mathf.Cos(alpha);
                 x = lineX;
-                rotatedVec = origin + new Vector3(x,y,z);
             }           
             if (alphaAngles.x % 360.0 != 0.0f) {
                 lineX = x;
@@ -253,8 +251,8 @@ public class WorldBuilder : MonoBehaviour
                 x = xValues[1]*Mathf.Sin(alpha);
                 y = xValues[1]*Mathf.Cos(alpha);
                 z = lineZ;
-                rotatedVec = origin + new Vector3(x,y,z);
             }
+            rotatedVec = origin + new Vector3(x,y,z);
         }
         return rotatedVec;
     }
