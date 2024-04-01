@@ -234,10 +234,9 @@ public class WorldBuilder : MonoBehaviour
             rotatedVec = origin + new Vector3(x,y,z);
             
             if (alphaAngles.y % 360.0 != 0.0f) {
-                vectorDirection = vectorDirections(origin,rotatedVec);
-                lineX = vectorDirection[0];
-                lineY = vectorDirection[1];
-                lineZ = vectorDirection[2];
+                lineX = x;
+                lineY = y;
+                lineZ = z;
                 float[] yValues = locatePoint(radius,lineX,lineY,lineZ);
                 alpha = alphaAngles.y*angleToRadian + yValues[0];
                 z = yValues[1]*Mathf.Sin(alpha);
@@ -246,10 +245,9 @@ public class WorldBuilder : MonoBehaviour
                 rotatedVec = origin + new Vector3(x,y,z);
             }           
             if (alphaAngles.x % 360.0 != 0.0f) {
-                vectorDirection = vectorDirections(origin,rotatedVec);
-                lineX = vectorDirection[0];
-                lineY = vectorDirection[1];
-                lineZ = vectorDirection[2];
+                lineX = x;
+                lineY = y;
+                lineZ = z;
                 float[] xValues = locatePoint(radius,lineZ,lineY,lineX);
                 alpha = alphaAngles.x*angleToRadian + xValues[0];
                 x = xValues[1]*Mathf.Sin(alpha);
@@ -262,6 +260,7 @@ public class WorldBuilder : MonoBehaviour
     }
     public static Vector3 getAngles(Vector3 origin, Vector3 point){
         Vector3 alphaRotations = new Vector3(0,0,0);
+        if (origin != point){
         float[] vectorDirection = vectorDirections(origin,point);
         float lineX = vectorDirection[0];
         float lineY = vectorDirection[1];
@@ -276,7 +275,7 @@ public class WorldBuilder : MonoBehaviour
 
         float[] zValues = locatePoint(radius,lineY,lineZ,lineX);
         alphaRotations.z = zValues[0]*radianToAngle;
-
+        }
         return alphaRotations;
     }
     public static Vector3[] rotateObject(
