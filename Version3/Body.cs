@@ -88,29 +88,36 @@ public class Body : MonoBehaviour
         }
     }  
     void Start(){
-        joints = new bodyStructure(){ 
-        };
-        joints.initBody();
-        joints.moveFoot(new Vector3(0f,0,0f));
-        joints.moveHip(new Vector3(0f,0,zz));
-        joints.drawBody();
+        // joints = new bodyStructure(){ 
+        // };
+        // joints.initBody();
+        // joints.moveFoot(new Vector3(0f,0,0f));
+        // joints.moveHip(new Vector3(0f,0f,zAngle));
+        // joints.drawBody();
     }
     // Update is called once per frame
     float time = 10;
-    static float zx = 50.0f*WorldBuilder.angleToRadian;
-    static float zz = 90.0f;
-    float x = 10.0f*MathF.Sin(zx)*MathF.Sin(zz*WorldBuilder.angleToRadian);
-    float y = 10.0f*MathF.Cos(zx)*MathF.Cos(zz*WorldBuilder.angleToRadian);
-    float z = 0.0f*MathF.Sin(zz);
+    static float yAngle = 50f;
+    static float xAngle = 50.0f;
+    static float zAngle = 50.0f;
 
+    Vector3 xyMove(float xAngle, float zAngle){
+        float xRadian = xAngle*WorldBuilder.angleToRadian;
+        float zRadian = zAngle*WorldBuilder.angleToRadian;
+        float x = 10.0f*MathF.Sin(xRadian)*MathF.Sin(zRadian);
+        float y = 10.0f*MathF.Cos(xRadian)*MathF.Cos(zRadian);
+        return new Vector3(x,y,0);
+    }
+    Vector3 origin = new Vector3(15,15,15);
+    Vector3 point = new Vector3(15,15,20);
+    Vector3 rotate = new Vector3(0,0,1);
+    Vector3[] draw;
     void Update(){
         time += Time.deltaTime;
-        if (time >0.3f){
-            WorldBuilder.createOrDeleteObject(joints.globalBody, false);
-            print(joints.localKneeAngle);
-            joints.moveKnee(new Vector3(x,y,z));
-            joints.tempArray(joints.globalBody,0.1f);
-            joints.drawBody();
+        if (time >0.01f){
+        point = WorldBuilder.rotate(rotate,origin,point);
+        draw = new Vector3[]{origin,point};
+        WorldBuilder.createOrDeleteObject(draw,true);
         time = 0f;
         }
     }
@@ -127,3 +134,9 @@ public class Body : MonoBehaviour
     //     yield return joints.moveHipY();
     //     yield return joints.moveHipZ();
     // }
+
+    //     WorldBuilder.createOrDeleteObject(joints.globalBody, false);
+    // print(joints.localKneeAngle);
+    // joints.moveKnee(xyMove(xAngle,zAngle));
+    // joints.tempArray(joints.globalBody,0.1f);
+    // joints.drawBody();
