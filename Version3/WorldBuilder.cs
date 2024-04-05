@@ -16,7 +16,7 @@ public class WorldBuilder : MonoBehaviour
     public static BitArray bitArray;
     public static int arraySize;
     public static int arrayWidth;
-    public static Vector3Int dimension = new Vector3Int(30,30,30);
+    public static Vector3Int dimension = new Vector3Int(50,50,50);
     public static int dimensionX;
     public static int dimensionY;
     public static int dimensionZ;
@@ -172,7 +172,6 @@ public class WorldBuilder : MonoBehaviour
                     Mathf.RoundToInt(obj[i].z)
                 )
                 );
-                // print($"{obj[i]} : {vector}");
             createOrDelete(vector,create);
         }
     }
@@ -246,10 +245,10 @@ public class WorldBuilder : MonoBehaviour
                 lineX = x;
                 lineY = y;
                 lineZ = z;
-                float[] xValues = locatePoint(radius,lineZ,lineY,lineX);
+                float[] xValues = locatePoint(radius,lineZ,lineX,lineY);
                 alpha = alphaAngles.x*angleToRadian + xValues[0];
-                x = xValues[1]*Mathf.Sin(alpha);
-                y = xValues[1]*Mathf.Cos(alpha);
+                y = xValues[1]*Mathf.Sin(alpha);
+                x = xValues[1]*Mathf.Cos(alpha);
                 z = lineZ;
             }
             rotatedVec = origin + new Vector3(x,y,z);
