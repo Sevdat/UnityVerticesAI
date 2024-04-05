@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Body : MonoBehaviour
 {
@@ -94,24 +95,47 @@ public class Body : MonoBehaviour
         // joints.moveFoot(new Vector3(0f,0,0f));
         // joints.moveHip(new Vector3(0f,0f,zAngle));
         // joints.drawBody();
+        draw = new Vector3[]{origin,point};
+        WorldBuilder.createOrDeleteObject(draw,true);
+        int index = 8;
+        axis = new Vector3[6*index];
+        for(int i = 0; i<index;i++){
+            int loc = i*6;
+            axis[0+loc] = origin + new Vector3(i,0,0);
+            axis[1+loc] = origin + new Vector3(-i,0,0);
+
+            axis[2+loc] = origin + new Vector3(0,i,0);
+            axis[3+loc] = origin + new Vector3(0,-i,0);
+
+            axis[4+loc] = origin + new Vector3(0,0,i);
+            axis[5+loc] = origin + new Vector3(0,0,-i);
+        }
+        WorldBuilder.createOrDeleteObject(axis,true);
+        angle = WorldBuilder.getAngles(origin,point);
+        rotate = new Vector3(angle.x/180,-angle.y/180,angle.z/90);
     }
     // Update is called once per frame
-    float time = 10;
+    float time = 0;
     static float yAngle = 50f;
     static float xAngle = 50.0f;
     static float zAngle = 50.0f;
 
-    Vector3 xyMove(float xAngle, float zAngle){
-        float xRadian = xAngle*WorldBuilder.angleToRadian;
-        float zRadian = zAngle*WorldBuilder.angleToRadian;
-        float x = 10.0f*MathF.Sin(xRadian)*MathF.Sin(zRadian);
-        float y = 10.0f*MathF.Cos(xRadian)*MathF.Cos(zRadian);
-        return new Vector3(x,y,0);
+    Vector3 xyMove(Vector3 angles){
+        float xRadian = angles.x*WorldBuilder.angleToRadian;
+        float yRadian = angles.y*WorldBuilder.angleToRadian;
+        float zRadian = angles.z*WorldBuilder.angleToRadian;
+        float x = MathF.Sin(xRadian);
+        float y = MathF.Cos(yRadian);
+        float z = MathF.Cos(zRadian);
+        return new Vector3(x,y,z);
     }
     Vector3 origin = new Vector3(15,15,15);
-    Vector3 point = new Vector3(15,15,20);
-    Vector3 rotate = new Vector3(0,0,1);
+    // Vector3 point = new Vector3(20,17.887f,15);
+    Vector3 point = new Vector3(20,20,20);
+    Vector3 rotate;
+    Vector3 angle;
     Vector3[] draw;
+    Vector3[] axis;
     void Update(){
         time += Time.deltaTime;
         if (time >0.01f){
@@ -119,6 +143,7 @@ public class Body : MonoBehaviour
         draw = new Vector3[]{origin,point};
         WorldBuilder.createOrDeleteObject(draw,true);
         time = 0f;
+        // print(WorldBuilder.getAngles(origin,point));
         }
     }
 }
