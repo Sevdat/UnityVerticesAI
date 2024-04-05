@@ -226,8 +226,11 @@ public class WorldBuilder : MonoBehaviour
             float radius = vectorRadius(vectorDirection);
 
             float[] zValues = locatePoint(radius,lineY,lineZ,lineX);
-            if (alphaAngles.z > 180f) alphaAngles.z -= 180f;
-            alpha = alphaAngles.z*angleToRadian + zValues[0];
+            float angleZ = alphaAngles.z;
+            if (Mathf.Abs(angleZ) > 180f) 
+                angleZ = (Mathf.Sign(angleZ) == 1)? 
+                        -angleZ%180f : angleZ%180f;
+            alpha = angleZ*angleToRadian + zValues[0];
             x = zValues[1]*Mathf.Sin(alpha);
             z = zValues[1]*Mathf.Cos(alpha);
             y = lineY;
@@ -237,8 +240,11 @@ public class WorldBuilder : MonoBehaviour
                 lineY = y;
                 lineZ = z;
                 float[] yValues = locatePoint(radius,lineX,lineY,lineZ);
-                if (alphaAngles.y > 180f) alphaAngles.y -= 180f;
-                alpha = alphaAngles.y*angleToRadian + yValues[0];
+                float angleY = alphaAngles.y;
+                if (Mathf.Abs(angleY) > 180f) 
+                    angleY = (Mathf.Sign(angleY) == 1)? 
+                        -angleY%180f : angleY%180f;
+                alpha = angleY*angleToRadian + yValues[0];
                 z = yValues[1]*Mathf.Sin(alpha);
                 y = yValues[1]*Mathf.Cos(alpha);
                 x = lineX;
@@ -248,8 +254,11 @@ public class WorldBuilder : MonoBehaviour
                 lineY = y;
                 lineZ = z;
                 float[] xValues = locatePoint(radius,lineZ,lineY,lineX);
-                if (alphaAngles.x > 180f) alphaAngles.x -= 180f;
-                alpha = alphaAngles.x*angleToRadian + xValues[0];
+                float angleX = alphaAngles.x;
+                if (Mathf.Abs(angleX) > 180f) 
+                    angleX = (Mathf.Sign(angleX) == 1)? 
+                        -angleX%180f : angleX%180f;
+                alpha = angleX*angleToRadian + xValues[0];
                 x = xValues[1]*Mathf.Sin(alpha);
                 y = xValues[1]*Mathf.Cos(alpha);
                 z = lineZ;
