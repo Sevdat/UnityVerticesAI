@@ -112,7 +112,8 @@ public class Body : MonoBehaviour
         }
         WorldBuilder.createOrDeleteObject(axis,true);
         angle = WorldBuilder.getAngles(origin,point);
-        rotate = new Vector3(angle.x/180,-angle.y/180,angle.z/90);
+        print(WorldBuilder.getAngles(origin,point));
+        rotate = new Vector3((90-angle.x)/90,(angle.y-90)/90,(90-angle.z)/45);
     }
     // Update is called once per frame
     float time = 0;
@@ -131,7 +132,7 @@ public class Body : MonoBehaviour
     }
     Vector3 origin = new Vector3(15,15,15);
     // Vector3 point = new Vector3(20,17.887f,15);
-    Vector3 point = new Vector3(20,20,20);
+    Vector3 point = new Vector3(20,16,20);
     Vector3 rotate;
     Vector3 angle;
     Vector3[] draw;
