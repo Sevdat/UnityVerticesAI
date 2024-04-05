@@ -95,8 +95,6 @@ public class Body : MonoBehaviour
         // joints.moveFoot(new Vector3(0f,0,0f));
         // joints.moveHip(new Vector3(0f,0f,zAngle));
         // joints.drawBody();
-        draw = new Vector3[]{origin,point};
-        WorldBuilder.createOrDeleteObject(draw,true);
         int index = 8;
         axis = new Vector3[6*index];
         for(int i = 0; i<index;i++){
@@ -112,14 +110,27 @@ public class Body : MonoBehaviour
         }
         WorldBuilder.createOrDeleteObject(axis,true);
         angle = WorldBuilder.getAngles(origin,point);
-        print(WorldBuilder.getAngles(origin,point));
-        rotate = new Vector3((90-angle.x)/90,(angle.y-90)/90,(90-angle.z)/45);
+        float l = circum(origin,point);
+        point2 = WorldBuilder.rotate(
+            new Vector3(90,0,180),
+            origin,
+            point);
+        draw = new Vector3[]{origin,point,point2};
+        WorldBuilder.createOrDeleteObject(draw,true);
+
+        print(WorldBuilder.getAngles(origin,point2));
+        rotate = new Vector3(-1,-1,2);
     }
     // Update is called once per frame
     float time = 0;
     static float yAngle = 50f;
     static float xAngle = 50.0f;
     static float zAngle = 50.0f;
+    float circum(Vector3 origin, Vector3 point){
+        return 2*Mathf.PI*WorldBuilder.vectorRadius(
+            WorldBuilder.vectorDirections(origin,point)
+        );
+    }
 
     Vector3 xyMove(Vector3 angles){
         float xRadian = angles.x*WorldBuilder.angleToRadian;
@@ -132,7 +143,8 @@ public class Body : MonoBehaviour
     }
     Vector3 origin = new Vector3(15,15,15);
     // Vector3 point = new Vector3(20,17.887f,15);
-    Vector3 point = new Vector3(20,16,20);
+    Vector3 point = new Vector3(20,20,20);
+    Vector3 point2;
     Vector3 rotate;
     Vector3 angle;
     Vector3[] draw;
