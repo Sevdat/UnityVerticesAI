@@ -112,14 +112,18 @@ public class Body : MonoBehaviour
         angle = WorldBuilder.getAngles(origin,point);
         float l = circum(origin,point);
         point2 = WorldBuilder.rotate(
-            new Vector3(90,0,180),
+            new Vector3(0,-90,180),
             origin,
             point);
         draw = new Vector3[]{origin,point,point2};
         WorldBuilder.createOrDeleteObject(draw,true);
 
         print(WorldBuilder.getAngles(origin,point2));
-        rotate = new Vector3(-1,-1,2);
+        rotate = new Vector3(
+        0,
+        0,
+        0
+        );
     }
     // Update is called once per frame
     float time = 0;
