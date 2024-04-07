@@ -9,13 +9,11 @@ public class ballVisible : MonoBehaviour
         Program.Main();
     }
 
-public class QuaternionClass
+public static class QuaternionClass
 {
     public static Vector3 FromAxisAngle(
-        Vector3 rotationAxis,Vector3 vectorAlpha,
-        Vector3 origin,Vector3 point
+        float angle,Vector3 rotationAxis,Vector3 rotatingPoint
         ){
-        Vector3 difference = origin - point;
         float length = Mathf.Sqrt(
             Mathf.Pow(rotationAxis.x,2.0f) + 
             Mathf.Pow(rotationAxis.y,2.0f) + 
@@ -27,8 +25,8 @@ public class QuaternionClass
             rotationAxis.y /= length;
             rotationAxis.z /= length;
         }
-        float angle = Mathf.Atan2(difference.y, difference.x) * (180.0f / Mathf.PI);
-        float halfAngle = angle * 0.5f * (Mathf.PI / 180.0f); // Convert degrees to radians
+        float theta = angle * (180.0f / Mathf.PI);
+        float halfAngle = theta * 0.5f * (Mathf.PI / 180.0f); // Convert degrees to radians
         float sinHalfAngle = Mathf.Sin(halfAngle);
         float w = Mathf.Cos(halfAngle);
         float x = rotationAxis.x * sinHalfAngle;
@@ -49,10 +47,9 @@ public class QuaternionClass
             z /= magnitude;
         }
         Vector4 quat = new Vector4(x,y,z,w);
-        Vector4 axisQuat = new Vector4(vectorAlpha.x, vectorAlpha.y, vectorAlpha.z,0);
+        Vector4 axisQuat = new Vector4(rotatingPoint.x, rotatingPoint.y, rotatingPoint.z,0);
         Vector4 inverseQuat = new Vector4(-x,-y,-z,w);
         Vector4 rotatedQuaternion = quatMul(quatMul(quat,axisQuat), inverseQuat);
-
         return new Vector3(rotatedQuaternion.x,rotatedQuaternion.y,rotatedQuaternion.z);
     }
     public static Vector4 quatMul(Vector4 q1, Vector4 q2)
@@ -69,11 +66,9 @@ class Program
 {
     public static void Main()
     {
-        Vector3 origin = new Vector3(0, 0, 0); 
-        Vector3 point = new Vector3(1, 1, 1); 
-        Vector3 rotationAxis = new Vector3(0, 1, 0);
-        Vector3 vectorAlpha = new Vector3(0, 1, 0);
-        Vector3 rotation = QuaternionClass.FromAxisAngle(rotationAxis,vectorAlpha,origin, point);
+        Vector3 point = new Vector3(1, 0, 0); 
+        Vector3 rotationAxis = new Vector3(0, 0, 1);
+        Vector3 rotation = QuaternionClass.FromAxisAngle(Mathf.Atan2(point.y, point.x),rotationAxis,point);
 
         print($"Quaternion: ({rotation.x}, {rotation.y}, {rotation.z})");
     }
