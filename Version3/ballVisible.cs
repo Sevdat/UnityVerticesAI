@@ -68,7 +68,7 @@ class Program
     {
         Vector3 point = new Vector3(1, 0, 0); 
         Vector3 rotationAxis = new Vector3(0, 0, 1);
-        Vector3 rotation = QuaternionClass.FromAxisAngle(Mathf.Atan2(point.y, point.x),rotationAxis,point);
+        Vector3 rotation = QuaternionClass.FromAxisAngle(10,rotationAxis,point);
 
         print($"Quaternion: ({rotation.x}, {rotation.y}, {rotation.z})");
     }
