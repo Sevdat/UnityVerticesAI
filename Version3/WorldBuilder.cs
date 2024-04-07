@@ -175,17 +175,17 @@ public class WorldBuilder : MonoBehaviour
             createOrDelete(vector,create);
         }
     }
-    public static float[] vectorDirections(Vector3 origin, Vector3 point){
+    public static Vector3 vectorDirections(Vector3 origin, Vector3 point){
         float lineX = point.x-origin.x;
         float lineY = point.y-origin.y;
         float lineZ = point.z-origin.z;
-        return new float[]{lineX,lineY,lineZ};
+        return new Vector3(lineX,lineY,lineZ);
         }
-    public static float vectorRadius(float[] vectorDirections){
+    public static float vectorRadius(Vector3 vectorDirections){
         float radius = MathF.Sqrt(
-            Mathf.Pow(vectorDirections[0],2.0f)+
-            Mathf.Pow(vectorDirections[1],2.0f)+
-            Mathf.Pow(vectorDirections[2],2.0f)
+            Mathf.Pow(vectorDirections.x,2.0f)+
+            Mathf.Pow(vectorDirections.y,2.0f)+
+            Mathf.Pow(vectorDirections.z,2.0f)
         );
         return radius;
     }
@@ -213,82 +213,39 @@ public class WorldBuilder : MonoBehaviour
             };
     }
     public static Vector3 rotate(
-        Vector3 alphaAngles,Vector3 origin, Vector3 point
+        float alphaAngles,Vector3 origin, Vector3 point
         ){
         Vector3 rotatedVec = origin;
         if (point != origin){
-            
-            float alpha,x,y,z;
-            float[] vectorDirection = vectorDirections(origin,point);
-            float lineX = vectorDirection[0];
-            float lineY = vectorDirection[1];
-            float lineZ = vectorDirection[2];
+            Vector3 vectorDirection = vectorDirections(origin,point);
             float radius = vectorRadius(vectorDirection);
-
-            float[] zValues = locatePoint(radius,lineY,lineZ,lineX);
-            float angleZ = alphaAngles.z;
-            if (Mathf.Abs(angleZ) > 180f) 
-                angleZ = (Mathf.Sign(angleZ) == 1)? 
-                        -angleZ%180f : angleZ%180f;
-            alpha = angleZ*angleToRadian + zValues[0];
-            x = zValues[1]*Mathf.Sin(alpha);
-            z = zValues[1]*Mathf.Cos(alpha);
-            y = lineY;
-            
-            if (alphaAngles.y % 360.0 != 0.0f) {
-                lineX = x;
-                lineY = y;
-                lineZ = z;
-                float[] yValues = locatePoint(radius,lineX,lineY,lineZ);
-                float angleY = alphaAngles.y;
-                if (Mathf.Abs(angleY) > 180f) 
-                    angleY = (Mathf.Sign(angleY) == 1)? 
-                        -angleY%180f : angleY%180f;
-                alpha = angleY*angleToRadian + yValues[0];
-                z = yValues[1]*Mathf.Sin(alpha);
-                y = yValues[1]*Mathf.Cos(alpha);
-                x = lineX;
-            }           
-            if (alphaAngles.x % 360.0 != 0.0f) {
-                lineX = x;
-                lineY = y;
-                lineZ = z;
-                float[] xValues = locatePoint(radius,lineZ,lineY,lineX);
-                float angleX = alphaAngles.x;
-                if (Mathf.Abs(angleX) > 180f) 
-                    angleX = (Mathf.Sign(angleX) == 1)? 
-                        -angleX%180f : angleX%180f;
-                alpha = angleX*angleToRadian + xValues[0];
-                x = xValues[1]*Mathf.Sin(alpha);
-                y = xValues[1]*Mathf.Cos(alpha);
-                z = lineZ;
-            }
-            rotatedVec = origin + new Vector3(x,y,z);
+            Vector3 rotationAxis = new Vector3(1,1,0);
+            Vector3 rotation = ballVisible.QuaternionClass.
+                FromAxisAngle(alphaAngles,rotationAxis,vectorDirection);       
+            rotatedVec = origin + rotation;
+            print(rotatedVec);
         }
         return rotatedVec;
     }
     public static Vector3 getAngles(Vector3 origin, Vector3 point){
         Vector3 alphaRotations = new Vector3(0,0,0);
         if (origin != point){
-        float[] vectorDirection = vectorDirections(origin,point);
-        float lineX = vectorDirection[0];
-        float lineY = vectorDirection[1];
-        float lineZ = vectorDirection[2];
-        float radius = vectorRadius(vectorDirection);
+        Vector3 dir = vectorDirections(origin,point);
+        float radius = vectorRadius(dir);
 
-        float[] xValues = locatePoint(radius,lineZ,lineY,lineX);
+        float[] xValues = locatePoint(radius,dir.z,dir.y,dir.x);
         alphaRotations.x = xValues[0]*radianToAngle;
 
-        float[] yValues = locatePoint(radius,lineX,lineY,lineZ);
+        float[] yValues = locatePoint(radius,dir.x,dir.y,dir.z);
         alphaRotations.y = yValues[0]*radianToAngle;
 
-        float[] zValues = locatePoint(radius,lineY,lineZ,lineX);
+        float[] zValues = locatePoint(radius,dir.y,dir.z,dir.x);
         alphaRotations.z = zValues[0]*radianToAngle;
         }
         return alphaRotations;
     }
     public static Vector3[] rotateObject(
-        Vector3 alpha, Vector3 origin,Vector3[] point
+        float alpha, Vector3 origin,Vector3[] point
         ){
         createOrDeleteObject(point, false);
         int size = point.Length;
