@@ -51,11 +51,11 @@ public class QuaternionClass
         Vector4 quat = new Vector4(x,y,z,w);
         Vector4 axisQuat = new Vector4(vectorAlpha.x, vectorAlpha.y, vectorAlpha.z,0);
         Vector4 inverseQuat = new Vector4(-x,-y,-z,w);
-        Vector4 rotatedQuaternion = matrixMul(matrixMul(quat,axisQuat), inverseQuat);
+        Vector4 rotatedQuaternion = quatMul(quatMul(quat,axisQuat), inverseQuat);
 
         return new Vector3(rotatedQuaternion.x,rotatedQuaternion.y,rotatedQuaternion.z);
     }
-    public static Vector4 matrixMul(Vector4 q1, Vector4 q2)
+    public static Vector4 quatMul(Vector4 q1, Vector4 q2)
     {
         float w = q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z;
         float x = q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y;
@@ -73,7 +73,7 @@ class Program
         Vector3 point = new Vector3(1, 1, 1); 
         Vector3 rotationAxis = new Vector3(0, 1, 0);
         Vector3 vectorAlpha = new Vector3(0, 1, 0);
-        Vector4 rotation = QuaternionClass.FromAxisAngle(rotationAxis,vectorAlpha,origin, point);
+        Vector3 rotation = QuaternionClass.FromAxisAngle(rotationAxis,vectorAlpha,origin, point);
 
         print($"Quaternion: ({rotation.x}, {rotation.y}, {rotation.z})");
     }
