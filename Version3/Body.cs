@@ -26,27 +26,18 @@ public class Body : MonoBehaviour
         public Vector3 localFootAngle;
         public int[] foot = new int[]{2,3,4};
 
-        public void moveHip(float alphaAngles,Vector3 rotationAxis){
-            movePart(alphaAngles,hip,rotationAxis);
+        public void moveHip(float alphaAngles, Vector3 ax){
+            movePart(alphaAngles,hip,ax);
             localHipAngle = getAngles(globalBody[hip[0]],globalBody[hip[1]]);
         }
-        public void moveKnee(float alphaAngles,Vector3 rotationAxis){
-            movePart(alphaAngles,knee,rotationAxis);
+        public void moveKnee(float alphaAngles){
+            movePart(alphaAngles,knee,localKneeAngle);
             localKneeAngle = getAngles(globalBody[knee[0]],globalBody[knee[1]]);
         }
-        public void moveFoot(float alphaAngles,Vector3 rotationAxis){
-            movePart(alphaAngles,foot,rotationAxis);
+        public void moveFoot(float alphaAngles){
+            movePart(alphaAngles,foot,localFootAngle);
             localFootAngle = getAngles(globalBody[foot[0]],globalBody[foot[1]]);
         }
-        // public Vector3 rotateBody(Vector3 rot){
-        //     float zx = rot.x*angleToRadian;
-        //     float zy = rot.y*angleToRadian;
-        //     float zz = rot.z*angleToRadian;
-        //     float x = zx*Mathf.Cos()*MathF.Sin(globalAngles.x);
-        //     float y = zy*Mathf.Cos()*MathF.Sin(globalAngles.y);
-        //     float z = zz*MathF.Sin(globalAngles.z);
-        //     return new Vector3();
-        // }
         public Vector3[] loadParts(int[] bodyPart){
             int size = bodyPart.Length;
             Vector3[] vec = new Vector3[size];
@@ -88,47 +79,23 @@ public class Body : MonoBehaviour
             createOrDeleteObject(globalBody, true);
         }
     }  
+    Vector3 axi = new Vector3(1,0,0);
     void Start(){
-        // joints = new bodyStructure(){ 
-        // };
-        // joints.initBody();
-        // joints.moveFoot(new Vector3(0f,0,0f));
-        // joints.moveHip(new Vector3(0f,0f,zAngle));
-        // joints.drawBody();
-        int index = 8;
-        axis = new Vector3[6*index];
-        for(int i = 0; i<index;i++){
-            int loc = i*6;
-            axis[0+loc] = origin + new Vector3(i,0,0);
-            axis[1+loc] = origin + new Vector3(-i,0,0);
-
-            axis[2+loc] = origin + new Vector3(0,i,0);
-            axis[3+loc] = origin + new Vector3(0,-i,0);
-
-            axis[4+loc] = origin + new Vector3(0,0,i);
-            axis[5+loc] = origin + new Vector3(0,0,-i);
-        }
-        WorldBuilder.createOrDeleteObject(axis,true);
+        joints = new bodyStructure(){ 
+        };
+        joints.initBody();
+        joints.moveHip(0f,axi);
+        joints.drawBody();
     }
     // Update is called once per frame
     float time = 0;
-    Vector3 origin = new Vector3(15,15,15);
-    // Vector3 point = new Vector3(20,17.887f,15);
-    Vector3 point = new Vector3(20,20,20);
-    Vector3 rotationAxis = new Vector3(70f,40f,0f);
-    Vector3 point2;
-    float rotate;
     Vector3[] draw;
-    Vector3[] axis;
     void Update(){
         time += Time.deltaTime;
         if (time >0.1f){
-        rotate +=1f;
-        print(rotate);
-        point2 = WorldBuilder.rotate(rotate,origin,point,rotationAxis);
-        print(point2);
-        draw = new Vector3[]{origin,point2};
-        WorldBuilder.createOrDeleteObject(draw,true);
+            WorldBuilder.createOrDeleteObject(joints.globalBody,false);
+            joints.moveHip(1f,axi);
+            joints.drawBody();
         time = 0f;
         // print(WorldBuilder.getAngles(origin,point));
         }
