@@ -79,7 +79,7 @@ public class Body : MonoBehaviour
             createOrDeleteObject(globalBody, true);
         }
     }  
-    Vector3 axi = new Vector3(1,0,0);
+    Vector3 axi = new Vector3(1,-1,0);
     void Start(){
         joints = new bodyStructure(){ 
         };
@@ -89,11 +89,9 @@ public class Body : MonoBehaviour
     }
     // Update is called once per frame
     float time = 0;
-    Vector3[] draw;
     void Update(){
         time += Time.deltaTime;
         if (time >0.1f){
-            WorldBuilder.createOrDeleteObject(joints.globalBody,false);
             joints.moveHip(1f,axi);
             joints.drawBody();
         time = 0f;
