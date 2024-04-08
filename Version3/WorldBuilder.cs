@@ -189,6 +189,67 @@ public class WorldBuilder : MonoBehaviour
         );
         return radius;
     }
+    public static Vector3 crossVector(Vector3 a,Vector3 b){
+        Vector3 perpendicular = new Vector3(){
+            x = a.y * b.z - a.z * b.y,
+            y = a.z * b.x - a.x * b.z,
+            z = a.x * b.y - a.y * b.x
+        };
+        return perpendicular;
+    }
+    public static Vector3 normalizeVector3(Vector3 vec){    
+        float length = Mathf.Sqrt(
+            Mathf.Pow(vec.x,2.0f) + 
+            Mathf.Pow(vec.y,2.0f) + 
+            Mathf.Pow(vec.z,2.0f)
+            );
+        if (length > 0)
+        {
+            vec.x /= length;
+            vec.y /= length;
+            vec.z /= length;
+        }
+        return vec;
+    }
+    public static Vector4 quatMul(Vector4 q1, Vector4 q2)
+    {
+        float w = q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z;
+        float x = q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y;
+        float y = q1.w * q2.y - q1.x * q2.z + q1.y * q2.w + q1.z * q2.x;
+        float z = q1.w * q2.z + q1.x * q2.y - q1.y * q2.x + q1.z * q2.w;
+        return new Vector4(x, y, z, w);
+    }
+    public static Vector3 rotate(
+        float angle,Vector3 origin, Vector3 point,Vector3 rotationAxis
+        ){
+        Vector3 rotatedVec = origin;
+        if (point != origin){
+            Vector3 vectorDirection = vectorDirections(origin,point);
+            Vector3 perpendicular = normalizeVector3(
+                    crossVector(rotationAxis, vectorDirection)
+                    );      
+
+            float halfAngle = angle * 0.5f * (Mathf.PI/180.0f);
+            float sinHalfAngle = Mathf.Sin(halfAngle);
+            float w = Mathf.Cos(halfAngle);
+            float x = perpendicular.x * sinHalfAngle;
+            float y = perpendicular.y * sinHalfAngle;
+            float z = perpendicular.z * sinHalfAngle;
+
+            Vector4 quat = new Vector4(x,y,z,w);
+            Vector4 axisQuat = new Vector4(vectorDirection.x, vectorDirection.y, vectorDirection.z,0);
+            Vector4 inverseQuat = new Vector4(-x,-y,-z,w);
+            Vector4 rotatedQuaternion = 
+                    quatMul(quatMul(quat,axisQuat), inverseQuat);
+        
+            rotatedVec = origin + new Vector3(
+                    rotatedQuaternion.x,
+                    rotatedQuaternion.y,
+                    rotatedQuaternion.z
+                    );
+        }
+        return rotatedVec;
+    }
     public static float[] locatePoint(
         float radius,
         float constantOpposite, float axisAdjacent,
@@ -211,21 +272,6 @@ public class WorldBuilder : MonoBehaviour
             rotationSide*currentAlpha,
             adjacent
             };
-    }
-    public static Vector3 rotate(
-        float alphaAngles,Vector3 origin, Vector3 point,Vector3 rotationAxis
-        ){
-        Vector3 rotatedVec = origin;
-        if (point != origin){
-            Vector3 vectorDirection = vectorDirections(origin,point);
-            Vector3 l = Vector3.Cross(rotationAxis, vectorDirection);
-            l.Normalize();
-            Vector3 rotation = ballVisible.QuaternionClass.
-                FromAxisAngle(alphaAngles,l,vectorDirection);       
-            rotatedVec = origin + rotation;
-            print(rotatedVec);
-        }
-        return rotatedVec;
     }
     public static Vector3 getAngles(Vector3 origin, Vector3 point){
         Vector3 alphaRotations = new Vector3(0,0,0);
