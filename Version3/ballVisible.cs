@@ -25,27 +25,13 @@ public static class QuaternionClass
             rotationAxis.y /= length;
             rotationAxis.z /= length;
         }
-        float theta = angle * (180.0f / Mathf.PI);
-        float halfAngle = theta * 0.5f * (Mathf.PI / 180.0f); // Convert degrees to radians
+        float halfAngle = angle * 0.5f * (Mathf.PI/180.0f); // Convert degrees to radians
         float sinHalfAngle = Mathf.Sin(halfAngle);
         float w = Mathf.Cos(halfAngle);
         float x = rotationAxis.x * sinHalfAngle;
         float y = rotationAxis.y * sinHalfAngle;
         float z = rotationAxis.z * sinHalfAngle;
 
-        float magnitude = Mathf.Sqrt(
-            Mathf.Pow(w,2.0f) + 
-            Mathf.Pow(x,2.0f) + 
-            Mathf.Pow(y,2.0f) + 
-            Mathf.Pow(z,2.0f)
-            );
-        if (magnitude > 0)
-        {
-            w /= magnitude;
-            x /= magnitude;
-            y /= magnitude;
-            z /= magnitude;
-        }
         Vector4 quat = new Vector4(x,y,z,w);
         Vector4 axisQuat = new Vector4(rotatingPoint.x, rotatingPoint.y, rotatingPoint.z,0);
         Vector4 inverseQuat = new Vector4(-x,-y,-z,w);
