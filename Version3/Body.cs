@@ -114,8 +114,8 @@ public class Body : MonoBehaviour
     float time = 0;
     Vector3 origin = new Vector3(15,15,15);
     // Vector3 point = new Vector3(20,17.887f,15);
-    Vector3 point = new Vector3(15,20,20);
-    Vector3 rotationAxis = new Vector3(0,0,0);
+    Vector3 point = new Vector3(20,20,20);
+    Vector3 rotationAxis = new Vector3(70f,40f,0f);
     Vector3 point2;
     float rotate;
     Vector3[] draw;
