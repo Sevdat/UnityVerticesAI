@@ -26,16 +26,16 @@ public class Body : MonoBehaviour
         public Vector3 localFootAngle;
         public int[] foot = new int[]{2,3,4};
 
-        public void moveHip(float alphaAngles){
-            movePart(alphaAngles,hip);
+        public void moveHip(float alphaAngles,Vector3 rotationAxis){
+            movePart(alphaAngles,hip,rotationAxis);
             localHipAngle = getAngles(globalBody[hip[0]],globalBody[hip[1]]);
         }
-        public void moveKnee(float alphaAngles){
-            movePart(alphaAngles,knee);
+        public void moveKnee(float alphaAngles,Vector3 rotationAxis){
+            movePart(alphaAngles,knee,rotationAxis);
             localKneeAngle = getAngles(globalBody[knee[0]],globalBody[knee[1]]);
         }
-        public void moveFoot(float alphaAngles){
-            movePart(alphaAngles,foot);
+        public void moveFoot(float alphaAngles,Vector3 rotationAxis){
+            movePart(alphaAngles,foot,rotationAxis);
             localFootAngle = getAngles(globalBody[foot[0]],globalBody[foot[1]]);
         }
         // public Vector3 rotateBody(Vector3 rot){
@@ -55,10 +55,10 @@ public class Body : MonoBehaviour
             }
             return vec;
         }
-        public void movePart(float angles, int[] bodyPart){
+        public void movePart(float angles, int[] bodyPart, Vector3 rotationAxis){
             Vector3[] bodyVec = loadParts(bodyPart);
             Vector3 bodyOrigin = bodyVec[0];
-            Vector3[] rotatedVec = rotateObject(angles,bodyOrigin,bodyVec);
+            Vector3[] rotatedVec = rotateObject(angles,bodyOrigin,bodyVec,rotationAxis);
             for (int i = 0; i< bodyVec.Length; i++){
                 globalBody[bodyPart[i]] = rotatedVec[i];
             }
@@ -112,37 +112,20 @@ public class Body : MonoBehaviour
     }
     // Update is called once per frame
     float time = 0;
-    static float yAngle = 50f;
-    static float xAngle = 50.0f;
-    static float zAngle = 50.0f;
-    float circum(Vector3 origin, Vector3 point){
-        return 2*Mathf.PI*WorldBuilder.vectorRadius(
-            WorldBuilder.vectorDirections(origin,point)
-        );
-    }
-
-    Vector3 xyMove(Vector3 angles){
-        float xRadian = angles.x*WorldBuilder.angleToRadian;
-        float yRadian = angles.y*WorldBuilder.angleToRadian;
-        float zRadian = angles.z*WorldBuilder.angleToRadian;
-        float x = MathF.Sin(xRadian);
-        float y = MathF.Cos(yRadian);
-        float z = MathF.Cos(zRadian);
-        return new Vector3(x,y,z);
-    }
     Vector3 origin = new Vector3(15,15,15);
     // Vector3 point = new Vector3(20,17.887f,15);
     Vector3 point = new Vector3(15,20,20);
+    Vector3 rotationAxis = new Vector3(0,0,0);
     Vector3 point2;
     float rotate;
-    Vector3 angle;
     Vector3[] draw;
     Vector3[] axis;
     void Update(){
         time += Time.deltaTime;
         if (time >0.1f){
-        rotate +=0.1f;
-        point2 = WorldBuilder.rotate(rotate,origin,point);
+        rotate +=1f;
+        print(rotate);
+        point2 = WorldBuilder.rotate(rotate,origin,point,rotationAxis);
         print(point2);
         draw = new Vector3[]{origin,point2};
         WorldBuilder.createOrDeleteObject(draw,true);
