@@ -213,15 +213,15 @@ public class WorldBuilder : MonoBehaviour
             };
     }
     public static Vector3 rotate(
-        float alphaAngles,Vector3 origin, Vector3 point
+        float alphaAngles,Vector3 origin, Vector3 point,Vector3 rotationAxis
         ){
         Vector3 rotatedVec = origin;
         if (point != origin){
             Vector3 vectorDirection = vectorDirections(origin,point);
-            float radius = vectorRadius(vectorDirection);
-            Vector3 rotationAxis = new Vector3(1,1,0);
+            Vector3 l = Vector3.Cross(rotationAxis, vectorDirection);
+            l.Normalize();
             Vector3 rotation = ballVisible.QuaternionClass.
-                FromAxisAngle(alphaAngles,rotationAxis,vectorDirection);       
+                FromAxisAngle(alphaAngles,l,vectorDirection);       
             rotatedVec = origin + rotation;
             print(rotatedVec);
         }
@@ -245,13 +245,13 @@ public class WorldBuilder : MonoBehaviour
         return alphaRotations;
     }
     public static Vector3[] rotateObject(
-        float alpha, Vector3 origin,Vector3[] point
+        float alpha, Vector3 origin,Vector3[] point,Vector3 rotationAxis
         ){
         createOrDeleteObject(point, false);
         int size = point.Length;
         Vector3[] rotatedVec = new Vector3[size];
         for (int i = 0; i < size; i++){
-            Vector3 vec = rotate(alpha,origin,point[i]);
+            Vector3 vec = rotate(alpha,origin,point[i],rotationAxis);
             rotatedVec[i] = vec;
             }
         return rotatedVec;
