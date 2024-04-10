@@ -79,21 +79,29 @@ public class Body : MonoBehaviour
             createOrDeleteObject(globalBody, true);
         }
     }  
-    Vector3 axi = new Vector3(1,-1,0);
     void Start(){
         joints = new bodyStructure(){ 
         };
-        joints.initBody();
-        joints.moveHip(0f,axi);
-        joints.drawBody();
+        // joints.initBody();
+        // joints.moveHip(1f,axi);
+        // joints.drawBody();
+        // WorldBuilder.createOrDeleteObject(origin,true);
     }
     // Update is called once per frame
+    Vector3[] origin = new Vector3[]{new Vector3(15,15,15),new Vector3(15,10,15)};
+    Vector3 axi = new Vector3(1f,0,0f);
+    Vector3[] tempPoint = new Vector3[]{new Vector3(0,0,0)};
+    float angle = 0;
     float time = 0;
     void Update(){
         time += Time.deltaTime;
         if (time >0.1f){
-            joints.moveHip(1f,axi);
-            joints.drawBody();
+            angle +=1f;
+            WorldBuilder.createOrDeleteObject(tempPoint,false);
+            tempPoint = WorldBuilder.rotateObject(angle,joints.globalBody[0],joints.globalBody,axi);
+            WorldBuilder.createOrDeleteObject(tempPoint,true);
+            // joints.moveHip(1f,axi);
+            // joints.drawBody();
         time = 0f;
         // print(WorldBuilder.getAngles(origin,point));
         }
