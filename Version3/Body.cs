@@ -4,40 +4,27 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using UnityEngine;
-using UnityEngine.UIElements;
+
 
 public class Body : MonoBehaviour
 {
     // Start is called before the first frame update
     bodyStructure joints;
     public class bodyStructure : WorldBuilder{
-        public Vector3 globalAngles;
+        public Vector3 globalAngles = new Vector3(0,0,0);
         public Vector3[] globalBody = new Vector3[]{
-         new Vector3(20f,18f,20f),
-         new Vector3(20f,12f,20f),
-         new Vector3(20f,4f,20f),
-         new Vector3(20f,2f,20f),
-         new Vector3(20f,2f,25f)
+         new Vector3(15f,12f,13f),
+         new Vector3(15f,7f,13f),
+         new Vector3(15f,2f,13f),
+         new Vector3(15f,2f,16f)
         };
-        public Vector3 localHipAngle;
-        public int[] hip = new int[]{0,1,2,3,4};
-        public Vector3 localKneeAngle;
-        public int[] knee = new int[]{1,2,3,4};
-        public Vector3 localFootAngle;
-        public int[] foot = new int[]{2,3,4};
+        public Vector3 localHipAngle = new Vector3(0,0,0);
+        public int[] hip = new int[]{0,1,2,3};
+        public Vector3 localKneeAngle = new Vector3(0,0,0);
+        public int[] knee = new int[]{1,2,3};
+        public Vector3 localFootAngle = new Vector3(0,0,0);
+        public int[] foot = new int[]{2,3};
 
-        public void moveHip(float alphaAngles, Vector3 ax){
-            movePart(alphaAngles,hip,ax);
-            localHipAngle = getAngles(globalBody[hip[0]],globalBody[hip[1]]);
-        }
-        public void moveKnee(float alphaAngles){
-            movePart(alphaAngles,knee,localKneeAngle);
-            localKneeAngle = getAngles(globalBody[knee[0]],globalBody[knee[1]]);
-        }
-        public void moveFoot(float alphaAngles){
-            movePart(alphaAngles,foot,localFootAngle);
-            localFootAngle = getAngles(globalBody[foot[0]],globalBody[foot[1]]);
-        }
         public Vector3[] loadParts(int[] bodyPart){
             int size = bodyPart.Length;
             Vector3[] vec = new Vector3[size];
@@ -46,13 +33,14 @@ public class Body : MonoBehaviour
             }
             return vec;
         }
-        public void movePart(float angles, int[] bodyPart, Vector3 rotationAxis){
+        public Vector3 movePart(Vector3 angles, int[] bodyPart){
             Vector3[] bodyVec = loadParts(bodyPart);
-            Vector3 bodyOrigin = bodyVec[0];
-            Vector3[] rotatedVec = rotateObject(angles,bodyOrigin,bodyVec,rotationAxis);
+            Vector3[] angleAndVec = 
+                rotateObject(angles,bodyVec[0],bodyVec);
             for (int i = 0; i< bodyVec.Length; i++){
-                globalBody[bodyPart[i]] = rotatedVec[i];
+                globalBody[bodyPart[i]] = angleAndVec[i+1];
             }
+            return angleAndVec[0];
         }
         public Vector3[] temp = new Vector3[]{new Vector3(0,0,0)};
         public void tempArray(Vector3[] globalBody, float step){
@@ -69,12 +57,6 @@ public class Body : MonoBehaviour
                 }
             }
         }
-        public void initBody(){
-            globalAngles = new Vector3(0,0,0);
-            localHipAngle = getAngles(globalBody[hip[0]],globalBody[hip[1]]);
-            localKneeAngle = getAngles(globalBody[knee[0]],globalBody[knee[1]]);
-            localFootAngle = getAngles(globalBody[foot[0]],globalBody[foot[1]]);
-        }
         public void drawBody(){
             createOrDeleteObject(globalBody, true);
         }
@@ -82,28 +64,30 @@ public class Body : MonoBehaviour
     void Start(){
         joints = new bodyStructure(){ 
         };
-        // joints.initBody();
-        // joints.moveHip(1f,axi);
+        // WorldBuilder.createOrDeleteObject(joints.globalBody, false);
+        // joints.localHipAngle = joints.movePart(new Vector3(x,y,z),joints.hip);
+        // print(joints.localHipAngle);
+        // joints.tempArray(joints.globalBody,0.1f);
         // joints.drawBody();
-        // WorldBuilder.createOrDeleteObject(origin,true);
     }
     // Update is called once per frame
-    Vector3[] origin = new Vector3[]{new Vector3(15,15,15),new Vector3(15,10,15)};
-    Vector3 axi = new Vector3(1f,0,0f);
-    Vector3[] tempPoint = new Vector3[]{new Vector3(0,0,0)};
-    float angle = 0;
-    float time = 0;
+    float time = 10;
+    static float zx = 0.0f*WorldBuilder.angleToRadian;
+    static float zy = 0.0f*WorldBuilder.angleToRadian;
+    static float zz = 100.0f*WorldBuilder.angleToRadian;
+    float x = 10.0f*MathF.Sin(zx);
+    float y = 10.0f*MathF.Sin(zy);
+    float z = 10.0f*MathF.Sin(zz);
+
     void Update(){
         time += Time.deltaTime;
-        if (time >0.1f){
-            angle +=1f;
-            WorldBuilder.createOrDeleteObject(tempPoint,false);
-            tempPoint = WorldBuilder.rotateObject(angle,joints.globalBody[0],joints.globalBody,axi);
-            WorldBuilder.createOrDeleteObject(tempPoint,true);
-            // joints.moveHip(1f,axi);
-            // joints.drawBody();
+        if (time >0.5f){
+            WorldBuilder.createOrDeleteObject(joints.globalBody, false);
+            joints.localHipAngle = joints.movePart(new Vector3(x,y,z),joints.hip);
+            // print(joints.localHipAngle);
+            joints.tempArray(joints.globalBody,0.1f);
+            joints.drawBody();
         time = 0f;
-        // print(WorldBuilder.getAngles(origin,point));
         }
     }
 }
@@ -119,9 +103,3 @@ public class Body : MonoBehaviour
     //     yield return joints.moveHipY();
     //     yield return joints.moveHipZ();
     // }
-
-    //     WorldBuilder.createOrDeleteObject(joints.globalBody, false);
-    // print(joints.localKneeAngle);
-    // joints.moveKnee(xyMove(xAngle,zAngle));
-    // joints.tempArray(joints.globalBody,0.1f);
-    // joints.drawBody();
