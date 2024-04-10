@@ -42,7 +42,7 @@ public class WorldBuilder : MonoBehaviour
         dimensionX = dimension.x-1;
         dimensionY = dimension.y-1;
         dimensionZ = dimension.z-1;
-        rewriteFile(false, false);
+        rewriteFile(true, false);
         createBalls();
         Cursor.lockState = CursorLockMode.Locked;
     }
