@@ -30,21 +30,15 @@ public class Body : MonoBehaviour
         public Vector3 y = new Vector3(0,3,0);
         public Vector3 z = new Vector3(0,0,3);
 
-        public void moveHip(float alphaAngles, Vector3 ax){
+        public void moveHip(float alphaAngles, Vector3 localRotationAxis){
             int index = 0;
-            if (ax == y) index = 1;
-            if (ax == z) index = 2;
-            Vector3 rotationAxis = VectorManipulator.normalizeVector3(localHipAngle[index] - globalBody[0]);
+            if (localRotationAxis == y) index = 1;
+            if (localRotationAxis == z) index = 2;
+            Vector3 rotationAxis = localHipAngle[index];
             globalBody = BodyCreator.rotatePart(alphaAngles,hip,rotationAxis,globalBody);
-            Vector3 origin = globalBody[0];
-            for (int i = 0; i < localHipAngle.Length; i++){
-                if (i != index){
-                    localHipAngle[i] = 
-                    QuaternionClass.rotate(
-                        alphaAngles,origin,localHipAngle[i],rotationAxis
-                        );
-                }
-            }
+            localHipAngle = BodyCreator.rotateAxis(
+                alphaAngles,localHipAngle,rotationAxis,index,globalBody
+                );
         }
         public void moveKnee(float alphaAngles,Vector3 ax){
             globalBody = BodyCreator.rotatePart(alphaAngles,knee,ax,globalBody);
@@ -53,39 +47,36 @@ public class Body : MonoBehaviour
             globalBody = BodyCreator.rotatePart(alphaAngles,foot,ax,globalBody);
         }
         public void initBody(){
-            localHipAngle = new Vector3[]{
-                globalBody[0]+x,
-                globalBody[0]+y,
-                globalBody[0]+z
-            };
+            localHipAngle = new Vector3[]{x,y,z};
         }
-        public void draw(Vector3[] body){
-            BitArrayManipulator.createOrDeleteObject(body, true);
+        public void draw(Vector3[] body, bool drawOrDelete){
+            BitArrayManipulator.createOrDeleteObject(body, drawOrDelete);
         }
-        public void delete(Vector3[] body){
-            BitArrayManipulator.createOrDeleteObject(body, false);
+        public void drawAxis(Vector3[] localAngle,Vector3 origin,bool drawOrDelete){
+            Vector3[] addedOrigin = VectorManipulator.addToArray(localAngle,origin);
+            BitArrayManipulator.createOrDeleteObject(addedOrigin, drawOrDelete);
         }
     }  
     void Start(){
         joints = new bodyStructure();
         joints.initBody();
-        // joints.moveHip(-50f,joints.localHipAngle);
-        joints.draw(joints.globalBody);
+         joints.moveHip(-50f,joints.x);
+        joints.draw(joints.globalBody, true);
     }
 
     float angle = 0;
     float time = 0;
     void Update(){
         time += Time.deltaTime;
-        if (time >0.5f){
+        if (time >0.01f){
             angle =1f;
-            joints.delete(joints.globalBody);
-            joints.delete(joints.localHipAngle);
+            joints.draw(joints.globalBody,false);
+            joints.drawAxis(joints.localHipAngle,joints.globalBody[0],false);
 
             joints.moveHip(angle,joints.z);
 
-            joints.draw(joints.globalBody);
-            joints.draw(joints.localHipAngle);
+            joints.draw(joints.globalBody,true);
+            joints.drawAxis(joints.localHipAngle,joints.globalBody[0],true);
             time = 0f;
         }
     }
