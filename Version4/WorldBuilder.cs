@@ -224,6 +224,13 @@ public class WorldBuilder : MonoBehaviour
             }
             return clone;
         }
+        public static int localCrossIndex(Vector3 localRotationAxis){
+            int index = 0;
+            if (localRotationAxis.x == 0){
+                index = (localRotationAxis.y != 0)? 1:2;
+            }
+            return index;
+        }
     }
     public static class QuaternionClass {
         public static Vector4 quatMul(Vector4 q1, Vector4 q2) {
@@ -239,9 +246,7 @@ public class WorldBuilder : MonoBehaviour
             Vector3 rotatedVec = origin;
             if (point != origin){
                 Vector3 pointDirection = VectorManipulator.vectorDirections(origin,point);
-                Vector3 perpendicular = VectorManipulator.normalizeVector3(
-                        rotationAxis
-                        );      
+                Vector3 perpendicular = VectorManipulator.normalizeVector3(rotationAxis);      
 
                 float halfAngle = angle * 0.5f * (Mathf.PI/180.0f);
                 float sinHalfAngle = Mathf.Sin(halfAngle);
