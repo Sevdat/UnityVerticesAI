@@ -11,57 +11,61 @@ public class Body : MonoBehaviour
     // Start is called before the first frame update
     bodyStructure joints;
     public class bodyStructure : WorldBuilder{
+        public Vector3 x = new Vector3(3,0,0);
+        public Vector3 y = new Vector3(0,3,0);
+        public Vector3 z = new Vector3(0,0,3);
+        public rotateLimb hip;
+        public rotateLimb knee;
+        public rotateLimb foot;
         public Vector3 globalAngles;
-        public Vector3[] globalBody = new Vector3[]{
+        public static Vector3[] globalBody = new Vector3[]{
          new Vector3(20f,18f,20f),
          new Vector3(20f,12f,20f),
          new Vector3(20f,4f,20f),
          new Vector3(20f,2f,20f),
          new Vector3(20f,2f,25f),
         };
-        public Vector3[] localHipAngle;
-        public int[] hip = new int[]{0,1,2,3,4};
-        public Vector3 localKneeAngle;
-        public int[] knee = new int[]{1,2,3,4};
-        public Vector3 localFootAngle;
-        public int[] foot = new int[]{2,3,4};
-        
-        public Vector3 x = new Vector3(3,0,0);
-        public Vector3 y = new Vector3(0,3,0);
-        public Vector3 z = new Vector3(0,0,3);
-
-        public void moveHip(float alphaAngles, Vector3 localRotationAxis){
-            int index = 0;
-            if (localRotationAxis == y) index = 1;
-            if (localRotationAxis == z) index = 2;
-            Vector3 rotationAxis = localHipAngle[index];
-            globalBody = BodyCreator.rotatePart(alphaAngles,hip,rotationAxis,globalBody);
-            localHipAngle = BodyCreator.rotateAxis(
-                alphaAngles,localHipAngle,rotationAxis,index,globalBody
-                );
-        }
-        public void moveKnee(float alphaAngles,Vector3 ax){
-            globalBody = BodyCreator.rotatePart(alphaAngles,knee,ax,globalBody);
-        }
-        public void moveFoot(float alphaAngles,Vector3 ax){
-            globalBody = BodyCreator.rotatePart(alphaAngles,foot,ax,globalBody);
+        public class rotateLimb {
+            public Vector3[] localCross;
+            public int[] globalIndex;
+            public void moveLimb(float alphaAngles, Vector3 localRotationAxis){
+                int index = VectorManipulator.localCrossIndex(localRotationAxis);
+                Vector3 rotationAxis = localCross[index];
+                globalBody = BodyCreator.rotatePart(alphaAngles,globalIndex,rotationAxis,globalBody);
+                localCross = BodyCreator.rotateAxis(
+                    alphaAngles,localCross,rotationAxis,index,globalBody
+                    );
+            }
+            public void draw(bool drawOrDelete){
+                Vector3[] body = BodyCreator.loadParts(globalIndex,globalBody);
+                BitArrayManipulator.createOrDeleteObject(body, drawOrDelete);
+            }
+            public void drawAxis(bool drawOrDelete){
+                Vector3 origin = globalBody[globalIndex[0]];
+                Vector3[] addedOrigin = VectorManipulator.addToArray(localCross,origin);
+                BitArrayManipulator.createOrDeleteObject(addedOrigin, drawOrDelete);
+            }
         }
         public void initBody(){
-            localHipAngle = new Vector3[]{x,y,z};
-        }
-        public void draw(Vector3[] body, bool drawOrDelete){
-            BitArrayManipulator.createOrDeleteObject(body, drawOrDelete);
-        }
-        public void drawAxis(Vector3[] localAngle,Vector3 origin,bool drawOrDelete){
-            Vector3[] addedOrigin = VectorManipulator.addToArray(localAngle,origin);
-            BitArrayManipulator.createOrDeleteObject(addedOrigin, drawOrDelete);
+            hip = new rotateLimb(){
+                localCross = new Vector3[]{x,y,z},
+                globalIndex = new int[]{0,1,2,3,4}
+            };
+            knee = new rotateLimb(){
+                localCross = new Vector3[]{x,y,z},
+                globalIndex = new int[]{1,2,3,4}
+            };
+            foot = new rotateLimb(){
+                localCross = new Vector3[]{x,y,z},
+                globalIndex = new int[]{2,3,4}
+            };
         }
     }  
     void Start(){
         joints = new bodyStructure();
         joints.initBody();
-         joints.moveHip(-50f,joints.x);
-        joints.draw(joints.globalBody, true);
+        joints.hip.moveLimb(-50f,joints.x);
+        joints.hip.draw(true);
     }
 
     float angle = 0;
@@ -69,14 +73,14 @@ public class Body : MonoBehaviour
     void Update(){
         time += Time.deltaTime;
         if (time >0.01f){
-            angle =1f;
-            joints.draw(joints.globalBody,false);
-            joints.drawAxis(joints.localHipAngle,joints.globalBody[0],false);
+            angle = 1f;
+            joints.hip.draw(false);
+            joints.hip.drawAxis(false);
 
-            joints.moveHip(angle,joints.z);
+            joints.hip.moveLimb(angle,joints.z);
 
-            joints.draw(joints.globalBody,true);
-            joints.drawAxis(joints.localHipAngle,joints.globalBody[0],true);
+            joints.hip.draw(true);
+            joints.hip.drawAxis(true);
             time = 0f;
         }
     }
