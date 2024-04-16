@@ -32,6 +32,10 @@ public class Body : MonoBehaviour
                 int index = VectorManipulator.localCrossIndex(localRotationAxis);
                 Vector3 rotationAxis = localCross[index];
                 globalBody = BodyCreator.rotatePart(alphaAngles,globalIndex,rotationAxis,globalBody);
+            }
+            public void moveAxis(float alphaAngles, Vector3 localRotationAxis){
+                int index = VectorManipulator.localCrossIndex(localRotationAxis);
+                Vector3 rotationAxis = localCross[index];
                 localCross = BodyCreator.rotateAxis(
                     alphaAngles,localCross,rotationAxis,index,globalBody
                     );
@@ -64,7 +68,9 @@ public class Body : MonoBehaviour
     void Start(){
         joints = new bodyStructure();
         joints.initBody();
-        joints.hip.moveLimb(-50f,joints.x);
+        joints.hip.moveLimb(-50f,joints.z);
+        joints.hip.moveAxis(-50f,joints.z);
+        joints.knee.moveAxis(-50f,joints.z);
         joints.hip.draw(true);
     }
 
@@ -75,12 +81,15 @@ public class Body : MonoBehaviour
         if (time >0.01f){
             angle = 1f;
             joints.hip.draw(false);
-            joints.hip.drawAxis(false);
+            joints.knee.draw(false);
+            // joints.knee.drawAxis(false);
 
-            joints.hip.moveLimb(angle,joints.z);
+            // joints.hip.moveLimb(angle,joints.z);
+            joints.knee.moveLimb(angle,joints.x);
 
             joints.hip.draw(true);
-            joints.hip.drawAxis(true);
+            joints.knee.draw(true);
+            // joints.knee.drawAxis(true);
             time = 0f;
         }
     }
