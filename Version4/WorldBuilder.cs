@@ -16,7 +16,7 @@ public class WorldBuilder : MonoBehaviour
     public static BitArray bitArray;
     public static int arraySize;
     public static int arrayWidth;
-    public static Vector3Int dimension = new Vector3Int(50,50,50);
+    public static Vector3Int dimension = new Vector3Int(70,70,70);
     public static int dimensionX;
     public static int dimensionY;
     public static int dimensionZ;
@@ -43,7 +43,7 @@ public class WorldBuilder : MonoBehaviour
             dimensionX = dimension.x-1;
             dimensionY = dimension.y-1;
             dimensionZ = dimension.z-1;
-            rewriteFile(true, false);
+            rewriteFile(false, false);
             fillEnviroment();
         }
         public static void rewriteFile(bool rewriteAtBegin, bool fillWithOne){
@@ -240,27 +240,26 @@ public class WorldBuilder : MonoBehaviour
             float z = q1.w * q2.z + q1.x * q2.y - q1.y * q2.x + q1.z * q2.w;
             return new Vector4(x, y, z, w);
         }
-        public static Vector3 rotate(
-            float angle,Vector3 origin, Vector3 point,Vector3 rotationAxis
-            ){
-            Vector3 rotatedVec = origin;
-            if (point != origin){
-                Vector3 pointDirection = VectorManipulator.vectorDirections(origin,point);
-                Vector3 perpendicular = VectorManipulator.normalizeVector3(rotationAxis);      
-
+        public static Vector4 angledAxis(float angle,Vector3 rotationAxis){
+                Vector3 perpendicular = VectorManipulator.normalizeVector3(rotationAxis); 
                 float halfAngle = angle * 0.5f * (Mathf.PI/180.0f);
                 float sinHalfAngle = Mathf.Sin(halfAngle);
                 float w = Mathf.Cos(halfAngle);
                 float x = perpendicular.x * sinHalfAngle;
                 float y = perpendicular.y * sinHalfAngle;
                 float z = perpendicular.z * sinHalfAngle;
+                return new Vector4(x,y,z,w);
+        }
+        public static Vector3 rotate(
+            Vector3 origin, Vector3 point,Vector4 angledAxis
+            ){
+            Vector3 rotatedVec = origin;
+            if (point != origin){
+                Vector3 pointDirection = VectorManipulator.vectorDirections(origin,point);     
+                Vector4 rotatingVector = new Vector4(pointDirection.x, pointDirection.y, pointDirection.z,0);
+                Vector4 inverseQuat = new Vector4(-angledAxis.x,-angledAxis.y,-angledAxis.z,angledAxis.w);
+                Vector4 rotatedQuaternion = quatMul(quatMul(angledAxis,rotatingVector), inverseQuat);
 
-                Vector4 quat = new Vector4(x,y,z,w);
-                Vector4 axisQuat = new Vector4(pointDirection.x, pointDirection.y, pointDirection.z,0);
-                Vector4 inverseQuat = new Vector4(-x,-y,-z,w);
-                Vector4 rotatedQuaternion = 
-                        quatMul(quatMul(quat,axisQuat), inverseQuat);
-            
                 rotatedVec = origin + new Vector3(
                         rotatedQuaternion.x,
                         rotatedQuaternion.y,
@@ -276,9 +275,10 @@ public class WorldBuilder : MonoBehaviour
             float alpha, Vector3 origin,Vector3[] point,Vector3 rotationAxis
             ){
             int size = point.Length;
+            Vector4 angledAxis = QuaternionClass.angledAxis(alpha,rotationAxis);
             Vector3[] rotatedVec = new Vector3[size];
             for (int i = 0; i < size; i++){
-                Vector3 vec = QuaternionClass.rotate(alpha,origin,point[i],rotationAxis);
+                Vector3 vec = QuaternionClass.rotate(origin,point[i],angledAxis);
                 rotatedVec[i] = vec;
                 }
             return rotatedVec;
@@ -303,30 +303,30 @@ public class WorldBuilder : MonoBehaviour
             }
             return vec;
         }
-        public static Vector3[] rotatePart(
-            float angles, int[] bodyPart,
-            Vector3 rotationAxis,Vector3[] globalBody
-            ){
-            Vector3[] bodyVec = loadParts(bodyPart,globalBody);
-            Vector3 bodyOrigin = bodyVec[0];
-            Vector3[] rotatedVec = Movement.rotateObject(angles,bodyOrigin,bodyVec,rotationAxis);
-            for (int i = 0; i< bodyVec.Length; i++){
-                globalBody[bodyPart[i]] = rotatedVec[i];
-            }
-            return globalBody;
-        }
-        public static Vector3[] rotateAxis(float angles,Vector3[] localCross, Vector3 rotationAxis, int index,Vector3[] globalBody){
-            Vector3 origin = globalBody[0];
-            for (int i = 0; i < localCross.Length; i++){
-                if (i != index){
-                    localCross[i] = 
-                    QuaternionClass.rotate(
-                        angles,origin,localCross[i]+origin,rotationAxis
-                        ) - origin;
-                }
-            }
-            return localCross;
-        }
+        // public static Vector3[] rotatePart(
+        //     float angles, int[] bodyPart,
+        //     Vector3 rotationAxis,Vector3[] globalBody
+        //     ){
+        //     Vector3[] bodyVec = loadParts(bodyPart,globalBody);
+        //     Vector3 bodyOrigin = bodyVec[0];
+        //     Vector3[] rotatedVec = Movement.rotateObject(angles,bodyOrigin,bodyVec,rotationAxis);
+        //     for (int i = 0; i< bodyVec.Length; i++){
+        //         globalBody[bodyPart[i]] = rotatedVec[i];
+        //     }
+        //     return globalBody;
+        // }
+        // public static Vector3[] rotateAxis(float angles,Vector3[] localCross, Vector3 rotationAxis, int index,Vector3[] globalBody){
+        //     Vector3 origin = globalBody[0];
+        //     for (int i = 0; i < localCross.Length; i++){
+        //         if (i != index){
+        //             localCross[i] = 
+        //             QuaternionClass.rotate(
+        //                 angles,origin,localCross[i]+origin,rotationAxis
+        //                 ) - origin;
+        //         }
+        //     }
+        //     return localCross;
+        // }
         public static Vector3[] diagonal(
             Vector3[] points,
             float step
