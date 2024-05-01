@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Security.Cryptography;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -13,199 +14,245 @@ public class Body : MonoBehaviour
     bodyStructure joints;
     public class bodyStructure : WorldBuilder{
         public Vector3[] globalBody;
-        public bodyPart[] limbArray;
-    }  
-    public class bodyPart: WorldBuilder {
-        public int index;
-        public int[] connected;
+        public index[] localConnections;
     }
-    public bodyStructure initBody(Vector3[][] body){
-        Vector3 x = new Vector3(3,0,0);
-        Vector3 y = new Vector3(0,3,0);
-        Vector3 z = new Vector3(0,0,3);
-        int size = 0;
-        for (int i = 0; i < body.Length; i++){
-            size += body[i].Length;
+    public struct index {
+        public int currentIndex;
+        public indexConnections[] connections;
+        public index(int currentIndex, indexConnections[] connections) {
+            this.currentIndex = currentIndex;
+            this.connections = connections;
         }
-        Vector3[] vec = new Vector3[size+size*3];
-        int count = 0;
-        for (int i = 0; i<body.Length;i++){
-            Vector3[] bodyVec = body[i];
-            for (int e = 0; e< bodyVec.Length;e++){
-                vec[count*4] = bodyVec[e];
-                vec[count*4+1] = x;
-                vec[count*4+2] = y;
-                vec[count*4+3] = z;
-                count+=1;
-            }
+    }
+    public struct indexConnections {
+        public int connectedIndex;
+        public float radius;
+        public indexConnections(int connectedIndex, float radius) {
+            this.connectedIndex = connectedIndex;
+            this.radius = radius;
         }
-        bodyStructure createBody = new bodyStructure(){
-            globalBody = vec,
-            limbArray = new bodyPart[size]
-        };
+    }
+    public indexConnections connections(int connectedIndex, float radius){
+        return new indexConnections(connectedIndex,radius);
+    }
+    public bodyStructure initBody(index[] body){
+        bodyStructure createBody = new bodyStructure();
         return createBody;
     }
-    public Vector3[] createLines(Vector3 startPoint, int[] substract){
-        int size = substract.Length;
-        Vector3[] verticalLine = new Vector3[substract.Length];
-        for (int i = 0;i<size;i++){
-            startPoint -= new Vector3(0,substract[i],0);
-            verticalLine[i] = startPoint;
+    public HashSet<int> createSet(int size){
+        HashSet<int> set = new HashSet<int>();
+        for(int i = 0; i < size; i++){
+            set.Add(i);
         }
-        return verticalLine;
+        return set;
     }
-    public void hierarchy(bodyStructure joints, int index, int[] connected){
-        for (int i = 0; i<connected.Length;i++){
-            connected[i] = connected[i]*4;
-        }
-        bodyPart move = new bodyPart(){
-            index = index,
-            connected = connected
-        };
-        joints.limbArray[index] = move;
-    }
-
     void Start(){
-        Vector3[] eye = createLines(
-            new Vector3(20,46,15),
-            new int[]{0}
-            );
-        Vector3[] head1 = createLines(
-            new Vector3(22,48,15),
-            new int[]{0,6}
-            );
-        Vector3[] head2 = createLines(
-            new Vector3(18,48,15),
-            new int[]{0,6}
-            );
-        
-        Vector3[] neck = createLines(
-            new Vector3(20,39,15),
-            new int[]{0,2,2}
-            );
+        index index0 = new index(
+                0, new indexConnections[]{
+                    connections(1,2f)
+                });
+        index index1 = new index(
+                1, new indexConnections[]{
+                    connections(2,1f)
+                });
+        index index2 = new index(
+                2, new indexConnections[]{
+                    connections(3,1f)
+                });
+        index index3 = new index(
+                3, new indexConnections[]{
+                    connections(4,3f),
+                    connections(15,3f),
+                    connections(16,3f)
+                });
+        index index4 = new index(
+                4, new indexConnections[]{
+                    connections(5,3f)
+                });
+        index index5 = new index(
+                5, new indexConnections[]{
+                    connections(6,2f)
+                });
+        index index6 = new index(
+                6, new indexConnections[]{
+                    connections(7,2f),
+                    connections(8,2f)
+                });
+        index index7 = new index(
+                7, new indexConnections[]{
+                    connections(9,3f)
+                });
+        index index8 = new index(
+                8, new indexConnections[]{
+                    connections(10,3f)
+                });
+        index index9 = new index(
+                9, new indexConnections[]{
+                    connections(11,3f)
+                });
+        index index10 = new index(
+                10, new indexConnections[]{
+                    connections(12,3f)
+                });
+        index index11 = new index(
+                11, new indexConnections[]{
+                    connections(13,2f)
+                });
+        index index12 = new index(
+                12, new indexConnections[]{
+                    connections(14,2f)
+                });
+        index index13 = new index(
+                13, new indexConnections[]{
+                });
+        index index14 = new index(
+                14, new indexConnections[]{}
+                );
+        index index15 = new index(
+                15, new indexConnections[]{
+                    connections(17,3f)
+                });
+        index index16 = new index(
+                16, new indexConnections[]{
+                    connections(18,3f)
+                });
+        index index17 = new index(
+                17, new indexConnections[]{
+                    connections(19,3f)
+                });
+        index index18 = new index(
+                18, new indexConnections[]{
+                    connections(20,3f)
+                });
+        index index19 = new index(
+                19, new indexConnections[]{
+                    connections(21,1f),
+                    connections(23,1f),
+                    connections(31,1f)
+                });
+        index index20 = new index(
+                20, new indexConnections[]{
+                    connections(24,1f),
+                    connections(26,1f),
+                    connections(28,1f)
+                });
+        index index21 = new index(
+                21, new indexConnections[]{
+                    connections(22,1f)
+                });
+        index index22 = new index(
+                22, new indexConnections[]{}
+                );  
+        index index23 = new index(
+                23, new indexConnections[]{
+                    connections(30,1f)
+                });
+        index index24 = new index(
+                24, new indexConnections[]{
+                    connections(25,1f),
+                });
+        index index25 = new index(
+                25, new indexConnections[]{}
+                );
+        index index26 = new index(
+                26, new indexConnections[]{
+                    connections(27,1f),
+                });
+        index index27 = new index(
+                27, new indexConnections[]{}
+                );
+        index index28 = new index(
+                28, new indexConnections[]{
+                    connections(29,1f),
+                });
+        index index29 = new index(
+                29, new indexConnections[]{
+                });
+        index index30 = new index(
+                30, new indexConnections[]{}
+                );
+        index index31 = new index(
+                31, new indexConnections[]{
+                    connections(32,1f),
+                });
+        index index32 = new index(
+                32, new indexConnections[]{}
+                );
 
-        Vector3[] spine = createLines(
-            new Vector3(20,30,15),
-            new int[]{0,6,6,4}
-            );
-
-        Vector3[] rightArm = createLines(
-            new Vector3(35,42,15),
-            new int[]{0,6,6,6}
-            );
-        Vector3[] rightFinger1 = createLines(
-            new Vector3(37,20,15),
-            new int[]{0,2,2}
-            );
-        Vector3[] rightFinger2 = createLines(
-            new Vector3(35,20,15),
-            new int[]{0,2,2}
-            );
-        Vector3[] rightFinger3 = createLines(
-            new Vector3(33,20,15),
-            new int[]{0,2,2}
-            );
-        Vector3[] rightFinger4 = createLines(
-            new Vector3(34,13,15),
-            new int[]{0,2,2}
-            );
-        Vector3[] rightFinger5 = createLines(
-            new Vector3(36,13,15),
-            new int[]{0,2,2}
-            );
-
-        Vector3[] leftArm = createLines(
-            new Vector3(5,42,15),
-            new int[]{0,6,6,6}
-            );
-        Vector3[] leftFinger1 = createLines(
-            new Vector3(7,20,15),
-            new int[]{0,2,2}
-            );
-        Vector3[] leftFinger2 = createLines(
-            new Vector3(5,20,15),
-            new int[]{0,2,2}
-            );
-        Vector3[] leftFinger3 = createLines(
-            new Vector3(3,20,15),
-            new int[]{0,2,2}
-            );
-        Vector3[] leftFinger4 = createLines(
-            new Vector3(4,13,15),
-            new int[]{0,2,2}
-            );
-        Vector3[] leftFinger5 = createLines(
-            new Vector3(6,13,15),
-            new int[]{0,2,2}
-            );
-
-        Vector3[] rightLeg = createLines(
-            new Vector3(12,30,15),
-            new int[]{0,6,8,8,6}
-            );
-        Vector3[] leftLeg = createLines(
-            new Vector3(28,30,15),
-            new int[]{0,6,8,8,6}
-            );
-
-        Vector3[][] body = new Vector3[][]{
-            eye,head1,head2,neck,
-            spine,
-            rightArm, rightFinger1, rightFinger2, rightFinger3, rightFinger4,rightFinger5,
-            leftArm, leftFinger1, leftFinger2, leftFinger3, leftFinger4, leftFinger5,
-            rightLeg,
-            leftLeg,
+        List<index> jointList = new List<index>{
+            index0,index1,index2,index3,index4,
+            index5,index6,index7,index8,index9,
+            index10,index11,index12,index13,index14,
+            index15,index16,index17,index18,index19,
+            index20,index21,index22,index23,index24,
+            index25,index26,index27,index28,index29,
+            index30,index31,index32
         };
 
-        joints = initBody(
-            body
-        );
-        hierarchy(joints,5,new int[]{0,1,2,3,4,5});
-        print(joints.limbArray[5].connected[1]);
-    }
-    public void rotate(bodyStructure joints,float angle, int index,int rotationAxis){
-        int originIndex = index*4;
-        Vector3 origin = joints.globalBody[originIndex];
-        int rotationIndex = originIndex+rotationAxis;
-        int[] connected = joints.limbArray[index].connected;
-        print(connected[3]);
-        int size = connected.Length;  
-        Vector4 quat = WorldBuilder.QuaternionClass.angledAxis(angle,joints.globalBody[rotationIndex]);
+        indexConnections[][] sortedConnection = sortedConnections(jointList);
 
-        for (int i = 0; i<size;i++){
-            int indexForGlobal = connected[i];
-           joints.globalBody[indexForGlobal]= WorldBuilder.QuaternionClass.rotate(
-                origin,joints.globalBody[indexForGlobal],quat
-            );
-            if (indexForGlobal != originIndex && rotationAxis !=1)
-            joints.globalBody[indexForGlobal+1]= WorldBuilder.QuaternionClass.rotate(
-                origin,joints.globalBody[indexForGlobal+1],quat
-            );
-            if (indexForGlobal != originIndex && rotationAxis !=2)
-            joints.globalBody[indexForGlobal+2]= WorldBuilder.QuaternionClass.rotate(
-                origin,joints.globalBody[indexForGlobal+2],quat
-            );
-            if (indexForGlobal != originIndex && rotationAxis !=3)
-            joints.globalBody[indexForGlobal+3]= WorldBuilder.QuaternionClass.rotate(
-                origin,joints.globalBody[indexForGlobal+3],quat
-            );
+        int[][] hierarchy = jointHierarchy(sortedConnection);
+        print(hierarchy.Length);
+
+        Vector3 startPoint = new Vector3(20,30,20);
+        
+    }
+    public indexConnections[][] sortedConnections(List<index> jointList){
+        int size = jointList.Count;
+        indexConnections[][] sortedJointArray = new indexConnections[size][];
+        for (int i = 0; i<size; i++){
+            index joint = jointList[i];
+            int index = joint.currentIndex;
+            indexConnections[] connectedToIndex = joint.connections;
+            sortedJointArray[index] = connectedToIndex;
         }
-
+        return sortedJointArray;
+    }
+    public int[][] jointHierarchy(indexConnections[][] sortedJointArray){
+        int size = sortedJointArray.Length;
+        HashSet<int> set = createSet(size);
+        int[][] indexVectors = new int[size][];
+        for (int i = 0;i<size;i++){
+            indexVectors[i] = indexHierarchy(i,sortedJointArray,set);
+        }
+        return indexVectors;
+    }
+    public int[] indexHierarchy(int index,indexConnections[][] sortedJointArray,HashSet<int> search){
+        HashSet<int> setClone = new HashSet<int>(search);
+        List<indexConnections[]> activeConnections = new List<indexConnections[]>(){
+            sortedJointArray[index]
+        };
+        List<int> hierarchy = new List<int>();
+        while (activeConnections.Count != 0){
+            indexConnections[] connectedArray = activeConnections[0];
+            if (connectedArray!= null){
+                for (int i = 0;i<connectedArray.Length;i++){
+                    indexConnections connection = connectedArray[i];
+                    int searchIndex = connection.connectedIndex;
+                    if (setClone.Contains(searchIndex)) {
+                        hierarchy.Add(searchIndex);
+                        activeConnections.Add(sortedJointArray[searchIndex]);
+                        setClone.Remove(searchIndex);
+                    }
+                }
+            }
+        activeConnections.RemoveAt(0);
+        }
+        return hierarchy.ToArray();
     }
 
+    public int getConnectedIndex(indexConnections connections){
+
+        return 0;
+    }
     float time = 0;
     Vector3[] bod = new Vector3[60];
     void Update(){
         time += Time.deltaTime;
         if (time >0.1f){
-                    for(int i = 0;i<60;i++){
-            bod[i] = joints.globalBody[i*4];
-        }
+
             WorldBuilder.BitArrayManipulator.createOrDeleteObject(bod,false);
-            rotate(joints,10f,5,1);
-                    for(int i = 0;i<60;i++){
-            bod[i] = joints.globalBody[i*4];
-        }
+
             WorldBuilder.BitArrayManipulator.createOrDeleteObject(bod,true);
             time = 0f;
         }
@@ -324,3 +371,94 @@ public class Body : MonoBehaviour
     //         };
     //     }
     // }  
+
+    //     public bodyStructure initBody(Vector3[][] body){
+    //     Vector3 x = new Vector3(3,0,0);
+    //     Vector3 y = new Vector3(0,3,0);
+    //     Vector3 z = new Vector3(0,0,3);
+    //     int size = 0;
+    //     for (int i = 0; i < body.Length; i++){
+    //         size += body[i].Length;
+    //     }
+    //     Vector3[] vec = new Vector3[size+size*3];
+    //     int count = 0;
+    //     for (int i = 0; i<body.Length;i++){
+    //         Vector3[] bodyVec = body[i];
+    //         for (int e = 0; e< bodyVec.Length;e++){
+    //             vec[count*4] = bodyVec[e];
+    //             vec[count*4+1] = x;
+    //             vec[count*4+2] = y;
+    //             vec[count*4+3] = z;
+    //             count+=1;
+    //         }
+    //     }
+    //     bodyStructure createBody = new bodyStructure(){
+    //         globalBody = vec,
+    //         limbArray = new bodyPart[size]
+    //     };
+    //     return createBody;
+    // }
+    // public Vector3[] createLines(Vector3 startPoint, int[] substract){
+    //     int size = substract.Length;
+    //     Vector3[] verticalLine = new Vector3[substract.Length];
+    //     for (int i = 0;i<size;i++){
+    //         startPoint -= new Vector3(0,substract[i],0);
+    //         verticalLine[i] = startPoint;
+    //     }
+    //     return verticalLine;
+    // }
+    // public void hierarchy(bodyStructure joints, int index, int[] connected){
+    //     for (int i = 0; i<connected.Length;i++){
+    //         connected[i] = connected[i]*4;
+    //     }
+    //     bodyPart move = new bodyPart(){
+    //         index = index,
+    //         connected = connected
+    //     };
+    //     joints.limbArray[index] = move;
+    // }
+
+    //     public void rotate(bodyStructure joints,float angle, int index,int rotationAxis){
+    //     int originIndex = index*4;
+    //     Vector3 origin = joints.globalBody[originIndex];
+    //     int rotationIndex = originIndex+rotationAxis;
+    //     int[] connected = joints.limbArray[index].connected;
+    //     int size = connected.Length;  
+    //     Vector4 quat = WorldBuilder.QuaternionClass.angledAxis(angle,joints.globalBody[rotationIndex]);
+
+    //     for (int i = 0; i<size;i++){
+    //         int indexForGlobal = connected[i];
+    //        joints.globalBody[indexForGlobal]= WorldBuilder.QuaternionClass.rotate(
+    //             origin,joints.globalBody[indexForGlobal],quat
+    //         );
+    //         if (indexForGlobal != originIndex && rotationAxis !=1)
+    //         joints.globalBody[indexForGlobal+1]= WorldBuilder.QuaternionClass.rotate(
+    //             origin,joints.globalBody[indexForGlobal+1],quat
+    //         );
+    //         if (indexForGlobal != originIndex && rotationAxis !=2)
+    //         joints.globalBody[indexForGlobal+2]= WorldBuilder.QuaternionClass.rotate(
+    //             origin,joints.globalBody[indexForGlobal+2],quat
+    //         );
+    //         if (indexForGlobal != originIndex && rotationAxis !=3)
+    //         joints.globalBody[indexForGlobal+3]= WorldBuilder.QuaternionClass.rotate(
+    //             origin,joints.globalBody[indexForGlobal+3],quat
+    //         );
+    //     }
+    // }
+
+        //     int[] verticalLine = new int[]{
+        //     0,
+        //     2,
+        //     1,
+        //     1,
+        //     3,0,0,
+        //     3,0,0,
+        //     2,
+        //     1,0,
+        //     1,0,0,0,0,0,0,0,
+        //     1,0,0,0,0,0,
+        //     2,0,
+        //     3,0,
+        //     3,0
+
+        // };
