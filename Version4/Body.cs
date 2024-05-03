@@ -14,6 +14,7 @@ public class Body : MonoBehaviour
     bodyStructure joints;
     public class bodyStructure : WorldBuilder{
         public Vector3[] globalBody;
+        public int[][] bodyHierarchy;
         public index[] localConnections;
     }
     public struct index {
@@ -191,8 +192,10 @@ public class Body : MonoBehaviour
 
         indexConnections[][] sortedConnection = sortedConnections(jointList);
 
-        int[][] hierarchy = jointHierarchy(sortedConnection);
-        print(hierarchy.Length);
+        int[][][] hierarchy = jointHierarchy(sortedConnection);
+        // foreach (int i in hierarchy[0]) {
+        //     print(i);
+        // }
 
         Vector3 startPoint = new Vector3(20,30,20);
         
@@ -208,21 +211,22 @@ public class Body : MonoBehaviour
         }
         return sortedJointArray;
     }
-    public int[][] jointHierarchy(indexConnections[][] sortedJointArray){
+    public int[][][] jointHierarchy(indexConnections[][] sortedJointArray){
         int size = sortedJointArray.Length;
         HashSet<int> set = createSet(size);
-        int[][] indexVectors = new int[size][];
+        int[][][] indexVectors = new int[size][][];
         for (int i = 0;i<size;i++){
             indexVectors[i] = indexHierarchy(i,sortedJointArray,set);
         }
+        createLine(new Vector3(20,30,20),sortedJointArray,set);
         return indexVectors;
     }
-    public int[] indexHierarchy(int index,indexConnections[][] sortedJointArray,HashSet<int> search){
+    public int[][] indexHierarchy(int index,indexConnections[][] sortedJointArray,HashSet<int> search){
         HashSet<int> setClone = new HashSet<int>(search);
         List<indexConnections[]> activeConnections = new List<indexConnections[]>(){
             sortedJointArray[index]
         };
-        List<int> hierarchy = new List<int>();
+        List<int> hierarchy = new List<int>(){index};
         while (activeConnections.Count != 0){
             indexConnections[] connectedArray = activeConnections[0];
             if (connectedArray!= null){
@@ -238,12 +242,30 @@ public class Body : MonoBehaviour
             }
         activeConnections.RemoveAt(0);
         }
-        return hierarchy.ToArray();
+        int[] remainder = new int[setClone.Count];
+        setClone.CopyTo(remainder);
+        return new int[][]{hierarchy.ToArray(),remainder};
     }
 
-    public int getConnectedIndex(indexConnections connections){
-
-        return 0;
+    public Vector3[] createLine(Vector3 startPoint,indexConnections[][] sortedJointArray,HashSet<int> search){
+        int size = sortedJointArray.Length;
+        HashSet<int> setClone = new HashSet<int>(search);
+        Vector3[] jointVectors = new Vector3[size];
+        jointVectors[0] = startPoint;
+        for (int i = 0;i<sortedJointArray.Length;i++){
+            indexConnections[] connectionsArray = sortedJointArray[i];
+            for (int j = 0;j<connectionsArray.Length;j++){
+                indexConnections connection = connectionsArray[j];
+                int index = connection.connectedIndex;
+                if (setClone.Contains(index)) {
+                    Vector3 vec = new Vector3(0f,connection.radius,0f);
+                    jointVectors[index] = jointVectors[i]-vec;
+                    print($"{index}:{jointVectors[index]}");
+                    setClone.Remove(index);
+                }
+            }
+        }
+        return jointVectors;
     }
     float time = 0;
     Vector3[] bod = new Vector3[60];
