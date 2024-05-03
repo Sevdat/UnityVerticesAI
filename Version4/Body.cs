@@ -97,11 +97,11 @@ public class Body : MonoBehaviour
                 });
         index index11 = new index(
                 11, new indexConnections[]{
-                    connections(13,2f)
+                    connections(13,3f)
                 });
         index index12 = new index(
                 12, new indexConnections[]{
-                    connections(14,2f)
+                    connections(14,3f)
                 });
         index index13 = new index(
                 13, new indexConnections[]{
@@ -254,14 +254,16 @@ public class Body : MonoBehaviour
         jointVectors[0] = startPoint;
         for (int i = 0;i<sortedJointArray.Length;i++){
             indexConnections[] connectionsArray = sortedJointArray[i];
-            for (int j = 0;j<connectionsArray.Length;j++){
-                indexConnections connection = connectionsArray[j];
-                int index = connection.connectedIndex;
-                if (setClone.Contains(index)) {
-                    Vector3 vec = new Vector3(0f,connection.radius,0f);
-                    jointVectors[index] = jointVectors[i]-vec;
-                    print($"{index}:{jointVectors[index]}");
-                    setClone.Remove(index);
+            if (connectionsArray!= null){
+                for (int j = 0;j<connectionsArray.Length;j++){
+                    indexConnections connection = connectionsArray[j];
+                    int index = connection.connectedIndex;
+                    if (setClone.Contains(index)) {
+                        Vector3 vec = new Vector3(0f,connection.radius,0f);
+                        jointVectors[index] = jointVectors[i]-vec;
+                        print($"{index}:{jointVectors[index]}");
+                        setClone.Remove(index);
+                    }
                 }
             }
         }
