@@ -35,12 +35,6 @@ public class Body : MonoBehaviour
     public indexConnections connections(int connectedIndex, float radius){
         return new indexConnections(connectedIndex,radius);
     }
-    public bodyStructure initBody(index[] body){
-
-
-        bodyStructure createBody = new bodyStructure();
-        return createBody;
-    }
     public HashSet<int> createSet(int size){
         HashSet<int> set = new HashSet<int>();
         for(int i = 0; i < size; i++){
@@ -229,7 +223,8 @@ public class Body : MonoBehaviour
         List<indexConnections[]> activeConnections = new List<indexConnections[]>(){
             sortedJointArray[index]
         };
-        List<int> hierarchy = new List<int>(){index};
+        int axisSize = 4;
+        List<int> hierarchy = new List<int>(){index*axisSize};
         while (activeConnections.Count != 0){
             indexConnections[] connectedArray = activeConnections[0];
             if (connectedArray!= null){
@@ -237,7 +232,7 @@ public class Body : MonoBehaviour
                     indexConnections connection = connectedArray[i];
                     int searchIndex = connection.connectedIndex;
                     if (setClone.Contains(searchIndex)) {
-                        hierarchy.Add(searchIndex);
+                        hierarchy.Add(searchIndex*axisSize);
                         activeConnections.Add(sortedJointArray[searchIndex]);
                         setClone.Remove(searchIndex);
                     }
@@ -269,10 +264,10 @@ public class Body : MonoBehaviour
                     indexConnections connection = connectionsArray[j];
                     int index = connection.connectedIndex;
                     if (setClone.Contains(index)) {
-                        Vector3 vec = jointVectors[i*4];
+                        Vector3 vec = jointVectors[i*4]-new Vector3(0f,connection.radius,0f);
                         setClone.Remove(index);
                         index*=4;
-                        jointVectors[index] = vec-new Vector3(0f,connection.radius,0f);
+                        jointVectors[index] = vec;
                         jointVectors[index+1] = vec+x;
                         jointVectors[index+2] = vec+y;
                         jointVectors[index+3] = vec+z;
@@ -282,15 +277,30 @@ public class Body : MonoBehaviour
         }
         return jointVectors;
     }
-    public void rotate(bodyStructure joints,float angle, int index,int rotationAxis) {
+        public void rotate(bodyStructure joints,float angle, int index,int rotationAxis){
         int originIndex = index*4;
         Vector3[] bodyVec = joints.localConnections;
-        Vector3 origin = bodyVec[originIndex];
+        Vector3 origin = bodyVec[0];
         int rotationIndex = originIndex+rotationAxis;
         int[] connected = joints.bodyHierarchy[index][0];
         int size = connected.Length;  
-        Vector4 quat = WorldBuilder.QuaternionClass.angledAxis(angle,bodyVec[rotationIndex]);
-        //TODO()
+        Vector4 quat = WorldBuilder.QuaternionClass.angledAxis(angle,bodyVec[rotationIndex]-origin);
+
+        for (int i = 0; i<size;i++){
+            int indexForGlobal = connected[i];
+            bodyVec[indexForGlobal]= WorldBuilder.QuaternionClass.rotate(
+                origin,bodyVec[indexForGlobal],quat
+            );
+            bodyVec[indexForGlobal+1]= WorldBuilder.QuaternionClass.rotate(
+                origin,bodyVec[indexForGlobal+1],quat
+            );
+            bodyVec[indexForGlobal+2]= WorldBuilder.QuaternionClass.rotate(
+                origin,bodyVec[indexForGlobal+2],quat
+            );
+            bodyVec[indexForGlobal+3]= WorldBuilder.QuaternionClass.rotate(
+                origin,bodyVec[indexForGlobal+3],quat
+            );
+        }
     }
     float time = 0;
     Vector3[] bod = new Vector3[60];
@@ -298,9 +308,9 @@ public class Body : MonoBehaviour
         time += Time.deltaTime;
         if (time >0.1f){
 
-            WorldBuilder.BitArrayManipulator.createOrDeleteObject(bod,false);
-
-            WorldBuilder.BitArrayManipulator.createOrDeleteObject(bod,true);
+            WorldBuilder.BitArrayManipulator.createOrDeleteObject(joints.localConnections,false);
+            rotate(joints,10f,0,3);
+            WorldBuilder.BitArrayManipulator.createOrDeleteObject(joints.localConnections,true);
             time = 0f;
         }
     }
