@@ -13,9 +13,8 @@ public class Body : MonoBehaviour
     // Start is called before the first frame update
     bodyStructure joints;
     public class bodyStructure : WorldBuilder{
-        public Vector3[] globalBody;
-        public int[][] bodyHierarchy;
-        public index[] localConnections;
+        public int[][][] bodyHierarchy;
+        public Vector3[] localConnections;
     }
     public struct index {
         public int currentIndex;
@@ -37,6 +36,8 @@ public class Body : MonoBehaviour
         return new indexConnections(connectedIndex,radius);
     }
     public bodyStructure initBody(index[] body){
+
+
         bodyStructure createBody = new bodyStructure();
         return createBody;
     }
@@ -189,15 +190,12 @@ public class Body : MonoBehaviour
             index25,index26,index27,index28,index29,
             index30,index31,index32
         };
-
-        indexConnections[][] sortedConnection = sortedConnections(jointList);
-
-        int[][][] hierarchy = jointHierarchy(sortedConnection);
-        // foreach (int i in hierarchy[0]) {
-        //     print(i);
-        // }
-
         Vector3 startPoint = new Vector3(20,30,20);
+        joints = jointHierarchy(startPoint,jointList);
+
+        foreach (Vector3 i in joints.localConnections) {
+            print(i);
+        }
         
     }
     public indexConnections[][] sortedConnections(List<index> jointList){
@@ -211,15 +209,20 @@ public class Body : MonoBehaviour
         }
         return sortedJointArray;
     }
-    public int[][][] jointHierarchy(indexConnections[][] sortedJointArray){
+    public bodyStructure jointHierarchy(Vector3 startPoint, List<index> jointList){
+        indexConnections[][] sortedJointArray = sortedConnections(jointList);
         int size = sortedJointArray.Length;
         HashSet<int> set = createSet(size);
-        int[][][] indexVectors = new int[size][][];
+        int[][][] indexParts = new int[size][][];
         for (int i = 0;i<size;i++){
-            indexVectors[i] = indexHierarchy(i,sortedJointArray,set);
+            indexParts[i] = indexHierarchy(i, sortedJointArray, set);
         }
-        createLine(new Vector3(20,30,20),sortedJointArray,set);
-        return indexVectors;
+        Vector3[] vecWithAxis = createLine(startPoint,sortedJointArray,set);
+        bodyStructure createBody = new bodyStructure(){
+            bodyHierarchy = indexParts,
+            localConnections = vecWithAxis
+        };
+        return createBody;
     }
     public int[][] indexHierarchy(int index,indexConnections[][] sortedJointArray,HashSet<int> search){
         HashSet<int> setClone = new HashSet<int>(search);
@@ -250,8 +253,15 @@ public class Body : MonoBehaviour
     public Vector3[] createLine(Vector3 startPoint,indexConnections[][] sortedJointArray,HashSet<int> search){
         int size = sortedJointArray.Length;
         HashSet<int> setClone = new HashSet<int>(search);
-        Vector3[] jointVectors = new Vector3[size];
+        Vector3[] jointVectors = new Vector3[size*4];
+        Vector3 x = new Vector3(3,0,0);
+        Vector3 y = new Vector3(0,3,0);
+        Vector3 z = new Vector3(0,0,3);
         jointVectors[0] = startPoint;
+        jointVectors[1] = startPoint+x;
+        jointVectors[2] = startPoint+y;
+        jointVectors[3] = startPoint+z;
+
         for (int i = 0;i<sortedJointArray.Length;i++){
             indexConnections[] connectionsArray = sortedJointArray[i];
             if (connectionsArray!= null){
@@ -259,10 +269,13 @@ public class Body : MonoBehaviour
                     indexConnections connection = connectionsArray[j];
                     int index = connection.connectedIndex;
                     if (setClone.Contains(index)) {
-                        Vector3 vec = new Vector3(0f,connection.radius,0f);
-                        jointVectors[index] = jointVectors[i]-vec;
-                        print($"{index}:{jointVectors[index]}");
+                        Vector3 vec = jointVectors[i*4];
                         setClone.Remove(index);
+                        index*=4;
+                        jointVectors[index] = vec-new Vector3(0f,connection.radius,0f);
+                        jointVectors[index+1] = vec+x;
+                        jointVectors[index+2] = vec+y;
+                        jointVectors[index+3] = vec+z;
                     }
                 }
             }
