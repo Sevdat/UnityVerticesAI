@@ -282,6 +282,16 @@ public class Body : MonoBehaviour
         }
         return jointVectors;
     }
+    public void rotate(bodyStructure joints,float angle, int index,int rotationAxis) {
+        int originIndex = index*4;
+        Vector3[] bodyVec = joints.localConnections;
+        Vector3 origin = bodyVec[originIndex];
+        int rotationIndex = originIndex+rotationAxis;
+        int[] connected = joints.bodyHierarchy[index][0];
+        int size = connected.Length;  
+        Vector4 quat = WorldBuilder.QuaternionClass.angledAxis(angle,bodyVec[rotationIndex]);
+        //TODO()
+    }
     float time = 0;
     Vector3[] bod = new Vector3[60];
     void Update(){
