@@ -58,8 +58,8 @@ public class Body : MonoBehaviour
         index index3 = new index(
                 3, new indexConnections[]{
                     connections(4,3f),
-                    connections(15,3f),
-                    connections(16,3f)
+                    connections(33,0f),
+                    connections(34,0f)
                 });
         index index4 = new index(
                 4, new indexConnections[]{
@@ -71,8 +71,8 @@ public class Body : MonoBehaviour
                 });
         index index6 = new index(
                 6, new indexConnections[]{
-                    connections(7,2f),
-                    connections(8,2f)
+                    connections(35,0f),
+                    connections(36,0f)
                 });
         index index7 = new index(
                 7, new indexConnections[]{
@@ -174,6 +174,22 @@ public class Body : MonoBehaviour
         index index32 = new index(
                 32, new indexConnections[]{}
                 );
+        index index33 = new index(
+                33, new indexConnections[]{
+                    connections(15,3f)
+                });
+        index index34 = new index(
+                34, new indexConnections[]{
+                    connections(16,3f)
+                });
+        index index35 = new index(
+                35, new indexConnections[]{
+                    connections(7,3f)
+                });
+        index index36 = new index(
+                36, new indexConnections[]{
+                    connections(8,3f)
+                });
 
         List<index> jointList = new List<index>{
             index0,index1,index2,index3,index4,
@@ -182,13 +198,19 @@ public class Body : MonoBehaviour
             index15,index16,index17,index18,index19,
             index20,index21,index22,index23,index24,
             index25,index26,index27,index28,index29,
-            index30,index31,index32
+            index30,index31,index32,index33,index34,
+            index35,index36
         };
         Vector3 startPoint = new Vector3(20,30,20);
         joints = jointHierarchy(startPoint,jointList);
+        for(int i = 0; i <joints.localConnections.Length;i = i+4){
+            Vector3 vec = joints.localConnections[i];
+            print($"{i/4} : {vec}");
+        }
 
-        rotate(joints,90f,15,3);
-        rotate(joints,-90f,16,3);
+        print(joints.localConnections[16*4]);
+        rotate(joints,90f,33,3);
+        rotate(joints,-90f,34,3);
         
     }
     public indexConnections[][] sortedConnections(List<index> jointList){
@@ -255,15 +277,16 @@ public class Body : MonoBehaviour
         jointVectors[1] = startPoint+x;
         jointVectors[2] = startPoint+y;
         jointVectors[3] = startPoint+z;
-
-        for (int i = 0;i<sortedJointArray.Length;i++){
-            indexConnections[] connectionsArray = sortedJointArray[i];
+        List<int> indexList = new List<int>(){0};
+        while (indexList.Count != 0){
+            indexConnections[] connectionsArray = sortedJointArray[indexList[0]];
             if (connectionsArray!= null){
-                for (int j = 0;j<connectionsArray.Length;j++){
-                    indexConnections connection = connectionsArray[j];
+                for (int i = 0;i<connectionsArray.Length;i++){
+                    indexConnections connection = connectionsArray[i];
                     int index = connection.connectedIndex;
                     if (setClone.Contains(index)) {
-                        Vector3 vec = jointVectors[i*4]-new Vector3(0f,connection.radius,0f);
+                        indexList.Add(index);
+                        Vector3 vec = jointVectors[indexList[0]*4]-new Vector3(0f,connection.radius,0f);
                         setClone.Remove(index);
                         index*=4;
                         jointVectors[index] = vec;
@@ -273,7 +296,9 @@ public class Body : MonoBehaviour
                     }
                 }
             }
+        indexList.RemoveAt(0);
         }
+
         return jointVectors;
     }
         public void rotate(bodyStructure joints,float angle, int index,int rotationAxis){
@@ -306,13 +331,29 @@ public class Body : MonoBehaviour
     void Update(){
         time += Time.deltaTime;
         if (time >0.1f){
-
-            WorldBuilder.BitArrayManipulator.createOrDeleteObject(joints.localConnections,false);
-            rotate(joints,1f,15,1);
-            rotate(joints,-1f,16,1);
-            WorldBuilder.BitArrayManipulator.createOrDeleteObject(joints.localConnections,true);
+            draw(0);
             time = 0f;
         }
+    }
+    public void draw(int choice){
+
+        if (choice == 0){
+            WorldBuilder.BitArrayManipulator.createOrDeleteObject(joints.localConnections,false);
+            WorldBuilder.BitArrayManipulator.createOrDeleteObject(joints.localConnections,true);
+        }
+        if (choice == 1){
+            for(int i = 0; i <joints.localConnections.Length;i = i+4){
+                bod[i/4] = joints.localConnections[i];
+            }
+            WorldBuilder.BitArrayManipulator.createOrDeleteObject(bod,false);
+            for(int i = 0; i <joints.localConnections.Length;i = i+4){
+                bod[i/4] = joints.localConnections[i];
+            }
+            // rotate(joints,1f,0,1);
+            // rotate(joints,-1f,34,1);
+            WorldBuilder.BitArrayManipulator.createOrDeleteObject(bod,true);
+        }
+
     }
 }
         // chest = WorldBuilder.moveObject(
