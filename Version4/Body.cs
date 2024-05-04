@@ -187,9 +187,8 @@ public class Body : MonoBehaviour
         Vector3 startPoint = new Vector3(20,30,20);
         joints = jointHierarchy(startPoint,jointList);
 
-        foreach (Vector3 i in joints.localConnections) {
-            print(i);
-        }
+        rotate(joints,90f,15,3);
+        rotate(joints,-90f,16,3);
         
     }
     public indexConnections[][] sortedConnections(List<index> jointList){
@@ -280,7 +279,7 @@ public class Body : MonoBehaviour
         public void rotate(bodyStructure joints,float angle, int index,int rotationAxis){
         int originIndex = index*4;
         Vector3[] bodyVec = joints.localConnections;
-        Vector3 origin = bodyVec[0];
+        Vector3 origin = bodyVec[originIndex];
         int rotationIndex = originIndex+rotationAxis;
         int[] connected = joints.bodyHierarchy[index][0];
         int size = connected.Length;  
@@ -309,7 +308,8 @@ public class Body : MonoBehaviour
         if (time >0.1f){
 
             WorldBuilder.BitArrayManipulator.createOrDeleteObject(joints.localConnections,false);
-            rotate(joints,10f,0,3);
+            rotate(joints,1f,15,1);
+            rotate(joints,-1f,16,1);
             WorldBuilder.BitArrayManipulator.createOrDeleteObject(joints.localConnections,true);
             time = 0f;
         }
