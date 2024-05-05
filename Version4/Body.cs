@@ -210,7 +210,12 @@ public class Body : MonoBehaviour
 
         print(joints.localConnections[16*4]);
         rotate(joints,90f,33,3);
+        invertAxis(joints,34,true,false,false);
         rotate(joints,-90f,34,3);
+
+
+        rotate(joints,40f,33,1);
+        rotate(joints,40f,34,1);
         
     }
     public indexConnections[][] sortedConnections(List<index> jointList){
@@ -301,7 +306,7 @@ public class Body : MonoBehaviour
 
         return jointVectors;
     }
-        public void rotate(bodyStructure joints,float angle, int index,int rotationAxis){
+    public void rotate(bodyStructure joints,float angle, int index, int rotationAxis){
         int originIndex = index*4;
         Vector3[] bodyVec = joints.localConnections;
         Vector3 origin = bodyVec[originIndex];
@@ -326,12 +331,31 @@ public class Body : MonoBehaviour
             );
         }
     }
+
+    public void invertAxis(bodyStructure joints, int indexHierarchy, bool x, bool y, bool z){
+        Vector3[] vec = joints.localConnections;
+        int[] indexList = joints.bodyHierarchy[indexHierarchy][0];
+        for (int i = 0; i<indexList.Length; i++){
+            int index = indexList[i];
+            Vector3 origin = vec[index];
+            if (x){
+               vec[index+1] = origin - WorldBuilder.VectorManipulator.vectorDirections(origin,vec[index+1]);
+            }
+            if (y){
+               vec[index+2] = origin - WorldBuilder.VectorManipulator.vectorDirections(origin,vec[index+2]);
+            }
+            if (z){
+               vec[index+3] = origin - WorldBuilder.VectorManipulator.vectorDirections(origin,vec[index+3]);
+            }
+        }
+    }
+
     float time = 0;
     Vector3[] bod = new Vector3[60];
     void Update(){
         time += Time.deltaTime;
         if (time >0.1f){
-            draw(0);
+            draw(1);
             time = 0f;
         }
     }
