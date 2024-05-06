@@ -12,6 +12,7 @@ public class Body : MonoBehaviour
 {
     // Start is called before the first frame update
     bodyStructure joints;
+    List<index> jointList;
     public class bodyStructure : WorldBuilder{
         public int[][][] bodyHierarchy;
         public Vector3[] localConnections;
@@ -191,31 +192,33 @@ public class Body : MonoBehaviour
                     connections(8,3f)
                 });
 
-        List<index> jointList = new List<index>{
-            index0,index1,index2,index3,index4,
-            index5,index6,index7,index8,index9,
+        jointList = new List<index>{
+            index0,index1,index26,index27,index28,index29,
+            index30,index31,index32,index2,index3,index4,
+            index5,index6,index17,index18,index19,
+            index20,index21,index22,index7,index8,index9,
             index10,index11,index12,index13,index14,
-            index15,index16,index17,index18,index19,
-            index20,index21,index22,index23,index24,
-            index25,index26,index27,index28,index29,
-            index30,index31,index32,index33,index34,
+            index15,index16,index23,index24,
+            index25,index33,index34,
             index35,index36
         };
-        Vector3 startPoint = new Vector3(20,30,20);
-        joints = jointHierarchy(startPoint,jointList);
-        for(int i = 0; i <joints.localConnections.Length;i = i+4){
-            Vector3 vec = joints.localConnections[i];
-            print($"{i/4} : {vec}");
-        }
+        renumberIndex(jointList);
+        // jointList = sortList(jointList);
+        // Vector3 startPoint = new Vector3(20,30,20);
+        // joints = jointHierarchy(startPoint,jointList);
+        // for(int i = 0; i <joints.localConnections.Length;i = i+4){
+        //     Vector3 vec = joints.localConnections[i];
+        //     print($"{i/4} : {vec}");
+        // }
 
-        print(joints.localConnections[16*4]);
-        rotate(joints,90f,33,3);
-        invertAxis(joints,34,true,false,false);
-        rotate(joints,-90f,34,3);
+        // print(joints.localConnections[16*4]);
+        // rotate(joints,90f,33,3);
+        // invertAxis(joints,34,true,false,false);
+        // rotate(joints,-90f,34,3);
 
 
-        rotate(joints,40f,33,1);
-        rotate(joints,40f,34,1);
+        // rotate(joints,40f,33,1);
+        // rotate(joints,40f,34,1);
         
     }
     public indexConnections[][] sortedConnections(List<index> jointList){
@@ -349,13 +352,51 @@ public class Body : MonoBehaviour
             }
         }
     }
+    public List<index> sortList(List<index> jointList){
+        int size = jointList.Count;
+        index[] sortedJointArray = new index[size];
+        for (int i = 0; i<size; i++){
+            index joint = jointList[i];
+            int index = joint.currentIndex;
+            sortedJointArray[index] = joint;
+        }
+        return new List<index>(sortedJointArray);
+    }
+    
+    public List<index> renumberIndex(List<index> jointList){
+        Dictionary<int,int> pairs = new Dictionary<int, int>();
+        int size = jointList.Count;
+        index[] changeList = new index[jointList.Count];
+        for (int i = 0;i<size;i++){
+            pairs.Add(jointList[i].currentIndex,i);
+        }
+        for (int i = 0;i<jointList.Count;i++){
+            index index = jointList[i];
+            index.currentIndex = pairs[index.currentIndex];
+            for (int e = 0;e<index.connections.Length;e++){
+                indexConnections connected = index.connections[e];
+                connected.connectedIndex = pairs[connected.connectedIndex];
+            }
+            changeList[i] = index;
+        }
+        // foreach (index i in changeList){
+        //     print(i.currentIndex);
+        // }
+        return new List<index>(changeList);
+    }
 
     float time = 0;
+    bool once = true;
     Vector3[] bod = new Vector3[60];
     void Update(){
+        // if (once){
+        //     renumberIndex(
+        //         jointList
+        //         );
+        // }
         time += Time.deltaTime;
         if (time >0.1f){
-            draw(1);
+            // draw(1);
             time = 0f;
         }
     }
