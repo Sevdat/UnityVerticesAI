@@ -93,15 +93,15 @@ public class Body : MonoBehaviour
                     });
             index index19 = new index(
                     19, new indexConnections[]{
-                        connections(21,1f),
-                        connections(23,1f),
-                        connections(31,1f)
+                        connections(37,0),
+                        connections(38,0),
+                        connections(39,0),
                     });
             index index20 = new index(
                     20, new indexConnections[]{
-                        connections(24,1f),
-                        connections(26,1f),
-                        connections(28,1f)
+                        connections(40,0),
+                        connections(41,0),
+                        connections(42,0),
                     });
             index index21 = new index(
                     21, new indexConnections[]{
@@ -161,6 +161,30 @@ public class Body : MonoBehaviour
                     36, new indexConnections[]{
                         connections(8,3f)
                     });
+           index index37 = new index(
+                    37, new indexConnections[]{
+                        connections(21,1),
+                    });
+            index index38 = new index(
+                    38, new indexConnections[]{
+                        connections(23,1),
+                    });
+            index index39 = new index(
+                    39, new indexConnections[]{
+                        connections(31,1),
+                    });
+            index index40 = new index(
+                    40, new indexConnections[]{
+                        connections(24,1),
+                    });
+            index index41 = new index(
+                    41, new indexConnections[]{
+                        connections(26,1),
+                    });
+            index index42 = new index(
+                    42, new indexConnections[]{
+                        connections(28,1),
+                    });
             jointList = new List<index>{
                 index0,index1,index26,index27,index28,index29,
                 index30,index31,index32,index2,index3,index4,
@@ -169,8 +193,11 @@ public class Body : MonoBehaviour
                 index10,index11,index12,index13,index14,
                 index15,index16,index23,index24,
                 index25,index33,index34,
-                index35,index36
+                index35,index36,index37,index38,index39,
+                index40,index41,index42
             };
+            sortList();
+            // print(jointList.Count);
         }
     }
 
