@@ -359,6 +359,7 @@ public class WorldBuilder : MonoBehaviour
             indexConnections[][] sortedJointArray = new indexConnections[size][];
             for (int i = 0; i<size; i++){
                 index joint = jointList[i];
+                print(joint.currentIndex);
                 int index = joint.currentIndex;
                 indexConnections[] connectedToIndex = joint.connections;
                 sortedJointArray[index] = connectedToIndex;
@@ -427,6 +428,7 @@ public class WorldBuilder : MonoBehaviour
         }
         public void jointHierarchy(Vector3 startPoint){
             indexConnections[][] sortedJointArray = sortedConnections();
+            print(sortedJointArray[0]);
             int size = sortedJointArray.Length;
             HashSet<int> set = createSet(size);
             int[][][] indexParts = new int[size][][];
