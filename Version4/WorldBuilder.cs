@@ -294,6 +294,198 @@ public class WorldBuilder : MonoBehaviour
             return movedObj;
         }
     }
+
+
+    public class bodyStructure {
+        public List<index> jointList;
+        public int[][][] bodyHierarchy;
+        public Vector3[] localConnections;
+        public struct index {
+            public int currentIndex;
+            public indexConnections[] connections;
+            public index(int currentIndex, indexConnections[] connections) {
+                this.currentIndex = currentIndex;
+                this.connections = connections;
+            }
+        }
+        public struct indexConnections {
+            public int connectedIndex;
+            public float radius;
+            public indexConnections(int connectedIndex, float radius) {
+                this.connectedIndex = connectedIndex;
+                this.radius = radius;
+            }
+        }
+        public indexConnections connections(int connectedIndex, float radius){
+            return new indexConnections(connectedIndex,radius);
+        }
+        public HashSet<int> createSet(int size){
+            HashSet<int> set = new HashSet<int>();
+            for(int i = 0; i < size; i++){
+                set.Add(i);
+            }
+            return set;
+        }
+            public indexConnections[][] sortedConnections(List<index> jointList){
+            int size = jointList.Count;
+            indexConnections[][] sortedJointArray = new indexConnections[size][];
+            for (int i = 0; i<size; i++){
+                index joint = jointList[i];
+                int index = joint.currentIndex;
+                indexConnections[] connectedToIndex = joint.connections;
+                sortedJointArray[index] = connectedToIndex;
+            }
+            return sortedJointArray;
+        }
+        public void jointHierarchy(Vector3 startPoint, List<index> jointList){
+            indexConnections[][] sortedJointArray = sortedConnections(jointList);
+            int size = sortedJointArray.Length;
+            HashSet<int> set = createSet(size);
+            int[][][] indexParts = new int[size][][];
+            for (int i = 0;i<size;i++){
+                indexParts[i] = indexHierarchy(i, sortedJointArray, set);
+            }
+            Vector3[] vecWithAxis = createLine(startPoint,sortedJointArray,set);
+            
+                bodyHierarchy = indexParts;
+                localConnections = vecWithAxis;
+        }
+        public int[][] indexHierarchy(int index,indexConnections[][] sortedJointArray,HashSet<int> search){
+            HashSet<int> setClone = new HashSet<int>(search);
+            List<indexConnections[]> activeConnections = new List<indexConnections[]>(){
+                sortedJointArray[index]
+            };
+            int axisSize = 4;
+            List<int> hierarchy = new List<int>(){index*axisSize};
+            while (activeConnections.Count != 0){
+                indexConnections[] connectedArray = activeConnections[0];
+                if (connectedArray!= null){
+                    for (int i = 0;i<connectedArray.Length;i++){
+                        indexConnections connection = connectedArray[i];
+                        int searchIndex = connection.connectedIndex;
+                        if (setClone.Contains(searchIndex)) {
+                            hierarchy.Add(searchIndex*axisSize);
+                            activeConnections.Add(sortedJointArray[searchIndex]);
+                            setClone.Remove(searchIndex);
+                        }
+                    }
+                }
+            activeConnections.RemoveAt(0);
+            }
+            int[] remainder = new int[setClone.Count];
+            setClone.CopyTo(remainder);
+            return new int[][]{hierarchy.ToArray(),remainder};
+        }
+        public Vector3[] createLine(Vector3 startPoint,indexConnections[][] sortedJointArray,HashSet<int> search){
+            int size = sortedJointArray.Length;
+            HashSet<int> setClone = new HashSet<int>(search);
+            Vector3[] jointVectors = new Vector3[size*4];
+            Vector3 x = new Vector3(3,0,0);
+            Vector3 y = new Vector3(0,3,0);
+            Vector3 z = new Vector3(0,0,3);
+            jointVectors[0] = startPoint;
+            jointVectors[1] = startPoint+x;
+            jointVectors[2] = startPoint+y;
+            jointVectors[3] = startPoint+z;
+            List<int> indexList = new List<int>(){0};
+            while (indexList.Count != 0){
+                indexConnections[] connectionsArray = sortedJointArray[indexList[0]];
+                if (connectionsArray!= null){
+                    for (int i = 0;i<connectionsArray.Length;i++){
+                        indexConnections connection = connectionsArray[i];
+                        int index = connection.connectedIndex;
+                        if (setClone.Contains(index)) {
+                            indexList.Add(index);
+                            Vector3 vec = jointVectors[indexList[0]*4]-new Vector3(0f,connection.radius,0f);
+                            setClone.Remove(index);
+                            index*=4;
+                            jointVectors[index] = vec;
+                            jointVectors[index+1] = vec+x;
+                            jointVectors[index+2] = vec+y;
+                            jointVectors[index+3] = vec+z;
+                        }
+                    }
+                }
+            indexList.RemoveAt(0);
+            }
+            return jointVectors;
+        }
+        public void rotate(float angle, int index, int rotationAxis){
+            int originIndex = index*4;
+            Vector3[] bodyVec = localConnections;
+            Vector3 origin = bodyVec[originIndex];
+            int rotationIndex = originIndex+rotationAxis;
+            int[] connected = bodyHierarchy[index][0];
+            int size = connected.Length;  
+            Vector4 quat = QuaternionClass.angledAxis(angle,bodyVec[rotationIndex]-origin);
+            for (int i = 0; i<size;i++){
+                int indexForGlobal = connected[i];
+                bodyVec[indexForGlobal]= QuaternionClass.rotate(
+                    origin,bodyVec[indexForGlobal],quat
+                );
+                bodyVec[indexForGlobal+1]= QuaternionClass.rotate(
+                    origin,bodyVec[indexForGlobal+1],quat
+                );
+                bodyVec[indexForGlobal+2]= QuaternionClass.rotate(
+                    origin,bodyVec[indexForGlobal+2],quat
+                );
+                bodyVec[indexForGlobal+3]= QuaternionClass.rotate(
+                    origin,bodyVec[indexForGlobal+3],quat
+                );
+            }
+        }
+        public void invertAxis(int indexHierarchy, bool x, bool y, bool z){
+            Vector3[] vec = localConnections;
+            int[] indexList = bodyHierarchy[indexHierarchy][0];
+            for (int i = 0; i<indexList.Length; i++){
+                int index = indexList[i];
+                Vector3 origin = vec[index];
+                if (x){
+                vec[index+1] = origin - VectorManipulator.vectorDirections(origin,vec[index+1]);
+                }
+                if (y){
+                vec[index+2] = origin - VectorManipulator.vectorDirections(origin,vec[index+2]);
+                }
+                if (z){
+                vec[index+3] = origin - VectorManipulator.vectorDirections(origin,vec[index+3]);
+                }
+            }
+        }
+        public List<index> sortList(List<index> jointList){
+            int size = jointList.Count;
+            index[] sortedJointArray = new index[size];
+            for (int i = 0; i<size; i++){
+                index joint = jointList[i];
+                int index = joint.currentIndex;
+                sortedJointArray[index] = joint;
+            }
+            return new List<index>(sortedJointArray);
+        }
+        public List<index> renumberIndex(List<index> jointList){
+            Dictionary<int,int> pairs = new Dictionary<int, int>();
+            int size = jointList.Count;
+            index[] changeList = new index[jointList.Count];
+            for (int i = 0;i<size;i++){
+                pairs.Add(jointList[i].currentIndex,i);
+            }
+            for (int i = 0;i<jointList.Count;i++){
+                index index = jointList[i];
+                index.currentIndex = pairs[index.currentIndex];
+                for (int e = 0;e<index.connections.Length;e++){
+                    indexConnections connected = index.connections[e];
+                    connected.connectedIndex = pairs[connected.connectedIndex];
+                }
+                changeList[i] = index;
+            }
+            foreach (index i in changeList){
+                print(i.currentIndex);
+            }
+            return new List<index>(changeList);
+        }
+    }
+
+
+
     public static class BodyCreator{
         public static Vector3[] loadParts(int[] bodyPart,Vector3[] globalBody){
             int size = bodyPart.Length;
@@ -303,30 +495,6 @@ public class WorldBuilder : MonoBehaviour
             }
             return vec;
         }
-        // public static Vector3[] rotatePart(
-        //     float angles, int[] bodyPart,
-        //     Vector3 rotationAxis,Vector3[] globalBody
-        //     ){
-        //     Vector3[] bodyVec = loadParts(bodyPart,globalBody);
-        //     Vector3 bodyOrigin = bodyVec[0];
-        //     Vector3[] rotatedVec = Movement.rotateObject(angles,bodyOrigin,bodyVec,rotationAxis);
-        //     for (int i = 0; i< bodyVec.Length; i++){
-        //         globalBody[bodyPart[i]] = rotatedVec[i];
-        //     }
-        //     return globalBody;
-        // }
-        // public static Vector3[] rotateAxis(float angles,Vector3[] localCross, Vector3 rotationAxis, int index,Vector3[] globalBody){
-        //     Vector3 origin = globalBody[0];
-        //     for (int i = 0; i < localCross.Length; i++){
-        //         if (i != index){
-        //             localCross[i] = 
-        //             QuaternionClass.rotate(
-        //                 angles,origin,localCross[i]+origin,rotationAxis
-        //                 ) - origin;
-        //         }
-        //     }
-        //     return localCross;
-        // }
         public static Vector3[] diagonal(
             Vector3[] points,
             float step
