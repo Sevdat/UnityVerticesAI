@@ -326,7 +326,35 @@ public class WorldBuilder : MonoBehaviour
             }
             return set;
         }
-            public indexConnections[][] sortedConnections(List<index> jointList){
+        public void sortList(){
+            int size = jointList.Count;
+            index[] sortedJointArray = new index[size];
+            for (int i = 0; i<size; i++){
+                index joint = jointList[i];
+                int index = joint.currentIndex;
+                sortedJointArray[index] = joint;
+            }
+            jointList = new List<index>(sortedJointArray);
+        }
+        public void renumberIndex(){
+            Dictionary<int,int> pairs = new Dictionary<int, int>();
+            int size = jointList.Count;
+            index[] changeList = new index[jointList.Count];
+            for (int i = 0;i<size;i++){
+                pairs.Add(jointList[i].currentIndex,i);
+            }
+            for (int i = 0;i<jointList.Count;i++){
+                index index = jointList[i];
+                index.currentIndex = pairs[index.currentIndex];
+                for (int e = 0;e<index.connections.Length;e++){
+                    indexConnections connected = index.connections[e];
+                    connected.connectedIndex = pairs[connected.connectedIndex];
+                }
+                changeList[i] = index;
+            }
+            jointList = new List<index>(changeList);
+        }
+        public indexConnections[][] sortedConnections(){
             int size = jointList.Count;
             indexConnections[][] sortedJointArray = new indexConnections[size][];
             for (int i = 0; i<size; i++){
@@ -336,19 +364,6 @@ public class WorldBuilder : MonoBehaviour
                 sortedJointArray[index] = connectedToIndex;
             }
             return sortedJointArray;
-        }
-        public void jointHierarchy(Vector3 startPoint, List<index> jointList){
-            indexConnections[][] sortedJointArray = sortedConnections(jointList);
-            int size = sortedJointArray.Length;
-            HashSet<int> set = createSet(size);
-            int[][][] indexParts = new int[size][][];
-            for (int i = 0;i<size;i++){
-                indexParts[i] = indexHierarchy(i, sortedJointArray, set);
-            }
-            Vector3[] vecWithAxis = createLine(startPoint,sortedJointArray,set);
-            
-                bodyHierarchy = indexParts;
-                localConnections = vecWithAxis;
         }
         public int[][] indexHierarchy(int index,indexConnections[][] sortedJointArray,HashSet<int> search){
             HashSet<int> setClone = new HashSet<int>(search);
@@ -410,6 +425,19 @@ public class WorldBuilder : MonoBehaviour
             }
             return jointVectors;
         }
+        public void jointHierarchy(Vector3 startPoint){
+            indexConnections[][] sortedJointArray = sortedConnections();
+            int size = sortedJointArray.Length;
+            HashSet<int> set = createSet(size);
+            int[][][] indexParts = new int[size][][];
+            for (int i = 0;i<size;i++){
+                indexParts[i] = indexHierarchy(i, sortedJointArray, set);
+            }
+            Vector3[] vecWithAxis = createLine(startPoint,sortedJointArray,set);
+            
+            bodyHierarchy = indexParts;
+            localConnections = vecWithAxis;
+        }
         public void rotate(float angle, int index, int rotationAxis){
             int originIndex = index*4;
             Vector3[] bodyVec = localConnections;
@@ -450,37 +478,6 @@ public class WorldBuilder : MonoBehaviour
                 vec[index+3] = origin - VectorManipulator.vectorDirections(origin,vec[index+3]);
                 }
             }
-        }
-        public List<index> sortList(List<index> jointList){
-            int size = jointList.Count;
-            index[] sortedJointArray = new index[size];
-            for (int i = 0; i<size; i++){
-                index joint = jointList[i];
-                int index = joint.currentIndex;
-                sortedJointArray[index] = joint;
-            }
-            return new List<index>(sortedJointArray);
-        }
-        public List<index> renumberIndex(List<index> jointList){
-            Dictionary<int,int> pairs = new Dictionary<int, int>();
-            int size = jointList.Count;
-            index[] changeList = new index[jointList.Count];
-            for (int i = 0;i<size;i++){
-                pairs.Add(jointList[i].currentIndex,i);
-            }
-            for (int i = 0;i<jointList.Count;i++){
-                index index = jointList[i];
-                index.currentIndex = pairs[index.currentIndex];
-                for (int e = 0;e<index.connections.Length;e++){
-                    indexConnections connected = index.connections[e];
-                    connected.connectedIndex = pairs[connected.connectedIndex];
-                }
-                changeList[i] = index;
-            }
-            foreach (index i in changeList){
-                print(i.currentIndex);
-            }
-            return new List<index>(changeList);
         }
     }
 
