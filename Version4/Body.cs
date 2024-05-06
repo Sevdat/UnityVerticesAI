@@ -171,17 +171,13 @@ public class Body : MonoBehaviour
                 index25,index33,index34,
                 index35,index36
             };
-            renumberIndex(jointList);
         }
     }
 
     void Start(){
         lol = new HumanBody();
-        print(lol.localConnections.Length);
         lol.fun();
-        // jointList = sortList(jointList);
-        // Vector3 startPoint = new Vector3(20,30,20);
-        // joints = jointHierarchy(startPoint,jointList);
+        lol.jointHierarchy(new Vector3(20,30,20));
         // for(int i = 0; i <joints.localConnections.Length;i = i+4){
         //     Vector3 vec = joints.localConnections[i];
         //     print($"{i/4} : {vec}");
@@ -209,28 +205,28 @@ public class Body : MonoBehaviour
         // }
         time += Time.deltaTime;
         if (time >0.1f){
-            // draw(1);
+            draw(0);
             time = 0f;
         }
     }
     public void draw(int choice){
 
-        // if (choice == 0){
-        //     WorldBuilder.BitArrayManipulator.createOrDeleteObject(joints.localConnections,false);
-        //     WorldBuilder.BitArrayManipulator.createOrDeleteObject(joints.localConnections,true);
-        // }
-        // if (choice == 1){
-        //     for(int i = 0; i <joints.localConnections.Length;i = i+4){
-        //         bod[i/4] = joints.localConnections[i];
-        //     }
-        //     WorldBuilder.BitArrayManipulator.createOrDeleteObject(bod,false);
-        //     for(int i = 0; i <joints.localConnections.Length;i = i+4){
-        //         bod[i/4] = joints.localConnections[i];
-        //     }
-        //     // rotate(joints,1f,0,1);
-        //     // rotate(joints,-1f,34,1);
-        //     WorldBuilder.BitArrayManipulator.createOrDeleteObject(bod,true);
-        // }
+        if (choice == 0){
+            WorldBuilder.BitArrayManipulator.createOrDeleteObject(lol.localConnections,false);
+            WorldBuilder.BitArrayManipulator.createOrDeleteObject(lol.localConnections,true);
+        }
+        if (choice == 1){
+            for(int i = 0; i <lol.localConnections.Length;i = i+4){
+                bod[i/4] = lol.localConnections[i];
+            }
+            WorldBuilder.BitArrayManipulator.createOrDeleteObject(bod,false);
+            for(int i = 0; i <lol.localConnections.Length;i = i+4){
+                bod[i/4] = lol.localConnections[i];
+            }
+            // rotate(joints,1f,0,1);
+            // rotate(joints,-1f,34,1);
+            WorldBuilder.BitArrayManipulator.createOrDeleteObject(bod,true);
+        }
 
     }
 }
