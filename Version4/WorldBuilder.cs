@@ -157,7 +157,6 @@ public class WorldBuilder : MonoBehaviour
                 else if (location < 0) {
                     int size = dimension+1;
                     location = size-1-Math.Abs(location % size);
-                    
                 }
             return location;
         }
@@ -325,13 +324,21 @@ public class WorldBuilder : MonoBehaviour
                 point+axisLengthY,
                 point+axisLengthZ
             }:
-            new Vector3[]{
-                global[0]+point,
-                global[1]+point,
-                global[2]+point,
-                global[3]+point,
-            };
+                new Vector3[]{
+                    global[0]+point,
+                    global[1]+point,
+                    global[2]+point,
+                    global[3]+point,
+                };
         }
+        public void globalPoint(float angle, int rotationAxis){
+            Vector3 origin = global[0];
+            Vector4 quat = QuaternionClass.angledAxis(angle,global[rotationAxis]-origin);
+            global[1]= QuaternionClass.rotate(origin,global[1],quat);
+            global[2]= QuaternionClass.rotate(origin,global[2],quat);
+            global[3]= QuaternionClass.rotate(origin,global[3],quat);
+        }
+
         public void moveGlobal(
             float speed,int direction
             ){
