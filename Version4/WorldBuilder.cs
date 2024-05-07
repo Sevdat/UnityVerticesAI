@@ -283,23 +283,17 @@ public class WorldBuilder : MonoBehaviour
                 }
             return rotatedVec;
         }
-        public static Vector3[] moveObject(
-            Vector3 move, Vector3[] obj
-            ){
-            BitArrayManipulator.createOrDeleteObject(obj, false);
-            Vector3[] movedObj = new Vector3[obj.Length];
-            for (int i = 0; i < movedObj.Length; i++){
-                movedObj[i] = obj[i]+move; 
-                }
-            return movedObj;
-        }
     }
 
 
     public class bodyStructure {
         public List<index> jointList;
         public int[][][] bodyHierarchy;
-        public Vector3[] localConnections;
+        public Vector3[] global;
+        public Vector3[] local;
+        Vector3 axisLengthX = new Vector3(3,0,0);
+        Vector3 axisLengthY = new Vector3(0,3,0);
+        Vector3 axisLengthZ = new Vector3(0,0,3);
         public struct index {
             public int currentIndex;
             public indexConnections[] connections;
@@ -318,6 +312,28 @@ public class WorldBuilder : MonoBehaviour
         }
         public indexConnections connections(int connectedIndex, float radius){
             return new indexConnections(connectedIndex,radius);
+        }
+        public void globalPoint(Vector3 point){
+            global = (global==null)? 
+                new Vector3[]{
+                point,
+                point+axisLengthX,
+                point+axisLengthY,
+                point+axisLengthZ
+            }:
+            new Vector3[]{
+                global[0]+point,
+                global[1]+point,
+                global[2]+point,
+                global[3]+point,
+            };
+        }
+        public void moveObject(
+            Vector3 move
+            ){
+            for (int i = 0; i < local.Length; i++){
+                local[i] += move; 
+                }
         }
         public HashSet<int> createSet(int size){
             HashSet<int> set = new HashSet<int>();
@@ -359,7 +375,6 @@ public class WorldBuilder : MonoBehaviour
             indexConnections[][] sortedJointArray = new indexConnections[size][];
             for (int i = 0; i<size; i++){
                 index joint = jointList[i];
-                print(joint.currentIndex);
                 int index = joint.currentIndex;
                 indexConnections[] connectedToIndex = joint.connections;
                 sortedJointArray[index] = connectedToIndex;
@@ -396,13 +411,10 @@ public class WorldBuilder : MonoBehaviour
             int size = sortedJointArray.Length;
             HashSet<int> setClone = new HashSet<int>(search);
             Vector3[] jointVectors = new Vector3[size*4];
-            Vector3 x = new Vector3(3,0,0);
-            Vector3 y = new Vector3(0,3,0);
-            Vector3 z = new Vector3(0,0,3);
             jointVectors[0] = startPoint;
-            jointVectors[1] = startPoint+x;
-            jointVectors[2] = startPoint+y;
-            jointVectors[3] = startPoint+z;
+            jointVectors[1] = startPoint+axisLengthX;
+            jointVectors[2] = startPoint+axisLengthY;
+            jointVectors[3] = startPoint+axisLengthZ;
             List<int> indexList = new List<int>(){0};
             while (indexList.Count != 0){
                 indexConnections[] connectionsArray = sortedJointArray[indexList[0]];
@@ -416,9 +428,9 @@ public class WorldBuilder : MonoBehaviour
                             setClone.Remove(index);
                             index*=4;
                             jointVectors[index] = vec;
-                            jointVectors[index+1] = vec+x;
-                            jointVectors[index+2] = vec+y;
-                            jointVectors[index+3] = vec+z;
+                            jointVectors[index+1] = vec+axisLengthX;
+                            jointVectors[index+2] = vec+axisLengthY;
+                            jointVectors[index+3] = vec+axisLengthZ;
                         }
                     }
                 }
@@ -428,7 +440,6 @@ public class WorldBuilder : MonoBehaviour
         }
         public void jointHierarchy(Vector3 startPoint){
             indexConnections[][] sortedJointArray = sortedConnections();
-            print(sortedJointArray[0]);
             int size = sortedJointArray.Length;
             HashSet<int> set = createSet(size);
             int[][][] indexParts = new int[size][][];
@@ -438,14 +449,15 @@ public class WorldBuilder : MonoBehaviour
             Vector3[] vecWithAxis = createLine(startPoint,sortedJointArray,set);
             
             bodyHierarchy = indexParts;
-            localConnections = vecWithAxis;
+            local = vecWithAxis;
         }
-        public void rotate(float angle, int index, int rotationAxis){
+        public void rotateLocal(float angle, int index, int rotationAxis, bool oppositeDirection){
             int originIndex = index*4;
-            Vector3[] bodyVec = localConnections;
+            Vector3[] bodyVec = local;
             Vector3 origin = bodyVec[originIndex];
             int rotationIndex = originIndex+rotationAxis;
-            int[] connected = bodyHierarchy[index][0];
+            int remainder = oppositeDirection ? 1:0;
+            int[] connected = bodyHierarchy[index][remainder];
             int size = connected.Length;  
             Vector4 quat = QuaternionClass.angledAxis(angle,bodyVec[rotationIndex]-origin);
             for (int i = 0; i<size;i++){
@@ -465,7 +477,7 @@ public class WorldBuilder : MonoBehaviour
             }
         }
         public void invertAxis(int indexHierarchy, bool x, bool y, bool z){
-            Vector3[] vec = localConnections;
+            Vector3[] vec = local;
             int[] indexList = bodyHierarchy[indexHierarchy][0];
             for (int i = 0; i<indexList.Length; i++){
                 int index = indexList[i];
