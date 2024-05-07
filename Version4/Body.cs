@@ -245,12 +245,14 @@ public class Body : MonoBehaviour
         body.rotateLocal(-60f,36,3,false);
         body.rotateLocal(60f,8,3,false);
         body.rotateLocal(-90f,12,1,false);
-        
+        bod = new Vector3[]{
+            new Vector3(25,11,-70)
+        };
     }
 
     float time = 0;
     bool once = true;
-    Vector3[] bod = new Vector3[60];
+    Vector3[] bod;
     void Update(){
         // if (once){
         //     renumberIndex(
@@ -258,28 +260,36 @@ public class Body : MonoBehaviour
         //         );
         // }
         time += Time.deltaTime;
-        if (time >0.1f){
-            draw(1);
+        if (time >0.01f){
+            draw(0);
             time = 0f;
         }
     }
     public void draw(int choice){
 
         if (choice == 0){
+            WorldBuilder.BitArrayManipulator.createOrDeleteObject(body.global,false);
             WorldBuilder.BitArrayManipulator.createOrDeleteObject(body.local,false);
+            body.moveGlobal(-1f,1);
+            body.globalPoint(1f,2);
+            WorldBuilder.BitArrayManipulator.createOrDeleteObject(body.global,true);
             WorldBuilder.BitArrayManipulator.createOrDeleteObject(body.local,true);
         }
         if (choice == 1){
-            for(int i = 0; i <body.local.Length;i = i+4){
-                bod[i/4] = body.local[i];
+            for(int i = 0; i <body.local.Length;i+=1){
+                bod[i] = body.local[i];
             }
             WorldBuilder.BitArrayManipulator.createOrDeleteObject(bod,false);
-            body.moveObject(new Vector3(1f,0,0));
-            for(int i = 0; i <body.local.Length;i = i+4){
-                bod[i/4] = body.local[i];
+            body.moveGlobal(-1,3);
+            for(int i = 0; i <body.local.Length;i+=1){
+                bod[i] = body.local[i];
             }
             // rotate(joints,1f,0,1);
             // rotate(joints,-1f,34,1);
+            WorldBuilder.BitArrayManipulator.createOrDeleteObject(bod,true);
+        }
+        if (choice == 2){
+            WorldBuilder.BitArrayManipulator.createOrDeleteObject(bod,false);
             WorldBuilder.BitArrayManipulator.createOrDeleteObject(bod,true);
         }
 
