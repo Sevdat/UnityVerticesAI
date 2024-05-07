@@ -167,9 +167,9 @@ public class WorldBuilder : MonoBehaviour
             return new Vector3Int(x,y,z);
         }
         public static void createOrDeleteObject(
-            Vector3[] obj, bool create
+            Vector3[] obj, bool create,int step
             ){ 
-            for (int i = 0; i < obj.Length; i++){
+            for (int i = 0; i < obj.Length; i += step){
                 Vector3Int vector = setVectorInBoundry(
                     new Vector3Int(
                         Mathf.RoundToInt(obj[i].x),
@@ -294,6 +294,8 @@ public class WorldBuilder : MonoBehaviour
         public int[][][] bodyHierarchy;
         public Vector3[] global;
         public Vector3[] local;
+        public Vector3[][] mesh ;
+        public bool[] collision;
         Vector3 axisLengthX = new Vector3(3,0,0);
         Vector3 axisLengthY = new Vector3(0,3,0);
         Vector3 axisLengthZ = new Vector3(0,0,3);
@@ -347,6 +349,9 @@ public class WorldBuilder : MonoBehaviour
             for (int i = 0; i < local.Length; i++){
                 local[i] += move; 
                 }
+            for (int i = 0; i < global.Length; i++){
+                global[i] += move;
+            }
         }
         public HashSet<int> createSet(int size){
             HashSet<int> set = new HashSet<int>();
@@ -506,56 +511,8 @@ public class WorldBuilder : MonoBehaviour
                 }
             }
         }
-    }
-
-    public static class BodyCreator{
-        public static Vector3[] loadParts(int[] bodyPart,Vector3[] globalBody){
-            int size = bodyPart.Length;
-            Vector3[] vec = new Vector3[size];
-            for (int i = 0; i < size; i++){
-                vec[i] = globalBody[bodyPart[i]];
-            }
-            return vec;
-        }
-        public static Vector3[] diagonal(
-            Vector3[] points,
-            float step
-            ){
-            float x0 = points[0].x;
-            float x1 = points[1].x;
-            float y0 = points[0].y;
-            float y1 = points[1].y;
-            float z0 = points[0].z;
-            float z1 = points[1].z;
-            float x = x1-x0;
-            float y = y1-y0;
-            float z = z1-z0;
-            int size = (int)(1/step);
-            Vector3[] diagonalArray = new Vector3[size];
-            for (int i = 0; i < size; i++){ 
-                float f = i*step;
-                diagonalArray[i] = new Vector3(
-                    x*f+x0,
-                    y*f+y0,
-                    z*f+z0
-                    );
-            }
-            return diagonalArray;
-        }
-    }
-    public Vector3[] tempConnections = new Vector3[]{new Vector3(0,0,0)};
-    public void connectPoints(Vector3[] globalBody, float step){
-        int size = globalBody.Length-1;
-        int stepSize = (int)(1/step);
-        BitArrayManipulator.createOrDeleteObject(tempConnections,false);
-        tempConnections = new Vector3[(int)(1/step)*size];
-        for (int i = 0; i < globalBody.Length-1; i++){
-            Vector3[] t = BodyCreator.diagonal(
-                new Vector3[]{globalBody[i],globalBody[i+1]},
-                step);
-            for(int e = 0; e < t.Length; e++){
-                tempConnections[e + i*stepSize] = t[e];
-            }
+        public void drawLocal(bool createOrDelete){
+            BitArrayManipulator.createOrDeleteObject(local,createOrDelete,4);
         }
     }
 
@@ -744,3 +701,54 @@ public class WorldBuilder : MonoBehaviour
         //     }
         //     return rotatedVec;
         // }
+
+            // public static class BodyCreator{
+    //     public static Vector3[] loadParts(int[] bodyPart,Vector3[] globalBody){
+    //         int size = bodyPart.Length;
+    //         Vector3[] vec = new Vector3[size];
+    //         for (int i = 0; i < size; i++){
+    //             vec[i] = globalBody[bodyPart[i]];
+    //         }
+    //         return vec;
+    //     }
+    //     public static Vector3[] diagonal(
+    //         Vector3[] points,
+    //         float step
+    //         ){
+    //         float x0 = points[0].x;
+    //         float x1 = points[1].x;
+    //         float y0 = points[0].y;
+    //         float y1 = points[1].y;
+    //         float z0 = points[0].z;
+    //         float z1 = points[1].z;
+    //         float x = x1-x0;
+    //         float y = y1-y0;
+    //         float z = z1-z0;
+    //         int size = (int)(1/step);
+    //         Vector3[] diagonalArray = new Vector3[size];
+    //         for (int i = 0; i < size; i++){ 
+    //             float f = i*step;
+    //             diagonalArray[i] = new Vector3(
+    //                 x*f+x0,
+    //                 y*f+y0,
+    //                 z*f+z0
+    //                 );
+    //         }
+    //         return diagonalArray;
+    //     }
+    // }
+    // public Vector3[] tempConnections = new Vector3[]{new Vector3(0,0,0)};
+    // public void connectPoints(Vector3[] globalBody, float step){
+    //     int size = globalBody.Length-1;
+    //     int stepSize = (int)(1/step);
+    //     BitArrayManipulator.createOrDeleteObject(tempConnections,false);
+    //     tempConnections = new Vector3[(int)(1/step)*size];
+    //     for (int i = 0; i < globalBody.Length-1; i++){
+    //         Vector3[] t = BodyCreator.diagonal(
+    //             new Vector3[]{globalBody[i],globalBody[i+1]},
+    //             step);
+    //         for(int e = 0; e < t.Length; e++){
+    //             tempConnections[e + i*stepSize] = t[e];
+    //         }
+    //     }
+    // }
