@@ -267,31 +267,10 @@ public class Body : MonoBehaviour
     }
     public void draw(int choice){
 
-        if (choice == 0){
-            WorldBuilder.BitArrayManipulator.createOrDeleteObject(body.global,false);
-            WorldBuilder.BitArrayManipulator.createOrDeleteObject(body.local,false);
-            body.moveGlobal(-1f,1);
-            body.globalPoint(1f,2);
-            WorldBuilder.BitArrayManipulator.createOrDeleteObject(body.global,true);
-            WorldBuilder.BitArrayManipulator.createOrDeleteObject(body.local,true);
-        }
-        if (choice == 1){
-            for(int i = 0; i <body.local.Length;i+=1){
-                bod[i] = body.local[i];
-            }
-            WorldBuilder.BitArrayManipulator.createOrDeleteObject(bod,false);
-            body.moveGlobal(-1,3);
-            for(int i = 0; i <body.local.Length;i+=1){
-                bod[i] = body.local[i];
-            }
-            // rotate(joints,1f,0,1);
-            // rotate(joints,-1f,34,1);
-            WorldBuilder.BitArrayManipulator.createOrDeleteObject(bod,true);
-        }
-        if (choice == 2){
-            WorldBuilder.BitArrayManipulator.createOrDeleteObject(bod,false);
-            WorldBuilder.BitArrayManipulator.createOrDeleteObject(bod,true);
-        }
+            body.drawLocal(false);
+            // body.moveGlobal(-1f,1);
+            // body.globalPoint(1f,2);
+            body.drawLocal(true);
 
     }
 }
