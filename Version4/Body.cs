@@ -10,8 +10,7 @@ using UnityEngine.UIElements;
 
 public class Body : MonoBehaviour
 {
-    public HumanBody lol = new HumanBody();
-
+    public HumanBody body = new HumanBody();
     public class HumanBody: WorldBuilder.bodyStructure{
         public void fun(){
             index index0 = new index(
@@ -197,58 +196,55 @@ public class Body : MonoBehaviour
                 index40,index41,index42
             };
             sortList();
-            // print(jointList.Count);
         }
     }
 
     void Start(){
-        lol = new HumanBody();
-        lol.fun();
-        lol.jointHierarchy(new Vector3(20,50,20));
+        body = new HumanBody();
+        body.fun();
+        Vector3 startPoint = new Vector3(20,50,20);
+        body.jointHierarchy(startPoint);
+        body.globalPoint(startPoint);
 
         //Right Arm
-        lol.rotate(90f,33,3);
-        lol.rotate(-45f,15,3);
-        lol.rotate(-45f,17,3);
+        body.rotateLocal(90f,33,3,false);
+        body.rotateLocal(-45f,15,3,false);
+        body.rotateLocal(-45f,17,3,false);
         //Right Hand
-        lol.rotate(75f,37,2);
-        lol.rotate(-60f,37,1);
-        lol.rotate(25f,21,1);
+        body.rotateLocal(75f,37,2,false);
+        body.rotateLocal(-60f,37,1,false);
+        body.rotateLocal(25f,21,1,false);
 
-        lol.rotate(-60f,38,1);
-        lol.rotate(25f,23,1);
+        body.rotateLocal(-60f,38,1,false);
+        body.rotateLocal(25f,23,1,false);
 
-        lol.rotate(-75f,39,2);
-        lol.rotate(-60f,39,1);
-        lol.rotate(25f,31,1);
+        body.rotateLocal(-75f,39,2,false);
+        body.rotateLocal(-60f,39,1,false);
+        body.rotateLocal(25f,31,1,false);
         //Right Leg
-        lol.rotate(60f,35,3);
-        lol.rotate(-60f,7,3);
-        lol.rotate(-90f,11,1);
-        
+        body.rotateLocal(60f,35,3,false);
+        body.rotateLocal(-60f,7,3,false);
+        body.rotateLocal(-90f,11,1,false);
 
         //Left Arm
-        lol.rotate(-90f,34,3);
-        lol.rotate(45f,16,3);
-        lol.rotate(45f,18,3);
+        body.rotateLocal(-90f,34,3,false);
+        body.rotateLocal(45f,16,3,false);
+        body.rotateLocal(45f,18,3,false);
         //Right Hand
-        lol.rotate(-75f,40,2);
-        lol.rotate(-60f,40,1);
-        lol.rotate(25f,28,1);
+        body.rotateLocal(-75f,40,2,false);
+        body.rotateLocal(-60f,40,1,false);
+        body.rotateLocal(25f,28,1,false);
 
-        lol.rotate(-60f,41,1);
-        lol.rotate(25f,26,1);
+        body.rotateLocal(-60f,41,1,false);
+        body.rotateLocal(25f,26,1,false);
 
-        lol.rotate(75f,42,2);
-        lol.rotate(-60f,42,1);
-        lol.rotate(25f,24,1);
+        body.rotateLocal(75f,42,2,false);
+        body.rotateLocal(-60f,42,1,false);
+        body.rotateLocal(25f,24,1,false);
         //Left Leg
-        lol.rotate(-60f,36,3);
-        lol.rotate(60f,8,3);
-        lol.rotate(-90f,12,1);
-
-        // rotate(joints,40f,33,1);
-        // rotate(joints,40f,34,1);
+        body.rotateLocal(-60f,36,3,false);
+        body.rotateLocal(60f,8,3,false);
+        body.rotateLocal(-90f,12,1,false);
         
     }
 
@@ -270,16 +266,17 @@ public class Body : MonoBehaviour
     public void draw(int choice){
 
         if (choice == 0){
-            WorldBuilder.BitArrayManipulator.createOrDeleteObject(lol.localConnections,false);
-            WorldBuilder.BitArrayManipulator.createOrDeleteObject(lol.localConnections,true);
+            WorldBuilder.BitArrayManipulator.createOrDeleteObject(body.local,false);
+            WorldBuilder.BitArrayManipulator.createOrDeleteObject(body.local,true);
         }
         if (choice == 1){
-            for(int i = 0; i <lol.localConnections.Length;i = i+4){
-                bod[i/4] = lol.localConnections[i];
+            for(int i = 0; i <body.local.Length;i = i+4){
+                bod[i/4] = body.local[i];
             }
             WorldBuilder.BitArrayManipulator.createOrDeleteObject(bod,false);
-            for(int i = 0; i <lol.localConnections.Length;i = i+4){
-                bod[i/4] = lol.localConnections[i];
+            body.moveObject(new Vector3(1f,0,0));
+            for(int i = 0; i <body.local.Length;i = i+4){
+                bod[i/4] = body.local[i];
             }
             // rotate(joints,1f,0,1);
             // rotate(joints,-1f,34,1);
