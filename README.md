@@ -10,5 +10,5 @@ This is the geometry I used to render between 4 vertices
 (Update: this is old. Currently using quaternion) This is the orientation of the spherical rotation. Changed the third formula to make xy = 00 to face up
 ![orientation](https://github.com/Sevdat/UnityVerticesAI/assets/55320710/3fff2818-953d-4163-b0b5-e56d3f17755e)
 
-(Version 4)Creating bodies vertically and than joining them
-![image](https://github.com/Sevdat/UnityVerticesAI/assets/55320710/c83916cf-16b0-4fd2-a6af-5d30a9172a33)
+(Version 4)Creating the skeleton vertically as a line and then expanding it
+![skeleton hierarchy](https://github.com/Sevdat/UnityVerticesAI/assets/55320710/ad7b7f47-9e77-41b3-bd6a-5b4a737d0c4e)
