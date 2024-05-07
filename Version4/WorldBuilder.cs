@@ -133,6 +133,9 @@ public class WorldBuilder : MonoBehaviour
         }
         public static void createOrDelete(Vector3Int vec, bool bitArrayBool){
             int ballNumber = vecToInt(vec.x, vec.y, vec.z);
+            if (ballNumber> 70*70*70) {
+                print($"{ballNumber}: {vec.x} {vec.y} {vec.z}");
+                };
             if (!bitArray[ballNumber] && bitArrayBool){
                     bitArray[ballNumber] = true;
                     GameObject clone = Instantiate(
@@ -153,7 +156,8 @@ public class WorldBuilder : MonoBehaviour
                     location = Math.Abs(location % (dimension+1));
                 else if (location < 0) {
                     int size = dimension+1;
-                    location = size-Math.Abs(location % size);
+                    location = size-1-Math.Abs(location % size);
+                    
                 }
             return location;
         }
@@ -328,9 +332,11 @@ public class WorldBuilder : MonoBehaviour
                 global[3]+point,
             };
         }
-        public void moveObject(
-            Vector3 move
+        public void moveGlobal(
+            float speed,int direction
             ){
+            Vector3 move = 
+                VectorManipulator.vectorDirections(global[0],global[direction])*speed;
             for (int i = 0; i < local.Length; i++){
                 local[i] += move; 
                 }
@@ -494,8 +500,6 @@ public class WorldBuilder : MonoBehaviour
             }
         }
     }
-
-
 
     public static class BodyCreator{
         public static Vector3[] loadParts(int[] bodyPart,Vector3[] globalBody){
