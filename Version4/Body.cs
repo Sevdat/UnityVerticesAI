@@ -16,29 +16,29 @@ public class Body : MonoBehaviour
         public void fun(){
             index index0 = new index(
                     0, new indexConnections[]{
-                        connections(1,2f)
+                        connections(1,4f)
                     });
             index index1 = new index(
                     1, new indexConnections[]{
-                        connections(2,1f)
+                        connections(2,2f)
                     });
             index index2 = new index(
                     2, new indexConnections[]{
-                        connections(3,1f)
+                        connections(3,2f)
                     });
             index index3 = new index(
                     3, new indexConnections[]{
-                        connections(4,3f),
+                        connections(4,6f),
                         connections(33,0f),
                         connections(34,0f)
                     });
             index index4 = new index(
                     4, new indexConnections[]{
-                        connections(5,3f)
+                        connections(5,6f)
                     });
             index index5 = new index(
                     5, new indexConnections[]{
-                        connections(6,2f)
+                        connections(6,4f)
                     });
             index index6 = new index(
                     6, new indexConnections[]{
@@ -47,27 +47,27 @@ public class Body : MonoBehaviour
                     });
             index index7 = new index(
                     7, new indexConnections[]{
-                        connections(9,3f)
+                        connections(9,6f)
                     });
             index index8 = new index(
                     8, new indexConnections[]{
-                        connections(10,3f)
+                        connections(10,6f)
                     });
             index index9 = new index(
                     9, new indexConnections[]{
-                        connections(11,3f)
+                        connections(11,6f)
                     });
             index index10 = new index(
                     10, new indexConnections[]{
-                        connections(12,3f)
+                        connections(12,6f)
                     });
             index index11 = new index(
                     11, new indexConnections[]{
-                        connections(13,3f)
+                        connections(13,6f)
                     });
             index index12 = new index(
                     12, new indexConnections[]{
-                        connections(14,3f)
+                        connections(14,6f)
                     });
             index index13 = new index(
                     13, new indexConnections[]{
@@ -77,19 +77,19 @@ public class Body : MonoBehaviour
                     );
             index index15 = new index(
                     15, new indexConnections[]{
-                        connections(17,3f)
+                        connections(17,6f)
                     });
             index index16 = new index(
                     16, new indexConnections[]{
-                        connections(18,3f)
+                        connections(18,6f)
                     });
             index index17 = new index(
                     17, new indexConnections[]{
-                        connections(19,3f)
+                        connections(19,6f)
                     });
             index index18 = new index(
                     18, new indexConnections[]{
-                        connections(20,3f)
+                        connections(20,6f)
                     });
             index index19 = new index(
                     19, new indexConnections[]{
@@ -105,32 +105,32 @@ public class Body : MonoBehaviour
                     });
             index index21 = new index(
                     21, new indexConnections[]{
-                        connections(22,1f)
+                        connections(22,2f)
                     });
             index index22 = new index(
                     22, new indexConnections[]{}
                     );  
             index index23 = new index(
                     23, new indexConnections[]{
-                        connections(30,1f)
+                        connections(30,2f)
                     });
             index index24 = new index(
                     24, new indexConnections[]{
-                        connections(25,1f),
+                        connections(25,2f),
                     });
             index index25 = new index(
                     25, new indexConnections[]{}
                     );
             index index26 = new index(
                     26, new indexConnections[]{
-                        connections(27,1f),
+                        connections(27,2f),
                     });
             index index27 = new index(
                     27, new indexConnections[]{}
                     );
             index index28 = new index(
                     28, new indexConnections[]{
-                        connections(29,1f),
+                        connections(29,2f),
                     });
             index index29 = new index(
                     29, new indexConnections[]{
@@ -140,50 +140,50 @@ public class Body : MonoBehaviour
                     );
             index index31 = new index(
                     31, new indexConnections[]{
-                        connections(32,1f),
+                        connections(32,2f),
                     });
             index index32 = new index(
                     32, new indexConnections[]{}
                     );
             index index33 = new index(
                     33, new indexConnections[]{
-                        connections(15,3f)
+                        connections(15,6f)
                     });
             index index34 = new index(
                     34, new indexConnections[]{
-                        connections(16,3f)
+                        connections(16,6f)
                     });
             index index35 = new index(
                     35, new indexConnections[]{
-                        connections(7,3f)
+                        connections(7,6f)
                     });
             index index36 = new index(
                     36, new indexConnections[]{
-                        connections(8,3f)
+                        connections(8,6f)
                     });
            index index37 = new index(
                     37, new indexConnections[]{
-                        connections(21,1),
+                        connections(21,2),
                     });
             index index38 = new index(
                     38, new indexConnections[]{
-                        connections(23,1),
+                        connections(23,2),
                     });
             index index39 = new index(
                     39, new indexConnections[]{
-                        connections(31,1),
+                        connections(31,2),
                     });
             index index40 = new index(
                     40, new indexConnections[]{
-                        connections(24,1),
+                        connections(24,2),
                     });
             index index41 = new index(
                     41, new indexConnections[]{
-                        connections(26,1),
+                        connections(26,2),
                     });
             index index42 = new index(
                     42, new indexConnections[]{
-                        connections(28,1),
+                        connections(28,2),
                     });
             jointList = new List<index>{
                 index0,index1,index26,index27,index28,index29,
@@ -204,17 +204,48 @@ public class Body : MonoBehaviour
     void Start(){
         lol = new HumanBody();
         lol.fun();
-        lol.jointHierarchy(new Vector3(20,30,20));
-        // for(int i = 0; i <joints.localConnections.Length;i = i+4){
-        //     Vector3 vec = joints.localConnections[i];
-        //     print($"{i/4} : {vec}");
-        // }
+        lol.jointHierarchy(new Vector3(20,50,20));
 
-        // print(joints.localConnections[16*4]);
-        // rotate(joints,90f,33,3);
-        // invertAxis(joints,34,true,false,false);
-        // rotate(joints,-90f,34,3);
+        //Right Arm
+        lol.rotate(90f,33,3);
+        lol.rotate(-45f,15,3);
+        lol.rotate(-45f,17,3);
+        //Right Hand
+        lol.rotate(75f,37,2);
+        lol.rotate(-60f,37,1);
+        lol.rotate(25f,21,1);
 
+        lol.rotate(-60f,38,1);
+        lol.rotate(25f,23,1);
+
+        lol.rotate(-75f,39,2);
+        lol.rotate(-60f,39,1);
+        lol.rotate(25f,31,1);
+        //Right Leg
+        lol.rotate(60f,35,3);
+        lol.rotate(-60f,7,3);
+        lol.rotate(-90f,11,1);
+        
+
+        //Left Arm
+        lol.rotate(-90f,34,3);
+        lol.rotate(45f,16,3);
+        lol.rotate(45f,18,3);
+        //Right Hand
+        lol.rotate(-75f,40,2);
+        lol.rotate(-60f,40,1);
+        lol.rotate(25f,28,1);
+
+        lol.rotate(-60f,41,1);
+        lol.rotate(25f,26,1);
+
+        lol.rotate(75f,42,2);
+        lol.rotate(-60f,42,1);
+        lol.rotate(25f,24,1);
+        //Left Leg
+        lol.rotate(-60f,36,3);
+        lol.rotate(60f,8,3);
+        lol.rotate(-90f,12,1);
 
         // rotate(joints,40f,33,1);
         // rotate(joints,40f,34,1);
@@ -232,7 +263,7 @@ public class Body : MonoBehaviour
         // }
         time += Time.deltaTime;
         if (time >0.1f){
-            draw(0);
+            draw(1);
             time = 0f;
         }
     }
