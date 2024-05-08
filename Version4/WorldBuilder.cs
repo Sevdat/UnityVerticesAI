@@ -294,8 +294,8 @@ public class WorldBuilder : MonoBehaviour
         public int[][][] bodyHierarchy;
         public Vector3[] global;
         public Vector3[] local;
-        public Vector3[][] mesh ;
-        public bool[] collision;
+        public Vector3[][] mesh;
+        public int[][][] collision;
         Vector3 axisLengthX = new Vector3(3,0,0);
         Vector3 axisLengthY = new Vector3(0,3,0);
         Vector3 axisLengthZ = new Vector3(0,0,3);
@@ -510,6 +510,19 @@ public class WorldBuilder : MonoBehaviour
                 vec[index+3] = origin - VectorManipulator.vectorDirections(origin,vec[index+3]);
                 }
             }
+        }
+        public Vector3[] diagonal(
+            Vector3 origin, Vector3 point,
+            float step
+            ){
+            Vector3 direction = (point-origin)/ step;
+            int size = Mathf.RoundToInt(step+1);
+            List<Vector3> diagonalArray = new List<Vector3>();
+            for (int i = 0; i < size; i++){ 
+                diagonalArray.Add(origin+direction*i);
+                print(origin+direction*i);
+            }
+            return diagonalArray.ToArray();
         }
         public void drawLocal(bool createOrDelete){
             BitArrayManipulator.createOrDeleteObject(local,createOrDelete,4);
