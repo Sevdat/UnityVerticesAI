@@ -296,9 +296,11 @@ public class WorldBuilder : MonoBehaviour
         public Vector3[] local;
         public Vector3[][] mesh;
         public int[][][] collision;
-        Vector3 axisLengthX = new Vector3(3,0,0);
-        Vector3 axisLengthY = new Vector3(0,3,0);
-        Vector3 axisLengthZ = new Vector3(0,0,3);
+        static float length = 3;
+        Vector3 axisLengthX = new Vector3(length,0,0);
+        Vector3 axisLengthY = new Vector3(0,length,0);
+        Vector3 axisLengthZ = new Vector3(0,0,length);
+        
         public struct index {
             public int currentIndex;
             public indexConnections[] connections;
@@ -310,13 +312,49 @@ public class WorldBuilder : MonoBehaviour
         public struct indexConnections {
             public int connectedIndex;
             public float radius;
-            public indexConnections(int connectedIndex, float radius) {
+            public meshBoundry[] meshBoundry;
+            public indexConnections(int connectedIndex, float radius, meshBoundry[] meshBoundry) {
                 this.connectedIndex = connectedIndex;
                 this.radius = radius;
+                this.meshBoundry = meshBoundry;
             }
         }
-        public indexConnections connections(int connectedIndex, float radius){
-            return new indexConnections(connectedIndex,radius);
+        public indexConnections connections(int connectedIndex, float radius, meshBoundry[] meshBoundry){
+            return new indexConnections(connectedIndex,radius,meshBoundry);
+        }
+        public struct meshBoundry {
+            public boundryData firstLine;
+            public boundryData secondLine;
+            public meshBoundry(boundryData firstLine,boundryData secondLine) {
+                this.firstLine = firstLine;
+                this.secondLine = secondLine;
+            }
+        }
+        public struct boundryData {
+            public float length;
+            public float height;
+            public float width;
+            public boundryRange[] widthFromTo;
+            public boundryData(float length, float width, float height, boundryRange[] widthFromTo) {
+                this.length = length;
+                this.height = height;
+                this.width = width;
+                this.widthFromTo = widthFromTo;
+            }
+        }
+        public boundryData boundry(float length,float width, float height, boundryRange[] widthFromTo){
+            return new boundryData(length, width, height, widthFromTo);
+        }
+        public struct boundryRange{
+            public float from;
+            public float to;
+            public boundryRange(float from,float to) {
+                this.from = from;
+                this.to = to;
+            }
+        }
+        public boundryRange range(float from, float to){
+            return new boundryRange(from,to);
         }
         public void globalPoint(Vector3 point){
             global = (global==null)? 
@@ -514,16 +552,22 @@ public class WorldBuilder : MonoBehaviour
         public Vector3[] diagonal(
             Vector3 origin, Vector3 point,
             float step
-            ){
+            ){ 
+            Vector3 stepX = origin - global[1];
+            // Vector3 stepY = point - point2
+            Vector3 stepZ = origin - global[3];
+
+
+
             Vector3 direction = (point-origin)/ step;
             int size = Mathf.RoundToInt(step+1);
             List<Vector3> diagonalArray = new List<Vector3>();
             for (int i = 0; i < size; i++){ 
                 diagonalArray.Add(origin+direction*i);
-                print(origin+direction*i);
             }
             return diagonalArray.ToArray();
         }
+        
         public void drawLocal(bool createOrDelete){
             BitArrayManipulator.createOrDeleteObject(local,createOrDelete,4);
         }
