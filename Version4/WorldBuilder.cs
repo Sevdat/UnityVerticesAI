@@ -290,7 +290,7 @@ public class WorldBuilder : MonoBehaviour
 
 
     public class bodyStructure {
-        public List<index> jointList;
+        public List<Index> jointList;
         public int[][][] bodyHierarchy;
         public Vector3[] global;
         public Vector3[] local;
@@ -301,83 +301,82 @@ public class WorldBuilder : MonoBehaviour
         Vector3 axisLengthY = new Vector3(0,length,0);
         Vector3 axisLengthZ = new Vector3(0,0,length);
         
-        public struct index {
+        public struct Index {
             public int currentIndex;
-            public indexConnections[] connections;
-            public index(int currentIndex, indexConnections[] connections) {
+            public IndexConnections[] connections;
+            public Index(int currentIndex, IndexConnections[] connections) {
                 this.currentIndex = currentIndex;
                 this.connections = connections;
             }
         }
-        public struct indexConnections {
+        public Index index(int currentIndex, IndexConnections[] connections){
+            return new Index(currentIndex,connections);
+        }
+        public struct IndexConnections {
             public int connectedIndex;
             public float radius;
-            public meshData meshBoundry;
-            public indexConnections(int connectedIndex, float radius, meshData meshBoundry) {
+            public MeshStructure meshStructure;
+            public IndexConnections(int connectedIndex, float radius, MeshStructure meshStructure) {
                 this.connectedIndex = connectedIndex;
                 this.radius = radius;
-                this.meshBoundry = meshBoundry;
+                this.meshStructure = meshStructure;
             }
         }
-        public indexConnections connections(int connectedIndex, float radius, meshData meshBoundry){
-            return new indexConnections(connectedIndex,radius,meshBoundry);
+        public IndexConnections connections(int connectedIndex, float radius, MeshStructure meshStructure){
+            return new IndexConnections(connectedIndex,radius,meshStructure);
         }
-        public struct meshData{
+        public struct MeshStructure {
             public Cube drawCube;
             public Cube[] deleteFromCube;
-            public meshData(Cube drawCube,Cube[] deleteFromCube){
+            public MeshStructure(Cube drawCube, Cube[] deleteFromCube){
                 this.drawCube = drawCube;
                 this.deleteFromCube = deleteFromCube;
             }
         }
-        public struct Cube {
-            public cubeSide topCube;
-            public cubeSide bottomCube;
-            public cubeSide frontCube;
-            public cubeSide backCube;
-            public cubeSide leftCube;
-            public cubeSide rightCube;
-            public Cube(
-                cubeSide topCube, cubeSide bottomCube, 
-                cubeSide frontCube, cubeSide backCube, 
-                cubeSide leftCube, cubeSide rightCube
-                ) {
-                this.topCube = topCube;
-                this.bottomCube = bottomCube;
-                this.frontCube = frontCube;
-                this.backCube = backCube;
-                this.leftCube = leftCube;
-                this.rightCube = rightCube;
+        public struct Cube{
+            public Square upperSquare;
+            public Square lowerSquare;
+            public Cube(Square upperSquare,Square lowerSquare,Square[] deleteFromCube){
+                this.upperSquare = upperSquare;
+                this.lowerSquare = lowerSquare;
             }
         }
         public Cube cube(
-            cubeSide topCube, cubeSide bottomCube, 
-            cubeSide frontCube,cubeSide backCube,
-            cubeSide leftCube,cubeSide rightCube
+            Square upperSquare, Square lowerSquare
             ){
             return new Cube(){
-                topCube = topCube,
-                bottomCube = bottomCube,
-                frontCube = frontCube,
-                backCube = backCube,
-                leftCube = leftCube,
-                rightCube = rightCube
+                upperSquare = upperSquare,
+                lowerSquare = lowerSquare,
             };
         }
-        public struct cubeSide {
-            public float topRight;
-            public float topLeft;
-            public float bottomRight;
-            public float bottomLeft;
-            public cubeSide(float topRight, float topLeft, float bottomRight,float bottomLeft) {
-                this.topRight = topRight;
+        public struct Square {
+            public Vector3 topLeft;
+            public Vector3 topRight;
+            public Vector3 bottomLeft;
+            public Vector3 bottomRight;
+            public Square(
+            Vector3 topLeft, Vector3 topRight, 
+            Vector3 bottomLeft,Vector3 bottomRight
+                ) {
                 this.topLeft = topLeft;
-                this.bottomRight = bottomRight;
+                this.topRight = topRight;
                 this.bottomLeft = bottomLeft;
+                this.bottomRight = bottomRight;
             }
         }
-        public cubeSide side(float topRight, float topLeft, float bottomRight,float bottomLeft){
-            return new cubeSide(topRight, topLeft, bottomRight,bottomLeft);
+        public Square distanceFromCenter(
+            Vector3 topLeft, Vector3 topRight,
+            Vector3 bottomLeft, Vector3 bottomRight
+            ){
+            return new Square(){
+                topRight = topLeft,
+                topLeft = topRight,
+                bottomLeft = bottomLeft,
+                bottomRight = bottomRight,
+            };
+        }
+        public Vector3 corner(float xFromCenter, float yFromCenter, float zFromCenter){
+            return new Vector3(xFromCenter, yFromCenter, zFromCenter);
         }
         public void globalPoint(Vector3 point){
             global = (global==null)? 
@@ -423,55 +422,55 @@ public class WorldBuilder : MonoBehaviour
         }
         public void sortList(){
             int size = jointList.Count;
-            index[] sortedJointArray = new index[size];
+            Index[] sortedJointArray = new Index[size];
             for (int i = 0; i<size; i++){
-                index joint = jointList[i];
+                Index joint = jointList[i];
                 int index = joint.currentIndex;
                 sortedJointArray[index] = joint;
             }
-            jointList = new List<index>(sortedJointArray);
+            jointList = new List<Index>(sortedJointArray);
         }
         public void renumberIndex(){
             Dictionary<int,int> pairs = new Dictionary<int, int>();
             int size = jointList.Count;
-            index[] changeList = new index[jointList.Count];
+            Index[] changeList = new Index[jointList.Count];
             for (int i = 0;i<size;i++){
                 pairs.Add(jointList[i].currentIndex,i);
             }
             for (int i = 0;i<jointList.Count;i++){
-                index index = jointList[i];
+                Index index = jointList[i];
                 index.currentIndex = pairs[index.currentIndex];
                 for (int e = 0;e<index.connections.Length;e++){
-                    indexConnections connected = index.connections[e];
+                    IndexConnections connected = index.connections[e];
                     connected.connectedIndex = pairs[connected.connectedIndex];
                 }
                 changeList[i] = index;
             }
-            jointList = new List<index>(changeList);
+            jointList = new List<Index>(changeList);
         }
-        public indexConnections[][] sortedConnections(){
+        public IndexConnections[][] sortedConnections(){
             int size = jointList.Count;
-            indexConnections[][] sortedJointArray = new indexConnections[size][];
+            IndexConnections[][] sortedJointArray = new IndexConnections[size][];
             for (int i = 0; i<size; i++){
-                index joint = jointList[i];
+                Index joint = jointList[i];
                 int index = joint.currentIndex;
-                indexConnections[] connectedToIndex = joint.connections;
+                IndexConnections[] connectedToIndex = joint.connections;
                 sortedJointArray[index] = connectedToIndex;
             }
             return sortedJointArray;
         }
-        public int[][] indexHierarchy(int index,indexConnections[][] sortedJointArray,HashSet<int> search){
+        public int[][] indexHierarchy(int index,IndexConnections[][] sortedJointArray,HashSet<int> search){
             HashSet<int> setClone = new HashSet<int>(search);
-            List<indexConnections[]> activeConnections = new List<indexConnections[]>(){
+            List<IndexConnections[]> activeConnections = new List<IndexConnections[]>(){
                 sortedJointArray[index]
             };
             int axisSize = 4;
             List<int> hierarchy = new List<int>(){index*axisSize};
             while (activeConnections.Count != 0){
-                indexConnections[] connectedArray = activeConnections[0];
+                IndexConnections[] connectedArray = activeConnections[0];
                 if (connectedArray!= null){
                     for (int i = 0;i<connectedArray.Length;i++){
-                        indexConnections connection = connectedArray[i];
+                        IndexConnections connection = connectedArray[i];
                         int searchIndex = connection.connectedIndex;
                         if (setClone.Contains(searchIndex)) {
                             hierarchy.Add(searchIndex*axisSize);
@@ -486,7 +485,7 @@ public class WorldBuilder : MonoBehaviour
             setClone.CopyTo(remainder);
             return new int[][]{hierarchy.ToArray(),remainder};
         }
-        public Vector3[] createLine(Vector3 startPoint,indexConnections[][] sortedJointArray,HashSet<int> search){
+        public Vector3[] createLine(Vector3 startPoint,IndexConnections[][] sortedJointArray,HashSet<int> search){
             int size = sortedJointArray.Length;
             HashSet<int> setClone = new HashSet<int>(search);
             Vector3[] jointVectors = new Vector3[size*4];
@@ -496,10 +495,10 @@ public class WorldBuilder : MonoBehaviour
             jointVectors[3] = startPoint+axisLengthZ;
             List<int> indexList = new List<int>(){0};
             while (indexList.Count != 0){
-                indexConnections[] connectionsArray = sortedJointArray[indexList[0]];
+                IndexConnections[] connectionsArray = sortedJointArray[indexList[0]];
                 if (connectionsArray!= null){
                     for (int i = 0;i<connectionsArray.Length;i++){
-                        indexConnections connection = connectionsArray[i];
+                        IndexConnections connection = connectionsArray[i];
                         int index = connection.connectedIndex;
                         if (setClone.Contains(index)) {
                             indexList.Add(index);
@@ -518,7 +517,7 @@ public class WorldBuilder : MonoBehaviour
             return jointVectors;
         }
         public void jointHierarchy(Vector3 startPoint){
-            indexConnections[][] sortedJointArray = sortedConnections();
+            IndexConnections[][] sortedJointArray = sortedConnections();
             int size = sortedJointArray.Length;
             HashSet<int> set = createSet(size);
             int[][][] indexParts = new int[size][][];
