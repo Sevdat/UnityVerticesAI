@@ -312,49 +312,72 @@ public class WorldBuilder : MonoBehaviour
         public struct indexConnections {
             public int connectedIndex;
             public float radius;
-            public meshBoundry[] meshBoundry;
-            public indexConnections(int connectedIndex, float radius, meshBoundry[] meshBoundry) {
+            public meshData meshBoundry;
+            public indexConnections(int connectedIndex, float radius, meshData meshBoundry) {
                 this.connectedIndex = connectedIndex;
                 this.radius = radius;
                 this.meshBoundry = meshBoundry;
             }
         }
-        public indexConnections connections(int connectedIndex, float radius, meshBoundry[] meshBoundry){
+        public indexConnections connections(int connectedIndex, float radius, meshData meshBoundry){
             return new indexConnections(connectedIndex,radius,meshBoundry);
         }
-        public struct meshBoundry {
-            public boundryData firstLine;
-            public boundryData secondLine;
-            public meshBoundry(boundryData firstLine,boundryData secondLine) {
-                this.firstLine = firstLine;
-                this.secondLine = secondLine;
+        public struct meshData{
+            public Cube drawCube;
+            public Cube[] deleteFromCube;
+            public meshData(Cube drawCube,Cube[] deleteFromCube){
+                this.drawCube = drawCube;
+                this.deleteFromCube = deleteFromCube;
             }
         }
-        public struct boundryData {
-            public float length;
-            public float height;
-            public float width;
-            public boundryRange[] widthFromTo;
-            public boundryData(float length, float width, float height, boundryRange[] widthFromTo) {
-                this.length = length;
-                this.height = height;
-                this.width = width;
-                this.widthFromTo = widthFromTo;
+        public struct Cube {
+            public cubeSide topCube;
+            public cubeSide bottomCube;
+            public cubeSide frontCube;
+            public cubeSide backCube;
+            public cubeSide leftCube;
+            public cubeSide rightCube;
+            public Cube(
+                cubeSide topCube, cubeSide bottomCube, 
+                cubeSide frontCube, cubeSide backCube, 
+                cubeSide leftCube, cubeSide rightCube
+                ) {
+                this.topCube = topCube;
+                this.bottomCube = bottomCube;
+                this.frontCube = frontCube;
+                this.backCube = backCube;
+                this.leftCube = leftCube;
+                this.rightCube = rightCube;
             }
         }
-        public boundryData boundry(float length,float width, float height, boundryRange[] widthFromTo){
-            return new boundryData(length, width, height, widthFromTo);
+        public Cube cube(
+            cubeSide topCube, cubeSide bottomCube, 
+            cubeSide frontCube,cubeSide backCube,
+            cubeSide leftCube,cubeSide rightCube
+            ){
+            return new Cube(){
+                topCube = topCube,
+                bottomCube = bottomCube,
+                frontCube = frontCube,
+                backCube = backCube,
+                leftCube = leftCube,
+                rightCube = rightCube
+            };
         }
-        public struct boundryRange{
-            public float from;
-            public float to;
-            public boundryRange(float from,float to) {
-                this.from = from;
-                this.to = to;
+        public struct cubeSide {
+            public float topRight;
+            public float topLeft;
+            public float bottomRight;
+            public float bottomLeft;
+            public cubeSide(float topRight, float topLeft, float bottomRight,float bottomLeft) {
+                this.topRight = topRight;
+                this.topLeft = topLeft;
+                this.bottomRight = bottomRight;
+                this.bottomLeft = bottomLeft;
             }
         }
-        public boundryRange range(float from, float to){
-            return new boundryRange(from,to);
+        public cubeSide side(float topRight, float topLeft, float bottomRight,float bottomLeft){
+            return new cubeSide(topRight, topLeft, bottomRight,bottomLeft);
         }
         public void globalPoint(Vector3 point){
             global = (global==null)? 
