@@ -16,232 +16,488 @@ public class Body : MonoBehaviour
             index index0 = new index(
                     0, 
                     new indexConnections[]{
-                        connections(1,7f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    5,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    3,5,3, new boundryRange[]{
-                                    range(-2,2)
-                                })   
+                        connections(1,7f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
             index index1 = new index(
                     1, new indexConnections[]{
-                        connections(2,2f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(2,2f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
             index index2 = new index(
                     2, new indexConnections[]{
-                        connections(3,2f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(3,2f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
             index index3 = new index(
                     3, new indexConnections[]{
-                        connections(4,6f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(4,6f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         }),
-                        connections(33,0f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(33,0f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         }),
-                        connections(34,0f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(34,0f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
             index index4 = new index(
                     4, new indexConnections[]{
-                        connections(5,6f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(5,6f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
             index index5 = new index(
                     5, new indexConnections[]{
-                        connections(6,4f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(6,4f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
             index index6 = new index(
                     6, new indexConnections[]{
-                        connections(35,0f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(35,0f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         }),
-                        connections(36,0f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(36,0f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
             index index7 = new index(
                     7, new indexConnections[]{
-                        connections(9,6f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(9,6f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
             index index8 = new index(
                     8, new indexConnections[]{
-                        connections(10,6f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(10,6f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
             index index9 = new index(
                     9, new indexConnections[]{
-                        connections(11,6f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(11,6f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
             index index10 = new index(
                     10, new indexConnections[]{
-                        connections(12,6f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(12,6f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
             index index11 = new index(
                     11, new indexConnections[]{
-                        connections(13,6f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(13,6f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
             index index12 = new index(
                     12, new indexConnections[]{
-                        connections(14,6f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(14,6f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
@@ -253,154 +509,330 @@ public class Body : MonoBehaviour
                     );
             index index15 = new index(
                     15, new indexConnections[]{
-                        connections(17,6f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(17,6f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
             index index16 = new index(
                     16, new indexConnections[]{
-                        connections(18,6f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(18,6f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
             index index17 = new index(
                     17, new indexConnections[]{
-                        connections(19,6f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(19,6f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
             index index18 = new index(
                     18, new indexConnections[]{
-                        connections(20,6f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(20,6f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
             index index19 = new index(
                     19, new indexConnections[]{
-                        connections(37,0, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(37,0, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         }),
-                        connections(38,0, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(38,0, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         }),
-                        connections(39,0, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(39,0, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
             index index20 = new index(
                     20, new indexConnections[]{
-                        connections(40,0, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(40,0, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         }),
-                        connections(41,0, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(41,0, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         }),
-                        connections(42,0, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(42,0, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         }),
                     });
             index index21 = new index(
                     21, new indexConnections[]{
-                        connections(22,2f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(22,2f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
@@ -409,31 +841,63 @@ public class Body : MonoBehaviour
                     );  
             index index23 = new index(
                     23, new indexConnections[]{
-                        connections(30,2f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(30,2f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
             index index24 = new index(
                     24, new indexConnections[]{
-                        connections(25,2f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(25,2f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         }),
                     });
@@ -442,16 +906,32 @@ public class Body : MonoBehaviour
                     );
             index index26 = new index(
                     26, new indexConnections[]{
-                        connections(27,2f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(27,2f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         }),
                     });
@@ -460,16 +940,32 @@ public class Body : MonoBehaviour
                     );
             index index28 = new index(
                     28, new indexConnections[]{
-                        connections(29,2f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(29,2f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         }),
                     });
@@ -481,16 +977,32 @@ public class Body : MonoBehaviour
                     );
             index index31 = new index(
                     31, new indexConnections[]{
-                        connections(32,2f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(32,2f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         }),
                     });
@@ -499,151 +1011,311 @@ public class Body : MonoBehaviour
                     );
             index index33 = new index(
                     33, new indexConnections[]{
-                        connections(15,6f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(15,6f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
             index index34 = new index(
                     34, new indexConnections[]{
-                        connections(16,6f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(16,6f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
             index index35 = new index(
                     35, new indexConnections[]{
-                        connections(7,6f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(7,6f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
             index index36 = new index(
                     36, new indexConnections[]{
-                        connections(8,6f, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(8,6f, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
            index index37 = new index(
                     37, new indexConnections[]{
-                        connections(21,2, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(21,2, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
             index index38 = new index(
                     38, new indexConnections[]{
-                        connections(23,2, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(23,2, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
             index index39 = new index(
                     39, new indexConnections[]{
-                        connections(31,2, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(31,2, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
             index index40 = new index(
                     40, new indexConnections[]{
-                        connections(24,2, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(24,2, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
             index index41 = new index(
                     41, new indexConnections[]{
-                        connections(26,2, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(26,2, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
             index index42 = new index(
                     42, new indexConnections[]{
-                        connections(28,2, new meshBoundry[]{
-                            new meshBoundry(){
-                                firstLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),
-                                secondLine = boundry(
-                                    0,0,0, new boundryRange[]{
-                                    range(-2,2)
-                                }),   
+                        connections(28,2, new meshData(){
+                            drawCube = cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                            deleteFromCube = new Cube[]{
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                ),
+                                cube(
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0),
+                                    side(0,0,0,0)
+                                )
                             }
                         })
                     });
