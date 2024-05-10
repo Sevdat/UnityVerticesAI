@@ -13,1313 +13,1145 @@ public class Body : MonoBehaviour
     public HumanBody body = new HumanBody();
     public class HumanBody: WorldBuilder.bodyStructure{
         public void fun(){
-            index index0 = new index(
+            Index index0 = new Index(
                     0, 
-                    new indexConnections[]{
-                        connections(1,7f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+                    new IndexConnections[]{
+                        connections(1,7f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index1 = new index(
-                    1, new indexConnections[]{
-                        connections(2,2f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index1 = new Index(
+                    1, new IndexConnections[]{
+                        connections(2,2f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index2 = new index(
-                    2, new indexConnections[]{
-                        connections(3,2f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index2 = new Index(
+                    2, new IndexConnections[]{
+                        connections(3,2f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index3 = new index(
-                    3, new indexConnections[]{
-                        connections(4,6f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index3 = new Index(
+                    3, new IndexConnections[]{
+                        connections(4,6f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         }),
-                        connections(33,0f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+                        connections(33,0f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         }),
-                        connections(34,0f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+                        connections(34,0f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index4 = new index(
-                    4, new indexConnections[]{
-                        connections(5,6f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index4 = new Index(
+                    4, new IndexConnections[]{
+                        connections(5,6f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index5 = new index(
-                    5, new indexConnections[]{
-                        connections(6,4f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index5 = new Index(
+                    5, new IndexConnections[]{
+                        connections(6,4f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index6 = new index(
-                    6, new indexConnections[]{
-                        connections(35,0f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index6 = new Index(
+                    6, new IndexConnections[]{
+                        connections(35,0f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         }),
-                        connections(36,0f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+                        connections(36,0f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index7 = new index(
-                    7, new indexConnections[]{
-                        connections(9,6f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index7 = new Index(
+                    7, new IndexConnections[]{
+                        connections(9,6f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index8 = new index(
-                    8, new indexConnections[]{
-                        connections(10,6f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index8 = new Index(
+                    8, new IndexConnections[]{
+                        connections(10,6f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index9 = new index(
-                    9, new indexConnections[]{
-                        connections(11,6f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index9 = new Index(
+                    9, new IndexConnections[]{
+                        connections(11,6f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index10 = new index(
-                    10, new indexConnections[]{
-                        connections(12,6f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index10 = new Index(
+                    10, new IndexConnections[]{
+                        connections(12,6f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index11 = new index(
-                    11, new indexConnections[]{
-                        connections(13,6f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index11 = new Index(
+                    11, new IndexConnections[]{
+                        connections(13,6f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index12 = new index(
-                    12, new indexConnections[]{
-                        connections(14,6f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index12 = new Index(
+                    12, new IndexConnections[]{
+                        connections(14,6f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index13 = new index(
-                    13, new indexConnections[]{
+            Index index13 = new Index(
+                    13, new IndexConnections[]{
                     });
-            index index14 = new index(
-                    14, new indexConnections[]{}
+            Index index14 = new Index(
+                    14, new IndexConnections[]{}
                     );
-            index index15 = new index(
-                    15, new indexConnections[]{
-                        connections(17,6f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index15 = new Index(
+                    15, new IndexConnections[]{
+                        connections(17,6f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index16 = new index(
-                    16, new indexConnections[]{
-                        connections(18,6f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index16 = new Index(
+                    16, new IndexConnections[]{
+                        connections(18,6f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index17 = new index(
-                    17, new indexConnections[]{
-                        connections(19,6f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index17 = new Index(
+                    17, new IndexConnections[]{
+                        connections(19,6f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index18 = new index(
-                    18, new indexConnections[]{
-                        connections(20,6f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index18 = new Index(
+                    18, new IndexConnections[]{
+                        connections(20,6f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index19 = new index(
-                    19, new indexConnections[]{
-                        connections(37,0, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index19 = new Index(
+                    19, new IndexConnections[]{
+                        connections(37,0, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         }),
-                        connections(38,0, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+                        connections(38,0, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         }),
-                        connections(39,0, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+                        connections(39,0, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index20 = new index(
-                    20, new indexConnections[]{
-                        connections(40,0, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index20 = new Index(
+                    20, new IndexConnections[]{
+                        connections(40,0, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         }),
-                        connections(41,0, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+                        connections(41,0, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         }),
-                        connections(42,0, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+                        connections(42,0, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         }),
                     });
-            index index21 = new index(
-                    21, new indexConnections[]{
-                        connections(22,2f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index21 = new Index(
+                    21, new IndexConnections[]{
+                        connections(22,2f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index22 = new index(
-                    22, new indexConnections[]{}
+            Index index22 = new Index(
+                    22, new IndexConnections[]{}
                     );  
-            index index23 = new index(
-                    23, new indexConnections[]{
-                        connections(30,2f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index23 = new Index(
+                    23, new IndexConnections[]{
+                        connections(30,2f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index24 = new index(
-                    24, new indexConnections[]{
-                        connections(25,2f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index24 = new Index(
+                    24, new IndexConnections[]{
+                        connections(25,2f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         }),
                     });
-            index index25 = new index(
-                    25, new indexConnections[]{}
+            Index index25 = new Index(
+                    25, new IndexConnections[]{}
                     );
-            index index26 = new index(
-                    26, new indexConnections[]{
-                        connections(27,2f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index26 = new Index(
+                    26, new IndexConnections[]{
+                        connections(27,2f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         }),
                     });
-            index index27 = new index(
-                    27, new indexConnections[]{}
+            Index index27 = new Index(
+                    27, new IndexConnections[]{}
                     );
-            index index28 = new index(
-                    28, new indexConnections[]{
-                        connections(29,2f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index28 = new Index(
+                    28, new IndexConnections[]{
+                        connections(29,2f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         }),
                     });
-            index index29 = new index(
-                    29, new indexConnections[]{
+            Index index29 = new Index(
+                    29, new IndexConnections[]{
                     });
-            index index30 = new index(
-                    30, new indexConnections[]{}
+            Index index30 = new Index(
+                    30, new IndexConnections[]{}
                     );
-            index index31 = new index(
-                    31, new indexConnections[]{
-                        connections(32,2f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index31 = new Index(
+                    31, new IndexConnections[]{
+                        connections(32,2f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         }),
                     });
-            index index32 = new index(
-                    32, new indexConnections[]{}
+            Index index32 = new Index(
+                    32, new IndexConnections[]{}
                     );
-            index index33 = new index(
-                    33, new indexConnections[]{
-                        connections(15,6f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index33 = new Index(
+                    33, new IndexConnections[]{
+                        connections(15,6f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index34 = new index(
-                    34, new indexConnections[]{
-                        connections(16,6f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index34 = new Index(
+                    34, new IndexConnections[]{
+                        connections(16,6f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index35 = new index(
-                    35, new indexConnections[]{
-                        connections(7,6f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index35 = new Index(
+                    35, new IndexConnections[]{
+                        connections(7,6f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index36 = new index(
-                    36, new indexConnections[]{
-                        connections(8,6f, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index36 = new Index(
+                    36, new IndexConnections[]{
+                        connections(8,6f, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-           index index37 = new index(
-                    37, new indexConnections[]{
-                        connections(21,2, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+           Index index37 = new Index(
+                    37, new IndexConnections[]{
+                        connections(21,2, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index38 = new index(
-                    38, new indexConnections[]{
-                        connections(23,2, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index38 = new Index(
+                    38, new IndexConnections[]{
+                        connections(23,2, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index39 = new index(
-                    39, new indexConnections[]{
-                        connections(31,2, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index39 = new Index(
+                    39, new IndexConnections[]{
+                        connections(31,2, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index40 = new index(
-                    40, new indexConnections[]{
-                        connections(24,2, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index40 = new Index(
+                    40, new IndexConnections[]{
+                        connections(24,2, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index41 = new index(
-                    41, new indexConnections[]{
-                        connections(26,2, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index41 = new Index(
+                    41, new IndexConnections[]{
+                        connections(26,2, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            index index42 = new index(
-                    42, new indexConnections[]{
-                        connections(28,2, new meshData(){
-                            drawCube = cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
+            Index index42 = new Index(
+                    42, new IndexConnections[]{
+                        connections(28,2, new MeshStructure(){
+                            drawCube = new Cube(){
+                                upperSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                lowerSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
                             deleteFromCube = new Cube[]{
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                ),
-                                cube(
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0),
-                                    side(0,0,0,0)
-                                )
+                                new Cube(){
+                                    upperSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    lowerSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
                             }
                         })
                     });
-            jointList = new List<index>{
+            jointList = new List<Index>{
                 index0,index1,index26,index27,index28,index29,
                 index30,index31,index32,index2,index3,index4,
                 index5,index6,index17,index18,index19,
