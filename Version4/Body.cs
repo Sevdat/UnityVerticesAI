@@ -16,1141 +16,1289 @@ public class Body : MonoBehaviour
             Index index0 = new Index(
                     0, 
                     new IndexConnections[]{
-                        connections(1,7f, new MeshStructure(){
+                        connections(1,7f)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
-                                    corner(0,0,0),corner(0,0,0),
-                                    corner(0,0,0),corner(0,0,0)
+                                frontSquare = distanceFromCenter(
+                                    corner(-3,3,3),corner(3,3,3),
+                                    corner(-3,-3,3),corner(3,-3,3)
                                     ),
-                                lowerSquare = distanceFromCenter(
-                                    corner(0,0,0),corner(0,0,0),
-                                    corner(0,0,0),corner(0,0,0)
+                                backSquare = distanceFromCenter(
+                                    corner(-3,3,-3),corner(3,3,-3),
+                                    corner(-3,-3,-3),corner(3,-3,-3)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                    );
             Index index1 = new Index(
-                    1, new IndexConnections[]{
-                        connections(2,2f, new MeshStructure(){
+                    1, 
+                    new IndexConnections[]{
+                        connections(2,2f)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                    );
             Index index2 = new Index(
-                    2, new IndexConnections[]{
-                        connections(3,2f, new MeshStructure(){
+                    2, 
+                    new IndexConnections[]{
+                        connections(3,2f)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                    );
             Index index3 = new Index(
-                    3, new IndexConnections[]{
-                        connections(4,6f, new MeshStructure(){
+                    3, 
+                    new IndexConnections[]{
+                        connections(4,6f),
+                        connections(33,0f),
+                        connections(34,0f)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        }),
-                        connections(33,0f, new MeshStructure(){
-                            drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
-                                    corner(0,0,0),corner(0,0,0),
-                                    corner(0,0,0),corner(0,0,0)
-                                    ),
-                                lowerSquare = distanceFromCenter(
-                                    corner(0,0,0),corner(0,0,0),
-                                    corner(0,0,0),corner(0,0,0)
-                                    )
-                            },
-                            deleteFromCube = new Cube[]{
-                                new Cube(){
-                                    upperSquare = distanceFromCenter(
-                                        corner(0,0,0),corner(0,0,0),
-                                        corner(0,0,0),corner(0,0,0)
-                                        ),
-                                    lowerSquare = distanceFromCenter(
-                                        corner(0,0,0),corner(0,0,0),
-                                        corner(0,0,0),corner(0,0,0)
-                                        )
-                                }
-                            }
-                        }),
-                        connections(34,0f, new MeshStructure(){
-                            drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
-                                    corner(0,0,0),corner(0,0,0),
-                                    corner(0,0,0),corner(0,0,0)
-                                    ),
-                                lowerSquare = distanceFromCenter(
-                                    corner(0,0,0),corner(0,0,0),
-                                    corner(0,0,0),corner(0,0,0)
-                                    )
-                            },
-                            deleteFromCube = new Cube[]{
-                                new Cube(){
-                                    upperSquare = distanceFromCenter(
-                                        corner(0,0,0),corner(0,0,0),
-                                        corner(0,0,0),corner(0,0,0)
-                                        ),
-                                    lowerSquare = distanceFromCenter(
-                                        corner(0,0,0),corner(0,0,0),
-                                        corner(0,0,0),corner(0,0,0)
-                                        )
-                                }
-                            }
-                        })
-                    });
+                        }
+                    );
             Index index4 = new Index(
-                    4, new IndexConnections[]{
-                        connections(5,6f, new MeshStructure(){
+                    4, 
+                    new IndexConnections[]{
+                        connections(5,6f)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                    );
             Index index5 = new Index(
-                    5, new IndexConnections[]{
-                        connections(6,4f, new MeshStructure(){
+                    5, 
+                    new IndexConnections[]{
+                        connections(6,4f)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                    );
             Index index6 = new Index(
-                    6, new IndexConnections[]{
-                        connections(35,0f, new MeshStructure(){
+                    6, 
+                    new IndexConnections[]{
+                        connections(35,0f),
+                        connections(36,0f)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        }),
-                        connections(36,0f, new MeshStructure(){
-                            drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
-                                    corner(0,0,0),corner(0,0,0),
-                                    corner(0,0,0),corner(0,0,0)
-                                    ),
-                                lowerSquare = distanceFromCenter(
-                                    corner(0,0,0),corner(0,0,0),
-                                    corner(0,0,0),corner(0,0,0)
-                                    )
-                            },
-                            deleteFromCube = new Cube[]{
-                                new Cube(){
-                                    upperSquare = distanceFromCenter(
-                                        corner(0,0,0),corner(0,0,0),
-                                        corner(0,0,0),corner(0,0,0)
-                                        ),
-                                    lowerSquare = distanceFromCenter(
-                                        corner(0,0,0),corner(0,0,0),
-                                        corner(0,0,0),corner(0,0,0)
-                                        )
-                                }
-                            }
-                        })
-                    });
+                        }
+                        );
             Index index7 = new Index(
-                    7, new IndexConnections[]{
-                        connections(9,6f, new MeshStructure(){
+                    7, 
+                    new IndexConnections[]{
+                        connections(9,6f)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                        );
             Index index8 = new Index(
-                    8, new IndexConnections[]{
-                        connections(10,6f, new MeshStructure(){
+                    8, 
+                    new IndexConnections[]{
+                        connections(10,6f)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                    );
             Index index9 = new Index(
-                    9, new IndexConnections[]{
-                        connections(11,6f, new MeshStructure(){
+                    9, 
+                    new IndexConnections[]{
+                        connections(11,6f)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                    );
             Index index10 = new Index(
-                    10, new IndexConnections[]{
-                        connections(12,6f, new MeshStructure(){
+                    10, 
+                    new IndexConnections[]{
+                        connections(12,6f)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                    );
             Index index11 = new Index(
-                    11, new IndexConnections[]{
-                        connections(13,6f, new MeshStructure(){
+                    11, 
+                    new IndexConnections[]{
+                        connections(13,6f)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                    );
             Index index12 = new Index(
-                    12, new IndexConnections[]{
-                        connections(14,6f, new MeshStructure(){
+                    12, 
+                    new IndexConnections[]{
+                        connections(14,6f)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                    );
             Index index13 = new Index(
-                    13, new IndexConnections[]{
-                    });
+                    13, 
+                    new IndexConnections[]{
+                    }, 
+                    new MeshStructure(){
+                            drawCube = new Cube(){
+                                frontSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                backSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
+                            deleteFromCube = new Cube[]{
+                                new Cube(){
+                                    frontSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    backSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
+                            }
+                        });
             Index index14 = new Index(
-                    14, new IndexConnections[]{}
+                    14, 
+                    new IndexConnections[]{
+                    }, 
+                    new MeshStructure(){
+                            drawCube = new Cube(){
+                                frontSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                backSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
+                            deleteFromCube = new Cube[]{
+                                new Cube(){
+                                    frontSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    backSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
+                            }
+                        }
                     );
             Index index15 = new Index(
-                    15, new IndexConnections[]{
-                        connections(17,6f, new MeshStructure(){
+                    15, 
+                    new IndexConnections[]{
+                        connections(17,6f)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                    );
             Index index16 = new Index(
-                    16, new IndexConnections[]{
-                        connections(18,6f, new MeshStructure(){
+                    16, 
+                    new IndexConnections[]{
+                        connections(18,6f)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                    );
             Index index17 = new Index(
-                    17, new IndexConnections[]{
-                        connections(19,6f, new MeshStructure(){
+                    17, 
+                    new IndexConnections[]{
+                        connections(19,6f)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                    );
             Index index18 = new Index(
-                    18, new IndexConnections[]{
-                        connections(20,6f, new MeshStructure(){
+                    18, 
+                    new IndexConnections[]{
+                        connections(20,6f)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                    );
             Index index19 = new Index(
-                    19, new IndexConnections[]{
-                        connections(37,0, new MeshStructure(){
+                    19, 
+                    new IndexConnections[]{
+                        connections(37,0),
+                        connections(38,0),
+                        connections(39,0)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        }),
-                        connections(38,0, new MeshStructure(){
-                            drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
-                                    corner(0,0,0),corner(0,0,0),
-                                    corner(0,0,0),corner(0,0,0)
-                                    ),
-                                lowerSquare = distanceFromCenter(
-                                    corner(0,0,0),corner(0,0,0),
-                                    corner(0,0,0),corner(0,0,0)
-                                    )
-                            },
-                            deleteFromCube = new Cube[]{
-                                new Cube(){
-                                    upperSquare = distanceFromCenter(
-                                        corner(0,0,0),corner(0,0,0),
-                                        corner(0,0,0),corner(0,0,0)
-                                        ),
-                                    lowerSquare = distanceFromCenter(
-                                        corner(0,0,0),corner(0,0,0),
-                                        corner(0,0,0),corner(0,0,0)
-                                        )
-                                }
-                            }
-                        }),
-                        connections(39,0, new MeshStructure(){
-                            drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
-                                    corner(0,0,0),corner(0,0,0),
-                                    corner(0,0,0),corner(0,0,0)
-                                    ),
-                                lowerSquare = distanceFromCenter(
-                                    corner(0,0,0),corner(0,0,0),
-                                    corner(0,0,0),corner(0,0,0)
-                                    )
-                            },
-                            deleteFromCube = new Cube[]{
-                                new Cube(){
-                                    upperSquare = distanceFromCenter(
-                                        corner(0,0,0),corner(0,0,0),
-                                        corner(0,0,0),corner(0,0,0)
-                                        ),
-                                    lowerSquare = distanceFromCenter(
-                                        corner(0,0,0),corner(0,0,0),
-                                        corner(0,0,0),corner(0,0,0)
-                                        )
-                                }
-                            }
-                        })
-                    });
+                        }
+                    );
             Index index20 = new Index(
-                    20, new IndexConnections[]{
-                        connections(40,0, new MeshStructure(){
+                    20, 
+                    new IndexConnections[]{
+                        connections(40,0),
+                        connections(41,0),
+                        connections(42,0),
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        }),
-                        connections(41,0, new MeshStructure(){
-                            drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
-                                    corner(0,0,0),corner(0,0,0),
-                                    corner(0,0,0),corner(0,0,0)
-                                    ),
-                                lowerSquare = distanceFromCenter(
-                                    corner(0,0,0),corner(0,0,0),
-                                    corner(0,0,0),corner(0,0,0)
-                                    )
-                            },
-                            deleteFromCube = new Cube[]{
-                                new Cube(){
-                                    upperSquare = distanceFromCenter(
-                                        corner(0,0,0),corner(0,0,0),
-                                        corner(0,0,0),corner(0,0,0)
-                                        ),
-                                    lowerSquare = distanceFromCenter(
-                                        corner(0,0,0),corner(0,0,0),
-                                        corner(0,0,0),corner(0,0,0)
-                                        )
-                                }
-                            }
-                        }),
-                        connections(42,0, new MeshStructure(){
-                            drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
-                                    corner(0,0,0),corner(0,0,0),
-                                    corner(0,0,0),corner(0,0,0)
-                                    ),
-                                lowerSquare = distanceFromCenter(
-                                    corner(0,0,0),corner(0,0,0),
-                                    corner(0,0,0),corner(0,0,0)
-                                    )
-                            },
-                            deleteFromCube = new Cube[]{
-                                new Cube(){
-                                    upperSquare = distanceFromCenter(
-                                        corner(0,0,0),corner(0,0,0),
-                                        corner(0,0,0),corner(0,0,0)
-                                        ),
-                                    lowerSquare = distanceFromCenter(
-                                        corner(0,0,0),corner(0,0,0),
-                                        corner(0,0,0),corner(0,0,0)
-                                        )
-                                }
-                            }
-                        }),
-                    });
+                        }
+                    );
             Index index21 = new Index(
-                    21, new IndexConnections[]{
-                        connections(22,2f, new MeshStructure(){
+                    21, 
+                    new IndexConnections[]{
+                        connections(22,2f)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                    );
             Index index22 = new Index(
-                    22, new IndexConnections[]{}
+                    22, new IndexConnections[]{
+                    }, 
+                    new MeshStructure(){
+                            drawCube = new Cube(){
+                                frontSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                backSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
+                            deleteFromCube = new Cube[]{
+                                new Cube(){
+                                    frontSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    backSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
+                            }
+                        }
                     );  
             Index index23 = new Index(
-                    23, new IndexConnections[]{
-                        connections(30,2f, new MeshStructure(){
+                    23, 
+                    new IndexConnections[]{
+                        connections(30,2f)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                    );
             Index index24 = new Index(
-                    24, new IndexConnections[]{
-                        connections(25,2f, new MeshStructure(){
+                    24, 
+                    new IndexConnections[]{
+                        connections(25,2f),
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        }),
-                    });
+                        }
+                    );
             Index index25 = new Index(
-                    25, new IndexConnections[]{}
+                    25, 
+                    new IndexConnections[]{
+                    }, 
+                    new MeshStructure(){
+                            drawCube = new Cube(){
+                                frontSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                backSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
+                            deleteFromCube = new Cube[]{
+                                new Cube(){
+                                    frontSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    backSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
+                            }
+                        }
                     );
             Index index26 = new Index(
                     26, new IndexConnections[]{
-                        connections(27,2f, new MeshStructure(){
+                        connections(27,2f),
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        }),
-                    });
+                        }
+                    );
             Index index27 = new Index(
-                    27, new IndexConnections[]{}
+                    27, 
+                    new IndexConnections[]{
+                    },
+                    new MeshStructure(){
+                            drawCube = new Cube(){
+                                frontSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                backSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
+                            deleteFromCube = new Cube[]{
+                                new Cube(){
+                                    frontSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    backSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
+                            }
+                        }
                     );
             Index index28 = new Index(
-                    28, new IndexConnections[]{
-                        connections(29,2f, new MeshStructure(){
+                    28, 
+                    new IndexConnections[]{
+                        connections(29,2f),
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        }),
-                    });
+                        }
+                    );
             Index index29 = new Index(
-                    29, new IndexConnections[]{
-                    });
+                    29, 
+                    new IndexConnections[]{
+                    }, 
+                    new MeshStructure(){
+                            drawCube = new Cube(){
+                                frontSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                backSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
+                            deleteFromCube = new Cube[]{
+                                new Cube(){
+                                    frontSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    backSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
+                            }
+                        }
+                    );
             Index index30 = new Index(
-                    30, new IndexConnections[]{}
+                    30, 
+                    new IndexConnections[]{
+                    }, 
+                    new MeshStructure(){
+                            drawCube = new Cube(){
+                                frontSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                backSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
+                            deleteFromCube = new Cube[]{
+                                new Cube(){
+                                    frontSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    backSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
+                            }
+                        }
                     );
             Index index31 = new Index(
-                    31, new IndexConnections[]{
-                        connections(32,2f, new MeshStructure(){
+                    31, 
+                    new IndexConnections[]{
+                        connections(32,2f),
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        }),
-                    });
+                        }
+                    );
             Index index32 = new Index(
-                    32, new IndexConnections[]{}
+                    32, 
+                    new IndexConnections[]{
+                    }, 
+                    new MeshStructure(){
+                            drawCube = new Cube(){
+                                frontSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    ),
+                                backSquare = distanceFromCenter(
+                                    corner(0,0,0),corner(0,0,0),
+                                    corner(0,0,0),corner(0,0,0)
+                                    )
+                            },
+                            deleteFromCube = new Cube[]{
+                                new Cube(){
+                                    frontSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        ),
+                                    backSquare = distanceFromCenter(
+                                        corner(0,0,0),corner(0,0,0),
+                                        corner(0,0,0),corner(0,0,0)
+                                        )
+                                }
+                            }
+                        }
                     );
             Index index33 = new Index(
-                    33, new IndexConnections[]{
-                        connections(15,6f, new MeshStructure(){
+                    33, 
+                    new IndexConnections[]{
+                        connections(15,6f)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                    );
             Index index34 = new Index(
-                    34, new IndexConnections[]{
-                        connections(16,6f, new MeshStructure(){
+                    34, 
+                    new IndexConnections[]{
+                        connections(16,6f)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                    );
             Index index35 = new Index(
-                    35, new IndexConnections[]{
-                        connections(7,6f, new MeshStructure(){
+                    35, 
+                    new IndexConnections[]{
+                        connections(7,6f)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                    );
             Index index36 = new Index(
-                    36, new IndexConnections[]{
-                        connections(8,6f, new MeshStructure(){
+                    36, 
+                    new IndexConnections[]{
+                        connections(8,6f)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                    );
            Index index37 = new Index(
-                    37, new IndexConnections[]{
-                        connections(21,2, new MeshStructure(){
+                    37, 
+                    new IndexConnections[]{
+                        connections(21,2)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                    );
             Index index38 = new Index(
-                    38, new IndexConnections[]{
-                        connections(23,2, new MeshStructure(){
+                    38, 
+                    new IndexConnections[]{
+                        connections(23,2)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                    );
             Index index39 = new Index(
-                    39, new IndexConnections[]{
-                        connections(31,2, new MeshStructure(){
+                    39, 
+                    new IndexConnections[]{
+                        connections(31,2)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                    );
             Index index40 = new Index(
-                    40, new IndexConnections[]{
-                        connections(24,2, new MeshStructure(){
+                    40, 
+                    new IndexConnections[]{
+                        connections(24,2)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                    );
             Index index41 = new Index(
-                    41, new IndexConnections[]{
-                        connections(26,2, new MeshStructure(){
+                    41, 
+                    new IndexConnections[]{
+                        connections(26,2)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                    );
             Index index42 = new Index(
-                    42, new IndexConnections[]{
-                        connections(28,2, new MeshStructure(){
+                    42, 
+                    new IndexConnections[]{
+                        connections(28,2)
+                    }, 
+                    new MeshStructure(){
                             drawCube = new Cube(){
-                                upperSquare = distanceFromCenter(
+                                frontSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     ),
-                                lowerSquare = distanceFromCenter(
+                                backSquare = distanceFromCenter(
                                     corner(0,0,0),corner(0,0,0),
                                     corner(0,0,0),corner(0,0,0)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    upperSquare = distanceFromCenter(
+                                    frontSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         ),
-                                    lowerSquare = distanceFromCenter(
+                                    backSquare = distanceFromCenter(
                                         corner(0,0,0),corner(0,0,0),
                                         corner(0,0,0),corner(0,0,0)
                                         )
                                 }
                             }
-                        })
-                    });
+                        }
+                    );
             jointList = new List<Index>{
                 index0,index1,index26,index27,index28,index29,
                 index30,index31,index32,index2,index3,index4,
