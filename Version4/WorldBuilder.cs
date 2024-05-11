@@ -304,26 +304,26 @@ public class WorldBuilder : MonoBehaviour
         public struct Index {
             public int currentIndex;
             public IndexConnections[] connections;
-            public Index(int currentIndex, IndexConnections[] connections) {
+            public MeshStructure meshStructure;
+            public Index(int currentIndex, IndexConnections[] connections, MeshStructure meshStructure) {
                 this.currentIndex = currentIndex;
                 this.connections = connections;
+                this.meshStructure = meshStructure;
             }
         }
-        public Index index(int currentIndex, IndexConnections[] connections){
-            return new Index(currentIndex,connections);
+        public Index index(int currentIndex, IndexConnections[] connections, MeshStructure meshStructure) {
+            return new Index(currentIndex,connections,meshStructure);
         }
         public struct IndexConnections {
             public int connectedIndex;
             public float radius;
-            public MeshStructure meshStructure;
-            public IndexConnections(int connectedIndex, float radius, MeshStructure meshStructure) {
+            public IndexConnections(int connectedIndex, float radius) {
                 this.connectedIndex = connectedIndex;
                 this.radius = radius;
-                this.meshStructure = meshStructure;
             }
         }
-        public IndexConnections connections(int connectedIndex, float radius, MeshStructure meshStructure){
-            return new IndexConnections(connectedIndex,radius,meshStructure);
+        public IndexConnections connections(int connectedIndex, float radius){
+            return new IndexConnections(connectedIndex,radius);
         }
         public struct MeshStructure {
             public Cube drawCube;
@@ -334,19 +334,19 @@ public class WorldBuilder : MonoBehaviour
             }
         }
         public struct Cube{
-            public Square upperSquare;
-            public Square lowerSquare;
-            public Cube(Square upperSquare,Square lowerSquare,Square[] deleteFromCube){
-                this.upperSquare = upperSquare;
-                this.lowerSquare = lowerSquare;
+            public Square frontSquare;
+            public Square backSquare;
+            public Cube(Square frontSquare,Square backSquare){
+                this.frontSquare = frontSquare;
+                this.backSquare = backSquare;
             }
         }
         public Cube cube(
             Square upperSquare, Square lowerSquare
             ){
             return new Cube(){
-                upperSquare = upperSquare,
-                lowerSquare = lowerSquare,
+                frontSquare = upperSquare,
+                backSquare = lowerSquare,
             };
         }
         public struct Square {
@@ -355,14 +355,14 @@ public class WorldBuilder : MonoBehaviour
             public Vector3 bottomLeft;
             public Vector3 bottomRight;
             public Square(
-            Vector3 topLeft, Vector3 topRight, 
-            Vector3 bottomLeft,Vector3 bottomRight
-                ) {
-                this.topLeft = topLeft;
-                this.topRight = topRight;
-                this.bottomLeft = bottomLeft;
-                this.bottomRight = bottomRight;
-            }
+                Vector3 topLeft, Vector3 topRight, 
+                Vector3 bottomLeft,Vector3 bottomRight
+                    ) {
+                    this.topLeft = topLeft;
+                    this.topRight = topRight;
+                    this.bottomLeft = bottomLeft;
+                    this.bottomRight = bottomRight;
+                }
         }
         public Square distanceFromCenter(
             Vector3 topLeft, Vector3 topRight,
@@ -571,16 +571,23 @@ public class WorldBuilder : MonoBehaviour
                 }
             }
         }
+        public Vector3[] meshGeneration(
+            float step
+            ){ 
+            Index connection = jointList[0];
+            int index = connection.currentIndex*4;   
+            MeshStructure meshData = connection.meshStructure;
+            Vector3 origin = local[index]; 
+            Vector3 stepX = origin - local[index+1];
+            Vector3 stepY = origin - local[index+2];
+            Vector3 stepZ = origin - local[index+3];
+
+            return new Vector3[]{};
+        }
         public Vector3[] diagonal(
             Vector3 origin, Vector3 point,
             float step
             ){ 
-            Vector3 stepX = origin - global[1];
-            // Vector3 stepY = point - point2
-            Vector3 stepZ = origin - global[3];
-
-
-
             Vector3 direction = (point-origin)/ step;
             int size = Mathf.RoundToInt(step+1);
             List<Vector3> diagonalArray = new List<Vector3>();
