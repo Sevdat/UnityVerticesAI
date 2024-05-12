@@ -585,10 +585,21 @@ public class WorldBuilder : MonoBehaviour
             Index connection = jointList[0];
             int index = connection.currentIndex*4;   
             MeshStructure meshData = connection.meshStructure;
+
             Vector3 origin = local[index]; 
             Vector3 stepX = origin - local[index+1];
             Vector3 stepY = origin - local[index+2];
             Vector3 stepZ = origin - local[index+3];
+
+            Vector3 a = origin + meshData.drawCube.frontSquare.topLeft;
+            Vector3 b = origin + meshData.drawCube.frontSquare.topRight;
+            Vector3 c = origin + meshData.drawCube.frontSquare.bottomLeft;
+            Vector3 d = origin + meshData.drawCube.frontSquare.bottomRight;
+
+            Vector3 e = origin + meshData.drawCube.frontSquare.topLeft;
+            Vector3 f = origin + meshData.drawCube.frontSquare.topRight;
+            Vector3 g = origin + meshData.drawCube.frontSquare.bottomLeft;
+            Vector3 h = origin + meshData.drawCube.frontSquare.bottomRight;
 
             return new Vector3[]{};
         }
