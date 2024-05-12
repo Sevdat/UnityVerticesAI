@@ -587,9 +587,9 @@ public class WorldBuilder : MonoBehaviour
             MeshStructure meshData = connection.meshStructure;
 
             Vector3 origin = local[currentIndex]; 
-            Vector3 stepX = origin - local[currentIndex+1];
-            Vector3 stepY = origin - local[currentIndex+2];
-            Vector3 stepZ = origin - local[currentIndex+3];
+            Vector3 stepX = local[currentIndex+1]-origin;
+            Vector3 stepY = local[currentIndex+2]-origin;
+            Vector3 stepZ = local[currentIndex+3]-origin;
 
             Vector3 backTopLeft = meshData.drawCube.frontSquare.topLeft;
             Vector3 backTopRight = meshData.drawCube.frontSquare.topRight;
