@@ -197,6 +197,14 @@ public class WorldBuilder : MonoBehaviour
             );
             return radius;
         }
+        public static float stepsNeeded(Vector3 vectorDirections){
+            double step = Math.Cbrt(
+                Mathf.Pow(vectorDirections.x,2.0f)+
+                Mathf.Pow(vectorDirections.y,2.0f)+
+                Mathf.Pow(vectorDirections.z,2.0f)
+            );
+            return (float)step;
+        }
         public static Vector3 crossVector(Vector3 a,Vector3 b){
             Vector3 perpendicular = new Vector3(){
                 x = a.y * b.z - a.z * b.y,
@@ -584,12 +592,15 @@ public class WorldBuilder : MonoBehaviour
 
             return new Vector3[]{};
         }
-        public Vector3[] diagonal(
-            Vector3 origin, Vector3 point,
-            float step
+
+        public Vector3[] fillInbetween(
+            Vector3 origin, Vector3 point
             ){ 
+            float step = VectorManipulator.vectorRadius(
+                VectorManipulator.vectorDirections(origin,point)
+            );
             Vector3 direction = (point-origin)/ step;
-            int size = Mathf.RoundToInt(step+1);
+            int size = (int)step;
             List<Vector3> diagonalArray = new List<Vector3>();
             for (int i = 0; i < size; i++){ 
                 diagonalArray.Add(origin+direction*i);
