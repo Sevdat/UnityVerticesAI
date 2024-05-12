@@ -580,26 +580,58 @@ public class WorldBuilder : MonoBehaviour
             }
         }
         public Vector3[] meshGeneration(
-            float step
+            int index
             ){ 
-            Index connection = jointList[0];
-            int index = connection.currentIndex*4;   
+            Index connection = jointList[index];
+            int currentIndex = connection.currentIndex*4;   
             MeshStructure meshData = connection.meshStructure;
 
-            Vector3 origin = local[index]; 
-            Vector3 stepX = origin - local[index+1];
-            Vector3 stepY = origin - local[index+2];
-            Vector3 stepZ = origin - local[index+3];
+            Vector3 origin = local[currentIndex]; 
+            Vector3 stepX = origin - local[currentIndex+1];
+            Vector3 stepY = origin - local[currentIndex+2];
+            Vector3 stepZ = origin - local[currentIndex+3];
 
-            Vector3 a = origin + meshData.drawCube.frontSquare.topLeft;
-            Vector3 b = origin + meshData.drawCube.frontSquare.topRight;
-            Vector3 c = origin + meshData.drawCube.frontSquare.bottomLeft;
-            Vector3 d = origin + meshData.drawCube.frontSquare.bottomRight;
+            Vector3 backTopLeft = meshData.drawCube.frontSquare.topLeft;
+            Vector3 backTopRight = meshData.drawCube.frontSquare.topRight;
+            Vector3 backBottomLeft = meshData.drawCube.frontSquare.bottomLeft;
+            Vector3 backBottomRight = meshData.drawCube.frontSquare.bottomRight;
 
-            Vector3 e = origin + meshData.drawCube.frontSquare.topLeft;
-            Vector3 f = origin + meshData.drawCube.frontSquare.topRight;
-            Vector3 g = origin + meshData.drawCube.frontSquare.bottomLeft;
-            Vector3 h = origin + meshData.drawCube.frontSquare.bottomRight;
+            Vector3 frontTopLeft = meshData.drawCube.frontSquare.topLeft;
+            Vector3 frontTopRight = meshData.drawCube.frontSquare.topRight;
+            Vector3 frontBottomLeft = meshData.drawCube.frontSquare.bottomLeft;
+            Vector3 frontBottomRight = meshData.drawCube.frontSquare.bottomRight;
+
+            Vector3 a = origin + backTopLeft.x*stepX 
+                               + backTopLeft.y*stepY 
+                               + backTopLeft.z*stepZ;
+
+            Vector3 b = origin + backTopRight.x*stepX 
+                               + backTopRight.y*stepY 
+                               + backTopRight.z*stepZ;
+
+            Vector3 c = origin + backBottomLeft.x*stepX 
+                               + backBottomLeft.y*stepY 
+                               + backBottomLeft.z*stepZ;
+
+            Vector3 d = origin + backBottomRight.x*stepX 
+                               + backBottomRight.y*stepY 
+                               + backBottomRight.z*stepZ;
+
+            Vector3 e = origin + frontTopLeft.x*stepX 
+                               + frontTopLeft.y*stepY 
+                               + frontTopLeft.z*stepZ;
+
+            Vector3 f = origin + frontTopRight.x*stepX 
+                               + frontTopRight.y*stepY 
+                               + frontTopRight.z*stepZ;
+
+            Vector3 g = origin + frontBottomLeft.x*stepX 
+                               + frontBottomLeft.y*stepY 
+                               + frontBottomLeft.z*stepZ;
+
+            Vector3 h = origin + frontBottomRight.x*stepX 
+                               + frontBottomRight.y*stepY 
+                               + frontBottomRight.z*stepZ;
 
             Vector3 ae = e-a;
             Vector3 bf = f-b;
