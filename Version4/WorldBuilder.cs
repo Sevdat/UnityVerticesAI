@@ -601,6 +601,14 @@ public class WorldBuilder : MonoBehaviour
             Vector3 g = origin + meshData.drawCube.frontSquare.bottomLeft;
             Vector3 h = origin + meshData.drawCube.frontSquare.bottomRight;
 
+            Vector3 ae = e-a;
+            Vector3 bf = f-b;
+
+            Vector3 ac = c-a;
+            Vector3 bd = d-b;
+            Vector3 eg = g-e;
+            Vector3 fh = h-f;
+
             return new Vector3[]{};
         }
 
