@@ -1363,7 +1363,7 @@ public class Body : MonoBehaviour
         bod = new Vector3[]{
             new Vector3(25,11,-70)
         };
-        body.diagonal(new Vector3(5,10,-20),new Vector3(25,11,70),10);
+                WorldBuilder.BitArrayManipulator.createOrDeleteObject(body.fillInbetween(new Vector3(5,5,5),new Vector3(10,10,10)),true,1);
     }
 
     float time = 0;
