@@ -166,16 +166,21 @@ public class WorldBuilder : MonoBehaviour
             int z = boundry(pos.z, dimensionZ);
             return new Vector3Int(x,y,z);
         }
+        public static Vector3Int intVecInArray(float x,float y,float z){
+            return setVectorInBoundry(
+                    new Vector3Int(
+                        Mathf.RoundToInt(x),
+                        Mathf.RoundToInt(y),
+                        Mathf.RoundToInt(z)
+                    )
+                    );
+        }
         public static void createOrDeleteObject(
             Vector3[] obj, bool create,int step
             ){ 
             for (int i = 0; i < obj.Length; i += step){
-                Vector3Int vector = setVectorInBoundry(
-                    new Vector3Int(
-                        Mathf.RoundToInt(obj[i].x),
-                        Mathf.RoundToInt(obj[i].y),
-                        Mathf.RoundToInt(obj[i].z)
-                    )
+                Vector3Int vector = intVecInArray(
+                    obj[i].x, obj[i].y, obj[i].z
                     );
                 createOrDelete(vector,create);
             }
@@ -579,7 +584,7 @@ public class WorldBuilder : MonoBehaviour
                 }
             }
         }
-        public Vector3[] meshGeneration(
+        public Dictionary<int,Vector3> meshGeneration(
             int index
             ){ 
             Index connection = jointList[index];
@@ -591,10 +596,10 @@ public class WorldBuilder : MonoBehaviour
             Vector3 stepY = local[currentIndex+2]-origin;
             Vector3 stepZ = local[currentIndex+3]-origin;
 
-            Vector3 backTopLeft = meshData.drawCube.frontSquare.topLeft;
-            Vector3 backTopRight = meshData.drawCube.frontSquare.topRight;
-            Vector3 backBottomLeft = meshData.drawCube.frontSquare.bottomLeft;
-            Vector3 backBottomRight = meshData.drawCube.frontSquare.bottomRight;
+            Vector3 backTopLeft = meshData.drawCube.backSquare.topLeft;
+            Vector3 backTopRight = meshData.drawCube.backSquare.topRight;
+            Vector3 backBottomLeft = meshData.drawCube.backSquare.bottomLeft;
+            Vector3 backBottomRight = meshData.drawCube.backSquare.bottomRight;
 
             Vector3 frontTopLeft = meshData.drawCube.frontSquare.topLeft;
             Vector3 frontTopRight = meshData.drawCube.frontSquare.topRight;
@@ -633,15 +638,76 @@ public class WorldBuilder : MonoBehaviour
                                + frontBottomRight.y*stepY 
                                + frontBottomRight.z*stepZ;
 
-            Vector3 ae = e-a;
-            Vector3 bf = f-b;
+            Vector3 ac = VectorManipulator.vectorDirections(a,c);
+            Vector3 bd = VectorManipulator.vectorDirections(b,d);
+            Vector3 eg = VectorManipulator.vectorDirections(e,g);
+            Vector3 fh = VectorManipulator.vectorDirections(f,h);
 
-            Vector3 ac = c-a;
-            Vector3 bd = d-b;
-            Vector3 eg = g-e;
-            Vector3 fh = h-f;
+            float stepAC = VectorManipulator.vectorRadius(ac);
+            float stepBD = VectorManipulator.vectorRadius(bd);
+            float stepEG = VectorManipulator.vectorRadius(eg);
+            float stepFH = VectorManipulator.vectorRadius(fh);
 
-            return new Vector3[]{};
+            ac /= stepAC;
+            bd /= stepBD;
+            eg /= stepEG;
+            fh /= stepFH;
+
+            int countAC = 0;  int limitAC = (int)stepAC;
+            int countBD = 0;  int limitBD = (int)stepBD;
+            int countEG = 0;  int limitEG = (int)stepEG;
+            int countFH = 0;  int limitFH = (int)stepFH;
+            
+            Dictionary<int,Vector3> search = new Dictionary<int,Vector3>();
+            while (
+                countAC != limitAC && countBD!=limitBD &&
+                countEG != limitEG && countFH!=limitFH
+                ){
+                Vector3 ae = VectorManipulator.vectorDirections(
+                    a+ac*countAC,
+                    e+eg*countEG
+                    );
+                Vector3 bf = VectorManipulator.vectorDirections(
+                    b+bd*countBD,
+                    f+fh*countFH
+                    );
+                float stepAE = VectorManipulator.vectorRadius(ae);
+                float stepBF = VectorManipulator.vectorRadius(bf);
+                print($"{e+eg*countEG}: {stepAE} :{ac}");
+                ae /= stepAE;
+                bf /= stepBF;
+                int countAE = 0;  int limitAE = (int)stepAE;
+                int countBF = 0;  int limitBF = (int)stepBF;
+                while(countAE != limitAE && countBF != limitBF){
+                    Vector3[] keys = fillInbetween(
+                        a+ae*countAE,
+                        b+bf*countBF
+                        );
+                    for (int i = 0; i<keys.Length;i++){
+                        Vector3 vec = keys[i];
+                        Vector3Int intVec = 
+                            BitArrayManipulator.intVecInArray(
+                                    vec.x,vec.y,vec.z
+                                    );
+                        int key = BitArrayManipulator.vecToInt(
+                                intVec.x,intVec.y,intVec.z
+                                );
+                        if (!search.ContainsKey(key)){
+                            search.Add(key,vec);
+                        }
+                    }
+
+                    if (countAE<limitAE){countAE++;}
+                    if (countBF<limitBF){countBF++;}
+                }
+                
+                if (countAC<limitAC){countAC++;}
+                if (countBD<limitBD){countBD++;}
+                if (countAC<limitEG){countEG++;}
+                if (countBD<limitFH){countFH++;}
+            }
+            
+            return search;
         }
 
         public Vector3[] fillInbetween(
