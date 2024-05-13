@@ -309,7 +309,7 @@ public class WorldBuilder : MonoBehaviour
         public Vector3[] local;
         public Vector3[][] mesh;
         public int[][][] collision;
-        static float length = 3;
+        static float length = 1;
         Vector3 axisLengthX = new Vector3(length,0,0);
         Vector3 axisLengthY = new Vector3(0,length,0);
         Vector3 axisLengthZ = new Vector3(0,0,length);
@@ -657,7 +657,7 @@ public class WorldBuilder : MonoBehaviour
             int countBD = 0;  int limitBD = (int)stepBD;
             int countEG = 0;  int limitEG = (int)stepEG;
             int countFH = 0;  int limitFH = (int)stepFH;
-            
+            print($"{a} {b}");
             Dictionary<int,Vector3> search = new Dictionary<int,Vector3>();
             while (
                 countAC != limitAC && countBD!=limitBD &&
@@ -673,7 +673,6 @@ public class WorldBuilder : MonoBehaviour
                     );
                 float stepAE = VectorManipulator.vectorRadius(ae);
                 float stepBF = VectorManipulator.vectorRadius(bf);
-                print($"{e+eg*countEG}: {stepAE} :{ac}");
                 ae /= stepAE;
                 bf /= stepBF;
                 int countAE = 0;  int limitAE = (int)stepAE;
