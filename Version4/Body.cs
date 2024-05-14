@@ -21,23 +21,23 @@ public class Body : MonoBehaviour
                     new MeshStructure(){
                             drawCube = new Cube(){
                                 frontSquare = distanceFromCenter(
-                                    corner(-3,3,3),corner(3,3,3),
-                                    corner(-3,-3,3),corner(3,-3,3)
+                                    corner(-10,10,10),corner(10,10,10),
+                                    corner(-10,-10,10),corner(10,-10,10)
                                     ),
                                 backSquare = distanceFromCenter(
-                                    corner(-3,3,-3),corner(3,3,-3),
-                                    corner(-3,-3,-3),corner(3,-3,-3)
+                                    corner(-10,10,-10),corner(10,10,-10),
+                                    corner(-10,-10,-10),corner(10,-10,-10)
                                     )
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                    frontSquare = distanceFromCenter(
-                                        corner(0,0,0),corner(0,0,0),
-                                        corner(0,0,0),corner(0,0,0)
-                                        ),
-                                    backSquare = distanceFromCenter(
-                                        corner(0,0,0),corner(0,0,0),
-                                        corner(0,0,0),corner(0,0,0)
+                                frontSquare = distanceFromCenter(
+                                    corner(-3,3,10),corner(3,3,10),
+                                    corner(-3,-3,10),corner(3,-3,10)
+                                    ),
+                                backSquare = distanceFromCenter(
+                                    corner(-3,3,-10),corner(3,3,-10),
+                                    corner(-3,-3,-10),corner(3,-3,-10)
                                         )
                                 }
                             }
@@ -1315,6 +1315,12 @@ public class Body : MonoBehaviour
     }
 
     void Start(){
+        // int con = 0;
+        // int con2 = 5;
+        // while(con != con2){
+        //     con++;
+        //     print(con);
+        // }
         body = new HumanBody();
         body.fun();
         Vector3 startPoint = new Vector3(20,50,20);
@@ -1360,10 +1366,16 @@ public class Body : MonoBehaviour
         body.rotateLocal(-60f,36,3,false);
         body.rotateLocal(60f,8,3,false);
         body.rotateLocal(-90f,12,1,false);
+
         bod = new Vector3[]{
             new Vector3(25,11,-70)
         };
-                WorldBuilder.BitArrayManipulator.createOrDeleteObject(body.fillInbetween(new Vector3(5,5,5),new Vector3(10,10,10)),true,1);
+        // body.rotateLocal(-90f,0,1,false);
+        draw(0);
+        // Vector3[] meshBody = new List<Vector3>(body.meshGeneration(0).Values).ToArray();
+        // meshBody = WorldBuilder.Movement.rotateObject(-90f,body.local[0],meshBody,body.local[1]);
+        // WorldBuilder.BitArrayManipulator.createOrDeleteObject(meshBody,true,1);
+        body.meshGeneration(0);
     }
 
     float time = 0;
@@ -1375,11 +1387,11 @@ public class Body : MonoBehaviour
         //         jointList
         //         );
         // }
-        time += Time.deltaTime;
-        if (time >0.01f){
-            draw(0);
-            time = 0f;
-        }
+        // time += Time.deltaTime;
+        // if (time >0.01f){
+        //     draw(0);
+        //     time = 0f;
+        // }
     }
     public void draw(int choice){
 
