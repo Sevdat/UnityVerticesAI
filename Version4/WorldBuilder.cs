@@ -584,28 +584,39 @@ public class WorldBuilder : MonoBehaviour
                 }
             }
         }
-        public Dictionary<int,Vector3> meshGeneration(
+        public void meshGeneration(
             int index
             ){ 
             Index connection = jointList[index];
             int currentIndex = connection.currentIndex*4;   
             MeshStructure meshData = connection.meshStructure;
+            Cube createMesh = meshData.drawCube;
+            Cube[] deleteMesh = meshData.deleteFromCube;
 
             Vector3 origin = local[currentIndex]; 
             Vector3 stepX = local[currentIndex+1]-origin;
             Vector3 stepY = local[currentIndex+2]-origin;
             Vector3 stepZ = local[currentIndex+3]-origin;
-            print($"{stepX} {stepY} {stepZ}");
 
-            Vector3 backTopLeft = meshData.drawCube.backSquare.topLeft;
-            Vector3 backTopRight = meshData.drawCube.backSquare.topRight;
-            Vector3 backBottomLeft = meshData.drawCube.backSquare.bottomLeft;
-            Vector3 backBottomRight = meshData.drawCube.backSquare.bottomRight;
+            Dictionary<int,Vector3> mainMesh = 
+                cubeGeneration(createMesh,origin,stepX,stepY,stepZ);
+                
+            Vector3[] meshBody = new List<Vector3>(mainMesh.Values).ToArray();
+            BitArrayManipulator.createOrDeleteObject(meshBody,true,1);
+        }
+        public Dictionary<int,Vector3> cubeGeneration(
+            Cube cube,Vector3 origin,
+            Vector3 stepX,Vector3 stepY,Vector3 stepZ
+            ){
+            Vector3 backTopLeft = cube.backSquare.topLeft;
+            Vector3 backTopRight = cube.backSquare.topRight;
+            Vector3 backBottomLeft = cube.backSquare.bottomLeft;
+            Vector3 backBottomRight = cube.backSquare.bottomRight;
 
-            Vector3 frontTopLeft = meshData.drawCube.frontSquare.topLeft;
-            Vector3 frontTopRight = meshData.drawCube.frontSquare.topRight;
-            Vector3 frontBottomLeft = meshData.drawCube.frontSquare.bottomLeft;
-            Vector3 frontBottomRight = meshData.drawCube.frontSquare.bottomRight;
+            Vector3 frontTopLeft = cube.frontSquare.topLeft;
+            Vector3 frontTopRight = cube.frontSquare.topRight;
+            Vector3 frontBottomLeft = cube.frontSquare.bottomLeft;
+            Vector3 frontBottomRight = cube.frontSquare.bottomRight;
 
             Vector3 a = origin + backTopLeft.x*stepX 
                                + backTopLeft.y*stepY 
@@ -678,9 +689,9 @@ public class WorldBuilder : MonoBehaviour
                 if (stepAE != 0.0f) ae /= stepAE;
                 if (stepBF != 0.0f) bf /= stepBF;
 
-                int countAE = 0;  int limitAE = (int)stepAE;
-                int countBF = 0;  int limitBF = (int)stepBF;
-                int maxAEBF = (limitAC>limitBD)?limitAC+1:limitBD+1;
+                int countAE = 0;  int limitAE = (int)Mathf.Abs(stepAE);
+                int countBF = 0;  int limitBF = (int)Mathf.Abs(stepBF);
+                int maxAEBF = (limitAE>limitBF)?limitAE+1:limitBF+1;
                 int maxCount = 0;
                 while(maxCount != maxAEBF){
                     Vector3[] keys = fillInbetween(
@@ -713,7 +724,6 @@ public class WorldBuilder : MonoBehaviour
             }
             return search;
         }
-
         public Vector3[] fillInbetween(
             Vector3 origin, Vector3 point
             ){ 
@@ -721,7 +731,7 @@ public class WorldBuilder : MonoBehaviour
                 VectorManipulator.vectorDirections(origin,point)
             );
             Vector3 direction = (point-origin)/ step;
-            int size = (int)step;
+            int size = (int)step+1;
             List<Vector3> diagonalArray = new List<Vector3>();
             for (int i = 0; i < size; i++){ 
                 diagonalArray.Add(origin+direction*i);
