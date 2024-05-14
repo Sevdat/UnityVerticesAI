@@ -382,8 +382,8 @@ public class WorldBuilder : MonoBehaviour
             Vector3 bottomLeft, Vector3 bottomRight
             ){
             return new Square(){
-                topRight = topLeft,
-                topLeft = topRight,
+                topRight = topRight,
+                topLeft = topLeft,
                 bottomLeft = bottomLeft,
                 bottomRight = bottomRight,
             };
@@ -595,6 +595,7 @@ public class WorldBuilder : MonoBehaviour
             Vector3 stepX = local[currentIndex+1]-origin;
             Vector3 stepY = local[currentIndex+2]-origin;
             Vector3 stepZ = local[currentIndex+3]-origin;
+            print($"{stepX} {stepY} {stepZ}");
 
             Vector3 backTopLeft = meshData.drawCube.backSquare.topLeft;
             Vector3 backTopRight = meshData.drawCube.backSquare.topRight;
@@ -642,6 +643,7 @@ public class WorldBuilder : MonoBehaviour
             Vector3 bd = VectorManipulator.vectorDirections(b,d);
             Vector3 eg = VectorManipulator.vectorDirections(e,g);
             Vector3 fh = VectorManipulator.vectorDirections(f,h);
+            print($"{backTopLeft.x} {backBottomLeft.x}");
 
             float stepAC = VectorManipulator.vectorRadius(ac);
             float stepBD = VectorManipulator.vectorRadius(bd);
@@ -675,12 +677,13 @@ public class WorldBuilder : MonoBehaviour
                 float stepBF = VectorManipulator.vectorRadius(bf);
                 ae /= stepAE;
                 bf /= stepBF;
+
                 int countAE = 0;  int limitAE = (int)stepAE;
                 int countBF = 0;  int limitBF = (int)stepBF;
                 while(countAE != limitAE && countBF != limitBF){
                     Vector3[] keys = fillInbetween(
-                        a+ae*countAE,
-                        b+bf*countBF
+                        a+ae*countAE+ac*countAC,
+                        b+bf*countBF+bd*countBD
                         );
                     for (int i = 0; i<keys.Length;i++){
                         Vector3 vec = keys[i];
