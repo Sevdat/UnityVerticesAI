@@ -291,7 +291,7 @@ public class WorldBuilder : MonoBehaviour
             float alpha, Vector3 origin,Vector3[] point,Vector3 rotationAxis
             ){
             int size = point.Length;
-            Vector4 angledAxis = QuaternionClass.angledAxis(alpha,rotationAxis);
+            Vector4 angledAxis = QuaternionClass.angledAxis(alpha,rotationAxis-origin);
             Vector3[] rotatedVec = new Vector3[size];
             for (int i = 0; i < size; i++){
                 Vector3 vec = QuaternionClass.rotate(origin,point[i],angledAxis);
