@@ -600,9 +600,27 @@ public class WorldBuilder : MonoBehaviour
 
             Dictionary<int,Vector3> mainMesh = 
                 cubeGeneration(createMesh,origin,stepX,stepY,stepZ);
-                
-            Vector3[] meshBody = new List<Vector3>(mainMesh.Values).ToArray();
-            BitArrayManipulator.createOrDeleteObject(meshBody,true,1);
+            
+            for (int i = 0; i<deleteMesh.Length;i++){
+                Vector3[] deleteFromMesh = 
+                    new List<Vector3>(cubeGeneration(deleteMesh[i],origin,stepX,stepY,stepZ).Values).ToArray();
+                    for (int j =0;j<deleteFromMesh.Length;j++){
+                        Vector3 vec = deleteFromMesh[j];
+                        Vector3Int intVec = 
+                            BitArrayManipulator.intVecInArray(
+                                    vec.x,vec.y,vec.z
+                                    );
+                        int key = BitArrayManipulator.vecToInt(
+                                intVec.x,intVec.y,intVec.z
+                                );
+                        if (mainMesh.ContainsKey(key)){
+                            mainMesh.Remove(key);
+                        }
+                    }
+            }
+            BitArrayManipulator.createOrDeleteObject(
+                new List<Vector3>(mainMesh.Values).ToArray(),true,1
+                );
         }
         public Dictionary<int,Vector3> cubeGeneration(
             Cube cube,Vector3 origin,
