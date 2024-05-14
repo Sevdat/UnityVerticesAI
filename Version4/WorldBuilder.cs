@@ -657,7 +657,7 @@ public class WorldBuilder : MonoBehaviour
             int countBD = 0;  int limitBD = (int)stepBD;
             int countEG = 0;  int limitEG = (int)stepEG;
             int countFH = 0;  int limitFH = (int)stepFH;
-            print($"{a} {b}");
+            int count = 0;
             Dictionary<int,Vector3> search = new Dictionary<int,Vector3>();
             while (
                 countAC != limitAC && countBD!=limitBD &&
@@ -695,17 +695,18 @@ public class WorldBuilder : MonoBehaviour
                             search.Add(key,vec);
                         }
                     }
-
+                    count++;
                     if (countAE<limitAE){countAE++;}
                     if (countBF<limitBF){countBF++;}
                 }
                 
                 if (countAC<limitAC){countAC++;}
                 if (countBD<limitBD){countBD++;}
-                if (countAC<limitEG){countEG++;}
-                if (countBD<limitFH){countFH++;}
+                if (countEG<limitEG){countEG++;}
+                if (countFH<limitFH){countFH++;}
             }
-            
+            print(search.Count);
+            print(count);
             return search;
         }
 
