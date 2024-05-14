@@ -643,28 +643,27 @@ public class WorldBuilder : MonoBehaviour
             Vector3 bd = VectorManipulator.vectorDirections(b,d);
             Vector3 eg = VectorManipulator.vectorDirections(e,g);
             Vector3 fh = VectorManipulator.vectorDirections(f,h);
-            print($"{backTopLeft.x} {backBottomLeft.x}");
 
             float stepAC = VectorManipulator.vectorRadius(ac);
             float stepBD = VectorManipulator.vectorRadius(bd);
             float stepEG = VectorManipulator.vectorRadius(eg);
             float stepFH = VectorManipulator.vectorRadius(fh);
+            
+            if (stepAC != 0.0f) ac /= stepAC;
+            if (stepBD != 0.0f) bd /= stepBD;
+            if (stepEG != 0.0f) eg /= stepEG;
+            if (stepFH != 0.0f) fh /= stepFH;
 
-            ac /= stepAC;
-            bd /= stepBD;
-            eg /= stepEG;
-            fh /= stepFH;
-
-            int countAC = 0;  int limitAC = (int)stepAC;
-            int countBD = 0;  int limitBD = (int)stepBD;
-            int countEG = 0;  int limitEG = (int)stepEG;
-            int countFH = 0;  int limitFH = (int)stepFH;
+            int countAC = 0;  int limitAC = (int)Mathf.Abs(stepAC);
+            int countBD = 0;  int limitBD = (int)Mathf.Abs(stepBD);
+            int countEG = 0;  int limitEG = (int)Mathf.Abs(stepEG);
+            int countFH = 0;  int limitFH = (int)Mathf.Abs(stepFH);
+            int maxACBD = (limitAC>limitBD)?limitAC:limitBD;
+            int maxEGFH = (limitEG>limitFH)?limitEG:limitFH;
+            int maxLimitCount = (maxACBD>maxEGFH)?maxACBD+1:maxEGFH+1;
             int count = 0;
             Dictionary<int,Vector3> search = new Dictionary<int,Vector3>();
-            while (
-                countAC != limitAC && countBD!=limitBD &&
-                countEG != limitEG && countFH!=limitFH
-                ){
+            while (count!=maxLimitCount){
                 Vector3 ae = VectorManipulator.vectorDirections(
                     a+ac*countAC,
                     e+eg*countEG
@@ -673,18 +672,22 @@ public class WorldBuilder : MonoBehaviour
                     b+bd*countBD,
                     f+fh*countFH
                     );
+
                 float stepAE = VectorManipulator.vectorRadius(ae);
                 float stepBF = VectorManipulator.vectorRadius(bf);
-                ae /= stepAE;
-                bf /= stepBF;
+                if (stepAE != 0.0f) ae /= stepAE;
+                if (stepBF != 0.0f) bf /= stepBF;
 
                 int countAE = 0;  int limitAE = (int)stepAE;
                 int countBF = 0;  int limitBF = (int)stepBF;
-                while(countAE != limitAE && countBF != limitBF){
+                int maxAEBF = (limitAC>limitBD)?limitAC+1:limitBD+1;
+                int maxCount = 0;
+                while(maxCount != maxAEBF){
                     Vector3[] keys = fillInbetween(
                         a+ae*countAE+ac*countAC,
                         b+bf*countBF+bd*countBD
                         );
+
                     for (int i = 0; i<keys.Length;i++){
                         Vector3 vec = keys[i];
                         Vector3Int intVec = 
@@ -698,18 +701,16 @@ public class WorldBuilder : MonoBehaviour
                             search.Add(key,vec);
                         }
                     }
-                    count++;
+                    maxCount++;
                     if (countAE<limitAE){countAE++;}
                     if (countBF<limitBF){countBF++;}
                 }
-                
+                count++;
                 if (countAC<limitAC){countAC++;}
                 if (countBD<limitBD){countBD++;}
                 if (countEG<limitEG){countEG++;}
                 if (countFH<limitFH){countFH++;}
             }
-            print(search.Count);
-            print(count);
             return search;
         }
 
