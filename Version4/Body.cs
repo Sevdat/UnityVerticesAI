@@ -31,14 +31,22 @@ public class Body : MonoBehaviour
                             },
                             deleteFromCube = new Cube[]{
                                 new Cube(){
-                                frontSquare = distanceFromCenter(
-                                    corner(-3,3,10),corner(3,3,10),
-                                    corner(-3,-3,10),corner(3,-3,10)
-                                    ),
-                                backSquare = distanceFromCenter(
-                                    corner(-3,3,-10),corner(3,3,-10),
-                                    corner(-3,-3,-10),corner(3,-3,-10)
-                                        )
+                                    frontSquare = distanceFromCenter(
+                                        corner(-3,3,10),corner(3,3,10),
+                                        corner(-3,-3,10),corner(3,-3,10)
+                                        ),
+                                    backSquare = distanceFromCenter(
+                                        corner(-3,3,-10),corner(3,3,-10),
+                                        corner(-3,-3,-10),corner(3,-3,-10)
+                                            ),
+                                    rotateCube = new RotateCube[]{
+                                        rotateCube(
+                                            30,
+                                            corner(0,0,0),
+                                            corner(1,0,0),
+                                            true
+                                            )
+                                    }
                                 }
                             }
                         }
