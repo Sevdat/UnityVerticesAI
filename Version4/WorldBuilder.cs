@@ -285,22 +285,6 @@ public class WorldBuilder : MonoBehaviour
             return rotatedVec;
         }
     }
-    
-    public static class Movement{
-        public static Vector3[] rotateObject(
-            float alpha, Vector3 origin,Vector3[] point,Vector3 rotationAxis
-            ){
-            int size = point.Length;
-            Vector4 angledAxis = QuaternionClass.angledAxis(alpha,rotationAxis-origin);
-            Vector3[] rotatedVec = new Vector3[size];
-            for (int i = 0; i < size; i++){
-                Vector3 vec = QuaternionClass.rotate(origin,point[i],angledAxis);
-                rotatedVec[i] = vec;
-                }
-            return rotatedVec;
-        }
-    }
-
 
     public class bodyStructure {
         public List<Index> jointList;
@@ -349,9 +333,11 @@ public class WorldBuilder : MonoBehaviour
         public struct Cube{
             public Square frontSquare;
             public Square backSquare;
-            public Cube(Square frontSquare,Square backSquare){
+            public RotateCube[] rotateCube;
+            public Cube(Square frontSquare,Square backSquare,RotateCube[] rotateCube){
                 this.frontSquare = frontSquare;
                 this.backSquare = backSquare;
+                this.rotateCube = rotateCube;
             }
         }
         public Cube cube(
@@ -360,6 +346,26 @@ public class WorldBuilder : MonoBehaviour
             return new Cube(){
                 frontSquare = upperSquare,
                 backSquare = lowerSquare,
+            };
+        }
+        public struct RotateCube {
+            public float angle;
+            public Vector3 origin;
+            public Vector3 rotationCorner;
+            public bool dictionary;
+            public RotateCube(float angle, Vector3 origin, Vector3 rotationCorner, bool dictionary){
+                this.angle = angle;
+                this.origin = origin;
+                this.rotationCorner = rotationCorner;
+                this.dictionary = dictionary;
+            }
+        }
+        public RotateCube rotateCube(float angle, Vector3 origin, Vector3 rotationCorner, bool dictionary){
+            return new RotateCube(){
+                angle = angle,
+                origin = origin,
+                rotationCorner = rotationCorner,
+                dictionary = dictionary
             };
         }
         public struct Square {
@@ -584,6 +590,57 @@ public class WorldBuilder : MonoBehaviour
                 }
             }
         }
+        public Vector3[] rotateVectors(
+            float alpha, Vector3 origin,Vector3[] points,Vector3 rotationAxis
+            ){
+            int size = points.Length;
+            Vector4 angledAxis = QuaternionClass.angledAxis(alpha,rotationAxis);
+            Vector3[] rotatedVec = new Vector3[size];
+            for (int i = 0; i < size; i++){
+                Vector3 vec = QuaternionClass.rotate(origin,points[i],angledAxis);
+                rotatedVec[i] = vec;
+                }
+            return rotatedVec;
+        }
+        public void dictionaryFilter(Dictionary<int,Vector3> dictionary,Vector3[] keys, bool addOrRemove){
+            if (addOrRemove){
+                for (int i =0;i<keys.Length;i++){
+                    Vector3 vec = keys[i];
+                    Vector3Int intVec = 
+                        BitArrayManipulator.intVecInArray(
+                                vec.x,vec.y,vec.z
+                                );
+                    int key = BitArrayManipulator.vecToInt(
+                            intVec.x,intVec.y,intVec.z
+                            );
+                        if (!dictionary.ContainsKey(key)){
+                            dictionary.Add(key,vec);
+                        }
+                }
+            } else {
+                for (int i =0;i<keys.Length;i++){
+                    Vector3 vec = keys[i];
+                    Vector3Int intVec = 
+                        BitArrayManipulator.intVecInArray(
+                                vec.x,vec.y,vec.z
+                                );
+                    int key = BitArrayManipulator.vecToInt(
+                            intVec.x,intVec.y,intVec.z
+                            );
+                    if (dictionary.ContainsKey(key)){
+                        dictionary.Remove(key);
+                    }
+                }
+            }
+        }
+        public Vector3 angledCoordinates(
+            Vector3 origin, Vector3 point,
+            Vector3 stepX, Vector3 stepY, Vector3 stepZ
+            ){
+            return origin + point.x*stepX 
+                          + point.y*stepY 
+                          + point.z*stepZ;
+        }
         public void meshGeneration(
             int index
             ){ 
@@ -591,7 +648,7 @@ public class WorldBuilder : MonoBehaviour
             int currentIndex = connection.currentIndex*4;   
             MeshStructure meshData = connection.meshStructure;
             Cube createMesh = meshData.drawCube;
-            Cube[] deleteMesh = meshData.deleteFromCube;
+            Cube[] deletionArray = meshData.deleteFromCube;
 
             Vector3 origin = local[currentIndex]; 
             Vector3 stepX = local[currentIndex+1]-origin;
@@ -601,21 +658,21 @@ public class WorldBuilder : MonoBehaviour
             Dictionary<int,Vector3> mainMesh = 
                 cubeGeneration(createMesh,origin,stepX,stepY,stepZ);
             
-            for (int i = 0; i<deleteMesh.Length;i++){
-                Vector3[] deleteFromMesh = 
-                    new List<Vector3>(cubeGeneration(deleteMesh[i],origin,stepX,stepY,stepZ).Values).ToArray();
-                    for (int j =0;j<deleteFromMesh.Length;j++){
-                        Vector3 vec = deleteFromMesh[j];
-                        Vector3Int intVec = 
-                            BitArrayManipulator.intVecInArray(
-                                    vec.x,vec.y,vec.z
-                                    );
-                        int key = BitArrayManipulator.vecToInt(
-                                intVec.x,intVec.y,intVec.z
-                                );
-                        if (mainMesh.ContainsKey(key)){
-                            mainMesh.Remove(key);
-                        }
+            for (int i = 0; i<deletionArray.Length;i++){
+                Cube deleteCube = deletionArray[i];
+                Vector3[] cubeVectors = 
+                    new List<Vector3>(cubeGeneration(deletionArray[i],origin,stepX,stepY,stepZ).Values).ToArray();
+                RotateCube[] rotation = deleteCube.rotateCube;
+                    for (int j = 0;j<rotation.Length;j++){
+                        RotateCube rotationData = rotation[j];
+                        Vector3 cubeOrigin = origin + rotationData.origin;
+                        cubeVectors = rotateVectors(
+                            -90,
+                            cubeOrigin,
+                            cubeVectors,
+                            rotationData.rotationCorner
+                            );
+                        if (rotationData.dictionary) dictionaryFilter(mainMesh,cubeVectors,false);
                     }
             }
             BitArrayManipulator.createOrDeleteObject(
@@ -636,37 +693,21 @@ public class WorldBuilder : MonoBehaviour
             Vector3 frontBottomLeft = cube.frontSquare.bottomLeft;
             Vector3 frontBottomRight = cube.frontSquare.bottomRight;
 
-            Vector3 a = origin + backTopLeft.x*stepX 
-                               + backTopLeft.y*stepY 
-                               + backTopLeft.z*stepZ;
+            Vector3 a = angledCoordinates(origin,backTopLeft,stepX,stepY,stepZ);
 
-            Vector3 b = origin + backTopRight.x*stepX 
-                               + backTopRight.y*stepY 
-                               + backTopRight.z*stepZ;
+            Vector3 b = angledCoordinates(origin,backTopRight,stepX,stepY,stepZ);
 
-            Vector3 c = origin + backBottomLeft.x*stepX 
-                               + backBottomLeft.y*stepY 
-                               + backBottomLeft.z*stepZ;
+            Vector3 c = angledCoordinates(origin,backBottomLeft,stepX,stepY,stepZ);
 
-            Vector3 d = origin + backBottomRight.x*stepX 
-                               + backBottomRight.y*stepY 
-                               + backBottomRight.z*stepZ;
+            Vector3 d = angledCoordinates(origin,backBottomRight,stepX,stepY,stepZ);
 
-            Vector3 e = origin + frontTopLeft.x*stepX 
-                               + frontTopLeft.y*stepY 
-                               + frontTopLeft.z*stepZ;
+            Vector3 e = angledCoordinates(origin,frontTopLeft,stepX,stepY,stepZ);
 
-            Vector3 f = origin + frontTopRight.x*stepX 
-                               + frontTopRight.y*stepY 
-                               + frontTopRight.z*stepZ;
+            Vector3 f = angledCoordinates(origin,frontTopRight,stepX,stepY,stepZ);
 
-            Vector3 g = origin + frontBottomLeft.x*stepX 
-                               + frontBottomLeft.y*stepY 
-                               + frontBottomLeft.z*stepZ;
+            Vector3 g = angledCoordinates(origin,frontBottomLeft,stepX,stepY,stepZ);
 
-            Vector3 h = origin + frontBottomRight.x*stepX 
-                               + frontBottomRight.y*stepY 
-                               + frontBottomRight.z*stepZ;
+            Vector3 h = angledCoordinates(origin,frontBottomRight,stepX,stepY,stepZ);
 
             Vector3 ac = VectorManipulator.vectorDirections(a,c);
             Vector3 bd = VectorManipulator.vectorDirections(b,d);
@@ -716,20 +757,7 @@ public class WorldBuilder : MonoBehaviour
                         a+ae*countAE+ac*countAC,
                         b+bf*countBF+bd*countBD
                         );
-
-                    for (int i = 0; i<keys.Length;i++){
-                        Vector3 vec = keys[i];
-                        Vector3Int intVec = 
-                            BitArrayManipulator.intVecInArray(
-                                    vec.x,vec.y,vec.z
-                                    );
-                        int key = BitArrayManipulator.vecToInt(
-                                intVec.x,intVec.y,intVec.z
-                                );
-                        if (!search.ContainsKey(key)){
-                            search.Add(key,vec);
-                        }
-                    }
+                    dictionaryFilter(search,keys,true);
                     maxCount++;
                     if (countAE<limitAE){countAE++;}
                     if (countBF<limitBF){countBF++;}
