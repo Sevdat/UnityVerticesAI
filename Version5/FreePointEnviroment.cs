@@ -11,44 +11,34 @@ public class FreePointEnviroment : MonoBehaviour
     // Start is called before the first frame update
 
     public struct Body{
-    public List<Path> pathList;
-    public List<CollisionPath> collisionList;
+        public Dictionary<Vector3Int,List<bodyInfo>> pathDictionary;
+    }
+    public struct bodyInfo{
+        public Path pathData;
+        public CollisionPath collisionData;
     }
     public struct Path{
-        public string fullPath;
-        public string lastPath;
+        public string fullPath,lastPath,cloneNum;
     }
-    public Path path(string fullPath,string lastPath){
+    public Path path(string fullPath,string lastPath,string cloneNum){
         return new Path(){
             fullPath = fullPath,
-            lastPath = lastPath
-        };
-    }
-    public struct Collision{
-        public string pathName;
-        public string collidedFrom;
-    }
-    public Collision collision(string pathName,string collidedFrom){
-        return new Collision(){
-            pathName = pathName,
-            collidedFrom = collidedFrom
+            lastPath = lastPath,
+            cloneNum = cloneNum
         };
     }
     public struct CollisionPath{
-        public Collision fromPath;
-        public Collision toPath;
-        public Vector3Int positionCoordinates;
-        public CollisionPath(Collision fromPath,Collision toPath,Vector3Int positionCoordinates){
-            this.fromPath= fromPath;
+        public Path fromPath;
+        public Path toPath;
+        public CollisionPath(Path fromPath,Path toPath){
+            this.fromPath = fromPath;
             this.toPath = toPath;
-            this.positionCoordinates = positionCoordinates;
         }
     }
-    public CollisionPath collisionDetection(Collision fromPath,Collision toPath,Vector3Int positionCoordinates){
+    public CollisionPath collisionPath(Path fromPath,Path toPath){
         return new CollisionPath(){
             fromPath = fromPath,
             toPath = toPath,
-            positionCoordinates = positionCoordinates
         };
     }
     
