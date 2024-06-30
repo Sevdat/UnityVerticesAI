@@ -8,38 +8,18 @@ public class FreePointEnviroment : MonoBehaviour
     public static GameObject dynamicClone;
     public static GameObject staticClone;
     public static GameObject cloneHierarchy;
-    // Start is called before the first frame update
+    public Dictionary<Vector3Int,AtomicInfo> atomicGrid;
+    public Dictionary<string,AtomicInfo> body;
 
-    public struct Body{
-        public Dictionary<Vector3Int,List<bodyInfo>> pathDictionary;
+    public class AtomicInfo{
+        public List<BodyInfo> bodyList;
+        public int oldSize,newSize,minIndexChange;
     }
-    public struct bodyInfo{
-        public Path pathData;
-        public CollisionPath collisionData;
-    }
-    public struct Path{
-        public string fullPath,lastPath,cloneNum;
-    }
-    public Path path(string fullPath,string lastPath,string cloneNum){
-        return new Path(){
-            fullPath = fullPath,
-            lastPath = lastPath,
-            cloneNum = cloneNum
-        };
-    }
-    public struct CollisionPath{
-        public Path fromPath;
-        public Path toPath;
-        public CollisionPath(Path fromPath,Path toPath){
-            this.fromPath = fromPath;
-            this.toPath = toPath;
-        }
-    }
-    public CollisionPath collisionPath(Path fromPath,Path toPath){
-        return new CollisionPath(){
-            fromPath = fromPath,
-            toPath = toPath,
-        };
+    public struct BodyInfo{
+        string fullPath;
+        public int indexInList;
+        public Vector3 oldPosition;
+        public Vector3 newPosition;
     }
     
     public static void createObject(string name,Vector3 vec){
