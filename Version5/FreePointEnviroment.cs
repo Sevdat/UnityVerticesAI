@@ -8,18 +8,25 @@ public class FreePointEnviroment : MonoBehaviour
     public static GameObject dynamicClone;
     public static GameObject staticClone;
     public static GameObject cloneHierarchy;
-    public Dictionary<Vector3Int,AtomicInfo> atomicGrid;
-    public Dictionary<string,AtomicInfo> body;
 
-    public class AtomicInfo{
-        public List<BodyInfo> bodyList;
+    public Dictionary<Vector3Int,AtomicGrid> world;
+    public int dictionarySize;
+    public int dictionaryLimit;
+
+    public class AtomicGrid{
+        public Vector3Int worldPosition;
+        public List<Joint> bodyList;
         public int oldSize,newSize,minIndexChange;
     }
-    public struct BodyInfo{
-        string fullPath;
-        public int indexInList;
-        public Vector3 oldPosition;
-        public Vector3 newPosition;
+
+    public struct Body{
+        public List<Joint> jointList;
+    }
+    public struct Joint{
+        public string fullPath;
+        public int indexInWorldList;
+        public Vector3 from,to;
+        public List<Vector3> meshShape;
     }
     
     public static void createObject(string name,Vector3 vec){
