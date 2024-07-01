@@ -12,46 +12,52 @@ public class FreePointEnviroment : MonoBehaviour
 
     public class World {
         public int vector3Count,vector3CountLimit;
-        public Dictionary<string,List<Joint>> bodies;
-        public struct Joint{
-            public string name;
-            public int indexInWorldList;
-            public int indexInJointList,connectedTo;
+        public Dictionary<string,List<Joint>> allBodies;
+        public struct Joint {
+            public string name; 
+            public int jointIndex;
+            public int[] connectedToJointIndex;
+            public Atom atomicJoint;
+            public Vector3 x,y,z;
+            public List<Atom> atomicStructure;
+        }
+        public struct Atom { 
+            public int indexInList;
             public Vector3 position;
-            public Vector3 localX,localY,localZ;
-            public List<Vector3> meshShape;
         }
         
         public Dictionary<Vector3Int,AtomicGrid> collisionDetection;
-        public class AtomicGrid {
-            public List<Joint> bodyList;
-            public int minIndexChange;
+        public struct AtomicGrid {
+            public Dictionary<string, JointIndex> atomsInGrid;
         }
-        public void body(string name,List<Joint>jointList){
-            if (!bodies.ContainsKey(name) && vector3Count<vector3CountLimit){
-                bodies[name] = jointList;
+        public struct JointIndex{
+            public Dictionary<int,Atom> jointsInGrid;
+        }
+        public void addBody(string name,List<Joint>jointList){
+            if (!allBodies.ContainsKey(name) && vector3Count<vector3CountLimit){
+                allBodies[name] = jointList;
             }
         }
-        public Joint joint(
-                string name,
-                int indexInWorldList,
-                int indexInJointList,int connectedTo,
-                Vector3 position,
-                Vector3 localX,Vector3 localY,Vector3 localZ,
-                List<Vector3> meshShape
-                ){
-                    return new Joint(){
-                        name = name,
-                        indexInWorldList = indexInWorldList,
-                        indexInJointList = indexInJointList,
-                        connectedTo = connectedTo,
-                        position = position,
-                        localX = localX,
-                        localY = localY,
-                        localZ = localZ,
-                        meshShape = meshShape
-                    };
-        }
+        // public Joint joint(
+        //         string name,
+        //         int indexInWorldList,
+        //         int indexInJointList,int connectedTo,
+        //         Vector3 position,
+        //         Vector3 localX,Vector3 localY,Vector3 localZ,
+        //         List<Vector3> meshShape
+        //         ){
+        //             return new Joint(){
+        //                 name = name,
+        //                 indexInWorldList = indexInWorldList,
+        //                 indexInJointList = indexInJointList,
+        //                 connectedTo = connectedTo,
+        //                 position = position,
+        //                 localX = localX,
+        //                 localY = localY,
+        //                 localZ = localZ,
+        //                 meshShape = meshShape
+        //             };
+        // }
     }
     
     public static void createObject(string name,Vector3 vec){
