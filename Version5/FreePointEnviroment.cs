@@ -37,6 +37,7 @@ public class FreePointEnviroment : MonoBehaviour
         public class Grid {
             public Dictionary<Vector3Int,AtomicGrid> collisionDetection;
             public struct AtomicGrid {
+                public int amountOfUniqueBodies;
                 public Dictionary<string, AtomicCollision> atomsInGrid;
             }
             public struct AtomicCollision{
