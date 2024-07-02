@@ -16,7 +16,7 @@ public class FreePointEnviroment : MonoBehaviour
         public Grid grid = new();
 
         public struct Atom { 
-            public int jointIndexInBodyData;
+            public int bodyStructureKey;
             public int atomicMeshKey;
             public Vector3 position;
             public Color color;
@@ -39,10 +39,7 @@ public class FreePointEnviroment : MonoBehaviour
             public struct AtomicGrid {
                 public int amountOfUniqueBodies;
                 public Color avarageColor;
-                public Dictionary<string, AtomicCollision> atomsInGrid;
-            }
-            public struct AtomicCollision{
-                public Dictionary<int,Atom> jointsInGrid;
+                public Dictionary<string, Dictionary<int,Atom> > atomsInGrid;
             }
         }
     }
