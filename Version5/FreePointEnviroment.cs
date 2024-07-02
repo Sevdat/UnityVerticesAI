@@ -26,9 +26,9 @@ public class FreePointEnviroment : MonoBehaviour
             public Dictionary<string,BodyData> allBodies;
             public struct BodyData {
                 public string name; 
-                public Dictionary<int,BodyStructure> bodyStructure;
+                public Dictionary<int,JointStructure> bodyStructure;
             }
-            public struct BodyStructure {
+            public struct JointStructure {
                 public List<int> connectedToJointIndex;
                 public Vector3 x,y,z;
                 public Dictionary<int,Atom> atomicMesh;
