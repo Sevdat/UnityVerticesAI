@@ -12,8 +12,8 @@ public class FreePointEnviroment : MonoBehaviour
 
     public class World {
         public int vector3Count,vector3CountLimit;
-        public Body body = new();
-        public Grid grid = new();
+        public BodiesInWorld bodiesInWorld = new();
+        public WorldGrid worldGrid = new();
 
         public struct Atom { 
             public int bodyStructureKey;
@@ -22,7 +22,7 @@ public class FreePointEnviroment : MonoBehaviour
             public Color color;
         }
 
-        public class Body {
+        public class BodiesInWorld {
             public Dictionary<string,BodyData> allBodies;
             public struct BodyData {
                 public string name; 
@@ -30,11 +30,11 @@ public class FreePointEnviroment : MonoBehaviour
             }
             public struct JointStructure {
                 public List<int> connectedToJointIndex;
-                public Vector3 x,y,z;
+                public Vector3 x,y,z; //only for integer 0 in dictionary
                 public Dictionary<int,Atom> atomicMesh;
             }
         }
-        public class Grid {
+        public class WorldGrid {
             public Dictionary<Vector3Int,AtomicGrid> collisionDetection;
             public struct AtomicGrid {
                 public int amountOfUniqueBodies;
