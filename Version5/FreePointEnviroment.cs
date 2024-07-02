@@ -8,34 +8,41 @@ public class FreePointEnviroment : MonoBehaviour
     public static GameObject dynamicClone;
     public static GameObject staticClone;
     public static GameObject cloneHierarchy;
-    public World world;
+    public World world = new();
 
     public class World {
         public int vector3Count,vector3CountLimit;
-        public struct BodyData {
-            public string name; 
-            public List<BodyStructure> bodyStructure;
-        }
-        public struct BodyStructure{
-            public int jointIndex;
-            public List<int> connectedToJointIndex;
-            public Atom joint;
-            public Vector3 x,y,z;
-            public List<Atom> atomicMesh;
-        }
+        public Body body = new();
+        public Grid grid = new();
+
         public struct Atom { 
             public int indexInBodyData;
             public Vector3 position;
+            public Color color;
         }
-        public struct BodiesInWorld{
+
+        public class Body {
             public Dictionary<string,BodyData> allBodies;
+            public struct BodyData {
+                public string name; 
+                public List<BodyStructure> bodyStructure;
+            }
+            public struct BodyStructure {
+                public int jointIndex;
+                public List<int> connectedToJointIndex;
+                public Atom joint;
+                public Vector3 x,y,z;
+                public List<Atom> atomicMesh;
+            }
         }
-        public Dictionary<Vector3Int,AtomicGrid> collisionDetection;
-        public struct AtomicGrid {
-            public Dictionary<string, AtomicCollision> atomsInGrid;
-        }
-        public struct AtomicCollision{
-            public Dictionary<int,Atom> jointsInGrid;
+        public class Grid {
+            public Dictionary<Vector3Int,AtomicGrid> collisionDetection;
+            public struct AtomicGrid {
+                public Dictionary<string, AtomicCollision> atomsInGrid;
+            }
+            public struct AtomicCollision{
+                public Dictionary<int,Atom> jointsInGrid;
+            }
         }
     }
     
@@ -56,7 +63,6 @@ public class FreePointEnviroment : MonoBehaviour
         staticClone = originalObject;
         staticClone.isStatic = true;
         createObject("lol",new Vector3(10,10,10));
-        world = new World();
     }
 
     // Update is called once per frame
