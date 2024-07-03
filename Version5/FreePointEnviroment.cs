@@ -11,7 +11,7 @@ public class FreePointEnviroment : MonoBehaviour
     public World world = new();
 
     public class World {
-        public int vector3Count,vector3CountLimit;
+        public int atomsInWorld,maxAtomsInWorld;
         public BodiesInWorld bodiesInWorld = new();
         public WorldGrid worldGrid = new();
 
