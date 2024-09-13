@@ -31,14 +31,14 @@ public class SourceCode {
             y = origin + new Vector3(0,1f,0)*distance;
             z = origin + new Vector3(0,0,1f)*distance;
         }
-
+        
         public void moveAxis(Vector3 add){
             origin += add;
             x += add;
             y += add;
             z += add;
         }
-        public void setAxis(Vector3 newOrigin){
+        public void placeAxis(Vector3 newOrigin){
             Vector3 newPosition = newOrigin-origin;
             moveAxis(newPosition);
         }
@@ -60,15 +60,14 @@ public class SourceCode {
         }
         public Vector3 direction(Vector3 point,Vector3 origin){ 
             Vector3 v = point-origin;
-            return v/ length(v);
+            return v/length(v);
         }
         public Vector3 distanceFromOrign(Vector3 point,Vector3 origin){
             return direction(point,origin)*distance;
         }
         public Vector3 normalize(Vector3 vec){    
             float radius = length(vec);
-            if (radius > 0)
-            {
+            if (radius > 0){
                 vec.x /= radius;
                 vec.y /= radius;
                 vec.z /= radius;
