@@ -20,16 +20,18 @@ public class SourceCode {
     }
 
     public class Axis {
-        public Vector3 origin,x,y,z;
+        public float angleX,angleY;
+        public Vector3 origin,x,y,z,rotationAxis;
         public float distance;
 
         public Axis(){}
         public Axis(Vector3 origin, float distance){
             this.origin = origin;
-            this.distance = distance;
+            this.distance = (distance >0.1f)? distance:1f;
             x = origin + new Vector3(1f,0,0)*distance;
             y = origin + new Vector3(0,1f,0)*distance;
             z = origin + new Vector3(0,0,1f)*distance;
+            rotationAxis = origin + new Vector3(0,1f,0)*distance;
         }
         
         public void moveAxis(Vector3 add){
@@ -37,17 +39,19 @@ public class SourceCode {
             x += add;
             y += add;
             z += add;
+            rotationAxis += add;
         }
         public void placeAxis(Vector3 newOrigin){
             Vector3 newPosition = newOrigin-origin;
             moveAxis(newPosition);
         }
         public void scale(float newDistance){
-            if (newDistance > 0){
+            if (newDistance > 0.1f){
                 distance = newDistance;
                 x = origin + distanceFromOrign(x,origin);
                 y = origin + distanceFromOrign(y,origin);
                 z = origin + distanceFromOrign(z,origin);
+                rotationAxis = origin + distanceFromOrign(rotationAxis,origin);
             }
         }
         public float length(Vector3 vectorDirections){

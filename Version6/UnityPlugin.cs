@@ -39,6 +39,7 @@ public class UnityPlugin : MonoBehaviour
             x.transform.position = axis.x;
             y.transform.position = axis.y;
             z.transform.position = axis.z;
+            rotationAxis.transform.position = axis.rotationAxis;
         }
         public void create(Vector3 vec, float distance){
             axis = new Axis(vec,distance);
@@ -53,25 +54,22 @@ public class UnityPlugin : MonoBehaviour
             axis.moveAxis(add);
             if (created){
                 setGameObjects();
-                rotationAxis.transform.position += add;
             }
         }
         public void place(Vector3 newOrigin){
             axis.placeAxis(newOrigin);
             if (created){
                 setGameObjects();
-                rotationAxis.transform.position += newOrigin-axis.origin;
             }
         }
-        public void rotate(float angle, Vector3 rotationAxis){
-            Vector4 angledAxis = axis.angledAxis(angle, rotationAxis);
-            axis.origin = axis.rotate(axis.origin,axis.origin,angledAxis);
-            axis.x = axis.rotate(axis.origin,axis.x,angledAxis);
-            axis.y = axis.rotate(axis.origin,axis.y,angledAxis);
-            axis.z = axis.rotate(axis.origin,axis.z,angledAxis);
+        public void rotate(float angle){
+            Vector4 quat = axis.angledAxis(angle,axis.rotationAxis);
+            axis.origin = axis.rotate(axis.origin,axis.origin,quat);
+            axis.x = axis.rotate(axis.origin,axis.x,quat);
+            axis.y = axis.rotate(axis.origin,axis.y,quat);
+            axis.z = axis.rotate(axis.origin,axis.z,quat);
             if (created){
                 setGameObjects();
-                this.rotationAxis.transform.position = axis.origin+rotationAxis;
             }
         }
     }
@@ -92,7 +90,7 @@ public class UnityPlugin : MonoBehaviour
     // Update is called once per frame
     void Update(){
         if (count == 30){
-            testAxis.rotate(1,new Vector3(1,1,1));
+            testAxis.rotate(1f);
             testAxis.place(new Vector3(11f,0,11f));
             count = 0;
             count2++;
