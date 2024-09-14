@@ -52,15 +52,19 @@ public class UnityPlugin : MonoBehaviour
         }
         public void move(Vector3 add){
             axis.moveAxis(add);
-            if (created){
-                setGameObjects();
-            }
+            if (created) setGameObjects();
         }
         public void place(Vector3 newOrigin){
             axis.placeAxis(newOrigin);
-            if (created){
-                setGameObjects();
-            }
+            if (created) setGameObjects();
+        }
+        public void angle(){
+            axis.findAngle();
+            print(axis.angleX* 180 / Mathf.PI);
+        }
+        public void moveRotAxis(float angleX,float angleY){
+            axis.moveRotationAxis(angleX,angleY);
+            if (created) setGameObjects();
         }
         public void rotate(float angle){
             Vector4 quat = axis.angledAxis(angle,axis.rotationAxis);
@@ -68,9 +72,8 @@ public class UnityPlugin : MonoBehaviour
             axis.x = axis.rotate(axis.origin,axis.x,quat);
             axis.y = axis.rotate(axis.origin,axis.y,quat);
             axis.z = axis.rotate(axis.origin,axis.z,quat);
-            if (created){
-                setGameObjects();
-            }
+            if (created) setGameObjects();
+            
         }
     }
     void Awake(){
@@ -83,15 +86,17 @@ public class UnityPlugin : MonoBehaviour
     {
         testAxis = new AxisSimulation();
         testAxis.init();
-        testAxis.create(new Vector3(0,0,0), 5);
+        testAxis.create(new Vector3(11,0,11), 5);
+        testAxis.moveRotAxis(60,0);
+        testAxis.angle();
     }
     int count = 0;
     int count2 = 0;
     // Update is called once per frame
     void Update(){
         if (count == 30){
-            testAxis.rotate(1f);
-            testAxis.place(new Vector3(11f,0,11f));
+            // testAxis.rotate(1f);
+            // testAxis.place(new Vector3(11f,0,11f));
             count = 0;
             count2++;
             print(testAxis.axis.origin);

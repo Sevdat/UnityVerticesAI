@@ -78,6 +78,22 @@ public class SourceCode {
             }
             return vec;
         }
+        public void findAngle(){
+            Vector3 dirY = direction(y,origin);
+            Vector3 dirH = direction(rotationAxis,origin);
+            angleX = Mathf.Acos(
+                (dirY.x*dirH.x+dirY.y*dirH.y+dirY.z*dirH.z)
+                /(length(dirY)*length(dirH)));
+            
+        }
+        public void moveRotationAxis(float addAngleX,float addAngleY){
+            Vector4 rotX = angledAxis(addAngleX,x);
+            Vector4 rotY = angledAxis(addAngleY,y);
+            rotationAxis = rotate(origin,rotationAxis,rotX);
+            rotationAxis = rotate(origin,rotationAxis,rotY);
+            angleX += addAngleX;
+            angleY += addAngleY;
+        }
         
         public Vector4 quatMul(Vector4 q1, Vector4 q2) {
             float w = q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z;
@@ -87,7 +103,7 @@ public class SourceCode {
             return new Vector4(x, y, z, w);
         }
         public Vector4 angledAxis(float angle,Vector3 rotationAxis){
-                Vector3 normilized = normalize(rotationAxis); 
+                Vector3 normilized = normalize(rotationAxis - origin); 
                 float halfAngle = angle * 0.5f * (Mathf.PI/180.0f);
                 float sinHalfAngle = Mathf.Sin(halfAngle);
                 float w = Mathf.Cos(halfAngle);
