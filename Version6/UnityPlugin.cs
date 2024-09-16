@@ -60,7 +60,7 @@ public class UnityPlugin : MonoBehaviour
         }
         public void angle(){
             axis.findAngle();
-            print(axis.angleX* 180 / Mathf.PI);
+            print($"{axis.angleX* 180 / Mathf.PI} {axis.angleY* 180 / Mathf.PI}");
         }
         public void moveRotAxis(float angleX,float angleY){
             axis.moveRotationAxis(angleX,angleY);
@@ -87,7 +87,7 @@ public class UnityPlugin : MonoBehaviour
         testAxis = new AxisSimulation();
         testAxis.init();
         testAxis.create(new Vector3(11,0,11), 5);
-        testAxis.moveRotAxis(60,0);
+        testAxis.moveRotAxis(60,120);
         testAxis.angle();
     }
     int count = 0;

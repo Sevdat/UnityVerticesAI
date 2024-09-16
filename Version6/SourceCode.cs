@@ -78,13 +78,24 @@ public class SourceCode {
             }
             return vec;
         }
+        float dot(Vector3 vec1,Vector3 vec2){
+            return vec1.x*vec2.x+vec1.y*vec2.y+vec1.z*vec2.z;
+        }
+        float angleBetweenLines(Vector3 dir1,Vector3 dir2){
+            return Mathf.Acos(dot(dir1,dir2)/(length(dir1)*length(dir2)));
+        }
         public void findAngle(){
             Vector3 dirY = direction(y,origin);
             Vector3 dirH = direction(rotationAxis,origin);
-            angleX = Mathf.Acos(
-                (dirY.x*dirH.x+dirY.y*dirH.y+dirY.z*dirH.z)
-                /(length(dirY)*length(dirH)));
+            angleX = angleBetweenLines(dirY,dirH);
             
+            float amount = dot(rotationAxis-origin,dirY);
+            Vector3 perpendicularOrigin = origin+amount*dirY;
+
+            Vector3 dirY2 = new Vector3(0,0,1);
+            Vector3 dirH2 = direction(rotationAxis,perpendicularOrigin);
+
+            angleY = angleBetweenLines(dirY2,dirH2);
         }
         public void moveRotationAxis(float addAngleX,float addAngleY){
             Vector4 rotX = angledAxis(addAngleX,x);
