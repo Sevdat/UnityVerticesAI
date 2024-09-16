@@ -92,7 +92,7 @@ public class SourceCode {
             float amount = dot(rotationAxis-origin,dirY);
             Vector3 perpendicularOrigin = origin+amount*dirY;
 
-            Vector3 dirY2 = new Vector3(0,0,1);
+            Vector3 dirY2 = direction(z,origin);
             Vector3 dirH2 = direction(rotationAxis,perpendicularOrigin);
 
             angleY = angleBetweenLines(dirY2,dirH2);
