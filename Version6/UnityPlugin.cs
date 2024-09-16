@@ -87,7 +87,7 @@ public class UnityPlugin : MonoBehaviour
         testAxis = new AxisSimulation();
         testAxis.init();
         testAxis.create(new Vector3(11,0,11), 5);
-        testAxis.moveRotAxis(60,120);
+        testAxis.moveRotAxis(60,200);
         testAxis.angle();
     }
     int count = 0;
