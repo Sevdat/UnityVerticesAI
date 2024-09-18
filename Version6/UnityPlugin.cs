@@ -20,7 +20,7 @@ public class UnityPlugin : MonoBehaviour
                 x = Instantiate(dynamicClone);
                 y = Instantiate(dynamicClone);
                 z = Instantiate(dynamicClone);
-                rotationAxis = Instantiate(dynamicClone);
+                // rotationAxis = Instantiate(dynamicClone);
                 created = true;
             }
         }
@@ -39,7 +39,7 @@ public class UnityPlugin : MonoBehaviour
             x.transform.position = axis.x;
             y.transform.position = axis.y;
             z.transform.position = axis.z;
-            rotationAxis.transform.position = axis.rotationAxis;
+            // rotationAxis.transform.position = axis.rotationAxis;
         }
         public void create(Vector3 vec, float distance){
             axis = new Axis(vec,distance);
@@ -59,8 +59,8 @@ public class UnityPlugin : MonoBehaviour
             if (created) setGameObjects();
         }
         public void angle(){
-            axis.findAngle();
-            print($"{axis.angleX* 180 / Mathf.PI} {axis.angleY* 180 / Mathf.PI}");
+            axis.findLocalAngle(out float angleX,out float angleY);
+            print($"{angleX* 180 / Mathf.PI} {angleY* 180 / Mathf.PI}");
         }
         public void moveRotAxis(float angleX,float angleY){
             axis.moveRotationAxis(angleX,angleY);
@@ -68,12 +68,16 @@ public class UnityPlugin : MonoBehaviour
         }
         public void rotate(float angle){
             Vector4 quat = axis.angledAxis(angle,axis.rotationAxis);
-            axis.origin = axis.rotate(axis.origin,axis.origin,quat);
-            axis.x = axis.rotate(axis.origin,axis.x,quat);
-            axis.y = axis.rotate(axis.origin,axis.y,quat);
-            axis.z = axis.rotate(axis.origin,axis.z,quat);
+            axis.origin = axis.rotate(axis.origin,quat);
+            axis.x = axis.rotate(axis.x,quat);
+            axis.y = axis.rotate(axis.y,quat);
+            axis.z = axis.rotate(axis.z,quat);
             if (created) setGameObjects();
             
+        }
+        public void set(float rotateWorldY,float rotateWorldX,float rotateLocalY){
+            axis.setAxis(rotateWorldY,rotateWorldX,rotateLocalY);
+            if (created) setGameObjects();
         }
     }
     void Awake(){
@@ -87,24 +91,28 @@ public class UnityPlugin : MonoBehaviour
         testAxis = new AxisSimulation();
         testAxis.init();
         testAxis.create(new Vector3(11,0,11), 5);
-        testAxis.moveRotAxis(60,200);
         testAxis.angle();
     }
+    int time = 0;
     int count = 0;
     int count2 = 0;
+    int count3 = 0;
+    int count4 = 0;
+    int stage = 0;
+
     // Update is called once per frame
     void Update(){
-        if (count == 30){
-            // testAxis.rotate(1f);
-            // testAxis.place(new Vector3(11f,0,11f));
-            count = 0;
-            count2++;
-            print(testAxis.axis.origin);
+
+        if (time == 30){
+            testAxis.set(count2,count3,count4);
+            if (stage == 0) count2++;
+            if (stage == 1) count3++;
+            if (stage == 2) count4++;
+            time = 0;
+            count+=1;
         }
-        if(count2 == 360) {
-            count = 40;
-            testAxis.deleteGameObjcts();
-            };
-        count++;
+        if(count == 45) {stage += 1; count = 0;}
+           
+        time++;
     }
 }

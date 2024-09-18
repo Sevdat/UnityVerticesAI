@@ -20,7 +20,6 @@ public class SourceCode {
     }
 
     public class Axis {
-        public float angleX,angleY;
         public Vector3 origin,x,y,z,rotationAxis;
         public float distance;
 
@@ -84,11 +83,31 @@ public class SourceCode {
         float angleBetweenLines(Vector3 dir1,Vector3 dir2){
             return Mathf.Acos(dot(dir1,dir2)/(length(dir1)*length(dir2)));
         }
-        Vector3 tangentPoint(Vector3 linestart, Vector3 lineDirection, Vector3 point){
-            float amount = dot(point-linestart,lineDirection);
-            return linestart+amount*lineDirection;
+        Vector3 tangentPoint(Vector3 lineOrigin, Vector3 lineDirection, Vector3 point){
+            float amount = dot(point-lineOrigin,lineDirection);
+            return lineOrigin+amount*lineDirection;
         }
-        public void findAngle(){
+        void rotateAxis(ref Vector3 x, ref Vector3 y,ref Vector3 z,Vector3 axis,float angle){
+            Vector4 worldAngledAxisY = angledAxis(angle,axis);
+            x = rotate(x,worldAngledAxisY);
+            y = rotate(y,worldAngledAxisY);
+            z = rotate(z,worldAngledAxisY);
+        }
+        public void setAxis(float worldAngleY,float worldAngleX,float localAngleY){
+            Vector3 worldX = origin + new Vector3(distance,0,0);
+            Vector3 worldY = origin + new Vector3(0,distance,0);
+            
+            Vector3 localX = origin + new Vector3(distance,0,0);
+            Vector3 localY = origin + new Vector3(0,distance,0);
+            Vector3 localZ = origin + new Vector3(0,0,distance);
+            
+            rotateAxis(ref localX,ref localY,ref localZ,worldX,worldAngleY);
+            rotateAxis(ref localX,ref localY,ref localZ,worldY,worldAngleX);
+            rotateAxis(ref localX,ref localY,ref localZ,localY,localAngleY);
+
+            x = localX; y = localY; z = localZ;
+        }
+        public void findLocalAngle(out float angleX, out float angleY){
             Vector3 dirX = direction(x,origin);
             Vector3 dirY = direction(y,origin);
             Vector3 dirZ = direction(z,origin);
@@ -106,10 +125,8 @@ public class SourceCode {
         public void moveRotationAxis(float addAngleX,float addAngleY){
             Vector4 rotX = angledAxis(addAngleX,x);
             Vector4 rotY = angledAxis(addAngleY,y);
-            rotationAxis = rotate(origin,rotationAxis,rotX);
-            rotationAxis = rotate(origin,rotationAxis,rotY);
-            angleX += addAngleX;
-            angleY += addAngleY;
+            rotationAxis = rotate(rotationAxis,rotX);
+            rotationAxis = rotate(rotationAxis,rotY);
         }
         
         public Vector4 quatMul(Vector4 q1, Vector4 q2) {
@@ -129,9 +146,7 @@ public class SourceCode {
                 float z = normilized.z * sinHalfAngle;
                 return new Vector4(x,y,z,w);
         }
-        public Vector3 rotate(
-            Vector3 origin, Vector3 point,Vector4 angledAxis
-            ){
+        public Vector3 rotate(Vector3 point,Vector4 angledAxis){
             Vector3 pointDirection = point - origin;     
             Vector4 rotatingVector = new Vector4(pointDirection.x, pointDirection.y, pointDirection.z,0);
             Vector4 inverseQuat = new Vector4(-angledAxis.x,-angledAxis.y,-angledAxis.z,angledAxis.w);
