@@ -20,7 +20,7 @@ public class UnityPlugin : MonoBehaviour
                 x = Instantiate(dynamicClone);
                 y = Instantiate(dynamicClone);
                 z = Instantiate(dynamicClone);
-                // rotationAxis = Instantiate(dynamicClone);
+                rotationAxis = Instantiate(dynamicClone);
                 created = true;
             }
         }
@@ -39,7 +39,7 @@ public class UnityPlugin : MonoBehaviour
             x.transform.position = axis.x;
             y.transform.position = axis.y;
             z.transform.position = axis.z;
-            // rotationAxis.transform.position = axis.rotationAxis;
+            rotationAxis.transform.position = axis.rotationAxis;
         }
         public void create(Vector3 vec, float distance){
             axis = new Axis(vec,distance);
