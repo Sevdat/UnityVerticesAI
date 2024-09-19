@@ -63,6 +63,8 @@ public class SourceCode {
         }
         public Vector3 direction(Vector3 point,Vector3 origin){ 
             Vector3 v = point-origin;
+            float radius = length(v);
+            if (radius == 0) v = point-this.origin;
             return v/length(v);
         }
         public Vector3 distanceFromOrign(Vector3 point,Vector3 origin){
@@ -83,15 +85,15 @@ public class SourceCode {
         float angleBetweenLines(Vector3 dir1,Vector3 dir2){
             return Mathf.Acos(dot(dir1,dir2)/(length(dir1)*length(dir2)));
         }
-        Vector3 tangentPoint(Vector3 lineOrigin, Vector3 lineDirection, Vector3 point){
+        Vector3 perpendicular(Vector3 lineOrigin, Vector3 lineDirection, Vector3 point){
             float amount = dot(point-lineOrigin,lineDirection);
             return lineOrigin+amount*lineDirection;
         }
         void rotateAxis(ref Vector3 x, ref Vector3 y,ref Vector3 z,Vector3 axis,float angle){
-            Vector4 worldAngledAxisY = angledAxis(angle,axis);
-            x = rotate(x,worldAngledAxisY);
-            y = rotate(y,worldAngledAxisY);
-            z = rotate(z,worldAngledAxisY);
+            Vector4 quat = angledAxis(angle,axis);
+            x = rotate(x,quat);
+            y = rotate(y,quat);
+            z = rotate(z,quat);
         }
         public void setAxis(float worldAngleY,float worldAngleX,float localAngleY){
             Vector3 worldX = origin + new Vector3(distance,0,0);
@@ -112,7 +114,7 @@ public class SourceCode {
             Vector3 dirY = direction(y,origin);
             Vector3 dirZ = direction(z,origin);
             Vector3 dirH = direction(rotationAxis,origin);
-            Vector3 perpendicularOrigin = tangentPoint(origin,dirY,rotationAxis);
+            Vector3 perpendicularOrigin = perpendicular(origin,dirY,rotationAxis);
 
             Vector3 dirPerpOrg = direction(rotationAxis,perpendicularOrigin);
             float angleSide = angleBetweenLines(dirX,dirPerpOrg);
@@ -122,6 +124,12 @@ public class SourceCode {
                 2*Mathf.PI-angleBetweenLines(dirZ,dirPerpOrg):
                 angleBetweenLines(dirZ,dirPerpOrg);
         }
+        // public void findAngle(){
+        //     Vector3 worldDirY = origin + new Vector3(0,distance,0);
+        //     Vector3 worldY = direction(worldDirY,origin);
+        //     Vector3 dirY = direction(y,origin);
+        //     float worldAngleY = angleBetweenLines(dirY,worldY);
+        // }
         public void moveRotationAxis(float addAngleX,float addAngleY){
             Vector4 rotX = angledAxis(addAngleX,x);
             Vector4 rotY = angledAxis(addAngleY,y);
