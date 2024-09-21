@@ -10,6 +10,7 @@ public class UnityPlugin : MonoBehaviour
     GameObject staticClone;
 
     AxisSimulation testAxis;
+    AxisSimulation testAxis2;
     public class AxisSimulation:SourceCode {
         public Axis axis;
         public bool created = false;
@@ -33,6 +34,12 @@ public class UnityPlugin : MonoBehaviour
                 Destroy(rotationAxis);
                 created = false;
             }
+        }
+        public void setColor(int r,int g,int b,int a){
+            origin.GetComponent<Renderer>().material.color = new Color(r,g,b,a);
+            x.GetComponent<Renderer>().material.color = new Color(r,g,b,a);
+            y.GetComponent<Renderer>().material.color = new Color(r,g,b,a);
+            z.GetComponent<Renderer>().material.color = new Color(r,g,b,a);
         }
         public void setGameObjects(){
             origin.transform.position = axis.origin;
@@ -59,11 +66,15 @@ public class UnityPlugin : MonoBehaviour
             if (created) setGameObjects();
         }
         public void angle(){
-            axis.findLocalAngle(out float angleX,out float angleY);
-            print($"{angleX* 180 / Mathf.PI} {angleY* 180 / Mathf.PI}");
+            axis.findAngle(out float angleX,out float angleY,out float localY);
+            print($"{angleX* 180 / Mathf.PI} {angleY* 180 / Mathf.PI} {localY* 180 / Mathf.PI}");
         }
         public void moveRotAxis(float angleX,float angleY){
-            axis.moveRotationAxis(angleX,angleY);
+            axis.rotateRotationAxis(angleX,angleY);
+            if (created) setGameObjects();
+        }
+        public void setTheAxis(float worldAngleY,float worldAngleX,float localAngleY){
+            axis.setAxis(worldAngleY,worldAngleX,localAngleY);
             if (created) setGameObjects();
         }
         public void rotate(float angle){
@@ -91,7 +102,10 @@ public class UnityPlugin : MonoBehaviour
         testAxis = new AxisSimulation();
         testAxis.init();
         testAxis.create(new Vector3(11,0,11), 5);
+        testAxis.setTheAxis(30.0f,40.0f,40.0f);
+        testAxis.setColor(1,0,0,1);
         testAxis.angle();
+
     }
     int time = 0;
     int count = 0;
@@ -102,16 +116,22 @@ public class UnityPlugin : MonoBehaviour
 
     // Update is called once per frame
     void Update(){
+        // if (time == 30){
+        // testAxis.setTheAxis(30.0f,30.0f,count);
+        // count++;
+        // time = 0;
+        // }
+        
 
-        if (time == 30){
-            testAxis.set(count2,count3,count4);
-            if (stage == 0) count2++;
-            if (stage == 1) count3++;
-            if (stage == 2) count4++;
-            time = 0;
-            count+=1;
-        }
-        if(count == 45) {stage += 1; count = 0;}
+        // if (time == 30){
+        //     testAxis.set(count2,count3,count4);
+        //     if (stage == 0) count2++;
+        //     if (stage == 1) count3++;
+        //     if (stage == 2) count4++;
+        //     time = 0;
+        //     count+=1;
+        // }
+        // if(count == 45) {stage += 1; count = 0;}
            
         time++;
     }

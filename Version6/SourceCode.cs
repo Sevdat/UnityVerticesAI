@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SourceCode {
+public class SourceCode:MonoBehaviour {
 
     public class SphericalOctTree {
         public SphericalOctTree sphereOctTree;
@@ -83,7 +83,10 @@ public class SourceCode {
             return vec1.x*vec2.x+vec1.y*vec2.y+vec1.z*vec2.z;
         }
         float angleBetweenLines(Vector3 dir1,Vector3 dir2){
-            return Mathf.Acos(dot(dir1,dir2)/(length(dir1)*length(dir2)));
+            float dotProduct = dot(dir1,dir2);
+            float lengthProduct = length(dir1)*length(dir2);
+            float check = (dotProduct>lengthProduct)? 1:dotProduct/lengthProduct;
+            return Mathf.Acos(check);
         }
         Vector3 perpendicular(Vector3 lineOrigin, Vector3 lineDirection, Vector3 point){
             float amount = dot(point-lineOrigin,lineDirection);
@@ -95,6 +98,11 @@ public class SourceCode {
             y = rotate(y,quat);
             z = rotate(z,quat);
         }
+        void rotateLocalAxis(float worldAngleY,float worldAngleX,float localAngleY,Vector3 worldX,Vector3 worldY,ref Vector3 localX,ref Vector3 localY,ref Vector3 localZ){
+            rotateAxis(ref localX,ref localY,ref localZ,worldX,worldAngleY);
+            rotateAxis(ref localX,ref localY,ref localZ,worldY,worldAngleX);
+            rotateAxis(ref localX,ref localY,ref localZ,localY,localAngleY);
+        }
         public void setAxis(float worldAngleY,float worldAngleX,float localAngleY){
             Vector3 worldX = origin + new Vector3(distance,0,0);
             Vector3 worldY = origin + new Vector3(0,distance,0);
@@ -103,13 +111,54 @@ public class SourceCode {
             Vector3 localY = origin + new Vector3(0,distance,0);
             Vector3 localZ = origin + new Vector3(0,0,distance);
             
-            rotateAxis(ref localX,ref localY,ref localZ,worldX,worldAngleY);
-            rotateAxis(ref localX,ref localY,ref localZ,worldY,worldAngleX);
-            rotateAxis(ref localX,ref localY,ref localZ,localY,localAngleY);
+            rotateLocalAxis(
+                worldAngleY,worldAngleX,localAngleY,
+                worldX,worldY,ref localX,ref localY,ref localZ
+                );
+            print(localY);
 
             x = localX; y = localY; z = localZ;
         }
-        public void findLocalAngle(out float angleX, out float angleY){
+        public float angleFromPerpendicularOrigin(Vector3 lineOrigin, Vector3 lineDirection, Vector3 point, Vector3 dir, Vector3 directionSide){
+            Vector3 perpendicularOrigin = perpendicular(lineOrigin,lineDirection,point);
+            Vector3 perpendicularDirection = direction(point,perpendicularOrigin);
+            float angleSide = angleBetweenLines(dir,perpendicularDirection);
+            return (angleSide>Mathf.PI/2)? 
+                2*Mathf.PI-angleBetweenLines(directionSide,perpendicularDirection):
+                angleBetweenLines(directionSide,perpendicularDirection);
+        }
+        public void findAngle(out float worldAngleY,out float worldAngleX,out float localAngleY){
+            Vector3 worldX = origin + new Vector3(distance,0,0);
+            Vector3 worldY = origin + new Vector3(0,distance,0);
+            Vector3 worldZ = origin + new Vector3(0,0,distance);
+            Vector3 worldDirX = direction(worldX,origin);
+            Vector3 worldDirY = direction(worldY,origin);
+            Vector3 worldDirZ = direction(worldZ,origin);
+   
+            Vector3 dirY = direction(y,origin);
+            worldAngleY = angleBetweenLines(dirY,worldDirY);
+            
+            worldAngleX = angleFromPerpendicularOrigin(origin,worldDirY,y,worldDirX,worldDirZ);
+            
+            Vector3 localX = origin + new Vector3(distance,0,0);
+            Vector3 localY = origin + new Vector3(0,distance,0);
+            Vector3 localZ = origin + new Vector3(0,0,distance);
+            float degrees = 180 / Mathf.PI;
+            rotateLocalAxis(
+                worldAngleY*degrees,worldAngleX*degrees,0,
+                worldX,worldY,ref localX,ref localY,ref localZ
+                );   
+            Vector3 dirX = direction(x,origin);
+            Vector3 dirLocalX = direction(localX,origin);
+            localAngleY = angleBetweenLines(dirX,dirLocalX);
+        }
+        public void rotateRotationAxis(float addAngleX,float addAngleY){
+            Vector4 rotX = angledAxis(addAngleX,x);
+            Vector4 rotY = angledAxis(addAngleY,y);
+            rotationAxis = rotate(rotationAxis,rotX);
+            rotationAxis = rotate(rotationAxis,rotY);
+        }
+        public void getRotationAxisAngle(out float angleX, out float angleY){
             Vector3 dirX = direction(x,origin);
             Vector3 dirY = direction(y,origin);
             Vector3 dirZ = direction(z,origin);
@@ -123,18 +172,6 @@ public class SourceCode {
             angleY = (angleSide>Mathf.PI/2)? 
                 2*Mathf.PI-angleBetweenLines(dirZ,dirPerpOrg):
                 angleBetweenLines(dirZ,dirPerpOrg);
-        }
-        // public void findAngle(){
-        //     Vector3 worldDirY = origin + new Vector3(0,distance,0);
-        //     Vector3 worldY = direction(worldDirY,origin);
-        //     Vector3 dirY = direction(y,origin);
-        //     float worldAngleY = angleBetweenLines(dirY,worldY);
-        // }
-        public void moveRotationAxis(float addAngleX,float addAngleY){
-            Vector4 rotX = angledAxis(addAngleX,x);
-            Vector4 rotY = angledAxis(addAngleY,y);
-            rotationAxis = rotate(rotationAxis,rotX);
-            rotationAxis = rotate(rotationAxis,rotY);
         }
         
         public Vector4 quatMul(Vector4 q1, Vector4 q2) {
