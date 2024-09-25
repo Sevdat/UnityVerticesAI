@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class SourceCode:MonoBehaviour {
 
@@ -20,7 +21,7 @@ public class SourceCode:MonoBehaviour {
     }
 
     public class Axis {
-        public Vector3 origin,x,y,z,rotationAxis;
+        public Vector3 origin,x,y,z;
         public float distance;
 
         public Axis(){}
@@ -30,7 +31,6 @@ public class SourceCode:MonoBehaviour {
             x = origin + new Vector3(1f,0,0)*distance;
             y = origin + new Vector3(0,1f,0)*distance;
             z = origin + new Vector3(0,0,1f)*distance;
-            rotationAxis = origin + new Vector3(0,1f,0)*distance;
         }
         
         public void moveAxis(Vector3 add){
@@ -38,7 +38,6 @@ public class SourceCode:MonoBehaviour {
             x += add;
             y += add;
             z += add;
-            rotationAxis += add;
         }
         public void placeAxis(Vector3 newOrigin){
             Vector3 newPosition = newOrigin-origin;
@@ -50,7 +49,6 @@ public class SourceCode:MonoBehaviour {
                 x = origin + distanceFromOrign(x,origin);
                 y = origin + distanceFromOrign(y,origin);
                 z = origin + distanceFromOrign(z,origin);
-                rotationAxis = origin + distanceFromOrign(rotationAxis,origin);
             }
         }
         public float length(Vector3 vectorDirections){
@@ -61,13 +59,13 @@ public class SourceCode:MonoBehaviour {
             );
             return radius;
         }
-        public Vector3 direction(Vector3 point,Vector3 origin){ 
+        internal Vector3 direction(Vector3 point,Vector3 origin){ 
             Vector3 v = point-origin;
             float radius = length(v);
             if (radius == 0) v = point-this.origin;
             return v/length(v);
         }
-        public Vector3 distanceFromOrign(Vector3 point,Vector3 origin){
+        internal Vector3 distanceFromOrign(Vector3 point,Vector3 origin){
             return direction(point,origin)*distance;
         }
         public Vector3 normalize(Vector3 vec){    
@@ -82,13 +80,13 @@ public class SourceCode:MonoBehaviour {
         float dot(Vector3 vec1,Vector3 vec2){
             return vec1.x*vec2.x+vec1.y*vec2.y+vec1.z*vec2.z;
         }
-        float angleBetweenLines(Vector3 dir1,Vector3 dir2){
+        internal float angleBetweenLines(Vector3 dir1,Vector3 dir2){
             float dotProduct = dot(dir1,dir2);
             float lengthProduct = length(dir1)*length(dir2);
             float check = (dotProduct>lengthProduct)? 1:dotProduct/lengthProduct;
             return Mathf.Acos(check);
         }
-        Vector3 perpendicular(Vector3 lineOrigin, Vector3 lineDirection, Vector3 point){
+        internal Vector3 perpendicular(Vector3 lineOrigin, Vector3 lineDirection, Vector3 point){
             float amount = dot(point-lineOrigin,lineDirection);
             return lineOrigin+amount*lineDirection;
         }
@@ -150,28 +148,21 @@ public class SourceCode:MonoBehaviour {
                 );   
             Vector3 dirX = direction(x,origin);
             Vector3 dirLocalX = direction(localX,origin);
-            localAngleY = angleBetweenLines(dirX,dirLocalX);
+            Vector3 dirZ = direction(z,origin);
+            Vector3 dirLocalZ = direction(localZ,origin);
+            float angleSide = angleBetweenLines(dirX,dirLocalX);
+
+            localAngleY = (angleSide>Mathf.PI/2)? 
+                2*Mathf.PI-angleBetweenLines(dirZ,dirLocalZ):
+                angleBetweenLines(dirZ,dirLocalZ);
         }
-        public void rotateRotationAxis(float addAngleX,float addAngleY){
+        public Vector3 rotationAxis(float addAngleX,float addAngleY){
             Vector4 rotX = angledAxis(addAngleX,x);
             Vector4 rotY = angledAxis(addAngleY,y);
-            rotationAxis = rotate(rotationAxis,rotX);
-            rotationAxis = rotate(rotationAxis,rotY);
-        }
-        public void getRotationAxisAngle(out float angleX, out float angleY){
-            Vector3 dirX = direction(x,origin);
-            Vector3 dirY = direction(y,origin);
-            Vector3 dirZ = direction(z,origin);
-            Vector3 dirH = direction(rotationAxis,origin);
-            Vector3 perpendicularOrigin = perpendicular(origin,dirY,rotationAxis);
-
-            Vector3 dirPerpOrg = direction(rotationAxis,perpendicularOrigin);
-            float angleSide = angleBetweenLines(dirX,dirPerpOrg);
-
-            angleX = angleBetweenLines(dirY,dirH);
-            angleY = (angleSide>Mathf.PI/2)? 
-                2*Mathf.PI-angleBetweenLines(dirZ,dirPerpOrg):
-                angleBetweenLines(dirZ,dirPerpOrg);
+            Vector3 rotationOrigin = y;
+            rotationOrigin = rotate(rotationOrigin,rotX);
+            rotationOrigin = rotate(rotationOrigin,rotY);
+            return rotationOrigin;
         }
         
         public Vector4 quatMul(Vector4 q1, Vector4 q2) {
@@ -256,6 +247,29 @@ public class SourceCode:MonoBehaviour {
             this.globalAxis = globalAxis;
             bodyStructure = new Joint[amountOfJoints];
             keyGenerator = new KeyGenerator(amountOfJoints);
+        }
+        public void saveJoint(
+            Joint joint, 
+            out float globalX, out float globalY, out float distanceFromOrigin, 
+            out float worldAngleY,out float worldAngleX,out float localAngleY
+            ){
+            Vector3 jointOrigin = joint.localAxis.origin;
+            Vector3 globalOrigin = globalAxis.origin;
+            Vector3 dirX = globalAxis.direction(globalAxis.x,globalOrigin);
+            Vector3 dirY = globalAxis.direction(globalAxis.y,globalOrigin);
+            Vector3 dirZ = globalAxis.direction(globalAxis.z,globalOrigin);
+            Vector3 dirH = globalAxis.direction(jointOrigin,globalOrigin);
+            Vector3 perpendicularOrigin = globalAxis.perpendicular(globalOrigin,dirY,jointOrigin);
+
+            Vector3 dirPerpOrg = globalAxis.direction(jointOrigin,perpendicularOrigin);
+            float angleSide = globalAxis.angleBetweenLines(dirX,dirPerpOrg);
+
+            globalX = globalAxis.angleBetweenLines(dirY,dirH);
+            globalY = (angleSide>Mathf.PI/2)? 
+                2*Mathf.PI-globalAxis.angleBetweenLines(dirZ,dirPerpOrg):
+                globalAxis.angleBetweenLines(dirZ,dirPerpOrg);
+            distanceFromOrigin = globalAxis.length(jointOrigin-globalOrigin);
+            joint.localAxis.findAngle(out worldAngleY,out worldAngleX,out localAngleY);
         }
 
         public void resizeJoints(int amount){
