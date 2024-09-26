@@ -63,11 +63,11 @@ public class UnityPlugin : MonoBehaviour
             if (created) setGameObjects();
         }
         public void angle(){
-            axis.findAngle(out float angleX,out float angleY,out float localY);
+            axis.getWorldRotation(out float angleX,out float angleY,out float localY);
             print($"{angleX* 180 / Mathf.PI} {angleY* 180 / Mathf.PI} {localY* 180 / Mathf.PI}");
         }
         public void moveRotAxis(float angleX,float angleY){
-            axis.rotationAxis(angleX,angleY);
+            axis.rotateRotationAxis(angleX,angleY);
             if (created) setGameObjects();
         }
         public void setTheAxis(float worldAngleY,float worldAngleX,float localAngleY){
@@ -75,7 +75,7 @@ public class UnityPlugin : MonoBehaviour
             if (created) setGameObjects();
         }
         public void rotate(float angle,float angleY,float angleX){
-            Vector3 rotationAxis = axis.rotationAxis(angleX,angleY);
+            Vector3 rotationAxis = axis.rotateRotationAxis(angleX,angleY);
             Vector4 quat = axis.angledAxis(angle,rotationAxis);
             axis.origin = axis.rotate(axis.origin,quat);
             axis.x = axis.rotate(axis.x,quat);
