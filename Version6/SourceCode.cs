@@ -96,9 +96,9 @@ public class SourceCode:MonoBehaviour {
         }
         void rotateAxis(ref Vector3 x, ref Vector3 y,ref Vector3 z,Vector3 axis,float angle){
             Vector4 quat = angledAxis(angle,axis);
-            x = rotate(x,quat);
-            y = rotate(y,quat);
-            z = rotate(z,quat);
+            x = quatRotate(x,quat);
+            y = quatRotate(y,quat);
+            z = quatRotate(z,quat);
         }
         void internalRotate(float worldAngleY,float worldAngleX,float localAngleY,Vector3 worldX,Vector3 worldY,ref Vector3 localX,ref Vector3 localY,ref Vector3 localZ){
             rotateAxis(ref localX,ref localY,ref localZ,worldX,worldAngleY);
@@ -117,30 +117,14 @@ public class SourceCode:MonoBehaviour {
                 worldAngleY,worldAngleX,localAngleY,
                 worldX,worldY,ref localX,ref localY,ref localZ
                 );
-            print(localY);
 
             x = localX; y = localY; z = localZ;
-        }
-        public float angleFromPerpendicularOrigin(Vector3 lineOrigin, Vector3 lineDirection, Vector3 point, Vector3 dir, Vector3 directionSide){
-            Vector3 perpendicularOrigin = perpendicular(lineOrigin,lineDirection,point);
-            Vector3 perpendicularDirection = direction(point,perpendicularOrigin);
-            float angleSide = angleBetweenLines(dir,perpendicularDirection);
-            return (angleSide>Mathf.PI/2)? 
-                2*Mathf.PI-angleBetweenLines(directionSide,perpendicularDirection):
-                angleBetweenLines(directionSide,perpendicularDirection);
         }
         public void getWorldRotation(out float worldAngleY,out float worldAngleX,out float localAngleY){
             Vector3 worldX = origin + new Vector3(distance,0,0);
             Vector3 worldY = origin + new Vector3(0,distance,0);
             Vector3 worldZ = origin + new Vector3(0,0,distance);
-            Vector3 worldDirX = direction(worldX,origin);
-            Vector3 worldDirY = direction(worldY,origin);
-            Vector3 worldDirZ = direction(worldZ,origin);
-   
-            Vector3 dirY = direction(y,origin);
-            worldAngleY = angleBetweenLines(dirY,worldDirY);
-            
-            worldAngleX = angleFromPerpendicularOrigin(origin,worldDirY,y,worldDirX,worldDirZ);
+            getAngle(y,origin,worldX,worldY,worldZ,out worldAngleY,out worldAngleX);
             
             Vector3 localX = origin + new Vector3(distance,0,0);
             Vector3 localY = origin + new Vector3(0,distance,0);
@@ -160,7 +144,7 @@ public class SourceCode:MonoBehaviour {
                 2*Mathf.PI-angleBetweenLines(dirZ,dirLocalZ):
                 angleBetweenLines(dirZ,dirLocalZ);
         }
-        public void getAngle(Vector3 point,Vector3 origin, Vector3 x, Vector3 y, Vector3 z, out float angleY,out float angleX){
+        internal void getAngle(Vector3 point,Vector3 origin, Vector3 x, Vector3 y, Vector3 z, out float angleY,out float angleX){
             Vector3 dirX = direction(x,origin);
             Vector3 dirY = direction(y,origin);
             Vector3 dirZ = direction(z,origin);
@@ -170,27 +154,37 @@ public class SourceCode:MonoBehaviour {
             Vector3 dirPerpOrg = direction(point,perpendicularOrigin);
             float angleSide = angleBetweenLines(dirX,dirPerpOrg);
 
-            angleX = angleBetweenLines(dirY,dirH);
-            angleY = (angleSide>Mathf.PI/2)? 
+            angleY = angleBetweenLines(dirY,dirH);
+            angleX = (angleSide>Mathf.PI/2)? 
                 2*Mathf.PI-angleBetweenLines(dirZ,dirPerpOrg):
                 angleBetweenLines(dirZ,dirPerpOrg);
         }
         public void moveRotationAxis(float addAngleY,float addAngleX){
             Vector4 rotY = angledAxis(addAngleY,y);
             Vector4 rotX = angledAxis(addAngleX,x);
-            rotationAxis = rotate(rotationAxis,rotY);
-            rotationAxis = rotate(rotationAxis,rotX);
+            rotationAxis = quatRotate(rotationAxis,rotY);
+            rotationAxis = quatRotate(rotationAxis,rotX);
         }
         public void setRotationAxis(float setAngleY,float setAngleX){
             Vector4 rotY = angledAxis(setAngleY,y);
             Vector4 rotX = angledAxis(setAngleX,x);
             Vector3 rotationOrigin = y;
-            rotationOrigin = rotate(rotationOrigin,rotY);
-            rotationOrigin = rotate(rotationOrigin,rotX);
+            rotationOrigin = quatRotate(rotationOrigin,rotY);
+            rotationOrigin = quatRotate(rotationOrigin,rotX);
             rotationAxis = rotationOrigin;
         }
         public void getRotationAxisAngle(out float angleY,out float angleX){
             getAngle(rotationAxis,origin,x,y,z,out angleY,out angleX);
+        }
+        public Vector4 quat(float angle){
+             return angledAxis(angle,rotationAxis);
+        }
+        public void rotate(Vector4 quat){
+            origin = quatRotate(origin,quat);
+            x = quatRotate(x,quat);
+            y = quatRotate(y,quat);
+            z = quatRotate(z,quat);
+            rotationAxis = quatRotate(rotationAxis,quat);
         }
 
         public Vector4 quatMul(Vector4 q1, Vector4 q2) {
@@ -210,7 +204,7 @@ public class SourceCode:MonoBehaviour {
                 float z = normilized.z * sinHalfAngle;
                 return new Vector4(x,y,z,w);
         }
-        public Vector3 rotate(Vector3 point,Vector4 angledAxis){
+        public Vector3 quatRotate(Vector3 point,Vector4 angledAxis){
             Vector3 pointDirection = point - origin;     
             Vector4 rotatingVector = new Vector4(pointDirection.x, pointDirection.y, pointDirection.z,0);
             Vector4 inverseQuat = new Vector4(-angledAxis.x,-angledAxis.y,-angledAxis.z,angledAxis.w);
@@ -326,27 +320,29 @@ public class SourceCode:MonoBehaviour {
                     break;
                 }
             }
-            firstJoint.getPastConnections(
-                out _, 
-                out List<Joint> jointOrigin, 
-                out _, out _, out _
-                );
-            if (jointOrigin.Count == 1){
-                firstJoint = jointOrigin[0];
-                firstJoint.getFutureConnections(
-                out List<Joint> connectionTree, 
-                out _, 
-                out int treeSize, out _, out int smallestKey
-                );
-                Joint[] orginizedJoints = new Joint[treeSize];
-                for (int i = 0; i < treeSize; i++){
-                    Joint joint = connectionTree[i];
-                    int newIndex = joint.connection.current - smallestKey;
-                    joint.connection.current = newIndex;
-                    orginizedJoints[newIndex] = joint;
+            if (firstJoint != null) {
+                firstJoint.getPastConnections(
+                    out _, 
+                    out List<Joint> jointOrigin, 
+                    out _, out _, out _
+                    );
+                if (jointOrigin.Count == 1){
+                    firstJoint = jointOrigin[0];
+                    firstJoint.getFutureConnections(
+                    out List<Joint> connectionTree, 
+                    out _, 
+                    out int treeSize, out _, out int smallestKey
+                    );
+                    Joint[] orginizedJoints = new Joint[treeSize];
+                    for (int i = 0; i < treeSize; i++){
+                        Joint joint = connectionTree[i];
+                        int newIndex = joint.connection.current - smallestKey;
+                        joint.connection.current = newIndex;
+                        orginizedJoints[newIndex] = joint;
+                    }
+                bodyStructure = orginizedJoints;
+                keyGenerator.resetGenerator(treeSize);
                 }
-            bodyStructure = orginizedJoints;
-            keyGenerator.resetGenerator(treeSize);
             }
         }
     }
