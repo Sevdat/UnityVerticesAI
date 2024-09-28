@@ -285,6 +285,16 @@ public class SourceCode:MonoBehaviour {
             distanceFromOrigin = globalAxis.length(jointOrigin-globalOrigin);
             joint.localAxis.getWorldRotation(out worldAngleY,out worldAngleX,out localAngleY);
         }
+        public void rotateJointHierarchy(int indexInBody, float angle){
+            Joint joint = bodyStructure[indexInBody];
+            if (joint != null){
+            Vector4 quat = joint.localAxis.quat(angle);
+                while (joint != null){
+
+                }
+            }
+            
+        }
 
         public void resizeJoints(int amount){
             int availableKeys = keyGenerator.availableKeys;
@@ -321,51 +331,158 @@ public class SourceCode:MonoBehaviour {
                 }
             }
             if (firstJoint != null) {
-                firstJoint.getPastConnections(
+                firstJoint.connection.getPastConnections(
                     out _, 
                     out List<Joint> jointOrigin, 
-                    out _, out _, out _
+                    out _
                     );
-                if (jointOrigin.Count == 1){
-                    firstJoint = jointOrigin[0];
-                    firstJoint.getFutureConnections(
+                firstJoint = jointOrigin[0];
+                firstJoint.connection.getFutureConnections(
                     out List<Joint> connectionTree, 
                     out _, 
-                    out int treeSize, out _, out int smallestKey
-                    );
-                    Joint[] orginizedJoints = new Joint[treeSize];
-                    for (int i = 0; i < treeSize; i++){
-                        Joint joint = connectionTree[i];
-                        int newIndex = joint.connection.current - smallestKey;
-                        joint.connection.current = newIndex;
-                        orginizedJoints[newIndex] = joint;
-                    }
+                    out int treeSize
+                );
+                Joint[] orginizedJoints = new Joint[treeSize];
+                for (int i = 0; i < treeSize; i++){
+                    Joint joint = connectionTree[i];
+                    joint.connection.indexInBody = i;
+                    orginizedJoints[i] = joint;
+                }
                 bodyStructure = orginizedJoints;
                 keyGenerator.resetGenerator(treeSize);
-                }
             }
         }
     }
 
     public class Connection {
-        public int current;
+        public int indexInBody;
+        public Joint current;
         public List<Joint> past; 
         public List<Joint> future;
 
         public Connection(){}
-        public Connection(int current, List<Joint> past,List<Joint> future){
-            this.current = current;
+        public Connection(int indexInBody, List<Joint> past,List<Joint> future){
+            this.indexInBody = indexInBody;
             this.past = past;
             this.future = future;
         }
-        public void setCurrent(int current){
-            this.current = current;
+        public void setCurrent(int indexInBody){
+            this.indexInBody = indexInBody;
         }
         public void setPast(List<Joint> past){
             this.past = past;
         }
         public void setFuture(List<Joint> future){
             this.future = future;
+        }
+        public void getFutureConnections(
+            out List<Joint> connectionTree, 
+            out List<Joint> connectionEnd,
+            out int treeSize
+            ){
+            bool futureOnly = true;
+            connectionTracker(
+                futureOnly,
+                out List<Joint> tree, out List<Joint> end,
+                out int size
+                );
+            connectionTree = tree;
+            connectionEnd = end;
+            treeSize = size;
+        }
+        public void getPastConnections(
+            out List<Joint> connectionTree, 
+            out List<Joint> connectionEnd,
+            out int treeSize
+            ){
+            bool pastOnly = false;
+            connectionTracker(
+                pastOnly,
+                out List<Joint> tree, out List<Joint> end,
+                out int size
+                );
+            connectionTree = tree;
+            connectionEnd = end;
+            treeSize = size;
+        }
+        public void connectJointTo(Joint newJoint){
+            getFutureConnections( 
+                out List<Joint> connectionTree,
+                out _,
+                out int treeSize
+                );
+            if (current.body != newJoint.body){
+                newJoint.body.resizeJoints(treeSize);
+                disconnectPast();
+                connectPastTo(newJoint);
+                for (int i =0; i< treeSize;i++){
+                    Joint joint = connectionTree[i];
+                    joint.body.returnJointKey(joint.connection.indexInBody);
+                    joint.setBody(newJoint.body);
+                    joint.connection.indexInBody = newJoint.keyGenerator.getKey();
+                    newJoint.body.bodyStructure[joint.connection.indexInBody] = joint;
+                }   
+            } else if (!connectionTree.Contains(newJoint)) {
+                disconnectPast();
+                connectPastTo(newJoint);
+            }
+        }
+        void connectPastTo(Joint joint){
+            List<Joint> connectTo = joint.connection.future;
+            if (!connectTo.Contains(current)) connectTo.Add(current);
+            if (!past.Contains(joint)) past.Add(joint);
+        }
+        public void disconnectFuture(){
+            bool futureOnly = true;
+            disconnect(future,futureOnly);
+            future.Clear();
+        }
+        public void disconnectPast(){
+            bool pastOnly = false;
+            disconnect(past,pastOnly);
+            past.Clear();
+        }
+        void disconnect(List<Joint> joints, bool pastOrFuture){
+            int size = joints.Count;
+            if (pastOrFuture) 
+                for (int i =0; i<size;i++){
+                    joints[i].connection.future.Remove(current);
+                }
+                else 
+                for (int i =0; i<size;i++){
+                    joints[i].connection.past.Remove(current);
+                }
+        }
+        void connectionTracker(
+            bool pastOrFuture,
+            out List<Joint> connectionTree, out List<Joint> connectionEnd,
+            out int treeSize
+            ){
+            Joint[] joints = current.body.bodyStructure;
+            List<Joint> tree = new List<Joint>{current};  
+            if (pastOrFuture) 
+                tree.AddRange(future); 
+                else tree.AddRange(past);               
+            int size = tree.Count;
+            List<Joint> end = new List<Joint>();
+            for (int i=0; i< size; i++){
+                List<Joint> tracker = pastOrFuture ?
+                    joints[tree[i].connection.indexInBody].connection.future:
+                    joints[tree[i].connection.indexInBody].connection.past;
+                int trackerSize = tracker.Count;
+                if (trackerSize > 0){
+                    for(int e = 0; e < trackerSize; e++){
+                        Joint joint = tracker[e];
+                        tree.Add(joint);
+                        size++;
+                    };
+                } else {
+                    end.Add(tree[i]);
+                }
+            }
+            connectionTree = tree;
+            connectionEnd = end;
+            treeSize = size;
         }
     }
 
@@ -382,135 +499,11 @@ public class SourceCode:MonoBehaviour {
             keyGenerator = new KeyGenerator(amountOfKeys);
             this.localAxis = localAxis;
             this.connection = connection;
+            connection.current = this;
         }
 
         public void setBody(Body body){
             this.body=body;
-        }
-        public void getFutureConnections(
-            out List<Joint> connectionTree, 
-            out List<Joint> connectionEnd,
-            out int treeSize,out int biggestKey,out int smallestKey
-            ){
-            bool futureOnly = true;
-            connectionTracker(
-                futureOnly,
-                out List<Joint> tree, out List<Joint> end,
-                out int size, out int biggest, out int smallest
-                );
-            connectionTree = tree;
-            connectionEnd = end;
-            treeSize = size;
-            biggestKey = biggest;
-            smallestKey = smallest;
-        }
-        public void getPastConnections(
-            out List<Joint> connectionTree, 
-            out List<Joint> connectionEnd,
-            out int treeSize,out int biggestKey,out int smallestKey
-            ){
-            bool pastOnly = false;
-            connectionTracker(
-                pastOnly,
-                out List<Joint> tree, out List<Joint> end,
-                out int size, out int biggest, out int smallest
-                );
-            connectionTree = tree;
-            connectionEnd = end;
-            treeSize = size;
-            biggestKey = biggest;
-            smallestKey = smallest;
-        }
-        public void connectJointTo(Joint newJoint){
-            getFutureConnections( 
-                out List<Joint> connectionTree,
-                out _,
-                out int treeSize,out _,out _
-                );
-            if (body != newJoint.body){
-                newJoint.body.resizeJoints(treeSize);
-                disconnectPast();
-                connectPastTo(newJoint);
-                for (int i =0; i< treeSize;i++){
-                    Joint joint = connectionTree[i];
-                    joint.body.returnJointKey(joint.connection.current);
-                    joint.setBody(newJoint.body);
-                    joint.connection.current = newJoint.keyGenerator.getKey();
-                    newJoint.body.bodyStructure[joint.connection.current] = joint;
-                }   
-            } else if (!connectionTree.Contains(newJoint)) {
-                disconnectPast();
-                connectPastTo(newJoint);
-            }
-        }
-        void connectFutureTo(Joint joint){
-            List<Joint> connectTo = joint.connection.past;
-            if (!connectTo.Contains(this)) connectTo.Add(this);
-            if (!connection.future.Contains(joint)) connection.future.Add(joint);
-        }
-        void connectPastTo(Joint joint){
-            List<Joint> connectTo = joint.connection.future;
-            if (!connectTo.Contains(this)) connectTo.Add(this);
-            if (!connection.past.Contains(joint)) connection.past.Add(joint);
-        }
-        public void disconnectFuture(){
-            bool futureOnly = true;
-            disconnect(connection.future,futureOnly);
-            connection.future.Clear();
-        }
-        public void disconnectPast(){
-            bool pastOnly = false;
-            disconnect(connection.past,pastOnly);
-            connection.past.Clear();
-        }
-        void disconnect(List<Joint> joints, bool pastOrFuture){
-            int size = joints.Count;
-            if (pastOrFuture) 
-                for (int i =0; i<size;i++){
-                    joints[i].connection.future.Remove(this);
-                }
-                else 
-                for (int i =0; i<size;i++){
-                    joints[i].connection.past.Remove(this);
-                }
-        }
-        void connectionTracker(
-            bool pastOrFuture,
-            out List<Joint> connectionTree, out List<Joint> connectionEnd,
-            out int treeSize, out int biggestKey,out int smallestKey
-            ){
-            Joint[] joints = body.bodyStructure;
-            List<Joint> tree = new List<Joint>{this};  
-            if (pastOrFuture) 
-                tree.AddRange(connection.future); 
-                else tree.AddRange(connection.past);               
-            int size = tree.Count;
-            int biggest = 0;
-            int smallest = connection.current;
-            List<Joint> end = new List<Joint>();
-            for (int i=0; i< size; i++){
-                List<Joint> tracker = pastOrFuture ?
-                    joints[tree[i].connection.current].connection.future:
-                    joints[tree[i].connection.current].connection.past;
-                int trackerSize = tracker.Count;
-                if (trackerSize > 0){
-                    for(int e = 0; e < trackerSize; e++){
-                        Joint joint = tracker[e];
-                        int current = joint.connection.current;
-                        if (current > biggest) biggest = current;
-                        if (current < smallest) smallest = current;
-                        tree.Add(joint);
-                        size++;
-                    };
-                } else {
-                    end.Add(tree[i]);
-                }
-            }
-            connectionTree = tree;
-            connectionEnd = end;
-            treeSize = size;
-            biggestKey = biggest;
-            smallestKey = smallest;
         }
         public void optimizeCollisionSpheres(){
             int maxKeys = keyGenerator.maxKeys;
@@ -520,7 +513,7 @@ public class SourceCode:MonoBehaviour {
             for (int j = 0; j<maxKeys; j++){
                 CollisionSphere collision = collisionSpheres[j];
                 if (collision != null){
-                    collision.path.setJointKey(connection.current);
+                    collision.path.setJointKey(connection.indexInBody);
                     collision.path.setCollisionSphereKey(collisionCount);
                     newCollision[collisionCount] = collision;
                     collisionCount++;
