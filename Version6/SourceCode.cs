@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -96,11 +97,15 @@ public class SourceCode:MonoBehaviour {
         }
         void rotateAxis(ref Vector3 x, ref Vector3 y,ref Vector3 z,Vector3 axis,float angle){
             Vector4 quat = angledAxis(angle,axis);
-            x = quatRotate(x,quat);
-            y = quatRotate(y,quat);
-            z = quatRotate(z,quat);
+            x = quatRotate(x,origin,quat);
+            y = quatRotate(y,origin,quat);
+            z = quatRotate(z,origin,quat);
         }
-        void internalRotate(float worldAngleY,float worldAngleX,float localAngleY,Vector3 worldX,Vector3 worldY,ref Vector3 localX,ref Vector3 localY,ref Vector3 localZ){
+        void axisAlignment(
+            float worldAngleY, float worldAngleX, float localAngleY,
+            Vector3 worldX,Vector3 worldY,
+            ref Vector3 localX, ref Vector3 localY, ref Vector3 localZ
+            ){
             rotateAxis(ref localX,ref localY,ref localZ,worldX,worldAngleY);
             rotateAxis(ref localX,ref localY,ref localZ,worldY,worldAngleX);
             rotateAxis(ref localX,ref localY,ref localZ,localY,localAngleY);
@@ -113,7 +118,7 @@ public class SourceCode:MonoBehaviour {
             Vector3 localY = origin + new Vector3(0,distance,0);
             Vector3 localZ = origin + new Vector3(0,0,distance);
             
-            internalRotate(
+            axisAlignment(
                 worldAngleY,worldAngleX,localAngleY,
                 worldX,worldY,ref localX,ref localY,ref localZ
                 );
@@ -130,7 +135,7 @@ public class SourceCode:MonoBehaviour {
             Vector3 localY = origin + new Vector3(0,distance,0);
             Vector3 localZ = origin + new Vector3(0,0,distance);
             float degrees = 180 / Mathf.PI;
-            internalRotate(
+            axisAlignment(
                 worldAngleY*degrees,worldAngleX*degrees,0,
                 worldX,worldY,ref localX,ref localY,ref localZ
                 );   
@@ -162,15 +167,15 @@ public class SourceCode:MonoBehaviour {
         public void moveRotationAxis(float addAngleY,float addAngleX){
             Vector4 rotY = angledAxis(addAngleY,y);
             Vector4 rotX = angledAxis(addAngleX,x);
-            rotationAxis = quatRotate(rotationAxis,rotY);
-            rotationAxis = quatRotate(rotationAxis,rotX);
+            rotationAxis = quatRotate(rotationAxis,origin,rotY);
+            rotationAxis = quatRotate(rotationAxis,origin,rotX);
         }
         public void setRotationAxis(float setAngleY,float setAngleX){
             Vector4 rotY = angledAxis(setAngleY,y);
             Vector4 rotX = angledAxis(setAngleX,x);
             Vector3 rotationOrigin = y;
-            rotationOrigin = quatRotate(rotationOrigin,rotY);
-            rotationOrigin = quatRotate(rotationOrigin,rotX);
+            rotationOrigin = quatRotate(rotationOrigin,origin,rotY);
+            rotationOrigin = quatRotate(rotationOrigin,origin,rotX);
             rotationAxis = rotationOrigin;
         }
         public void getRotationAxisAngle(out float angleY,out float angleX){
@@ -179,12 +184,12 @@ public class SourceCode:MonoBehaviour {
         public Vector4 quat(float angle){
              return angledAxis(angle,rotationAxis);
         }
-        public void rotate(Vector4 quat){
-            origin = quatRotate(origin,quat);
-            x = quatRotate(x,quat);
-            y = quatRotate(y,quat);
-            z = quatRotate(z,quat);
-            rotationAxis = quatRotate(rotationAxis,quat);
+        public void rotate(Vector4 quat,Vector3 rotationOrigin){
+            origin = quatRotate(origin,rotationOrigin,quat);
+            x = quatRotate(x,rotationOrigin,quat);
+            y = quatRotate(y,rotationOrigin,quat);
+            z = quatRotate(z,rotationOrigin,quat);
+            rotationAxis = quatRotate(rotationAxis,rotationOrigin,quat);
         }
 
         public Vector4 quatMul(Vector4 q1, Vector4 q2) {
@@ -204,7 +209,7 @@ public class SourceCode:MonoBehaviour {
                 float z = normilized.z * sinHalfAngle;
                 return new Vector4(x,y,z,w);
         }
-        public Vector3 quatRotate(Vector3 point,Vector4 angledAxis){
+        public Vector3 quatRotate(Vector3 point, Vector3 origin, Vector4 angledAxis){
             Vector3 pointDirection = point - origin;     
             Vector4 rotatingVector = new Vector4(pointDirection.x, pointDirection.y, pointDirection.z,0);
             Vector4 inverseQuat = new Vector4(-angledAxis.x,-angledAxis.y,-angledAxis.z,angledAxis.w);
@@ -270,6 +275,7 @@ public class SourceCode:MonoBehaviour {
             bodyStructure = new Joint[amountOfJoints];
             keyGenerator = new KeyGenerator(amountOfJoints);
         }
+
         public void saveJoint(
             Joint joint, 
             out float globalX, out float globalY, out float distanceFromOrigin, 
@@ -288,20 +294,34 @@ public class SourceCode:MonoBehaviour {
         public void rotateJointHierarchy(int indexInBody, float angle){
             Joint joint = bodyStructure[indexInBody];
             if (joint != null){
-            Vector4 quat = joint.localAxis.quat(angle);
-                while (joint != null){
-
+                List<Joint> tree = new List<Joint>{joint};
+                Vector3 origin = joint.localAxis.origin;
+                Vector4 quat = joint.localAxis.quat(angle);
+                int size = 1;
+                for (int i=0; i< size; i++){
+                    joint = tree[i];
+                    List<Joint> tracker = tree[i].connection.future;
+                    int trackerSize = tracker.Count;
+                    if (trackerSize > 0){
+                        tree.AddRange(tracker);
+                        size += trackerSize;
+                    }
+                    joint.localAxis.rotate(quat,origin);
+                    int sphereCount = joint.collisionSpheres.Length;
+                    for (int j = 0; i<sphereCount; j++){
+                        CollisionSphere sphere = joint.collisionSpheres[j];
+                        sphere.setOrigin(
+                            joint.localAxis.quatRotate(sphere.origin,origin,quat)
+                            );
+                    }
                 }
-            }
-            
+            }    
         }
-
         public void resizeJoints(int amount){
             int availableKeys = keyGenerator.availableKeys;
-            int maxKeys = keyGenerator.maxKeys;
-            int limitCheck = availableKeys + amount;
-            if(limitCheck > maxKeys) {
-                keyGenerator.setLimit(limitCheck - availableKeys);
+            int limitCheck = availableKeys - amount;
+            if(limitCheck < 0) {
+                keyGenerator.setLimit(amount + Mathf.Abs(limitCheck));
                 keyGenerator.generateKeys();
                 int max = keyGenerator.maxKeys;
                 int newSize = max + keyGenerator.increaseKeysBy;
@@ -346,7 +366,8 @@ public class SourceCode:MonoBehaviour {
                 for (int i = 0; i < treeSize; i++){
                     Joint joint = connectionTree[i];
                     joint.connection.indexInBody = i;
-                    orginizedJoints[i] = joint;
+                    joint.optimizeCollisionSpheres();
+                    orginizedJoints[i] = joint; 
                 }
                 bodyStructure = orginizedJoints;
                 keyGenerator.resetGenerator(treeSize);
@@ -458,24 +479,18 @@ public class SourceCode:MonoBehaviour {
             out List<Joint> connectionTree, out List<Joint> connectionEnd,
             out int treeSize
             ){
-            Joint[] joints = current.body.bodyStructure;
             List<Joint> tree = new List<Joint>{current};  
-            if (pastOrFuture) 
-                tree.AddRange(future); 
-                else tree.AddRange(past);               
+            if (pastOrFuture) tree.AddRange(future); else tree.AddRange(past);               
             int size = tree.Count;
             List<Joint> end = new List<Joint>();
             for (int i=0; i< size; i++){
                 List<Joint> tracker = pastOrFuture ?
-                    joints[tree[i].connection.indexInBody].connection.future:
-                    joints[tree[i].connection.indexInBody].connection.past;
+                    tree[i].connection.future:
+                    tree[i].connection.past;
                 int trackerSize = tracker.Count;
                 if (trackerSize > 0){
-                    for(int e = 0; e < trackerSize; e++){
-                        Joint joint = tracker[e];
-                        tree.Add(joint);
-                        size++;
-                    };
+                    tree.AddRange(tracker);
+                    size += trackerSize;
                 } else {
                     end.Add(tree[i]);
                 }
@@ -509,18 +524,18 @@ public class SourceCode:MonoBehaviour {
             int maxKeys = keyGenerator.maxKeys;
             int used = keyGenerator.availableKeys;
             CollisionSphere[] newCollision = new CollisionSphere[used];
-            int collisionCount = 0;
+            int count = 0;
             for (int j = 0; j<maxKeys; j++){
                 CollisionSphere collision = collisionSpheres[j];
                 if (collision != null){
                     collision.path.setJointKey(connection.indexInBody);
-                    collision.path.setCollisionSphereKey(collisionCount);
-                    newCollision[collisionCount] = collision;
-                    collisionCount++;
+                    collision.path.setCollisionSphereKey(count);
+                    newCollision[count] = collision;
+                    count++;
                 }
             }
             collisionSpheres = newCollision;
-            keyGenerator.resetGenerator(collisionCount);
+            keyGenerator.resetGenerator(count);
         }
     }
 
@@ -557,6 +572,9 @@ public class SourceCode:MonoBehaviour {
             this.path = path;
             this.origin = origin;
             this.radius = radius;
+        }
+        public void setOrigin(Vector3 newOrigin){
+            origin = newOrigin;
         }
     }
 

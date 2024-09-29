@@ -90,8 +90,8 @@ public class UnityPlugin : MonoBehaviour
         public Vector4 quat(float angle){
              return axis.quat(angle);
         }
-        public void rotate(Vector4 quat){
-            axis.rotate(quat);
+        public void rotate(Vector4 quat, Vector3 rotationOrigin){
+            axis.rotate(quat,rotationOrigin);
             if (created) setGameObjects(); 
         }
         public void set(float rotateWorldY,float rotateWorldX,float rotateLocalY){
