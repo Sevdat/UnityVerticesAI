@@ -48,11 +48,16 @@ public class SourceCode:MonoBehaviour {
             moveAxis(newPosition);
         }
         public void scale(float newDistance){
-            if (newDistance > 0.1f){
+            if (newDistance > 0f){
                 distance = newDistance;
                 x = origin + distanceFromOrign(x,origin);
                 y = origin + distanceFromOrign(y,origin);
                 z = origin + distanceFromOrign(z,origin);
+                rotationAxis = origin + distanceFromOrign(rotationAxis,origin);
+            }
+        }
+        public void scaleRotationAxis(float newDistance){
+            if (newDistance > 0f){
                 rotationAxis = origin + distanceFromOrign(rotationAxis,origin);
             }
         }
@@ -295,7 +300,7 @@ public class SourceCode:MonoBehaviour {
             Joint joint = bodyStructure[indexInBody];
             if (joint != null){
                 List<Joint> tree = new List<Joint>{joint};
-                Vector3 origin = joint.localAxis.origin;
+                Vector3 rotationOrigin = joint.localAxis.origin;
                 Vector4 quat = joint.localAxis.quat(angle);
                 int size = 1;
                 for (int i=0; i< size; i++){
@@ -306,12 +311,12 @@ public class SourceCode:MonoBehaviour {
                         tree.AddRange(tracker);
                         size += trackerSize;
                     }
-                    joint.localAxis.rotate(quat,origin);
+                    joint.localAxis.rotate(quat,rotationOrigin);
                     int sphereCount = joint.collisionSpheres.Length;
                     for (int j = 0; i<sphereCount; j++){
                         CollisionSphere sphere = joint.collisionSpheres[j];
                         sphere.setOrigin(
-                            joint.localAxis.quatRotate(sphere.origin,origin,quat)
+                            joint.localAxis.quatRotate(sphere.origin,rotationOrigin,quat)
                             );
                     }
                 }
@@ -520,6 +525,30 @@ public class SourceCode:MonoBehaviour {
         public void setBody(Body body){
             this.body=body;
         }
+        public void createSphere(float setAngleY,float setAngleX,float length){
+            localAxis.scaleRotationAxis(length);
+            localAxis.setRotationAxis(setAngleY,setAngleX);
+            resizeCollisionSpheres(1);
+            int sphereIndex = keyGenerator.getKey();
+            Path path = new Path(body,connection.indexInBody,sphereIndex);
+            collisionSpheres[sphereIndex] = 
+                new CollisionSphere(path,localAxis.rotationAxis,length);
+        }
+        public void resizeCollisionSpheres(int amount){
+            int availableKeys = keyGenerator.availableKeys;
+            int limitCheck = availableKeys - amount;
+            if(limitCheck < 0) {
+                keyGenerator.setLimit(amount + Mathf.Abs(limitCheck));
+                keyGenerator.generateKeys();
+                int max = keyGenerator.maxKeys;
+                int newSize = max + keyGenerator.increaseKeysBy;
+                CollisionSphere[] newSphereArray = new CollisionSphere[newSize];
+                for (int i = 0; i<max; i++){
+                    CollisionSphere sphere = newSphereArray[i];
+                    if (sphere != null) newSphereArray[i] = sphere;
+                }
+            }
+        }
         public void optimizeCollisionSpheres(){
             int maxKeys = keyGenerator.maxKeys;
             int used = keyGenerator.availableKeys;
@@ -575,6 +604,9 @@ public class SourceCode:MonoBehaviour {
         }
         public void setOrigin(Vector3 newOrigin){
             origin = newOrigin;
+        }
+        public void setRadius(float newRadius){
+            radius = newRadius;
         }
     }
 
