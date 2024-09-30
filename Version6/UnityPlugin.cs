@@ -79,15 +79,15 @@ public class UnityPlugin : MonoBehaviour
             axis.scaleRotationAxis(newDistance);
             if (created) setGameObjects();
         }
-        public void setAxis(float worldAngleY,float worldAngleX,float localAngleY){
-            axis.setAxis(worldAngleY*degreeToRadian,worldAngleX*degreeToRadian,localAngleY*degreeToRadian);
-            if (created) setGameObjects();
-        }
         public void getWorldRotation(out float worldAngleY,out float worldAngleX,out float localAngleY){
             axis.getWorldRotation(out worldAngleY,out worldAngleX,out localAngleY);
             worldAngleY *= radianToDegree;
             worldAngleX *= radianToDegree;
             localAngleY *= radianToDegree;
+        }
+        public void setWorldRotation(float worldAngleY,float worldAngleX,float localAngleY){
+            axis.setWorldRotation(worldAngleY*degreeToRadian,worldAngleX*degreeToRadian,localAngleY*degreeToRadian);
+            if (created) setGameObjects();
         }
         public void moveRotationAxis(float addAngleY,float addAngleX){
             axis.moveRotationAxis(addAngleY*degreeToRadian,addAngleX*degreeToRadian);
@@ -99,8 +99,8 @@ public class UnityPlugin : MonoBehaviour
         }
         public void getRotationAxisAngle(out float angleY,out float angleX){
             axis.getRotationAxisAngle(out angleY,out angleX);
-            angleX *= radianToDegree;
             angleY *= radianToDegree;
+            angleX *= radianToDegree;
         }
         public Vector4 quat(float angle){
              return axis.quat(angle);
@@ -110,59 +110,49 @@ public class UnityPlugin : MonoBehaviour
             if (created) setGameObjects(); 
         }
     }
-    AxisSimulationTest testAxis;
-    public class AxisSimulationTest{
-        internal AxisSimulation axisSimulation = new AxisSimulation();
-        float accuracy = 0.01f;
-        float worldAngleY,worldAngleX,localAngleY;
-        Vector3 vec = new Vector3(0,0,0); 
-        float distance = 5f;
 
-        public AxisSimulationTest(){}
-        public AxisSimulationTest(Vector3 origin, float distance,float worldAngleY,float worldAngleX,float localAngleY){
-            vec = origin;
-            this.distance = distance;
+    public class KeyGeneratorSimulation:SourceCode{
+        KeyGenerator keyGenerator;
+        public List<GameObject> maxKeys,availableKeys,increaseKeysBy,freeKeys;
+        bool created = false;
+        public void createGenerator(int amount){
+            if (!created){
+                keyGenerator = new KeyGenerator(amount);
+                created = true;
+            }
+        }
+        public void deleteGenerator(){
+            if (created){
+                keyGenerator = null;
+            }
         }
 
-        internal void testCreateAxis(){
-            axisSimulation.createAxis(vec,distance);
-            Vector3 origin = axisSimulation.origin.transform.position;
-            if (origin != vec) print($"originPositionError: expected {vec} got {origin}");
-            
-            Vector3 vecX = vec + new Vector3(distance,0,0);
-            Vector3 x = axisSimulation.x.transform.position;
-            if (x != vecX) print($"xPositionError: expected {vecX} got {x}");
-            
-            Vector3 vecY = vec + new Vector3(0,distance,0);
-            Vector3 y = axisSimulation.y.transform.position;
-            if (y != vecY) print($"yPositionError: expected {vecY} got {y}");
-                        
-            Vector3 vecZ = vec + new Vector3(0,0,distance);
-            Vector3 z = axisSimulation.z.transform.position;
-            if (z != vecZ) print($"zPositionError: expected {vecZ} got {z}");
-        }
-
-        internal void testScaleAxis(){
-            testCreateAxis();
-            axisSimulation.scaleAxis(distance);
-            float min = distance - accuracy;
-            float max = distance - accuracy;
-            float gotX = axisSimulation.axis.length(
-                axisSimulation.x.transform.position - axisSimulation.origin.transform.position
-                );
-            if (min < gotX && gotX < max) print($"xPositionError: expected {distance} got {gotX}");
-            
-            float gotY = axisSimulation.axis.length(
-            axisSimulation.y.transform.position - axisSimulation.origin.transform.position
-            );
-            if (min < gotY && gotY < max) print($"yPositionError: expected {distance} got {gotY}");
-
-            float gotZ = axisSimulation.axis.length(
-            axisSimulation.z.transform.position - axisSimulation.origin.transform.position
-            );
-            if (min < gotZ && gotZ < max) print($"zPositionError: expected {distance} got {gotZ}");           
+        public void generateKeys(){ //not done
+            keyGenerator.generateKeys();
+            for (int i = 0; i<keyGenerator.maxKeys;i++){
+                maxKeys.Add(Instantiate(dynamicClone));
+            }
+            for (int i = 0; i<keyGenerator.availableKeys;i++){
+                availableKeys.Add(Instantiate(dynamicClone));
+            }
+            int increaseBy = keyGenerator.increaseKeysBy;
+            int count = increaseKeysBy.Count;
+            int amount = count - increaseBy;
+            if (amount > 0){
+                for (int i = 0; i<increaseBy;i++){
+                    increaseKeysBy.Add(Instantiate(dynamicClone));
+                }
+            } else {
+                for (int i = 0; i<increaseBy;i++){
+                    increaseKeysBy.Add(Instantiate(dynamicClone));
+                }
+            }
+            for (int i = 0; i<increaseBy;i++){
+                freeKeys.Add(Instantiate(dynamicClone));
+            }                
         }
     }
+
     void Awake(){
         dynamicClone = originalObject;
         staticClone = originalObject;
@@ -170,8 +160,7 @@ public class UnityPlugin : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
     void Start(){
-        testAxis = new AxisSimulationTest();
-        testAxis.testScaleAxis();
+
     }
     
     // Update is called once per frame

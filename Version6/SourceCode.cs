@@ -1,9 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class SourceCode:MonoBehaviour {
 
@@ -57,6 +53,7 @@ public class SourceCode:MonoBehaviour {
         }
         public void scaleRotationAxis(float newDistance){
             if (newDistance > 0f){
+                distance = newDistance;
                 rotationAxis = origin + distanceFromOrign(rotationAxis,origin);
             }
         }
@@ -114,21 +111,6 @@ public class SourceCode:MonoBehaviour {
             rotateAxis(ref localX,ref localY,ref localZ,worldY,worldAngleX);
             rotateAxis(ref localX,ref localY,ref localZ,localY,localAngleY);
         }
-        public void setAxis(float worldAngleY,float worldAngleX,float localAngleY){
-            Vector3 worldX = origin + new Vector3(distance,0,0);
-            Vector3 worldY = origin + new Vector3(0,distance,0);
-            
-            Vector3 localX = origin + new Vector3(distance,0,0);
-            Vector3 localY = origin + new Vector3(0,distance,0);
-            Vector3 localZ = origin + new Vector3(0,0,distance);
-            
-            axisAlignment(
-                worldAngleY,worldAngleX,localAngleY,
-                worldX,worldY,ref localX,ref localY,ref localZ
-                );
-
-            x = localX; y = localY; z = localZ;
-        }
         public void getWorldRotation(out float worldAngleY,out float worldAngleX,out float localAngleY){
             Vector3 worldX = origin + new Vector3(distance,0,0);
             Vector3 worldY = origin + new Vector3(0,distance,0);
@@ -152,6 +134,22 @@ public class SourceCode:MonoBehaviour {
                 2*Mathf.PI-angleBetweenLines(dirZ,dirLocalZ):
                 angleBetweenLines(dirZ,dirLocalZ);
         }
+        public void setWorldRotation(float worldAngleY,float worldAngleX,float localAngleY){
+            Vector3 worldX = origin + new Vector3(distance,0,0);
+            Vector3 worldY = origin + new Vector3(0,distance,0);
+            
+            Vector3 localX = origin + new Vector3(distance,0,0);
+            Vector3 localY = origin + new Vector3(0,distance,0);
+            Vector3 localZ = origin + new Vector3(0,0,distance);
+            
+            axisAlignment(
+                worldAngleY,worldAngleX,localAngleY,
+                worldX,worldY,ref localX,ref localY,ref localZ
+                );
+
+            x = localX; y = localY; z = localZ;
+        }
+
         internal void getAngle(Vector3 point,Vector3 origin, Vector3 x, Vector3 y, Vector3 z, out float angleY,out float angleX){
             Vector3 dirX = direction(x,origin);
             Vector3 dirY = direction(y,origin);
@@ -168,8 +166,8 @@ public class SourceCode:MonoBehaviour {
                 angleBetweenLines(dirZ,dirPerpOrg);
         }
         public void moveRotationAxis(float addAngleY,float addAngleX){
-            Vector4 rotY = angledAxis(addAngleY,y);
-            Vector4 rotX = angledAxis(addAngleX,x);
+            Vector4 rotY = angledAxis(addAngleY,x);
+            Vector4 rotX = angledAxis(addAngleX,y);
             rotationAxis = quatRotate(rotationAxis,origin,rotY);
             rotationAxis = quatRotate(rotationAxis,origin,rotX);
         }
@@ -259,6 +257,7 @@ public class SourceCode:MonoBehaviour {
         }
         public void resetGenerator(int maxKeys){
             freeKeys.Clear();
+            freeKeys.TrimExcess();
             this.maxKeys = maxKeys;
             availableKeys = 0;
         }
