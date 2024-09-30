@@ -30,10 +30,10 @@ public class SourceCode:MonoBehaviour {
         public Axis(Vector3 origin, float distance){
             this.origin = origin;
             this.distance = (distance >0.1f)? distance:1f;
-            x = origin + new Vector3(1f,0,0)*distance;
-            y = origin + new Vector3(0,1f,0)*distance;
-            z = origin + new Vector3(0,0,1f)*distance;
-            rotationAxis = origin + new Vector3(0,1f,0)*distance;
+            x = origin + new Vector3(distance,0,0);
+            y = origin + new Vector3(0,distance,0);
+            z = origin + new Vector3(0,0,distance);
+            rotationAxis = origin + new Vector3(0,distance,0);
         }
         
         public void moveAxis(Vector3 add){
@@ -47,13 +47,12 @@ public class SourceCode:MonoBehaviour {
             Vector3 newPosition = newOrigin-origin;
             moveAxis(newPosition);
         }
-        public void scale(float newDistance){
+        public void scaleAxis(float newDistance){
             if (newDistance > 0f){
                 distance = newDistance;
                 x = origin + distanceFromOrign(x,origin);
                 y = origin + distanceFromOrign(y,origin);
                 z = origin + distanceFromOrign(z,origin);
-                rotationAxis = origin + distanceFromOrign(rotationAxis,origin);
             }
         }
         public void scaleRotationAxis(float newDistance){
@@ -139,9 +138,8 @@ public class SourceCode:MonoBehaviour {
             Vector3 localX = origin + new Vector3(distance,0,0);
             Vector3 localY = origin + new Vector3(0,distance,0);
             Vector3 localZ = origin + new Vector3(0,0,distance);
-            float degrees = 180 / Mathf.PI;
             axisAlignment(
-                worldAngleY*degrees,worldAngleX*degrees,0,
+                worldAngleY,worldAngleX,0,
                 worldX,worldY,ref localX,ref localY,ref localZ
                 );   
             Vector3 dirX = direction(x,origin);
@@ -206,7 +204,7 @@ public class SourceCode:MonoBehaviour {
         }
         public Vector4 angledAxis(float angle,Vector3 rotationAxis){
                 Vector3 normilized = normalize(rotationAxis - origin); 
-                float halfAngle = angle * 0.5f * (Mathf.PI/180.0f);
+                float halfAngle = angle * 0.5f;
                 float sinHalfAngle = Mathf.Sin(halfAngle);
                 float w = Mathf.Cos(halfAngle);
                 float x = normilized.x * sinHalfAngle;
@@ -339,7 +337,7 @@ public class SourceCode:MonoBehaviour {
                 }
             }
         }
-        public void returnJointKey(int key){
+        public void deleteJoint(int key){
             Joint remove = bodyStructure[key];
             if(remove != null){
                 keyGenerator.returnKey(key);
@@ -443,7 +441,7 @@ public class SourceCode:MonoBehaviour {
                 connectPastTo(newJoint);
                 for (int i =0; i< treeSize;i++){
                     Joint joint = connectionTree[i];
-                    joint.body.returnJointKey(joint.connection.indexInBody);
+                    joint.body.deleteJoint(joint.connection.indexInBody);
                     joint.setBody(newJoint.body);
                     joint.connection.indexInBody = newJoint.keyGenerator.getKey();
                     newJoint.body.bodyStructure[joint.connection.indexInBody] = joint;
@@ -525,14 +523,21 @@ public class SourceCode:MonoBehaviour {
         public void setBody(Body body){
             this.body=body;
         }
-        public void createSphere(float setAngleY,float setAngleX,float length){
-            localAxis.scaleRotationAxis(length);
+        public void createSphere(float setAngleY,float setAngleX,float lengthFromOrigin,float sphereRadius){
+            localAxis.scaleRotationAxis(lengthFromOrigin);
             localAxis.setRotationAxis(setAngleY,setAngleX);
             resizeCollisionSpheres(1);
             int sphereIndex = keyGenerator.getKey();
             Path path = new Path(body,connection.indexInBody,sphereIndex);
             collisionSpheres[sphereIndex] = 
-                new CollisionSphere(path,localAxis.rotationAxis,length);
+                new CollisionSphere(path,localAxis.rotationAxis,sphereRadius);
+        }
+        public void deleteSphere(int key){
+            CollisionSphere remove = collisionSpheres[key];
+            if(remove != null){
+                keyGenerator.returnKey(key);
+                collisionSpheres[key] = null;
+            }
         }
         public void resizeCollisionSpheres(int amount){
             int availableKeys = keyGenerator.availableKeys;
