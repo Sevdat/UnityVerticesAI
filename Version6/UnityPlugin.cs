@@ -16,6 +16,7 @@ public class UnityPlugin : MonoBehaviour
         public bool created = false;
         public float degreeToRadian = Mathf.PI/180;
         public float radianToDegree = 180/Mathf.PI;
+
         public void createAxis(Vector3 vec, float distance){
             if (!created){
                 axis = new Axis(vec,distance);
@@ -113,43 +114,63 @@ public class UnityPlugin : MonoBehaviour
 
     public class KeyGeneratorSimulation:SourceCode{
         KeyGenerator keyGenerator;
-        public List<GameObject> maxKeys,availableKeys,increaseKeysBy,freeKeys;
+        public List<GameObject> maxKeys = new List<GameObject>(),
+                                availableKeys = new List<GameObject>(),
+                                increaseKeysBy= new List<GameObject>(),
+                                freeKeys= new List<GameObject>();
+        public Color maxKeysColor,
+                    availableKeysColor,
+                    increaseKeysByColor,
+                    freeKeysColor = new Color(0,1,0,0),
+                    capacityColor= new Color(0,0,1,0);
         bool created = false;
         public void createGenerator(int amount){
             if (!created){
                 keyGenerator = new KeyGenerator(amount);
+                fixedDisplay(keyGenerator.availableKeys,freeKeys,freeKeysColor, new Vector3(0,1,5),true); 
                 created = true;
             }
         }
         public void deleteGenerator(){
             if (created){
                 keyGenerator = null;
+                maxKeys = null;
+                availableKeys = null;
+                increaseKeysBy = null;
+                freeKeys= null;
             }
         }
-
+        public void fixedDisplay(int newSize,List<GameObject> list, Color color,Vector3 vec,bool showCapacity){
+            if (newSize >0){
+                int capacity = list.Capacity;
+                int resize = capacity - newSize;
+                if (resize < 0){
+                    int size = list.Count;
+                    if (capacity == 0) capacity = 2;
+                    while (capacity < newSize) capacity *=2;
+                    for (int i = size; i< capacity;i++){
+                        bool changeToCapacity = i < newSize;
+                        GameObject gameObject = Instantiate(dynamicClone);
+                        gameObject.GetComponent<Renderer>().material.color = changeToCapacity? color:capacityColor;
+                        if (!showCapacity && !changeToCapacity) gameObject.GetComponent<Renderer>().enabled = false;
+                        list.Add(gameObject);
+                        list[i].transform.position = new Vector3(2*i,0,0) + vec;
+                    }
+                } else if (resize>0){
+                    for (int i = newSize; i< capacity;i++){
+                        Renderer renderer = list[i].gameObject.GetComponent<Renderer>();
+                        if (renderer.material.color == capacityColor) break;
+                        renderer.material.color = capacityColor;
+                        if (!showCapacity) renderer.enabled = false;
+                    }
+                }
+            }
+        }
         public void generateKeys(){ //not done
             keyGenerator.generateKeys();
-            for (int i = 0; i<keyGenerator.maxKeys;i++){
-                maxKeys.Add(Instantiate(dynamicClone));
-            }
-            for (int i = 0; i<keyGenerator.availableKeys;i++){
-                availableKeys.Add(Instantiate(dynamicClone));
-            }
-            int increaseBy = keyGenerator.increaseKeysBy;
-            int count = increaseKeysBy.Count;
-            int amount = count - increaseBy;
-            if (amount > 0){
-                for (int i = 0; i<increaseBy;i++){
-                    increaseKeysBy.Add(Instantiate(dynamicClone));
-                }
-            } else {
-                for (int i = 0; i<increaseBy;i++){
-                    increaseKeysBy.Add(Instantiate(dynamicClone));
-                }
-            }
-            for (int i = 0; i<increaseBy;i++){
-                freeKeys.Add(Instantiate(dynamicClone));
-            }                
+            if (created){
+                fixedDisplay(keyGenerator.availableKeys,freeKeys,freeKeysColor, new Vector3(0,1,5),true); 
+            }  
         }
     }
 
@@ -159,10 +180,12 @@ public class UnityPlugin : MonoBehaviour
         staticClone.isStatic = true;
         Cursor.lockState = CursorLockMode.Locked;
     }
+    KeyGeneratorSimulation keyGeneratorSimulation = new KeyGeneratorSimulation();
+    List<GameObject> lol = new List<GameObject>();
     void Start(){
-
+        keyGeneratorSimulation.createGenerator(6);
+        
     }
-    
     // Update is called once per frame
     void Update(){
         
