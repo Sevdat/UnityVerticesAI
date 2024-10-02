@@ -114,21 +114,20 @@ public class UnityPlugin : MonoBehaviour
 
     public class KeyGeneratorSimulation:SourceCode{
         KeyGenerator keyGenerator;
-        public List<GameObject> maxKeys = new List<GameObject>(),
-                                availableKeys = new List<GameObject>(),
-                                increaseKeysBy= new List<GameObject>(),
-                                freeKeys= new List<GameObject>();
-        public Color maxKeysColor,
-                    availableKeysColor,
-                    increaseKeysByColor,
-                    freeKeysColor = new Color(0,1,0,0),
-                    capacityColor= new Color(0,0,1,0);
+        public List<GameObject> maxKeys,availableKeys,increaseKeysBy,freeKeys;
+        public Color maxKeysColor,availableKeysColor,increaseKeysByColor,freeKeysColor,capacityColor;
         bool created = false;
         public void createGenerator(int amount){
             if (!created){
                 keyGenerator = new KeyGenerator(amount);
-                fixedDisplay(keyGenerator.availableKeys,freeKeys,freeKeysColor, new Vector3(0,1,5),true); 
+                maxKeys = new List<GameObject>();
+                availableKeys = new List<GameObject>();
+                increaseKeysBy= new List<GameObject>();
+                freeKeys= new List<GameObject>();
+                freeKeysColor = new Color(0,1,0,0);
+                capacityColor = new Color(0,0,1,0);
                 created = true;
+                fixedDisplay(freeKeys,new Vector3(0,5,10),freeKeysColor);
             }
         }
         public void deleteGenerator(){
@@ -140,36 +139,25 @@ public class UnityPlugin : MonoBehaviour
                 freeKeys= null;
             }
         }
-        public void fixedDisplay(int newSize,List<GameObject> list, Color color,Vector3 vec,bool showCapacity){
-            if (newSize >0){
-                int capacity = list.Capacity;
-                int resize = capacity - newSize;
-                if (resize < 0){
-                    int size = list.Count;
-                    if (capacity == 0) capacity = 2;
-                    while (capacity < newSize) capacity *=2;
-                    for (int i = size; i< capacity;i++){
-                        bool changeToCapacity = i < newSize;
-                        GameObject gameObject = Instantiate(dynamicClone);
-                        gameObject.GetComponent<Renderer>().material.color = changeToCapacity? color:capacityColor;
-                        if (!showCapacity && !changeToCapacity) gameObject.GetComponent<Renderer>().enabled = false;
-                        list.Add(gameObject);
-                        list[i].transform.position = new Vector3(2*i,0,0) + vec;
-                    }
-                } else if (resize>0){
-                    for (int i = newSize; i< capacity;i++){
-                        Renderer renderer = list[i].gameObject.GetComponent<Renderer>();
-                        if (renderer.material.color == capacityColor) break;
-                        renderer.material.color = capacityColor;
-                        if (!showCapacity) renderer.enabled = false;
-                    }
+        public void fixedDisplay(List<GameObject> list, Vector3 vec, Color color){
+            int keyGeneratorCapacity = keyGenerator.freeKeys.Capacity;
+            int keyGeneratorAvailableKeys = keyGenerator.availableKeys;
+            int listCapacity = list.Capacity;
+            if (listCapacity != keyGeneratorCapacity){
+                int add = keyGeneratorCapacity-listCapacity;
+                for (int i = 0;i<add;i++){
+                    GameObject key = Instantiate(dynamicClone);
+                    key.GetComponent<Renderer>().material.color = capacityColor;
+                    key.transform.position = new Vector3(2*i + listCapacity,0,0)+vec;
+                    list.Add(key);
                 }
             }
+
         }
         public void generateKeys(){ //not done
             keyGenerator.generateKeys();
             if (created){
-                fixedDisplay(keyGenerator.availableKeys,freeKeys,freeKeysColor, new Vector3(0,1,5),true); 
+                fixedDisplay(freeKeys, new Vector3(0,5,10),freeKeysColor);
             }  
         }
     }

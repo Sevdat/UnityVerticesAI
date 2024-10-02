@@ -229,8 +229,7 @@ public class SourceCode:MonoBehaviour {
         public KeyGenerator(int amountOfKeys){
             freeKeys = new List<int>();
             increaseKeysBy = amountOfKeys;
-            generateKeys();
-            maxKeys = amountOfKeys;
+            generateKeys();;
         }
 
         public void generateKeys(){
@@ -378,6 +377,7 @@ public class SourceCode:MonoBehaviour {
     }
 
     public class Connection {
+        public bool active; // for schematic simulations
         public int indexInBody;
         public Joint current;
         public List<Joint> past; 
@@ -385,6 +385,7 @@ public class SourceCode:MonoBehaviour {
 
         public Connection(){}
         public Connection(int indexInBody, List<Joint> past,List<Joint> future){
+            active = true;
             this.indexInBody = indexInBody;
             this.past = past;
             this.future = future;
