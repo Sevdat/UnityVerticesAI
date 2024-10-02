@@ -229,7 +229,7 @@ public class SourceCode:MonoBehaviour {
         public KeyGenerator(int amountOfKeys){
             freeKeys = new List<int>();
             increaseKeysBy = amountOfKeys;
-            generateKeys();;
+            generateKeys();
         }
 
         public void generateKeys(){

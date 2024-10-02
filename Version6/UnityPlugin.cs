@@ -113,7 +113,7 @@ public class UnityPlugin : MonoBehaviour
     }
 
     public class KeyGeneratorSimulation:SourceCode{
-        KeyGenerator keyGenerator;
+        public KeyGenerator keyGenerator;
         public List<GameObject> maxKeys,availableKeys,increaseKeysBy,freeKeys;
         public Color maxKeysColor,availableKeysColor,increaseKeysByColor,freeKeysColor,capacityColor;
         bool created = false;
@@ -127,7 +127,7 @@ public class UnityPlugin : MonoBehaviour
                 freeKeysColor = new Color(0,1,0,0);
                 capacityColor = new Color(0,0,1,0);
                 created = true;
-                fixedDisplay(freeKeys,new Vector3(0,5,10),freeKeysColor);
+                displayFreeKeysList(freeKeys,new Vector3(0,5,10),freeKeysColor,true);
             }
         }
         public void deleteGenerator(){
@@ -139,25 +139,60 @@ public class UnityPlugin : MonoBehaviour
                 freeKeys= null;
             }
         }
-        public void fixedDisplay(List<GameObject> list, Vector3 vec, Color color){
+        public void displayFreeKeysList(List<GameObject> list, Vector3 vec, Color color, bool showCapacity){
             int keyGeneratorCapacity = keyGenerator.freeKeys.Capacity;
-            int keyGeneratorAvailableKeys = keyGenerator.availableKeys;
             int listCapacity = list.Capacity;
             if (listCapacity != keyGeneratorCapacity){
                 int add = keyGeneratorCapacity-listCapacity;
-                for (int i = 0;i<add;i++){
-                    GameObject key = Instantiate(dynamicClone);
-                    key.GetComponent<Renderer>().material.color = capacityColor;
-                    key.transform.position = new Vector3(2*i + listCapacity,0,0)+vec;
-                    list.Add(key);
+                if (add> 0){
+                    for (int i = 0;i<add;i++){
+                        GameObject key = Instantiate(dynamicClone);
+                        Renderer renderKey = key.GetComponent<Renderer>();
+                        key.GetComponent<Renderer>().material.color = capacityColor;
+                        key.transform.position = new Vector3(2*(i + listCapacity),0,0)+vec;
+                        list.Add(key);
+                        if (!showCapacity) renderKey.enabled = false;
+                    }
+                }
+                else {
+                    for (int i = 0; i>add;i--){
+                        int index = listCapacity - 1 + i;
+                        Destroy(list[index]);
+                        list.RemoveAt(index);
+                    }
                 }
             }
+            int keyGeneratorAvailableKeys = keyGenerator.availableKeys;
+            Color getColor = list[keyGeneratorAvailableKeys].GetComponent<Renderer>().material.color;
+            keyGeneratorAvailableKeys -= 1;
+            if (getColor == color){
+                for (int i = keyGeneratorAvailableKeys;i<keyGeneratorCapacity;i++){
+                    Renderer render = list[i].GetComponent<Renderer>();
+                    if (render.material.color == capacityColor) break;
+                    render.material.color = capacityColor;
+                    if (render.enabled && !showCapacity) render.enabled = false;
+                }
+            } else {
+                for (int i = keyGeneratorAvailableKeys;i>-1;i--){
+                    Renderer render = list[i].GetComponent<Renderer>();
+                    if (render.material.color == color) break;
+                    render.material.color = color;
+                    if (!render.enabled) render.enabled = true;
+                }
+            }
+        }
+        public void displayList(List<GameObject> list, int amount, Vector3 vec, Color color){
+            int count = list.Count;
+            // int resize = amount - count;
+            // if (resize){
+
+            // }
 
         }
         public void generateKeys(){ //not done
             keyGenerator.generateKeys();
             if (created){
-                fixedDisplay(freeKeys, new Vector3(0,5,10),freeKeysColor);
+                displayFreeKeysList(freeKeys, new Vector3(0,5,10),freeKeysColor,true);
             }  
         }
     }
@@ -172,6 +207,10 @@ public class UnityPlugin : MonoBehaviour
     List<GameObject> lol = new List<GameObject>();
     void Start(){
         keyGeneratorSimulation.createGenerator(6);
+        keyGeneratorSimulation.generateKeys();
+        keyGeneratorSimulation.keyGenerator.resetGenerator(5);
+        keyGeneratorSimulation.generateKeys();
+
         
     }
     // Update is called once per frame
