@@ -67,8 +67,6 @@ public class SourceCode:MonoBehaviour {
         }
         internal Vector3 direction(Vector3 point,Vector3 origin){ 
             Vector3 v = point-origin;
-            float radius = length(v);
-            if (radius == 0) v = point-this.origin;
             return v/length(v);
         }
         internal Vector3 distanceFromOrign(Vector3 point,Vector3 origin){
@@ -111,6 +109,26 @@ public class SourceCode:MonoBehaviour {
             rotateAxis(ref localX,ref localY,ref localZ,worldY,worldAngleX);
             rotateAxis(ref localX,ref localY,ref localZ,localY,localAngleY);
         }
+        internal void getAngle(Vector3 point,Vector3 origin, Vector3 x, Vector3 y, Vector3 z, out float angleY,out float angleX){
+            Vector3 dirX = direction(x,origin);
+            Vector3 dirY = direction(y,origin);
+            Vector3 dirZ = direction(z,origin);
+            Vector3 dirH = direction(point,origin);
+            Vector3 perpendicularOrigin = perpendicular(origin,dirY,point);
+
+            float checkLength = length(point -perpendicularOrigin);
+            Vector3 dirPerpOrg = (checkLength !=0)?direction(point,perpendicularOrigin):normalize(point);
+            float angleSide = angleBetweenLines(dirX,dirPerpOrg);
+            
+            angleY = angleBetweenLines(dirY,dirH);
+            if (0 < angleY && angleY < Mathf.PI) {
+                angleX = (angleSide>Mathf.PI/2)? 
+                    2*Mathf.PI-angleBetweenLines(dirZ,dirPerpOrg):
+                    angleBetweenLines(dirZ,dirPerpOrg);
+            } else {
+                angleX = 0;
+            }
+        }
         public void getWorldRotation(out float worldAngleY,out float worldAngleX,out float localAngleY){
             Vector3 worldX = origin + new Vector3(distance,0,0);
             Vector3 worldY = origin + new Vector3(0,distance,0);
@@ -148,22 +166,6 @@ public class SourceCode:MonoBehaviour {
                 );
 
             x = localX; y = localY; z = localZ;
-        }
-
-        internal void getAngle(Vector3 point,Vector3 origin, Vector3 x, Vector3 y, Vector3 z, out float angleY,out float angleX){
-            Vector3 dirX = direction(x,origin);
-            Vector3 dirY = direction(y,origin);
-            Vector3 dirZ = direction(z,origin);
-            Vector3 dirH = direction(point,origin);
-            Vector3 perpendicularOrigin = perpendicular(origin,dirY,point);
-
-            Vector3 dirPerpOrg = direction(point,perpendicularOrigin);
-            float angleSide = angleBetweenLines(dirX,dirPerpOrg);
-
-            angleY = angleBetweenLines(dirY,dirH);
-            angleX = (angleSide>Mathf.PI/2)? 
-                2*Mathf.PI-angleBetweenLines(dirZ,dirPerpOrg):
-                angleBetweenLines(dirZ,dirPerpOrg);
         }
         public void moveRotationAxis(float addAngleY,float addAngleX){
             Vector4 rotY = angledAxis(addAngleY,x);

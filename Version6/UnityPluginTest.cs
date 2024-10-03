@@ -1,3 +1,4 @@
+using System.CodeDom.Compiler;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -117,30 +118,41 @@ public class UnityPluginTest : MonoBehaviour
         }
         internal void testSetAxis(){
             testCreateAxis();
+            float temp = worldAngleX;
+            worldAngleX =  (0 < worldAngleY && worldAngleY < Mathf.PI) ? worldAngleX:0;
             float minWorldAngleY = worldAngleY - accuracy, maxWorldAngleY = worldAngleY + accuracy;
             float minWorldAngleX = worldAngleX - accuracy, maxWorldAngleX = worldAngleX + accuracy;
             float minLocalAngleY = localAngleY - accuracy, maxLocalAngleY = localAngleY + accuracy;
             axisSimulation.setWorldRotation(worldAngleY,worldAngleX,localAngleY);
             axisSimulation.getWorldRotation(out float gotWorldAngleY,out float gotWorldAngleX,out float gotLocalAngleY);
+            if (float.IsNaN(gotWorldAngleY)) print("gotWorldAngleY: NaN error");
+            if (float.IsNaN(gotWorldAngleX)) print("gotWorldAngleX: NaN error");
+            if (float.IsNaN(gotLocalAngleY)) print("gotLocalAngleY: NaN error");
             if (gotWorldAngleY < minWorldAngleY || maxWorldAngleY < gotWorldAngleY) print($"worldAngleY: expected {worldAngleY} got {gotWorldAngleY}");
             if (gotWorldAngleX < minWorldAngleX || maxWorldAngleX < gotWorldAngleX) print($"worldAngleX: expected {worldAngleX} got {gotWorldAngleX}");
             if (gotLocalAngleY < minLocalAngleY || maxLocalAngleY < gotLocalAngleY) print($"worldAngleX: expected {worldAngleX} got {gotWorldAngleX}");
+            worldAngleX = temp;
         }
         internal void testMoveRotationAxis(){
             testCreateAxis();
+            float temp = worldAngleX;
+            worldAngleX =  (0 < worldAngleY && worldAngleY < Mathf.PI) ? worldAngleX:0;
             float minWorldAngleY = worldAngleY - accuracy, maxWorldAngleY = worldAngleY + accuracy;
             float minWorldAngleX = worldAngleX - accuracy, maxWorldAngleX = worldAngleX + accuracy;
             axisSimulation.moveRotationAxis(worldAngleY,worldAngleX);
             axisSimulation.getRotationAxisAngle(out float gotWorldAngleY,out float gotWorldAngleX);
+            if (float.IsNaN(gotWorldAngleY)) print("gotWorldAngleY: NaN error");
+            if (float.IsNaN(gotWorldAngleX)) print("gotWorldAngleX: NaN error");
             if (gotWorldAngleY < minWorldAngleY || maxWorldAngleY < gotWorldAngleY) print($"worldAngleY: expected {worldAngleY} got {gotWorldAngleY}");
             if (gotWorldAngleX < minWorldAngleX || maxWorldAngleX < gotWorldAngleX) print($"worldAngleX: expected {worldAngleX} got {gotWorldAngleX}");
+            worldAngleX = temp;
         }
     }
     // Start is called before the first frame update
     void Start(){
         testAxis = new AxisSimulationTest();
-        testAxis.setAngle(30,40,0);
-        testAxis.testMoveRotationAxis();
+        testAxis.setAngle(180,20,10);
+        testAxis.testSetAxis();
     }
 
     // Update is called once per frame

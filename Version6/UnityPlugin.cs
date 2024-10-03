@@ -116,6 +116,7 @@ public class UnityPlugin : MonoBehaviour
         public KeyGenerator keyGenerator;
         public List<GameObject> maxKeys,availableKeys,increaseKeysBy,freeKeys;
         public Color maxKeysColor,availableKeysColor,increaseKeysByColor,freeKeysColor,capacityColor;
+        public Vector3 displayVec = new Vector3(0,5,10);
         bool created = false;
         public void createGenerator(int amount){
             if (!created){
@@ -125,9 +126,12 @@ public class UnityPlugin : MonoBehaviour
                 increaseKeysBy= new List<GameObject>();
                 freeKeys= new List<GameObject>();
                 freeKeysColor = new Color(0,1,0,0);
+                maxKeysColor = new Color(0,0,0,0);
+                availableKeysColor = new Color(0,1,1,0);
+                increaseKeysByColor = new Color(1,1,0,0);
                 capacityColor = new Color(0,0,1,0);
                 created = true;
-                displayFreeKeysList(freeKeys,new Vector3(0,5,10),freeKeysColor,true);
+                display(displayVec);
             }
         }
         public void deleteGenerator(){
@@ -139,23 +143,22 @@ public class UnityPlugin : MonoBehaviour
                 freeKeys= null;
             }
         }
-        public void displayFreeKeysList(List<GameObject> list, Vector3 vec, Color color, bool showCapacity){
+
+        void displayFreeKeysList(List<GameObject> list, Vector3 vec, Color color){
             int keyGeneratorCapacity = keyGenerator.freeKeys.Capacity;
             int listCapacity = list.Capacity;
             if (listCapacity != keyGeneratorCapacity){
-                int add = keyGeneratorCapacity-listCapacity;
-                if (add> 0){
-                    for (int i = 0;i<add;i++){
+                int resize = keyGeneratorCapacity-listCapacity;
+                if (resize> 0){
+                    for (int i = 0;i<resize;i++){
                         GameObject key = Instantiate(dynamicClone);
-                        Renderer renderKey = key.GetComponent<Renderer>();
                         key.GetComponent<Renderer>().material.color = capacityColor;
                         key.transform.position = new Vector3(2*(i + listCapacity),0,0)+vec;
                         list.Add(key);
-                        if (!showCapacity) renderKey.enabled = false;
                     }
                 }
                 else {
-                    for (int i = 0; i>add;i--){
+                    for (int i = 0; i>resize;i--){
                         int index = listCapacity - 1 + i;
                         Destroy(list[index]);
                         list.RemoveAt(index);
@@ -170,29 +173,44 @@ public class UnityPlugin : MonoBehaviour
                     Renderer render = list[i].GetComponent<Renderer>();
                     if (render.material.color == capacityColor) break;
                     render.material.color = capacityColor;
-                    if (render.enabled && !showCapacity) render.enabled = false;
                 }
             } else {
                 for (int i = keyGeneratorAvailableKeys;i>-1;i--){
                     Renderer render = list[i].GetComponent<Renderer>();
                     if (render.material.color == color) break;
                     render.material.color = color;
-                    if (!render.enabled) render.enabled = true;
                 }
             }
         }
-        public void displayList(List<GameObject> list, int amount, Vector3 vec, Color color){
+        void displayList(List<GameObject> list, int amount, Vector3 vec, Color color){
             int count = list.Count;
-            // int resize = amount - count;
-            // if (resize){
-
-            // }
-
+            int resize = amount - count;
+            if (resize>0){
+                if (color == maxKeysColor)print(resize);
+                for (int i = 0;i< resize;i++){
+                    GameObject key = Instantiate(dynamicClone);
+                    key.GetComponent<Renderer>().material.color = color;
+                    key.transform.position = new Vector3(2*(i+count),0,0)+vec;
+                    list.Add(key);
+                }
+            } else if (resize<0){
+                for (int i = 0; i>resize;i--){
+                    int index = amount - 1 + i;
+                    Destroy(list[index]);
+                    list.RemoveAt(index);
+                }
+            }
+        }
+        void display(Vector3 vec){
+            displayFreeKeysList(freeKeys, vec,freeKeysColor);
+            displayList(maxKeys,keyGenerator.maxKeys,vec - new Vector3(0,1,0),maxKeysColor);
+            displayList(availableKeys,keyGenerator.availableKeys,vec - new Vector3(0,2,0),availableKeysColor);
+            displayList(increaseKeysBy,keyGenerator.increaseKeysBy,vec - new Vector3(0,3,0),increaseKeysByColor);
         }
         public void generateKeys(){ //not done
             keyGenerator.generateKeys();
             if (created){
-                displayFreeKeysList(freeKeys, new Vector3(0,5,10),freeKeysColor,true);
+                display(displayVec);
             }  
         }
     }
@@ -207,8 +225,6 @@ public class UnityPlugin : MonoBehaviour
     List<GameObject> lol = new List<GameObject>();
     void Start(){
         keyGeneratorSimulation.createGenerator(6);
-        keyGeneratorSimulation.generateKeys();
-        keyGeneratorSimulation.keyGenerator.resetGenerator(5);
         keyGeneratorSimulation.generateKeys();
 
         
