@@ -256,10 +256,11 @@ public class SourceCode:MonoBehaviour {
             freeKeys.Add(key);
             availableKeys +=1;
         }
-        public void resetGenerator(int maxKeys){
+        public void resetGenerator(int newMax){
             freeKeys.Clear();
             freeKeys.TrimExcess();
-            this.maxKeys = maxKeys;
+            freeKeys.Capacity = newMax;
+            maxKeys = newMax;
             availableKeys = 0;
         }
     }
