@@ -247,8 +247,10 @@ public class SourceCode:MonoBehaviour {
             }
         }
         public int getKey(){
-            int key = freeKeys[availableKeys];
-            freeKeys.RemoveAt(availableKeys);
+            if (availableKeys-1<0) generateKeys();
+            int index = availableKeys-1;
+            int key = freeKeys[index];
+            freeKeys.RemoveAt(index);
             availableKeys -= 1;
             return key;
         }
@@ -259,7 +261,6 @@ public class SourceCode:MonoBehaviour {
         public void resetGenerator(int newMax){
             freeKeys.Clear();
             freeKeys.TrimExcess();
-            freeKeys.Capacity = newMax;
             maxKeys = newMax;
             availableKeys = 0;
         }
