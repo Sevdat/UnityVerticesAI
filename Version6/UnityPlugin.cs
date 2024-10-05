@@ -192,9 +192,10 @@ public class UnityPlugin : MonoBehaviour
             }
             if (freeKeys.Count >0){
                 int keyGeneratorAvailableKeys = keyGenerator.availableKeys-1;
+                int size = freeKeys.Count;
                 Renderer keyColor = freeKeys[keyGeneratorAvailableKeys].GetComponent<Renderer>();
                 if (keyColor.material.color == color){
-                    for (int i = keyGeneratorAvailableKeys;i >-1;i++){
+                    for (int i = keyGeneratorAvailableKeys;i<size;i++){
                         Renderer render = freeKeys[i].GetComponent<Renderer>();
                         if (render.material.color == capacityColor) break;
                         render.material.color = capacityColor;
@@ -240,10 +241,10 @@ public class UnityPlugin : MonoBehaviour
         keyGeneratorSimulation.createGenerator(6);
         keyGeneratorSimulation.getKey();
         keyGeneratorSimulation.getKey();
-        keyGeneratorSimulation.setLimit(2);
-        keyGeneratorSimulation.returnKey(5);
-        keyGeneratorSimulation.generateKeys();
-        keyGeneratorSimulation.generateKeys();
+        keyGeneratorSimulation.getKey();
+        keyGeneratorSimulation.getKey();
+        keyGeneratorSimulation.getKey();
+        keyGeneratorSimulation.getKey();
         
         
         

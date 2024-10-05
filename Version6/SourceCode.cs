@@ -247,16 +247,18 @@ public class SourceCode:MonoBehaviour {
             }
         }
         public int getKey(){
-            if (availableKeys-1<0) generateKeys();
             int index = availableKeys-1;
             int key = freeKeys[index];
-            freeKeys.RemoveAt(index);
+            freeKeys.RemoveAt(index); 
             availableKeys -= 1;
+            if (availableKeys-1<0) generateKeys();
             return key;
         }
         public void returnKey(int key){
-            freeKeys.Add(key);
-            availableKeys +=1;
+            if (availableKeys < maxKeys){
+                freeKeys.Add(key);
+                availableKeys +=1;
+            }
         }
         public void resetGenerator(int newMax){
             freeKeys.Clear();
@@ -321,6 +323,25 @@ public class SourceCode:MonoBehaviour {
                     }
                 }
             }    
+        }
+        public void createJoint(int getJoint){
+            Joint joint = bodyStructure[getJoint];
+            if (joint != null){
+                int key = keyGenerator.getKey();
+                if (keyGenerator.maxKeys > bodyStructure.Length){
+                    int amount = keyGenerator.maxKeys - bodyStructure.Length;
+                    resizeJoints(amount);
+                }
+                Connection connection = new Connection(key);
+                Joint addJoint = new Joint(joint.keyGenerator.increaseKeysBy, joint.localAxis,connection); 
+                bodyStructure[key] = addJoint;
+            } else if (keyGenerator.availableKeys == keyGenerator.maxKeys){
+                keyGenerator = new KeyGenerator(keyGenerator.maxKeys);
+                int key = keyGenerator.getKey();
+                Connection connection = new Connection(key);
+                Joint addJoint = new Joint(keyGenerator.increaseKeysBy, joint.localAxis,connection); 
+                bodyStructure[key] = addJoint;
+            }
         }
         public void resizeJoints(int amount){
             int availableKeys = keyGenerator.availableKeys;
@@ -388,6 +409,11 @@ public class SourceCode:MonoBehaviour {
         public List<Joint> future;
 
         public Connection(){}
+        public Connection(int indexInBody){
+            this.indexInBody = indexInBody;
+            past = new List<Joint>();
+            future = new List<Joint>();
+        }
         public Connection(int indexInBody, List<Joint> past,List<Joint> future){
             active = true;
             this.indexInBody = indexInBody;
@@ -530,7 +556,7 @@ public class SourceCode:MonoBehaviour {
         public void createSphere(float setAngleY,float setAngleX,float lengthFromOrigin,float sphereRadius){
             localAxis.scaleRotationAxis(lengthFromOrigin);
             localAxis.setRotationAxis(setAngleY,setAngleX);
-            resizeCollisionSpheres(1);
+            resizeCollisionSpheres(keyGenerator.increaseKeysBy);
             int sphereIndex = keyGenerator.getKey();
             Path path = new Path(body,connection.indexInBody,sphereIndex);
             collisionSpheres[sphereIndex] = 
