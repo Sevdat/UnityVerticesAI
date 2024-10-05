@@ -282,68 +282,15 @@ public class SourceCode:MonoBehaviour {
             bodyStructure = new Joint[amountOfJoints];
             keyGenerator = new KeyGenerator(amountOfJoints);
         }
-
-        public void saveJoint(
-            Joint joint, 
-            out float globalX, out float globalY, out float distanceFromOrigin, 
-            out float worldAngleY,out float worldAngleX,out float localAngleY
-            ){
-            Vector3 jointOrigin = joint.localAxis.origin;
-            Vector3 globalOrigin = globalAxis.origin;
-            globalAxis.getAngle(
-                jointOrigin,
-                globalOrigin,globalAxis.x,globalAxis.y,globalAxis.z,
-                out globalY,out globalX
-                );
-            distanceFromOrigin = globalAxis.length(jointOrigin-globalOrigin);
-            joint.localAxis.getWorldRotation(out worldAngleY,out worldAngleX,out localAngleY);
-        }
-        public void rotateJointHierarchy(int indexInBody, float angle){
-            Joint joint = bodyStructure[indexInBody];
-            if (joint != null){
-                List<Joint> tree = new List<Joint>{joint};
-                Vector3 rotationOrigin = joint.localAxis.origin;
-                Vector4 quat = joint.localAxis.quat(angle);
-                int size = 1;
-                for (int i=0; i< size; i++){
-                    joint = tree[i];
-                    List<Joint> tracker = tree[i].connection.future;
-                    int trackerSize = tracker.Count;
-                    if (trackerSize > 0){
-                        tree.AddRange(tracker);
-                        size += trackerSize;
-                    }
-                    joint.localAxis.rotate(quat,rotationOrigin);
-                    int sphereCount = joint.collisionSpheres.Length;
-                    for (int j = 0; i<sphereCount; j++){
-                        CollisionSphere sphere = joint.collisionSpheres[j];
-                        sphere.setOrigin(
-                            joint.localAxis.quatRotate(sphere.origin,rotationOrigin,quat)
-                            );
-                    }
-                }
-            }    
-        }
-        public void createJoint(int getJoint){
-            Joint joint = bodyStructure[getJoint];
-            if (joint != null){
-                int key = keyGenerator.getKey();
-                if (keyGenerator.maxKeys > bodyStructure.Length){
-                    int amount = keyGenerator.maxKeys - bodyStructure.Length;
-                    resizeJoints(amount);
-                }
-                Connection connection = new Connection(key);
-                Joint addJoint = new Joint(joint.keyGenerator.increaseKeysBy, joint.localAxis,connection); 
-                bodyStructure[key] = addJoint;
-            } else if (keyGenerator.availableKeys == keyGenerator.maxKeys){
-                keyGenerator = new KeyGenerator(keyGenerator.maxKeys);
+        public void reviveBody(){
+            if (keyGenerator.availableKeys == keyGenerator.maxKeys){
                 int key = keyGenerator.getKey();
                 Connection connection = new Connection(key);
-                Joint addJoint = new Joint(keyGenerator.increaseKeysBy, joint.localAxis,connection); 
+                Joint addJoint = new Joint(keyGenerator.increaseKeysBy, globalAxis,connection); 
                 bodyStructure[key] = addJoint;
             }
         }
-        public void resizeJoints(int amount){
+        public void resizeBody(int amount){
             int availableKeys = keyGenerator.availableKeys;
             int limitCheck = availableKeys - amount;
             if(limitCheck < 0) {
@@ -363,6 +310,8 @@ public class SourceCode:MonoBehaviour {
         public void deleteJoint(int key){
             Joint remove = bodyStructure[key];
             if(remove != null){
+                remove.connection.disconnectPast();
+                remove.connection.disconnectFuture();
                 keyGenerator.returnKey(key);
                 bodyStructure[key] = null;
             }
@@ -392,12 +341,12 @@ public class SourceCode:MonoBehaviour {
                 for (int i = 0; i < treeSize; i++){
                     Joint joint = connectionTree[i];
                     joint.connection.indexInBody = i;
-                    joint.optimizeCollisionSpheres();
+                    joint.pointCloud.optimizeCollisionSpheres();
                     orginizedJoints[i] = joint; 
                 }
                 bodyStructure = orginizedJoints;
                 keyGenerator.resetGenerator(treeSize);
-            }
+            } else reviveBody();
         }
     }
 
@@ -466,14 +415,14 @@ public class SourceCode:MonoBehaviour {
                 out int treeSize
                 );
             if (current.body != newJoint.body){
-                newJoint.body.resizeJoints(treeSize);
+                newJoint.body.resizeBody(treeSize);
                 disconnectPast();
                 connectPastTo(newJoint);
                 for (int i =0; i< treeSize;i++){
                     Joint joint = connectionTree[i];
                     joint.body.deleteJoint(joint.connection.indexInBody);
                     joint.setBody(newJoint.body);
-                    joint.connection.indexInBody = newJoint.keyGenerator.getKey();
+                    joint.connection.indexInBody = newJoint.pointCloud.keyGenerator.getKey();
                     newJoint.body.bodyStructure[joint.connection.indexInBody] = joint;
                 }   
             } else if (!connectionTree.Contains(newJoint)) {
@@ -538,29 +487,88 @@ public class SourceCode:MonoBehaviour {
         public Body body;
         public Axis localAxis;
         public Connection connection;
-        public CollisionSphere[] collisionSpheres;
-        public KeyGenerator keyGenerator;
+        public PointCloud pointCloud;
+
 
         public Joint(){}
         public Joint(int amountOfKeys, Axis localAxis,Connection connection){
-            collisionSpheres = new CollisionSphere[amountOfKeys];
-            keyGenerator = new KeyGenerator(amountOfKeys);
+            pointCloud = new PointCloud(amountOfKeys);
             this.localAxis = localAxis;
             this.connection = connection;
             connection.current = this;
+            pointCloud.joint = this;
         }
 
         public void setBody(Body body){
             this.body=body;
         }
+        public void saveJoint( 
+            out float globalX, out float globalY, out float distanceFromOrigin, 
+            out float worldAngleY,out float worldAngleX,out float localAngleY
+            ){
+            Vector3 jointOrigin = localAxis.origin;
+            Vector3 globalOrigin = body.globalAxis.origin;
+            body.globalAxis.getAngle(
+                jointOrigin,
+                globalOrigin,body.globalAxis.x,body.globalAxis.y,body.globalAxis.z,
+                out globalY,out globalX
+                );
+            distanceFromOrigin = body.globalAxis.length(jointOrigin-globalOrigin);
+            localAxis.getWorldRotation(out worldAngleY,out worldAngleX,out localAngleY);
+        }
+        public void createJoint(){
+            int key = body.keyGenerator.getKey();
+            if (body.keyGenerator.maxKeys > body.bodyStructure.Length){
+                int amount = body.keyGenerator.maxKeys - body.bodyStructure.Length;
+                body.resizeBody(amount);
+            }
+            Connection connection = new Connection(key);
+            Joint addJoint = new Joint(pointCloud.keyGenerator.increaseKeysBy, localAxis,connection); 
+            body.bodyStructure[key] = addJoint;
+            
+        }
+        public void rotateJointHierarchy(float angle){
+                List<Joint> tree = new List<Joint>{this};
+                Vector3 rotationOrigin = localAxis.origin;
+                Vector4 quat = localAxis.quat(angle);
+                int size = 1;
+                for (int i=0; i< size; i++){
+                    Joint joint = tree[i];
+                    List<Joint> tracker = tree[i].connection.future;
+                    int trackerSize = tracker.Count;
+                    if (trackerSize > 0){
+                        tree.AddRange(tracker);
+                        size += trackerSize;
+                    }
+                    joint.localAxis.rotate(quat,rotationOrigin);
+                    int sphereCount = joint.pointCloud.collisionSpheres.Length;
+                    for (int j = 0; i<sphereCount; j++){
+                        CollisionSphere sphere = joint.pointCloud.collisionSpheres[j];
+                        sphere.setOrigin(
+                            joint.localAxis.quatRotate(sphere.origin,rotationOrigin,quat)
+                            );
+                    }
+                }    
+        }
+    }
+    public class PointCloud {
+        public Joint joint;
+        public KeyGenerator keyGenerator;
+        public CollisionSphere[] collisionSpheres;
+        
+        public PointCloud(){}
+        public PointCloud(int amountOfSpheres){
+            collisionSpheres = new CollisionSphere[amountOfSpheres];
+            keyGenerator = new KeyGenerator(amountOfSpheres);
+        }
         public void createSphere(float setAngleY,float setAngleX,float lengthFromOrigin,float sphereRadius){
-            localAxis.scaleRotationAxis(lengthFromOrigin);
-            localAxis.setRotationAxis(setAngleY,setAngleX);
+            joint.localAxis.scaleRotationAxis(lengthFromOrigin);
+            joint.localAxis.setRotationAxis(setAngleY,setAngleX);
             resizeCollisionSpheres(keyGenerator.increaseKeysBy);
             int sphereIndex = keyGenerator.getKey();
-            Path path = new Path(body,connection.indexInBody,sphereIndex);
+            Path path = new Path(joint.body,joint.connection.indexInBody,sphereIndex);
             collisionSpheres[sphereIndex] = 
-                new CollisionSphere(path,localAxis.rotationAxis,sphereRadius);
+                new CollisionSphere(path,joint.localAxis.rotationAxis,sphereRadius);
         }
         public void deleteSphere(int key){
             CollisionSphere remove = collisionSpheres[key];
@@ -592,7 +600,7 @@ public class SourceCode:MonoBehaviour {
             for (int j = 0; j<maxKeys; j++){
                 CollisionSphere collision = collisionSpheres[j];
                 if (collision != null){
-                    collision.path.setJointKey(connection.indexInBody);
+                    collision.path.setJointKey(joint.connection.indexInBody);
                     collision.path.setCollisionSphereKey(count);
                     newCollision[count] = collision;
                     count++;
