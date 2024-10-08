@@ -228,6 +228,16 @@ public class UnityPlugin : MonoBehaviour
             }
         }
     }
+    
+    public class BodySimulation:SourceCode{
+        public AxisSimulation axisSimulation;
+        public GameObject[] bodystructure;
+        public KeyGeneratorSimulation keyGeneratorSimulation;
+    }
+    public class JointSimulation:SourceCode{
+
+    }
+
 
     void Awake(){
         dynamicClone = originalObject;
@@ -238,17 +248,13 @@ public class UnityPlugin : MonoBehaviour
     KeyGeneratorSimulation keyGeneratorSimulation = new KeyGeneratorSimulation();
     List<GameObject> lol = new List<GameObject>();
     void Start(){
-        keyGeneratorSimulation.createGenerator(6);
-        keyGeneratorSimulation.getKey();
-        keyGeneratorSimulation.getKey();
-        keyGeneratorSimulation.getKey();
-        keyGeneratorSimulation.getKey();
-        keyGeneratorSimulation.getKey();
-        keyGeneratorSimulation.getKey();
-        
-        
-        
-
+        lol.Add(Instantiate(dynamicClone));
+        lol.Add(Instantiate(dynamicClone));
+        lol.Add(Instantiate(dynamicClone));
+        GameObject loli = lol[2];
+        lol.RemoveAt(2);
+        print(loli.transform.position);
+        print(lol.Count);
         
     }
     // Update is called once per frame
