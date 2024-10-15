@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class SourceCode:MonoBehaviour {
@@ -18,8 +17,38 @@ public class SourceCode:MonoBehaviour {
         public SphericalOctTree sphereOctTree;
         public KeyGenerator keyGenerator;
     }
+    public class renderAxis{
+        public Axis axis;
+        public Sphere origin,x,y,z,rotationAxis;
 
+        public renderAxis(Axis axis){
+            this.axis = axis;
+            origin = new Sphere(axis.origin,1,new Color(1,1,1,0));
+            x = new Sphere(axis.x,1,new Color(1,0,0,0));
+            y = new Sphere(axis.y,1,new Color(0,1,0,0));
+            z = new Sphere(axis.z,1,new Color(0,0,1,0));
+            rotationAxis = new Sphere(axis.rotationAxis,1,new Color(0,0,0,0));
+        }
+
+        public void axisVisibility(bool onOrOff){
+            origin.sphere.GetComponent<MeshRenderer>().enabled = onOrOff;
+            x.sphere.GetComponent<MeshRenderer>().enabled = onOrOff;
+            y.sphere.GetComponent<MeshRenderer>().enabled = onOrOff;
+            z.sphere.GetComponent<MeshRenderer>().enabled = onOrOff;
+            rotationAxis.sphere.GetComponent<MeshRenderer>().enabled = onOrOff;
+        }
+        public void updateAxis(){
+            origin.setOrigin(axis.origin);
+            x.setOrigin(axis.x);
+            y.setOrigin(axis.y);
+            z.setOrigin(axis.z);
+        }
+        public void updateRotationAxis(){
+            rotationAxis.setOrigin(axis.rotationAxis);
+        }
+    }
     public class Axis {
+        public renderAxis renderAxis;
         public Vector3 origin,x,y,z,rotationAxis;
         public float distance,worldAxisAngleX,rotationAxisAngleX;
 
@@ -31,6 +60,7 @@ public class SourceCode:MonoBehaviour {
             y = origin + new Vector3(0,distance,0);
             z = origin + new Vector3(0,0,distance);
             rotationAxis = origin + new Vector3(0,distance,0);
+            renderAxis = new renderAxis(this);
             worldAxisAngleX = 0;
             rotationAxisAngleX = 0;
         }
@@ -41,10 +71,14 @@ public class SourceCode:MonoBehaviour {
             y += add;
             z += add;
             rotationAxis += add;
+            renderAxis.updateAxis();
+            renderAxis.updateRotationAxis();
         }
         public void placeAxis(Vector3 newOrigin){
             Vector3 newPosition = newOrigin-origin;
             moveAxis(newPosition);
+            renderAxis.updateAxis();
+            renderAxis.updateRotationAxis();
         }
         public void scaleAxis(float newDistance){
             if (newDistance > 0f){
@@ -52,12 +86,14 @@ public class SourceCode:MonoBehaviour {
                 x = origin + distanceFromOrign(x,origin);
                 y = origin + distanceFromOrign(y,origin);
                 z = origin + distanceFromOrign(z,origin);
+                renderAxis.updateAxis();
             }
         }
         public void scaleRotationAxis(float newDistance){
             if (newDistance > 0f){
                 distance = newDistance;
                 rotationAxis = origin + distanceFromOrign(rotationAxis,origin);
+                renderAxis.updateRotationAxis();
             }
         }
         public float length(Vector3 vectorDirections){
@@ -129,6 +165,7 @@ public class SourceCode:MonoBehaviour {
                 angleBetweenLines(dirZ,dirPerpOrg);
             if (angleY == 0f || angleY < Mathf.PI) angleX = worldAxisAngleX;
         }
+
         public void getWorldRotation(out float worldAngleY,out float worldAngleX,out float localAngleY){
             Vector3 worldX = origin + new Vector3(distance,0,0);
             Vector3 worldY = origin + new Vector3(0,distance,0);
@@ -169,6 +206,8 @@ public class SourceCode:MonoBehaviour {
 
             x = localX; y = localY; z = localZ;
             worldAxisAngleX = worldAngleX;
+            renderAxis.updateAxis();
+            renderAxis.updateRotationAxis();
         }
         public void moveRotationAxis(float addAngleY,float addAngleX){
             Vector4 rotY = angledAxis(addAngleY,x);
@@ -176,6 +215,7 @@ public class SourceCode:MonoBehaviour {
             rotationAxis = quatRotate(rotationAxis,origin,rotY);
             rotationAxis = quatRotate(rotationAxis,origin,rotX);
             rotationAxisAngleX += addAngleX;
+            renderAxis.updateRotationAxis();
         }
         public void setRotationAxis(float setAngleY,float setAngleX){
             Vector4 rotY = angledAxis(setAngleY,y);
@@ -185,13 +225,52 @@ public class SourceCode:MonoBehaviour {
             rotationOrigin = quatRotate(rotationOrigin,origin,rotX);
             rotationAxis = rotationOrigin;
             rotationAxisAngleX = setAngleX;
+            renderAxis.updateRotationAxis();
         }
         public void getRotationAxisAngle(out float angleY,out float angleX){
             getAngle(rotationAxis,origin,x,y,z,out angleY,out angleX);
             if (angleY == 0f || angleY < Mathf.PI) angleX = rotationAxisAngleX;
         }
-        public Vector4 quat(float angle){
-             return angledAxis(angle,rotationAxis);
+
+        public void getWorldRotationInDegrees(out float worldAngleY,out float worldAngleX,out float localAngleY){
+            float radianToDegree = 180/Mathf.PI;
+            getWorldRotation(out worldAngleY, out worldAngleX, out localAngleY);
+            worldAngleY *= radianToDegree;
+            worldAngleX *= radianToDegree;
+            localAngleY *= radianToDegree;
+        }
+        public void setWorldRotationInDegrees(float worldAngleY,float worldAngleX,float localAngleY){
+            float degreeToRadian = Mathf.PI/180;
+            worldAngleY *= degreeToRadian;
+            worldAngleX *= degreeToRadian;
+            localAngleY *= degreeToRadian;
+            setWorldRotation(worldAngleY, worldAngleX, localAngleY);
+        }
+        public void moveRotationAxisInDegrees(float addAngleY,float addAngleX){
+            float degreeToRadian = Mathf.PI/180;
+            addAngleY *= degreeToRadian;
+            addAngleX *= degreeToRadian;
+            moveRotationAxis(addAngleY, addAngleX);
+        }
+        public void setRotationAxisInDegrees(float addAngleY,float addAngleX){
+            float degreeToRadian = Mathf.PI/180;
+            addAngleY *= degreeToRadian;
+            addAngleX *= degreeToRadian;
+            setRotationAxis(addAngleY, addAngleX);
+        }
+        public void getRotationAxisAngleInDegrees(out float addAngleY,out float addAngleX){
+            float radianToDegree = 180/Mathf.PI;
+            getRotationAxisAngle(out addAngleY, out addAngleX);
+            addAngleY *= radianToDegree;
+            addAngleX *= radianToDegree;
+        }
+
+        public Vector4 quat(float radian){
+            return angledAxis(radian,rotationAxis);
+        }
+        public Vector4 quatInDegrees(float angle){
+            float degreeToRadian = Mathf.PI/180;
+            return angledAxis(angle*degreeToRadian,rotationAxis);
         }
         public void rotate(Vector4 quat,Vector3 rotationOrigin){
             origin = quatRotate(origin,rotationOrigin,quat);
@@ -199,6 +278,8 @@ public class SourceCode:MonoBehaviour {
             y = quatRotate(y,rotationOrigin,quat);
             z = quatRotate(z,rotationOrigin,quat);
             rotationAxis = quatRotate(rotationAxis,rotationOrigin,quat);
+            renderAxis.updateAxis();
+            renderAxis.updateRotationAxis();
         }
 
         public Vector4 quatMul(Vector4 q1, Vector4 q2) {
@@ -303,7 +384,7 @@ public class SourceCode:MonoBehaviour {
                 bodyStructure[i].connection.active = true;
             }
         }
-        public void resizeBody(int amount){
+        public void resizeArray(int amount){
             int availableKeys = keyGenerator.availableKeys;
             int limitCheck = availableKeys - amount;
             if(limitCheck < 0) {
@@ -320,7 +401,6 @@ public class SourceCode:MonoBehaviour {
                 }
             }
         }
-
         public Joint getFirstJoint(){
             Joint firstJoint = null;
             for (int i =0; i<keyGenerator.maxKeys; i++){
@@ -335,9 +415,11 @@ public class SourceCode:MonoBehaviour {
             return firstJoint;
         }
         public void optimizeBody(){
+            bool getOnlyActive = false;
             Joint firstJoint = getFirstJoint();
             if (firstJoint != null) {
                 firstJoint.connection.getFutureConnections(
+                    getOnlyActive,
                     out List<Joint> connectionTree, 
                     out _, 
                     out int treeSize
@@ -356,7 +438,7 @@ public class SourceCode:MonoBehaviour {
     }
 
     public class Connection {
-        public bool active; // for schematic simulations
+        public bool active = true, used = false;
         public int indexInBody;
         public Joint current;
         public List<Joint> past; 
@@ -369,12 +451,14 @@ public class SourceCode:MonoBehaviour {
             future = new List<Joint>();
         }
         public Connection(int indexInBody, List<Joint> past,List<Joint> future){
-            active = true;
             this.indexInBody = indexInBody;
             this.past = past;
             this.future = future;
         }
 
+        public void setActive(bool active){
+            this.active = active;
+        }
         public void setCurrent(int indexInBody){
             this.indexInBody = indexInBody;
         }
@@ -385,13 +469,14 @@ public class SourceCode:MonoBehaviour {
             this.future = future;
         }
         public void getFutureConnections(
+            bool getOnlyActive,
             out List<Joint> connectionTree, 
             out List<Joint> connectionEnd,
             out int treeSize
             ){
             bool futureOnly = true;
             connectionTracker(
-                futureOnly,
+                futureOnly,getOnlyActive,
                 out List<Joint> tree, out List<Joint> end,
                 out int size
                 );
@@ -400,13 +485,14 @@ public class SourceCode:MonoBehaviour {
             treeSize = size;
         }
         public void getPastConnections(
+            bool getOnlyActive,
             out List<Joint> connectionTree, 
             out List<Joint> connectionEnd,
             out int treeSize
             ){
             bool pastOnly = false;
             connectionTracker(
-                pastOnly,
+                pastOnly, getOnlyActive,
                 out List<Joint> tree, out List<Joint> end,
                 out int size
                 );
@@ -415,13 +501,15 @@ public class SourceCode:MonoBehaviour {
             treeSize = size;
         }
         public void connectJointTo(Joint newJoint){
+            bool getOnlyActive = false;
             getFutureConnections( 
+                getOnlyActive,
                 out List<Joint> connectionTree,
                 out _,
                 out int treeSize
                 );
             if (current.body != newJoint.body){
-                newJoint.body.resizeBody(treeSize);
+                newJoint.body.resizeArray(treeSize);
                 disconnectFromPast();
                 past.Clear();
                 connectPastToFuture(newJoint);
@@ -447,7 +535,7 @@ public class SourceCode:MonoBehaviour {
         }
         public void connectFutureToPast(Joint joint){
             List<Joint> connectTo = joint.connection.past;
-            if (!past.Contains(joint)) future.Add(joint);
+            if (!future.Contains(joint)) future.Add(joint);
             if (!connectTo.Contains(current)) connectTo.Add(current);
         }
         public void disconnectFromFuture(){
@@ -470,29 +558,47 @@ public class SourceCode:MonoBehaviour {
                 }
         }
         void connectionTracker(
-            bool pastOrFuture,
-            out List<Joint> connectionTree, out List<Joint> connectionEnd,
+            bool pastOrFuture, bool getOnlyActive,
+            out List<Joint> tree, out List<Joint> end,
             out int treeSize
             ){
-            List<Joint> tree = new List<Joint>{current};  
-            if (pastOrFuture) tree.AddRange(future); else tree.AddRange(past);               
-            int size = tree.Count;
-            List<Joint> end = new List<Joint>();
-            for (int i=0; i< size; i++){
-                List<Joint> tracker = pastOrFuture ?
-                    tree[i].connection.future:
-                    tree[i].connection.past;
+            tree = new List<Joint>{current};  
+            tree.AddRange(nextConnections(pastOrFuture,getOnlyActive));
+            treeSize = tree.Count;
+            end = new List<Joint>();
+            for (int i=0; i< treeSize; i++){
+                List<Joint> tracker = tree[i].connection.nextConnections(pastOrFuture,getOnlyActive);
                 int trackerSize = tracker.Count;
                 if (trackerSize > 0){
                     tree.AddRange(tracker);
-                    size += trackerSize;
+                    treeSize += trackerSize;
                 } else {
                     end.Add(tree[i]);
                 }
             }
-            connectionTree = tree;
-            connectionEnd = end;
-            treeSize = size;
+            resetUsed(tree,treeSize);
+        }
+        public List<Joint> nextConnections(bool pastOrFuture, bool getOnlyActive){
+            List<Joint> connectedJoints = new List<Joint>();
+            List<Joint> joints = pastOrFuture? future:past;
+            int listSize = joints.Count;
+            for (int j = 0;j<listSize;j++){
+                Joint joint = joints[j];
+                bool used = joint.connection.used;
+                if (getOnlyActive && joint.connection.active && !used){
+                    connectedJoints.Add(joint);
+                    joint.connection.used = true;
+                } else if (!getOnlyActive && !used){
+                    connectedJoints.Add(joint);
+                    joint.connection.used = true;
+                }
+            }
+            return connectedJoints;
+        }
+        public void resetUsed(List<Joint> joints, int size){
+            for (int i = 0; i<size;i++){
+                joints[i].connection.used = false;
+            }
         }
     }
 
@@ -532,12 +638,12 @@ public class SourceCode:MonoBehaviour {
             int key = body.keyGenerator.getKey();
             if (body.keyGenerator.maxKeys > body.bodyStructure.Length){
                 int amount = body.keyGenerator.maxKeys - body.bodyStructure.Length;
-                body.resizeBody(amount);
+                body.resizeArray(amount);
             }
             Connection connection = new Connection(key);
+            connection.past.Add(this);
             Joint addJoint = new Joint(pointCloud.keyGenerator.increaseKeysBy, localAxis,connection); 
             body.bodyStructure[key] = addJoint;
-            
         }
         public void deleteJoint(){
             bool checkMultiConnection = !(connection.past.Count >1 && connection.future.Count >1);
@@ -569,28 +675,28 @@ public class SourceCode:MonoBehaviour {
                 body.bodyStructure[connection.indexInBody] = null;
             }
         }
-        public void rotateJointHierarchy(float angle){
-            List<Joint> tree = new List<Joint>{this};
+        public void rotateJointHierarchy(float radian,bool rotateOnlyActive){
+            Vector4 quat = localAxis.quat(radian);
+            rotateHierarchy(quat,rotateOnlyActive);
+        }
+        public void rotateJointHierarchyInDegrees(float angle,bool rotateOnlyActive){
+            float degreeToRadian = Mathf.PI/180;
+            Vector4 quat = localAxis.quat(angle*degreeToRadian);
+            rotateHierarchy(quat,rotateOnlyActive);
+        }
+        void rotateHierarchy(Vector4 quat,bool rotateOnlyActive){
             Vector3 rotationOrigin = localAxis.origin;
-            Vector4 quat = localAxis.quat(angle);
-            int size = 1;
-            for (int i=0; i< size; i++){
+            List<Joint> tree = new List<Joint>{this};
+            int size = 1;       
+            for (int i = 0; i<size;i++){
                 Joint joint = tree[i];
-                List<Joint> tracker = tree[i].connection.future;
-                int trackerSize = tracker.Count;
-                if (trackerSize > 0){
-                    tree.AddRange(tracker);
-                    size += trackerSize;
-                }
+                List<Joint> joints = tree[i].connection.nextConnections(false,rotateOnlyActive);
+                tree.AddRange(joints);
+                size += joints.Count;
                 joint.localAxis.rotate(quat,rotationOrigin);
-                int sphereCount = joint.pointCloud.collisionSpheres.Length;
-                for (int j = 0; i<sphereCount; j++){
-                    CollisionSphere sphere = joint.pointCloud.collisionSpheres[j];
-                    sphere.setOrigin(
-                        joint.localAxis.quatRotate(sphere.origin,rotationOrigin,quat)
-                        );
-                }
-            }    
+                joint.pointCloud.rotateSpheres(quat,rotationOrigin);
+            }
+            connection.resetUsed(tree,size);
         }
     }
     public class PointCloud {
@@ -607,7 +713,7 @@ public class SourceCode:MonoBehaviour {
         public void createSphere(float setAngleY,float setAngleX,float lengthFromOrigin,float sphereRadius){
             joint.localAxis.scaleRotationAxis(lengthFromOrigin);
             joint.localAxis.setRotationAxis(setAngleY,setAngleX);
-            resizeCollisionSpheres(keyGenerator.increaseKeysBy);
+            resizeArray(1);
             int sphereIndex = keyGenerator.getKey();
             Path path = new Path(joint.body,joint.connection.indexInBody,sphereIndex);
             collisionSpheres[sphereIndex] = 
@@ -620,11 +726,12 @@ public class SourceCode:MonoBehaviour {
                 collisionSpheres[key] = null;
             }
         }
-        public void resizeCollisionSpheres(int amount){
+        public void resizeArray(int amount){
             int availableKeys = keyGenerator.availableKeys;
             int limitCheck = availableKeys - amount;
             if(limitCheck < 0) {
-                keyGenerator.setLimit(amount + Mathf.Abs(limitCheck));
+                int oldLimit = keyGenerator.increaseKeysBy;
+                keyGenerator.setLimit(amount + Mathf.Abs(limitCheck)+ oldLimit);
                 keyGenerator.generateKeys();
                 int max = keyGenerator.maxKeys;
                 int newSize = max + keyGenerator.increaseKeysBy;
@@ -633,6 +740,16 @@ public class SourceCode:MonoBehaviour {
                     CollisionSphere sphere = newSphereArray[i];
                     if (sphere != null) newSphereArray[i] = sphere;
                 }
+                keyGenerator.setLimit(oldLimit);
+            }
+        }
+        public void rotateSpheres(Vector4 quat,Vector3 rotationOrigin){
+            int sphereCount = collisionSpheres.Length;
+            for (int i = 0; i<sphereCount; i++){
+                CollisionSphere collisionSphere = collisionSpheres[i];
+                collisionSphere.setOrigin(
+                    joint.localAxis.quatRotate(collisionSphere.sphere.origin,rotationOrigin,quat)
+                );
             }
         }
         public void optimizeCollisionSpheres(){
@@ -679,20 +796,51 @@ public class SourceCode:MonoBehaviour {
 
     public class CollisionSphere {
         public Path path;
-        public Vector3 origin;
-        public float radius;
+        public Sphere sphere;
 
         public CollisionSphere(){}
         public CollisionSphere(Path path,Vector3 origin,float radius){
             this.path = path;
-            this.origin = origin;
-            this.radius = radius;
+            sphere = new Sphere(origin,radius);
         }
         public void setOrigin(Vector3 newOrigin){
+            sphere.setOrigin(newOrigin);
+        }
+        public void setRadius(float newRadius){
+            sphere.setRadius(newRadius);
+        }
+    }
+    public class Sphere{
+        public Vector3 origin;
+        public float radius;
+        public Color color;
+        public GameObject sphere;
+
+        public Sphere(Vector3 origin, float radius){
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.GetComponent<Collider>().enabled = false;
+            setOrigin(origin);
+            setRadius(radius);
+        }
+        public Sphere(Vector3 origin, float radius, Color color){
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.GetComponent<Collider>().enabled = false;
+            setOrigin(origin);
+            setRadius(radius);
+            setColor(color);
+        }
+
+        public void setOrigin(Vector3 newOrigin){
             origin = newOrigin;
+            sphere.transform.position = newOrigin;
         }
         public void setRadius(float newRadius){
             radius = newRadius;
+            sphere.transform.localScale = new Vector3(radius, radius, radius);
+        }
+        public void setColor(Color newColor){
+            color = newColor;
+            sphere.GetComponent<Renderer>().material.color = newColor;
         }
     }
 

@@ -6,111 +6,6 @@ using UnityEngine;
 
 public class UnityPlugin : MonoBehaviour
 {   
-    public GameObject originalObject;
-    static GameObject dynamicClone;
-    GameObject staticClone;
-
-    public class AxisSimulation:SourceCode {
-        public Axis axis;
-        public GameObject origin,x,y,z,rotationAxis;
-        public bool created = false;
-        public float degreeToRadian = Mathf.PI/180;
-        public float radianToDegree = 180/Mathf.PI;
-
-        public void createAxis(Vector3 vec, float distance){
-            if (!created){
-                axis = new Axis(vec,distance);
-                origin = Instantiate(dynamicClone);
-                x = Instantiate(dynamicClone);
-                y = Instantiate(dynamicClone);
-                z = Instantiate(dynamicClone);
-                rotationAxis = Instantiate(dynamicClone);
-                setColor(
-                    new Color(1,0,0,0),new Color(0,1,0,0),new Color(0,0,1,0),
-                    new Color(1,1,1,0),new Color(0,0,0,0)
-                    );
-                setGameObjects();
-                created = true;
-            }
-        }
-        public void delete(){
-            axis = null;
-            deleteGameObjects();
-        }
-        public void deleteGameObjects(){
-            if (created){
-                Destroy(origin);
-                Destroy(x);
-                Destroy(y);
-                Destroy(z);
-                Destroy(rotationAxis);
-                created = false;
-            }
-        }
-        public void setGameObjects(){
-            origin.transform.position = axis.origin;
-            x.transform.position = axis.x;
-            y.transform.position = axis.y;
-            z.transform.position = axis.z;
-            rotationAxis.transform.position = axis.rotationAxis;
-        }
-        public void setColor(
-            Color colorX,Color colorY,Color colorZ,
-            Color colorOrigin, Color colorRotationAxis 
-            ){
-            origin.GetComponent<Renderer>().material.color = colorOrigin;
-            x.GetComponent<Renderer>().material.color = colorX;
-            y.GetComponent<Renderer>().material.color = colorY;
-            z.GetComponent<Renderer>().material.color = colorZ;
-            rotationAxis.GetComponent<Renderer>().material.color = colorRotationAxis;
-        }
-        public void moveAxis(Vector3 add){
-            axis.moveAxis(add);
-            if (created) setGameObjects();
-        }
-        public void placeAxis(Vector3 newOrigin){
-            axis.placeAxis(newOrigin);
-            if (created) setGameObjects();
-        }
-        public void scaleAxis(float newDistance){
-            axis.scaleAxis(newDistance);
-            if (created) setGameObjects();
-        }
-        public void scaleRotationAxis(float newDistance){
-            axis.scaleRotationAxis(newDistance);
-            if (created) setGameObjects();
-        }
-        public void getWorldRotation(out float worldAngleY,out float worldAngleX,out float localAngleY){
-            axis.getWorldRotation(out worldAngleY,out worldAngleX,out localAngleY);
-            worldAngleY *= radianToDegree;
-            worldAngleX *= radianToDegree;
-            localAngleY *= radianToDegree;
-        }
-        public void setWorldRotation(float worldAngleY,float worldAngleX,float localAngleY){
-            axis.setWorldRotation(worldAngleY*degreeToRadian,worldAngleX*degreeToRadian,localAngleY*degreeToRadian);
-            if (created) setGameObjects();
-        }
-        public void moveRotationAxis(float addAngleY,float addAngleX){
-            axis.moveRotationAxis(addAngleY*degreeToRadian,addAngleX*degreeToRadian);
-            if (created) setGameObjects();
-        }
-        public void setRotationAxis(float setAngleY,float setAngleX){
-            axis.setRotationAxis(setAngleY*degreeToRadian,setAngleX*degreeToRadian);
-            if (created) setGameObjects();
-        }
-        public void getRotationAxisAngle(out float angleY,out float angleX){
-            axis.getRotationAxisAngle(out angleY,out angleX);
-            angleY *= radianToDegree;
-            angleX *= radianToDegree;
-        }
-        public Vector4 quat(float angle){
-             return axis.quat(angle);
-        }
-        public void rotate(Vector4 quat, Vector3 rotationOrigin){
-            axis.rotate(quat,rotationOrigin);
-            if (created) setGameObjects(); 
-        }
-    }
 
     public class KeyGeneratorSimulation:SourceCode{
         public KeyGenerator keyGenerator;
@@ -131,11 +26,26 @@ public class UnityPlugin : MonoBehaviour
                 increaseKeysByColor = new Color(1,1,0,0);
                 capacityColor = new Color(0,0,1,0);
                 created = true;
-                displayFreeKeysList(displayVec, freeKeysColor);
-                displayList(maxKeys,keyGenerator.maxKeys,displayVec - new Vector3(0,1,0),maxKeysColor);
-                displayList(availableKeys,keyGenerator.availableKeys,displayVec - new Vector3(0,2,0),availableKeysColor);
-                displayList(increaseKeysBy,keyGenerator.increaseKeysBy,displayVec - new Vector3(0,3,0),increaseKeysByColor);
+                showGenerator();
             }
+        }
+        public void deleteGameObjects(){
+            if (created){
+                delete(maxKeys);
+                maxKeys = new List<GameObject>();
+                delete(availableKeys);
+                availableKeys = new List<GameObject>();
+                delete(increaseKeysBy);
+                increaseKeysBy = new List<GameObject>();
+                delete(freeKeys);
+                freeKeys = new List<GameObject>();
+            }
+        }
+        public void replaceKeyGenerator(KeyGenerator newKeyGenerator){
+            deleteGameObjects();
+            keyGenerator = newKeyGenerator;
+            created = true;
+            showGenerator();
         }
         public void generateKeys(){
             keyGenerator.generateKeys();
@@ -179,7 +89,7 @@ public class UnityPlugin : MonoBehaviour
             int resize = keyGeneratorCapacity-listCapacity;
             if (resize> 0){
                 for (int i = 0;i<resize;i++){
-                    GameObject key = Instantiate(dynamicClone);
+                    GameObject key = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     key.GetComponent<Renderer>().material.color = capacityColor;
                     key.transform.position = new Vector3(2*(i + listCapacity),0,0)+vec;
                     freeKeys.Add(key);
@@ -215,7 +125,7 @@ public class UnityPlugin : MonoBehaviour
             int resize = amount - count;
             if (resize>0){
                 for (int i = 0;i< resize;i++){
-                    GameObject key = Instantiate(dynamicClone);
+                    GameObject key = GameObject.CreatePrimitive(PrimitiveType.Cube);
                     key.GetComponent<Renderer>().material.color = color;
                     key.transform.position = new Vector3(2*(i+count),0,0)+vec;
                     list.Add(key);
@@ -227,34 +137,21 @@ public class UnityPlugin : MonoBehaviour
                 }
             }
         }
+        void delete(List<GameObject> list){
+            int size = list.Count;
+            for (int i = size-1;i>-1;i--){
+                Destroy(list[i]);
+            }
+        }
+        void showGenerator(){
+            displayFreeKeysList(displayVec, freeKeysColor);
+            displayList(maxKeys,keyGenerator.maxKeys,displayVec - new Vector3(0,1,0),maxKeysColor);
+            displayList(availableKeys,keyGenerator.availableKeys,displayVec - new Vector3(0,2,0),availableKeysColor);
+            displayList(increaseKeysBy,keyGenerator.increaseKeysBy,displayVec - new Vector3(0,3,0),increaseKeysByColor);
+        }
     }
-    
-    public class BodySimulation:SourceCode{
-        public AxisSimulation axisSimulation;
-        public GameObject[] bodystructure;
-        public KeyGeneratorSimulation keyGeneratorSimulation;
-    }
-    public class JointSimulation:SourceCode{
 
-    }
-
-
-    void Awake(){
-        dynamicClone = originalObject;
-        staticClone = originalObject;
-        staticClone.isStatic = true;
-        Cursor.lockState = CursorLockMode.Locked;
-    }
-    KeyGeneratorSimulation keyGeneratorSimulation = new KeyGeneratorSimulation();
-    List<GameObject> lol = new List<GameObject>();
     void Start(){
-        lol.Add(Instantiate(dynamicClone));
-        lol.Add(Instantiate(dynamicClone));
-        lol.Add(Instantiate(dynamicClone));
-        GameObject loli = lol[2];
-        lol.RemoveAt(2);
-        print(loli.transform.position);
-        print(lol.Count);
         
     }
     // Update is called once per frame
