@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class SourceCode:MonoBehaviour {
@@ -17,25 +18,37 @@ public class SourceCode:MonoBehaviour {
         public SphericalOctTree sphereOctTree;
         public KeyGenerator keyGenerator;
     }
-    public class renderAxis{
+    public class RenderAxis{
         public Axis axis;
         public Sphere origin,x,y,z,rotationAxis;
+        public bool created;
 
-        public renderAxis(Axis axis){
+        public RenderAxis(Axis axis){
             this.axis = axis;
-            origin = new Sphere(axis.origin,1,new Color(1,1,1,0));
-            x = new Sphere(axis.x,1,new Color(1,0,0,0));
-            y = new Sphere(axis.y,1,new Color(0,1,0,0));
-            z = new Sphere(axis.z,1,new Color(0,0,1,0));
-            rotationAxis = new Sphere(axis.rotationAxis,1,new Color(0,0,0,0));
+            createAxis();
+        }
+        public void createAxis(){
+            if (!created){
+                origin = new Sphere(axis.origin,1,new Color(1,1,1,0));
+                x = new Sphere(axis.x,1,new Color(1,0,0,0));
+                y = new Sphere(axis.y,1,new Color(0,1,0,0));
+                z = new Sphere(axis.z,1,new Color(0,0,1,0));
+                rotationAxis = new Sphere(axis.rotationAxis,1,new Color(0,0,0,0));
+                updateAxis();
+                updateRotationAxis();
+                created = true;
+            }
         }
 
-        public void axisVisibility(bool onOrOff){
-            origin.sphere.GetComponent<MeshRenderer>().enabled = onOrOff;
-            x.sphere.GetComponent<MeshRenderer>().enabled = onOrOff;
-            y.sphere.GetComponent<MeshRenderer>().enabled = onOrOff;
-            z.sphere.GetComponent<MeshRenderer>().enabled = onOrOff;
-            rotationAxis.sphere.GetComponent<MeshRenderer>().enabled = onOrOff;
+        public void deleteAxis(){
+            if (created){
+                origin.destroySphere();
+                x.destroySphere();
+                y.destroySphere();
+                z.destroySphere();
+                rotationAxis.destroySphere();
+                created = false;
+            }
         }
         public void updateAxis(){
             origin.setOrigin(axis.origin);
@@ -48,7 +61,7 @@ public class SourceCode:MonoBehaviour {
         }
     }
     public class Axis {
-        public renderAxis renderAxis;
+        public RenderAxis renderAxis;
         public Vector3 origin,x,y,z,rotationAxis;
         public float distance,worldAxisAngleX,rotationAxisAngleX;
 
@@ -60,7 +73,7 @@ public class SourceCode:MonoBehaviour {
             y = origin + new Vector3(0,distance,0);
             z = origin + new Vector3(0,0,distance);
             rotationAxis = origin + new Vector3(0,distance,0);
-            renderAxis = new renderAxis(this);
+            renderAxis = new RenderAxis(this);
             worldAxisAngleX = 0;
             rotationAxisAngleX = 0;
         }
@@ -71,14 +84,18 @@ public class SourceCode:MonoBehaviour {
             y += add;
             z += add;
             rotationAxis += add;
-            renderAxis.updateAxis();
-            renderAxis.updateRotationAxis();
+            if (renderAxis.created){
+                renderAxis.updateAxis();
+                renderAxis.updateRotationAxis();
+            }
         }
         public void placeAxis(Vector3 newOrigin){
             Vector3 newPosition = newOrigin-origin;
             moveAxis(newPosition);
-            renderAxis.updateAxis();
-            renderAxis.updateRotationAxis();
+            if (renderAxis.created){
+                renderAxis.updateAxis();
+                renderAxis.updateRotationAxis();
+            }
         }
         public void scaleAxis(float newDistance){
             if (newDistance > 0f){
@@ -86,14 +103,18 @@ public class SourceCode:MonoBehaviour {
                 x = origin + distanceFromOrign(x,origin);
                 y = origin + distanceFromOrign(y,origin);
                 z = origin + distanceFromOrign(z,origin);
-                renderAxis.updateAxis();
+                if (renderAxis.created){
+                    renderAxis.updateAxis();
+                }
             }
         }
         public void scaleRotationAxis(float newDistance){
             if (newDistance > 0f){
                 distance = newDistance;
                 rotationAxis = origin + distanceFromOrign(rotationAxis,origin);
-                renderAxis.updateRotationAxis();
+                if (renderAxis.created){
+                    renderAxis.updateRotationAxis();
+                }
             }
         }
         public float length(Vector3 vectorDirections){
@@ -206,8 +227,10 @@ public class SourceCode:MonoBehaviour {
 
             x = localX; y = localY; z = localZ;
             worldAxisAngleX = worldAngleX;
-            renderAxis.updateAxis();
-            renderAxis.updateRotationAxis();
+            if (renderAxis.created){
+                renderAxis.updateAxis();
+                renderAxis.updateRotationAxis();
+            }
         }
         public void moveRotationAxis(float addAngleY,float addAngleX){
             Vector4 rotY = angledAxis(addAngleY,x);
@@ -215,7 +238,9 @@ public class SourceCode:MonoBehaviour {
             rotationAxis = quatRotate(rotationAxis,origin,rotY);
             rotationAxis = quatRotate(rotationAxis,origin,rotX);
             rotationAxisAngleX += addAngleX;
-            renderAxis.updateRotationAxis();
+            if (renderAxis.created){
+                renderAxis.updateRotationAxis();
+            }
         }
         public void setRotationAxis(float setAngleY,float setAngleX){
             Vector4 rotY = angledAxis(setAngleY,y);
@@ -225,7 +250,9 @@ public class SourceCode:MonoBehaviour {
             rotationOrigin = quatRotate(rotationOrigin,origin,rotX);
             rotationAxis = rotationOrigin;
             rotationAxisAngleX = setAngleX;
-            renderAxis.updateRotationAxis();
+            if (renderAxis.created){
+                renderAxis.updateRotationAxis();
+            }
         }
         public void getRotationAxisAngle(out float angleY,out float angleX){
             getAngle(rotationAxis,origin,x,y,z,out angleY,out angleX);
@@ -245,18 +272,28 @@ public class SourceCode:MonoBehaviour {
             worldAngleX *= degreeToRadian;
             localAngleY *= degreeToRadian;
             setWorldRotation(worldAngleY, worldAngleX, localAngleY);
+            if (renderAxis.created){
+                renderAxis.updateAxis();
+                renderAxis.updateRotationAxis();
+            }
         }
         public void moveRotationAxisInDegrees(float addAngleY,float addAngleX){
             float degreeToRadian = Mathf.PI/180;
             addAngleY *= degreeToRadian;
             addAngleX *= degreeToRadian;
             moveRotationAxis(addAngleY, addAngleX);
+            if (renderAxis.created){
+                renderAxis.updateRotationAxis();
+            }
         }
         public void setRotationAxisInDegrees(float addAngleY,float addAngleX){
             float degreeToRadian = Mathf.PI/180;
             addAngleY *= degreeToRadian;
             addAngleX *= degreeToRadian;
             setRotationAxis(addAngleY, addAngleX);
+            if (renderAxis.created){
+                renderAxis.updateRotationAxis();
+            }
         }
         public void getRotationAxisAngleInDegrees(out float addAngleY,out float addAngleX){
             float radianToDegree = 180/Mathf.PI;
@@ -290,14 +327,14 @@ public class SourceCode:MonoBehaviour {
             return new Vector4(x, y, z, w);
         }
         public Vector4 angledAxis(float angle,Vector3 rotationAxis){
-                Vector3 normilized = normalize(rotationAxis - origin); 
-                float halfAngle = angle * 0.5f;
-                float sinHalfAngle = Mathf.Sin(halfAngle);
-                float w = Mathf.Cos(halfAngle);
-                float x = normilized.x * sinHalfAngle;
-                float y = normilized.y * sinHalfAngle;
-                float z = normilized.z * sinHalfAngle;
-                return new Vector4(x,y,z,w);
+            Vector3 normilized = normalize(rotationAxis - origin); 
+            float halfAngle = angle * 0.5f;
+            float sinHalfAngle = Mathf.Sin(halfAngle);
+            float w = Mathf.Cos(halfAngle);
+            float x = normilized.x * sinHalfAngle;
+            float y = normilized.y * sinHalfAngle;
+            float z = normilized.z * sinHalfAngle;
+            return new Vector4(x,y,z,w);
         }
         public Vector3 quatRotate(Vector3 point, Vector3 origin, Vector4 angledAxis){
             Vector3 pointDirection = point - origin;     
@@ -646,11 +683,11 @@ public class SourceCode:MonoBehaviour {
             body.bodyStructure[key] = addJoint;
         }
         public void deleteJoint(){
-            bool checkMultiConnection = !(connection.past.Count >1 && connection.future.Count >1);
+            int countPast = connection.past.Count;
+            int countFuture = connection.past.Count;
+            bool checkMultiConnection = !(countPast >1 && countFuture >1);
             if (checkMultiConnection){
                 body.keyGenerator.returnKey(connection.indexInBody);
-                int countPast = connection.past.Count;
-                int countFuture = connection.past.Count;
                 if (countPast != 0 && countFuture != 0){
                     if (countPast == 0){
                         connection.disconnectFromFuture();
@@ -663,7 +700,7 @@ public class SourceCode:MonoBehaviour {
                         connection.disconnectFromPast();
                         List<Joint> futureEnds = connection.past;
                         List<Joint> pastEnds = connection.future;
-                        bool check = (futureEnds.Count == 1)? true:false;
+                        bool check = (countFuture == 1)? true:false;
                         for (int i = 0; i<futureEnds.Count;i++){
                             if (check) 
                                 futureEnds[0].connection.connectFutureToPast(pastEnds[i]);
@@ -672,6 +709,7 @@ public class SourceCode:MonoBehaviour {
                         }
                     }
                 }
+                pointCloud.deleteAllSpheres();
                 body.bodyStructure[connection.indexInBody] = null;
             }
         }
@@ -723,7 +761,14 @@ public class SourceCode:MonoBehaviour {
             CollisionSphere remove = collisionSpheres[key];
             if(remove != null){
                 keyGenerator.returnKey(key);
+                collisionSpheres[key].sphere.destroySphere();
                 collisionSpheres[key] = null;
+            }
+        }
+        public void deleteAllSpheres(){
+            int size = collisionSpheres.Length;
+            for (int i = 0; i<size;i++){
+                deleteSphere(i);
             }
         }
         public void resizeArray(int amount){
@@ -841,6 +886,9 @@ public class SourceCode:MonoBehaviour {
         public void setColor(Color newColor){
             color = newColor;
             sphere.GetComponent<Renderer>().material.color = newColor;
+        }
+        public void destroySphere(){
+            Destroy(sphere);
         }
     }
 
