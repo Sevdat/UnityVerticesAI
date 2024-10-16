@@ -21,7 +21,7 @@ public class SourceCode:MonoBehaviour {
     public class RenderAxis{
         public Axis axis;
         public Sphere origin,x,y,z,rotationAxis;
-        public bool created;
+        public bool created = false;
 
         public RenderAxis(Axis axis){
             this.axis = axis;
@@ -181,6 +181,7 @@ public class SourceCode:MonoBehaviour {
             float angleSide = angleBetweenLines(dirX,dirPerpOrg);
             
             angleY = angleBetweenLines(dirY,dirH);
+            print(angleY*180/Mathf.PI);
             angleX = (angleSide>Mathf.PI/2)? 
                 2*Mathf.PI-angleBetweenLines(dirZ,dirPerpOrg):
                 angleBetweenLines(dirZ,dirPerpOrg);
@@ -232,23 +233,11 @@ public class SourceCode:MonoBehaviour {
                 renderAxis.updateRotationAxis();
             }
         }
-        public void moveRotationAxis(float addAngleY,float addAngleX){
-            Vector4 rotY = angledAxis(addAngleY,x);
-            Vector4 rotX = angledAxis(addAngleX,y);
-            rotationAxis = quatRotate(rotationAxis,origin,rotY);
-            rotationAxis = quatRotate(rotationAxis,origin,rotX);
-            rotationAxisAngleX += addAngleX;
-            if (renderAxis.created){
-                renderAxis.updateRotationAxis();
-            }
-        }
         public void setRotationAxis(float setAngleY,float setAngleX){
             Vector4 rotY = angledAxis(setAngleY,y);
             Vector4 rotX = angledAxis(setAngleX,x);
-            Vector3 rotationOrigin = y;
-            rotationOrigin = quatRotate(rotationOrigin,origin,rotY);
-            rotationOrigin = quatRotate(rotationOrigin,origin,rotX);
-            rotationAxis = rotationOrigin;
+            rotationAxis = quatRotate(rotationAxis,origin,rotX);
+            rotationAxis = quatRotate(rotationAxis,origin,rotY);
             rotationAxisAngleX = setAngleX;
             if (renderAxis.created){
                 renderAxis.updateRotationAxis();
@@ -277,20 +266,11 @@ public class SourceCode:MonoBehaviour {
                 renderAxis.updateRotationAxis();
             }
         }
-        public void moveRotationAxisInDegrees(float addAngleY,float addAngleX){
+        public void setRotationAxisInDegrees(float setAngleY,float setAngleX){
             float degreeToRadian = Mathf.PI/180;
-            addAngleY *= degreeToRadian;
-            addAngleX *= degreeToRadian;
-            moveRotationAxis(addAngleY, addAngleX);
-            if (renderAxis.created){
-                renderAxis.updateRotationAxis();
-            }
-        }
-        public void setRotationAxisInDegrees(float addAngleY,float addAngleX){
-            float degreeToRadian = Mathf.PI/180;
-            addAngleY *= degreeToRadian;
-            addAngleX *= degreeToRadian;
-            setRotationAxis(addAngleY, addAngleX);
+            setAngleY *= degreeToRadian;
+            setAngleX *= degreeToRadian;
+            setRotationAxis(setAngleY, setAngleX);
             if (renderAxis.created){
                 renderAxis.updateRotationAxis();
             }

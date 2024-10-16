@@ -5,94 +5,96 @@ using UnityEngine;
 
 public class UnityPluginTest : MonoBehaviour
 {
-    AxisSimulationTest testAxis;
-    public class AxisSimulationTest:SourceCode{
-        internal Axis axis = new Axis();
+    public class AxisTest:SourceCode {
+        internal Axis axis;
         float accuracy = 0.1f;
-        float worldAngleY = 0,worldAngleX = 0,localAngleY = 0;
-        Vector3 vec = new Vector3(0,0,0); 
-        float distance = 5f;
 
-        public AxisSimulationTest(){}
-        public AxisSimulationTest(Vector3 origin, float distance,float worldAngleY,float worldAngleX,float localAngleY){
-            vec = origin;
-            this.distance = distance;
+        public AxisTest(){}
+        public AxisTest(Vector3 origin, float distance){
+            axis = new Axis(origin,distance);
+            testCreateAxis(origin,distance);
         }
-        public void setDistance(float newDistance){
-            distance = newDistance;
-        }
-        public void setVec(Vector3 newVec){
-            vec = newVec;
-        }
-        public void setAccuracy(float newAccuracy){
-            accuracy = newAccuracy;
-        }
-        public void setAngle(float worldAngleY,float worldAngleX,float localAngleY){
-            this.worldAngleY = worldAngleY;
-            this.worldAngleX = worldAngleX;
-            this.localAngleY = localAngleY;
-        }
-        internal void testCreateAxis(){
-            Vector3 origin = axis.origin;
-            if (origin != vec) print($"originPositionError: expected {vec} got {origin}");
-            
-            Vector3 vecX = vec + new Vector3(distance,0,0);
+
+        internal void testCreateAxis(Vector3 origin, float distance){
+            if (origin != axis.origin) print($"originPositionError: expected {origin} got {origin}");
+
+            Vector3 vecX = origin + new Vector3(distance,0,0);
             Vector3 x = axis.x;
             if (x != vecX) print($"xPositionError: expected {vecX} got {x}");
-            
-            Vector3 vecY = vec + new Vector3(0,distance,0);
+
+            Vector3 vecY = origin + new Vector3(0,distance,0);
             Vector3 y = axis.y;
             if (y != vecY) print($"yPositionError: expected {vecY} got {y}");
-                        
-            Vector3 vecZ = vec + new Vector3(0,0,distance);
+
+            Vector3 vecZ = origin + new Vector3(0,0,distance);
             Vector3 z = axis.z;
             if (z != vecZ) print($"zPositionError: expected {vecZ} got {z}");
         }
+
         internal void testMoveAxis(Vector3 add){
-            testCreateAxis();
+            Vector3 expected,got;
+            Vector3 oldOrigin = axis.origin;
+            Vector3 oldX = axis.origin;
+            Vector3 oldY = axis.origin;
+            Vector3 oldZ = axis.origin;
+            Vector3 oldRotationAxis = axis.rotationAxis;
             axis.moveAxis(add);
-            Vector3 origin = axis.origin;
-            if (origin != vec+add) print($"originMoveError: expected {vec} got {origin}");
+
+            expected = oldOrigin + add;
+            got= axis.origin;
+            if (expected != got) print($"originMoveError: expected {expected} got {got}");
+
+            expected = oldX + add;
+            got = axis.x;
+            if (expected != got) print($"originMoveError: expected {expected} got {got}");
+
+            expected = oldY + add;
+            got = axis.y;
+            if (expected != got) print($"originMoveError: expected {expected} got {got}");
+
+            expected = oldZ + add;
+            got = axis.z;
+            if (expected != got) print($"originMoveError: expected {expected} got {got}");
             
-            Vector3 vecX = vec + new Vector3(distance,0,0);
-            Vector3 x = axis.x;
-            if (x != vecX+add) print($"xMoveError: expected {vecX} got {x}");
-            
-            Vector3 vecY = vec + new Vector3(0,distance,0);
-            Vector3 y = axis.y;
-            if (y != vecY+add) print($"yMoveError: expected {vecY} got {y}");
-                        
-            Vector3 vecZ = vec + new Vector3(0,0,distance);
-            Vector3 z = axis.z;
-            if (z != vecZ+add) print($"zMoveError: expected {vecZ} got {z}");
+            expected = oldRotationAxis + add;
+            got = axis.rotationAxis;
+            if (expected != got) print($"originMoveError: expected {expected} got {got}");
         }
         internal void testPlaceAxis(Vector3 newOrigin){
-            testCreateAxis();
+            Vector3 expected,got;
+            Vector3 add = newOrigin - axis.origin; 
+            Vector3 oldOrigin = axis.origin;
+            Vector3 oldX = axis.origin;
+            Vector3 oldY = axis.origin;
+            Vector3 oldZ = axis.origin;
+            Vector3 oldRotationAxis = axis.rotationAxis;
             axis.placeAxis(newOrigin);
-            Vector3 origin = axis.origin;
-            if (origin != newOrigin) print($"originPlaceError: expected {vec} got {origin}");
-            
-            Vector3 vecX = newOrigin + new Vector3(distance,0,0);
-            Vector3 x = axis.x;
-            if (x != vecX) print($"xPlaceError: expected {vecX} got {x}");
-            
-            Vector3 vecY = newOrigin + new Vector3(0,distance,0);
-            Vector3 y = axis.y;
-            if (y != vecY) print($"yPlaceError: expected {vecY} got {y}");
-                        
-            Vector3 vecZ = newOrigin + new Vector3(0,0,distance);
-            Vector3 z = axis.z;
-            if (z != vecZ) print($"zPlaceError: expected {vecZ} got {z}");
-        }
 
-        internal void testScaleAxis(){
-            testCreateAxis();
+            expected = oldOrigin + add;
+            got= axis.origin;
+            if (expected != got) print($"originPlaceError: expected {expected} got {got}");
+
+            expected = oldX + add;
+            got = axis.x;
+            if (expected != got) print($"xPlaceError: expected {expected} got {got}");
+
+            expected = oldY + add;
+            got = axis.y;
+            if (expected != got) print($"yPlaceError: expected {expected} got {got}");
+
+            expected = oldZ + add;
+            got = axis.z;
+            if (expected != got) print($"zPlaceError: expected {expected} got {got}");
+            
+            expected = oldRotationAxis + add;
+            got = axis.rotationAxis;
+            if (expected != got) print($"rotationAxisPlaceError: expected {expected} got {got}");
+        }
+        internal void testScaleAxis(float distance){
             axis.scaleAxis(distance);
             float min = distance - accuracy;
             float max = distance + accuracy;
-            float gotX = axis.length(
-                axis.x - axis.origin
-                );
+            float gotX = axis.length(axis.x - axis.origin);
             if (gotX < min || max < gotX) print($"xScaleError: expected {distance} got {gotX}");
 
             float gotY = axis.length(axis.y - axis.origin);
@@ -101,21 +103,19 @@ public class UnityPluginTest : MonoBehaviour
             float gotZ = axis.length(axis.z - axis.origin);
             if (gotX < min || max < gotX) print($"zScaleError: expected {distance} got {gotZ}");           
         }
-        internal void testScaleRotationAxis(){
-            testCreateAxis();
+        internal void testScaleRotationAxis(float distance){
             axis.scaleRotationAxis(distance);
             float min = distance - accuracy;
             float max = distance - accuracy;
             float gotRotationAxis = axis.length(axis.rotationAxis - axis.origin);
             if (min < gotRotationAxis && gotRotationAxis < max) print($"xScaleError: expected {distance} got {gotRotationAxis}");         
         }
-        internal void testSetAxis(){
-            testCreateAxis();
+        internal void testSetAxis(float worldAngleY, float worldAngleX, float localAngleY){
             float minWorldAngleY = worldAngleY - accuracy, maxWorldAngleY = worldAngleY + accuracy;
             float minWorldAngleX = worldAngleX - accuracy, maxWorldAngleX = worldAngleX + accuracy;
             float minLocalAngleY = localAngleY - accuracy, maxLocalAngleY = localAngleY + accuracy;
-            axis.setWorldRotation(worldAngleY,worldAngleX,localAngleY);
-            axis.getWorldRotation(out float gotWorldAngleY,out float gotWorldAngleX,out float gotLocalAngleY);
+            axis.setWorldRotationInDegrees(worldAngleY,worldAngleX,localAngleY);
+            axis.getWorldRotationInDegrees(out float gotWorldAngleY,out float gotWorldAngleX,out float gotLocalAngleY);
             if (float.IsNaN(gotWorldAngleY)) print("gotWorldAngleY: NaN error");
             if (float.IsNaN(gotWorldAngleX)) print("gotWorldAngleX: NaN error");
             if (float.IsNaN(gotLocalAngleY)) print("gotLocalAngleY: NaN error");
@@ -123,16 +123,15 @@ public class UnityPluginTest : MonoBehaviour
             if (gotWorldAngleX < minWorldAngleX || maxWorldAngleX < gotWorldAngleX) print($"worldAngleX: expected {worldAngleX} got {gotWorldAngleX}");
             if (gotLocalAngleY < minLocalAngleY || maxLocalAngleY < gotLocalAngleY) print($"localAngleY: expected {localAngleY} got {gotLocalAngleY}");
         }
-        internal void testMoveRotationAxis(){
-            testCreateAxis();
-            float minWorldAngleY = worldAngleY - accuracy, maxWorldAngleY = worldAngleY + accuracy;
-            float minWorldAngleX = worldAngleX - accuracy, maxWorldAngleX = worldAngleX + accuracy;
-            axis.moveRotationAxis(worldAngleY,worldAngleX);
-            axis.getRotationAxisAngle(out float gotWorldAngleY,out float gotWorldAngleX);
+        internal void testSetRotationAxis(float angleY, float angleX){
+            float minWorldAngleY = angleY - accuracy, maxWorldAngleY = angleY + accuracy;
+            float minWorldAngleX = angleX - accuracy, maxWorldAngleX = angleX + accuracy;
+            axis.setRotationAxisInDegrees(angleY,angleX);
+            axis.getRotationAxisAngleInDegrees(out float gotWorldAngleY,out float gotWorldAngleX);
             if (float.IsNaN(gotWorldAngleY)) print("gotWorldAngleY: NaN error");
             if (float.IsNaN(gotWorldAngleX)) print("gotWorldAngleX: NaN error");
-            if (gotWorldAngleY < minWorldAngleY || maxWorldAngleY < gotWorldAngleY) print($"worldAngleY: expected {worldAngleY} got {gotWorldAngleY}");
-            if (gotWorldAngleX < minWorldAngleX || maxWorldAngleX < gotWorldAngleX) print($"worldAngleX: expected {worldAngleX} got {gotWorldAngleX}");
+            if (gotWorldAngleY < minWorldAngleY || maxWorldAngleY < gotWorldAngleY) print($"worldAngleY: expected {angleY} got {gotWorldAngleY}");
+            if (gotWorldAngleX < minWorldAngleX || maxWorldAngleX < gotWorldAngleX) print($"worldAngleX: expected {angleX} got {gotWorldAngleX}");
         }
     }
     
@@ -144,7 +143,10 @@ public class UnityPluginTest : MonoBehaviour
     }
     Experiment exp = new Experiment();
     void Start(){
-        exp.strt();
+        AxisTest axisTest = new AxisTest(new Vector3(5,5,5),5);
+        axisTest.testSetRotationAxis(50,50);
+        axisTest.testScaleRotationAxis(7);
+        // exp.strt();
 
     }
     int time = 0;
