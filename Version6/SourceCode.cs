@@ -421,18 +421,7 @@ public class SourceCode:MonoBehaviour {
                 keyGenerator.setLimit(oldLimit);
             }
         }
-        Joint createFirstJoint(int size,List<Joint> joints){
-            resizeArray(1);
-            int key = keyGenerator.getKey();
-            Connection connection = new Connection(key);
-            Axis axis = new Axis(globalAxis.origin,globalAxis.distance);
-            for (int i = 0; i<size;i++){
-                connection.connectFutureToPast(joints[i]);
-            }
-            return new Joint(keyGenerator.increaseKeysBy, axis, connection);
-        }
-        public Joint getFirstJoint(){
-            Joint firstJoint = null;
+        public List<Joint> getPastEnds(){
             List<Joint> joints = new List<Joint>();
             for (int i =0; i<keyGenerator.maxKeys; i++){
                 Joint joint = bodyStructure[i];
@@ -440,33 +429,18 @@ public class SourceCode:MonoBehaviour {
                     if (joint.connection.past.Count == 0){
                         joints.Add(joint);
                     }
-                    if (firstJoint != null) firstJoint = joint;
                 }
             }
-            int size = joints.Count;
-            if (firstJoint != null){
-                if (size >1) {
-                    return createFirstJoint(size,joints);
-                } else if (size == 0) {     
-                    firstJoint.connection.getPastConnections(
-                            false,
-                            out _,
-                            out joints,
-                            out int _
-                        );
-                        return createFirstJoint(size,joints);
-                    } else return joints[0];
-            } else {
-                reviveBody();
-                return bodyStructure[0];
-            }
+            return joints;
         }
         public void optimizeBody(){
-            bool getOnlyActive = false;
-            Joint firstJoint = getFirstJoint();
+            bool getOnlyActive = true;
+            bool getFuture = true;
+            List<Joint> firstJoint = getPastEnds();
             if (firstJoint != null) {
-                firstJoint.connection.getFutureConnections(
-                    getOnlyActive,
+                tracker(
+                    firstJoint,
+                    getOnlyActive, getFuture,
                     out List<Joint> connectionTree, 
                     out _, 
                     out int treeSize
@@ -480,6 +454,30 @@ public class SourceCode:MonoBehaviour {
                 }
                 bodyStructure = orginizedJoints;
                 keyGenerator.resetGenerator(treeSize);
+            }
+        }
+        public void tracker(
+            List<Joint> joints, bool pastOrFuture, bool getOnlyActive,
+            out List<Joint> tree, out List<Joint> end, out int treeSize
+            ){
+            treeSize = joints.Count;
+            end = new List<Joint>();
+            for (int i=0; i< treeSize; i++){
+                List<Joint> tracker = joints[i].connection.nextConnections(pastOrFuture,getOnlyActive);
+                int trackerSize = tracker.Count;
+                if (trackerSize > 0){
+                    joints.AddRange(tracker);
+                    treeSize += trackerSize;
+                } else {
+                    end.Add(joints[i]);
+                }
+            }
+            resetUsed(joints,treeSize);
+            tree = joints;
+        }
+        public void resetUsed(List<Joint> joints, int size){
+            for (int i = 0; i<size;i++){
+                joints[i].connection.used = false;
             }
         }
     }
@@ -610,11 +608,6 @@ public class SourceCode:MonoBehaviour {
             }
             return connectedJoints;
         }
-        public void resetUsed(List<Joint> joints, int size){
-            for (int i = 0; i<size;i++){
-                joints[i].connection.used = false;
-            }
-        }
         void disconnect(List<Joint> joints, bool pastOrFuture){
             int size = joints.Count;
             if (pastOrFuture) 
@@ -633,19 +626,10 @@ public class SourceCode:MonoBehaviour {
             ){
             tree = new List<Joint>{current};  
             tree.AddRange(nextConnections(pastOrFuture,getOnlyActive));
-            treeSize = tree.Count;
-            end = new List<Joint>();
-            for (int i=0; i< treeSize; i++){
-                List<Joint> tracker = tree[i].connection.nextConnections(pastOrFuture,getOnlyActive);
-                int trackerSize = tracker.Count;
-                if (trackerSize > 0){
-                    tree.AddRange(tracker);
-                    treeSize += trackerSize;
-                } else {
-                    end.Add(tree[i]);
-                }
-            }
-            resetUsed(tree,treeSize);
+            current.body.tracker(
+                tree, pastOrFuture, getOnlyActive,
+                out tree, out end, out treeSize
+                );
         }
     }
 
@@ -744,7 +728,7 @@ public class SourceCode:MonoBehaviour {
                 joint.localAxis.rotate(quat,rotationOrigin);
                 joint.pointCloud.rotateSpheres(quat,rotationOrigin);
             }
-            connection.resetUsed(tree,size);
+            body.resetUsed(tree,size);
         }
     }
     public class PointCloud {
