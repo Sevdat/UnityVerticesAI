@@ -233,6 +233,10 @@ public class SourceCode:MonoBehaviour {
                 renderAxis.updateRotationAxis();
             }
         }
+        public void getRotationAxis(out float angleY,out float angleX){
+            getAngle(rotationAxis,origin,x,y,z,out angleY,out angleX);
+            if (angleY == 0f || angleY < Mathf.PI) angleX = rotationAxisAngleX;
+        }
         public void setRotationAxis(float setAngleY,float setAngleX){
             Vector4 rotY = angledAxis(setAngleY,y);
             Vector4 rotX = angledAxis(setAngleX,x);
@@ -242,10 +246,6 @@ public class SourceCode:MonoBehaviour {
             if (renderAxis.created){
                 renderAxis.updateRotationAxis();
             }
-        }
-        public void getRotationAxisAngle(out float angleY,out float angleX){
-            getAngle(rotationAxis,origin,x,y,z,out angleY,out angleX);
-            if (angleY == 0f || angleY < Mathf.PI) angleX = rotationAxisAngleX;
         }
 
         public void getWorldRotationInDegrees(out float worldAngleY,out float worldAngleX,out float localAngleY){
@@ -266,6 +266,12 @@ public class SourceCode:MonoBehaviour {
                 renderAxis.updateRotationAxis();
             }
         }
+        public void getRotationAxisInDegrees(out float addAngleY,out float addAngleX){
+            float radianToDegree = 180/Mathf.PI;
+            getRotationAxis(out addAngleY, out addAngleX);
+            addAngleY *= radianToDegree;
+            addAngleX *= radianToDegree;
+        }
         public void setRotationAxisInDegrees(float setAngleY,float setAngleX){
             float degreeToRadian = Mathf.PI/180;
             setAngleY *= degreeToRadian;
@@ -274,12 +280,6 @@ public class SourceCode:MonoBehaviour {
             if (renderAxis.created){
                 renderAxis.updateRotationAxis();
             }
-        }
-        public void getRotationAxisAngleInDegrees(out float addAngleY,out float addAngleX){
-            float radianToDegree = 180/Mathf.PI;
-            getRotationAxisAngle(out addAngleY, out addAngleX);
-            addAngleY *= radianToDegree;
-            addAngleX *= radianToDegree;
         }
 
         public Vector4 quat(float radian){
@@ -391,7 +391,8 @@ public class SourceCode:MonoBehaviour {
                 keyGenerator = new KeyGenerator(keyGenerator.maxKeys);
                 int key = keyGenerator.getKey();
                 Connection connection = new Connection(key);
-                Joint addJoint = new Joint(keyGenerator.increaseKeysBy, globalAxis,connection); 
+                Axis axis = new Axis(globalAxis.origin,globalAxis.distance);
+                Joint addJoint = new Joint(keyGenerator.increaseKeysBy, axis, connection); 
                 bodyStructure[key] = addJoint;
             } 
         }
@@ -405,7 +406,8 @@ public class SourceCode:MonoBehaviour {
             int availableKeys = keyGenerator.availableKeys;
             int limitCheck = availableKeys - amount;
             if(limitCheck < 0) {
-                keyGenerator.setLimit(amount + Mathf.Abs(limitCheck));
+                int oldLimit = keyGenerator.increaseKeysBy;
+                keyGenerator.setLimit(amount + Mathf.Abs(limitCheck) + oldLimit);
                 keyGenerator.generateKeys();
                 int max = keyGenerator.maxKeys;
                 int newSize = max + keyGenerator.increaseKeysBy;
@@ -416,20 +418,48 @@ public class SourceCode:MonoBehaviour {
                         newJointArray[i] = joint;
                     }
                 }
+                keyGenerator.setLimit(oldLimit);
             }
+        }
+        Joint createFirstJoint(int size,List<Joint> joints){
+            resizeArray(1);
+            int key = keyGenerator.getKey();
+            Connection connection = new Connection(key);
+            Axis axis = new Axis(globalAxis.origin,globalAxis.distance);
+            for (int i = 0; i<size;i++){
+                connection.connectFutureToPast(joints[i]);
+            }
+            return new Joint(keyGenerator.increaseKeysBy, axis, connection);
         }
         public Joint getFirstJoint(){
             Joint firstJoint = null;
+            List<Joint> joints = new List<Joint>();
             for (int i =0; i<keyGenerator.maxKeys; i++){
                 Joint joint = bodyStructure[i];
                 if (joint != null){
                     if (joint.connection.past.Count == 0){
-                        firstJoint = joint;
-                        break;
+                        joints.Add(joint);
                     }
+                    if (firstJoint != null) firstJoint = joint;
                 }
             }
-            return firstJoint;
+            int size = joints.Count;
+            if (firstJoint != null){
+                if (size >1) {
+                    return createFirstJoint(size,joints);
+                } else if (size == 0) {     
+                    firstJoint.connection.getPastConnections(
+                            false,
+                            out _,
+                            out joints,
+                            out int _
+                        );
+                        return createFirstJoint(size,joints);
+                    } else return joints[0];
+            } else {
+                reviveBody();
+                return bodyStructure[0];
+            }
         }
         public void optimizeBody(){
             bool getOnlyActive = false;
@@ -450,7 +480,7 @@ public class SourceCode:MonoBehaviour {
                 }
                 bodyStructure = orginizedJoints;
                 keyGenerator.resetGenerator(treeSize);
-            } else reviveBody();
+            }
         }
     }
 
@@ -563,6 +593,28 @@ public class SourceCode:MonoBehaviour {
             bool pastOnly = false;
             disconnect(past,pastOnly);
         }
+        public List<Joint> nextConnections(bool pastOrFuture, bool getOnlyActive){
+            List<Joint> connectedJoints = new List<Joint>();
+            List<Joint> joints = pastOrFuture? future:past;
+            int listSize = joints.Count;
+            for (int j = 0;j<listSize;j++){
+                Joint joint = joints[j];
+                bool used = joint.connection.used;
+                if (getOnlyActive && joint.connection.active && !used){
+                    connectedJoints.Add(joint);
+                    joint.connection.used = true;
+                } else if (!getOnlyActive && !used){
+                    connectedJoints.Add(joint);
+                    joint.connection.used = true;
+                }
+            }
+            return connectedJoints;
+        }
+        public void resetUsed(List<Joint> joints, int size){
+            for (int i = 0; i<size;i++){
+                joints[i].connection.used = false;
+            }
+        }
         void disconnect(List<Joint> joints, bool pastOrFuture){
             int size = joints.Count;
             if (pastOrFuture) 
@@ -595,28 +647,6 @@ public class SourceCode:MonoBehaviour {
             }
             resetUsed(tree,treeSize);
         }
-        public List<Joint> nextConnections(bool pastOrFuture, bool getOnlyActive){
-            List<Joint> connectedJoints = new List<Joint>();
-            List<Joint> joints = pastOrFuture? future:past;
-            int listSize = joints.Count;
-            for (int j = 0;j<listSize;j++){
-                Joint joint = joints[j];
-                bool used = joint.connection.used;
-                if (getOnlyActive && joint.connection.active && !used){
-                    connectedJoints.Add(joint);
-                    joint.connection.used = true;
-                } else if (!getOnlyActive && !used){
-                    connectedJoints.Add(joint);
-                    joint.connection.used = true;
-                }
-            }
-            return connectedJoints;
-        }
-        public void resetUsed(List<Joint> joints, int size){
-            for (int i = 0; i<size;i++){
-                joints[i].connection.used = false;
-            }
-        }
     }
 
     public class Joint {
@@ -626,8 +656,8 @@ public class SourceCode:MonoBehaviour {
         public PointCloud pointCloud;
 
         public Joint(){}
-        public Joint(int amountOfKeys, Axis localAxis,Connection connection){
-            pointCloud = new PointCloud(amountOfKeys);
+        public Joint(int amountOfSpheres, Axis localAxis,Connection connection){
+            pointCloud = new PointCloud(amountOfSpheres);
             this.localAxis = localAxis;
             this.connection = connection;
             connection.current = this;

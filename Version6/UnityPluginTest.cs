@@ -127,7 +127,7 @@ public class UnityPluginTest : MonoBehaviour
             float minWorldAngleY = angleY - accuracy, maxWorldAngleY = angleY + accuracy;
             float minWorldAngleX = angleX - accuracy, maxWorldAngleX = angleX + accuracy;
             axis.setRotationAxisInDegrees(angleY,angleX);
-            axis.getRotationAxisAngleInDegrees(out float gotWorldAngleY,out float gotWorldAngleX);
+            axis.getRotationAxisInDegrees(out float gotWorldAngleY,out float gotWorldAngleX);
             if (float.IsNaN(gotWorldAngleY)) print("gotWorldAngleY: NaN error");
             if (float.IsNaN(gotWorldAngleX)) print("gotWorldAngleX: NaN error");
             if (gotWorldAngleY < minWorldAngleY || maxWorldAngleY < gotWorldAngleY) print($"worldAngleY: expected {angleY} got {gotWorldAngleY}");
