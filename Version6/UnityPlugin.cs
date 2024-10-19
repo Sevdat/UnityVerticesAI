@@ -56,7 +56,7 @@ public class UnityPlugin : MonoBehaviour
             } 
         }
         public void setLimit(int newLimit){
-            keyGenerator.setLimit(newLimit);
+            keyGenerator.setIncreaseKeysBy(newLimit);
             if(created) {
                 displayList(increaseKeysBy,keyGenerator.increaseKeysBy,displayVec - new Vector3(0,3,0),increaseKeysByColor);
             }

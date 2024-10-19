@@ -1,6 +1,7 @@
 using System.CodeDom.Compiler;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class UnityPluginTest : MonoBehaviour
@@ -139,13 +140,20 @@ public class UnityPluginTest : MonoBehaviour
         public void strt(){
             Axis ax = new Axis(new Vector3(5,5,5),5);
             Body lol = new Body(ax,10);
+            lol.resizeArray(12);
+            lol.optimizeBody();
+            print(lol.bodyStructure.Length);
+            // print(lol.getPastEnds().Count);
+            // print(lol.keyGenerator.maxKeys);
+            // foreach (int i in lol.keyGenerator.freeKeys){
+            //     print(i);
+            // }
         }
     }
     Experiment exp = new Experiment();
     void Start(){
-        AxisTest axisTest = new AxisTest(new Vector3(5,5,5),5);
-        axisTest.testSetRotationAxis(50,50);
-        axisTest.testScaleRotationAxis(7);
+        exp.strt();
+        GameObject[] lol = new GameObject[5];
         // exp.strt();
 
     }

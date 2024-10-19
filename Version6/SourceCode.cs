@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -340,12 +341,12 @@ public class SourceCode:MonoBehaviour {
 
         public void generateKeys(){
             for(int i = 0; i < increaseKeysBy; i++){
-                freeKeys.Add(maxKeys+increaseKeysBy-i);
+                freeKeys.Add(maxKeys+increaseKeysBy-i-1);
             }
             availableKeys += increaseKeysBy;
             maxKeys += increaseKeysBy;
         }
-        public void setLimit(int newLimit){
+        public void setIncreaseKeysBy(int newLimit){
             if(newLimit > 0){
                 increaseKeysBy = newLimit;
             }
@@ -371,24 +372,150 @@ public class SourceCode:MonoBehaviour {
             availableKeys = 0;
         }
     }
+    public class JointSelector{
+        public Joint selected;
+        public List<Joint> joints;
+        public int size;
+        public int index;
 
+        public JointSelector(){}
+        public JointSelector(List<Joint> joints){
+            this.joints = joints;
+            size = joints.Count;
+            index = 0;
+            if (size >0) selected = joints[index];
+            select();
+        }
+
+        public void reColor(){
+            deselect();
+            if (size >0) selected = joints[index];
+            select();
+        }
+        public void select(){
+            if (size >0) selected.pointCloud.selectSpheres(true);
+        }
+        public void deselect(){
+            if (size >0) selected.pointCloud.selectSpheres(false);
+        }
+        public void nextJoint(){
+            index++;
+            if (index<size) reColor(); else index--;
+        }
+        public void previousJoint(){
+            index--;
+            if (index>0) reColor(); else index++;          
+        }
+        public void pastJoints(){
+            List<Joint> past = selected.connection.nextConnections(false,false);
+            int size = past.Count;
+            if (size > 0) {
+                this.size = size;
+                deselect();
+                joints = past;
+                selected = past[0];
+                select(); 
+            }
+        }
+        public void futureJoints(){
+            List<Joint> future = selected.connection.nextConnections(true,false);
+            int size = future.Count;
+            if (size > 0) {
+                this.size = size;
+                deselect();
+                joints = future;
+                selected = future[0];
+                select(); 
+            }
+        }
+    }
+    public class CollisionSphereSelector{
+        public CollisionSphere selected;
+        public List<CollisionSphere> collisionSpheres;
+        public int size;
+        public int index;
+
+        public CollisionSphereSelector(){
+            collisionSpheres = new List<CollisionSphere>();
+            size = 0;
+            index = 0;
+        }
+
+        public void reColor(){
+            deselect();
+            if (size >0) selected = collisionSpheres[index];
+            select();
+        }
+        public void select(){
+            if (size >0) selected.sphere.updateColor(new Color(0,1,0,0));
+        }
+        public void deselect(){
+            if (size >0) selected.sphere.resetColor();
+        }
+        public void nextJoint(){
+            index++;
+            if (index<size) reColor(); else index--;
+        }
+        public void previousJoint(){
+            index--;
+            if (index>0) reColor(); else index++;          
+        }
+    }
+    public class Selector {
+        public Body body;
+        public JointSelector jointSelector;
+        public CollisionSphereSelector collisionSphereSelector; 
+
+        public Selector(){
+            jointSelector = new JointSelector(body.getPastEnds());
+            collisionSphereSelector = new CollisionSphereSelector();
+        } 
+
+        public void selectJoint(){
+            jointSelector.deselect();
+            CollisionSphere[] collisionSpheres = jointSelector.selected.pointCloud.collisionSpheres;
+            int size = collisionSpheres.Length;
+            int count = 0;
+            for (int i = 0; i < size; i++) {
+                CollisionSphere collisionSphere = collisionSpheres[i];
+                if (collisionSphere != null){
+                    collisionSphereSelector.collisionSpheres.Add(collisionSphere);
+                    count++;
+                }
+            }
+            collisionSphereSelector.size = count;
+            if (count > 0){
+                collisionSphereSelector.selected = collisionSpheres[0];
+                collisionSphereSelector.select();
+                }
+        }
+        public void reselectJoint(){
+            collisionSphereSelector.selected.sphere.resetColor();
+            collisionSphereSelector.selected = null;
+        }
+        
+        
+        
+
+    }
     public class Body {
         public World world;
         public int worldKey;
         public Axis globalAxis;
         public Joint[] bodyStructure;
         public KeyGenerator keyGenerator;
+        public Selector selector;
 
         public Body(){}
         public Body(Axis globalAxis, int amountOfJoints){
             this.globalAxis = globalAxis;
             bodyStructure = new Joint[amountOfJoints];
             keyGenerator = new KeyGenerator(amountOfJoints);
+            reviveBody();
         }
 
         public void reviveBody(){
             if (keyGenerator.availableKeys == keyGenerator.maxKeys){
-                keyGenerator = new KeyGenerator(keyGenerator.maxKeys);
                 int key = keyGenerator.getKey();
                 Connection connection = new Connection(key);
                 Axis axis = new Axis(globalAxis.origin,globalAxis.distance);
@@ -407,18 +534,19 @@ public class SourceCode:MonoBehaviour {
             int limitCheck = availableKeys - amount;
             if(limitCheck < 0) {
                 int oldLimit = keyGenerator.increaseKeysBy;
-                keyGenerator.setLimit(amount + Mathf.Abs(limitCheck) + oldLimit);
+                int oldMax = keyGenerator.maxKeys;
+                keyGenerator.setIncreaseKeysBy(Mathf.Abs(limitCheck) + oldLimit);
                 keyGenerator.generateKeys();
-                int max = keyGenerator.maxKeys;
-                int newSize = max + keyGenerator.increaseKeysBy;
-                Joint[] newJointArray = new Joint[newSize];
-                for (int i = 0; i<max; i++){
+                int newMax = keyGenerator.maxKeys;
+                Joint[] newJointArray = new Joint[newMax];
+                for (int i = 0; i<oldMax; i++){
                     Joint joint = bodyStructure[i];
                     if (joint != null){
                         newJointArray[i] = joint;
                     }
                 }
-                keyGenerator.setLimit(oldLimit);
+                bodyStructure = newJointArray;
+                keyGenerator.setIncreaseKeysBy(oldLimit);
             }
         }
         public List<Joint> getPastEnds(){
@@ -456,7 +584,7 @@ public class SourceCode:MonoBehaviour {
                 keyGenerator.resetGenerator(treeSize);
             }
         }
-        public void tracker(
+        internal void tracker(
             List<Joint> joints, bool pastOrFuture, bool getOnlyActive,
             out List<Joint> tree, out List<Joint> end, out int treeSize
             ){
@@ -475,7 +603,7 @@ public class SourceCode:MonoBehaviour {
             resetUsed(joints,treeSize);
             tree = joints;
         }
-        public void resetUsed(List<Joint> joints, int size){
+        internal void resetUsed(List<Joint> joints, int size){
             for (int i = 0; i<size;i++){
                 joints[i].connection.used = false;
             }
@@ -591,6 +719,17 @@ public class SourceCode:MonoBehaviour {
             bool pastOnly = false;
             disconnect(past,pastOnly);
         }
+        void disconnect(List<Joint> joints, bool pastOrFuture){
+            int size = joints.Count;
+            if (pastOrFuture) 
+                for (int i =0; i<size;i++){
+                    joints[i].connection.future.Remove(current);
+                }
+                else 
+                for (int i =0; i<size;i++){
+                    joints[i].connection.past.Remove(current);
+                }
+        }
         public List<Joint> nextConnections(bool pastOrFuture, bool getOnlyActive){
             List<Joint> connectedJoints = new List<Joint>();
             List<Joint> joints = pastOrFuture? future:past;
@@ -607,17 +746,6 @@ public class SourceCode:MonoBehaviour {
                 }
             }
             return connectedJoints;
-        }
-        void disconnect(List<Joint> joints, bool pastOrFuture){
-            int size = joints.Count;
-            if (pastOrFuture) 
-                for (int i =0; i<size;i++){
-                    joints[i].connection.future.Remove(current);
-                }
-                else 
-                for (int i =0; i<size;i++){
-                    joints[i].connection.past.Remove(current);
-                }
         }
         void connectionTracker(
             bool pastOrFuture, bool getOnlyActive,
@@ -765,30 +893,49 @@ public class SourceCode:MonoBehaviour {
                 deleteSphere(i);
             }
         }
+        public void rotateSpheres(Vector4 quat,Vector3 rotationOrigin){
+            int sphereCount = collisionSpheres.Length;
+            for (int i = 0; i<sphereCount; i++){
+                CollisionSphere collisionSphere = collisionSpheres[i];
+                collisionSphere?.setOrigin(
+                        joint.localAxis.quatRotate(
+                            collisionSphere.sphere.origin,
+                            rotationOrigin,
+                            quat
+                        )
+                    );
+            }
+        }
+        public void selectSpheres(bool select){
+            int sphereCount = collisionSpheres.Length;
+            Color green = new Color(0,1,0,0);
+            if (select)
+                for (int i = 0; i<sphereCount; i++){
+                    collisionSpheres[i]?.sphere.updateColor(green);
+                }
+            else 
+                for (int i = 0; i<sphereCount; i++){
+                    collisionSpheres[i]?.sphere.resetColor();
+                }
+        }
         public void resizeArray(int amount){
             int availableKeys = keyGenerator.availableKeys;
             int limitCheck = availableKeys - amount;
             if(limitCheck < 0) {
                 int oldLimit = keyGenerator.increaseKeysBy;
-                keyGenerator.setLimit(amount + Mathf.Abs(limitCheck)+ oldLimit);
+                int oldMax = keyGenerator.maxKeys;
+                keyGenerator.setIncreaseKeysBy(Mathf.Abs(limitCheck) + oldLimit);
                 keyGenerator.generateKeys();
-                int max = keyGenerator.maxKeys;
-                int newSize = max + keyGenerator.increaseKeysBy;
-                CollisionSphere[] newSphereArray = new CollisionSphere[newSize];
-                for (int i = 0; i<max; i++){
-                    CollisionSphere sphere = newSphereArray[i];
-                    if (sphere != null) newSphereArray[i] = sphere;
+                int newMax = keyGenerator.maxKeys;
+                CollisionSphere[] newCollisionSpheresArray = new CollisionSphere[newMax];
+                for (int i = 0; i<oldMax; i++){
+                    CollisionSphere collisionSphere = collisionSpheres[i];
+                    if (collisionSphere != null){
+                        newCollisionSpheresArray[i] = collisionSphere;
+                    }
                 }
-                keyGenerator.setLimit(oldLimit);
-            }
-        }
-        public void rotateSpheres(Vector4 quat,Vector3 rotationOrigin){
-            int sphereCount = collisionSpheres.Length;
-            for (int i = 0; i<sphereCount; i++){
-                CollisionSphere collisionSphere = collisionSpheres[i];
-                collisionSphere.setOrigin(
-                    joint.localAxis.quatRotate(collisionSphere.sphere.origin,rotationOrigin,quat)
-                );
+                collisionSpheres = newCollisionSpheresArray;
+                keyGenerator.setIncreaseKeysBy(oldLimit);
             }
         }
         public void optimizeCollisionSpheres(){
@@ -867,6 +1014,7 @@ public class SourceCode:MonoBehaviour {
             setOrigin(origin);
             setRadius(radius);
             setColor(color);
+            updateColor(color);
         }
 
         public void setOrigin(Vector3 newOrigin){
@@ -879,8 +1027,13 @@ public class SourceCode:MonoBehaviour {
         }
         public void setColor(Color newColor){
             color = newColor;
+        }
+        public void updateColor(Color newColor){
             sphere.GetComponent<Renderer>().material.color = newColor;
         }
+        public void resetColor(){
+            sphere.GetComponent<Renderer>().material.color = color;
+        }       
         public void destroySphere(){
             Destroy(sphere);
         }
