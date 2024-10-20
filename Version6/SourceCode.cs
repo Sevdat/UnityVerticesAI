@@ -374,6 +374,7 @@ public class SourceCode:MonoBehaviour {
     }
     public class JointSelector{
         public Joint selected;
+        public Joint connectTo;
         public List<Joint> joints;
         public int size;
         public int index;
@@ -407,7 +408,7 @@ public class SourceCode:MonoBehaviour {
             if (index>0) reColor(); else index++;          
         }
         public void pastJoints(){
-            List<Joint> past = selected.connection.nextConnections(false,false);
+            List<Joint> past = selected.connection.getPast(false);
             int size = past.Count;
             if (size > 0) {
                 this.size = size;
@@ -418,7 +419,7 @@ public class SourceCode:MonoBehaviour {
             }
         }
         public void futureJoints(){
-            List<Joint> future = selected.connection.nextConnections(true,false);
+            List<Joint> future = selected.connection.getFuture(false);
             int size = future.Count;
             if (size > 0) {
                 this.size = size;
@@ -562,13 +563,13 @@ public class SourceCode:MonoBehaviour {
             return joints;
         }
         public void optimizeBody(){
-            bool getOnlyActive = true;
+            bool getOnlyActive = false;
             bool getFuture = true;
             List<Joint> firstJoint = getPastEnds();
             if (firstJoint != null) {
                 tracker(
                     firstJoint,
-                    getOnlyActive, getFuture,
+                    getFuture,getOnlyActive,false,
                     out List<Joint> connectionTree, 
                     out _, 
                     out int treeSize
@@ -585,19 +586,24 @@ public class SourceCode:MonoBehaviour {
             }
         }
         internal void tracker(
-            List<Joint> joints, bool pastOrFuture, bool getOnlyActive,
+            List<Joint> joints, bool pastOrFuture, bool getOnlyActive,bool getPastAndFuture,
             out List<Joint> tree, out List<Joint> end, out int treeSize
             ){
             treeSize = joints.Count;
             end = new List<Joint>();
             for (int i=0; i< treeSize; i++){
-                List<Joint> tracker = joints[i].connection.nextConnections(pastOrFuture,getOnlyActive);
-                int trackerSize = tracker.Count;
-                if (trackerSize > 0){
-                    joints.AddRange(tracker);
-                    treeSize += trackerSize;
-                } else {
-                    end.Add(joints[i]);
+                Joint joint = joints[i];
+                if (!joint.connection.used){
+                    List<Joint> tracker = getPastAndFuture ? 
+                        joint.connection.getAll(getOnlyActive):
+                        joint.connection.nextConnections(pastOrFuture,getOnlyActive);
+                    int trackerSize = tracker.Count;
+                    if (trackerSize > 0){
+                        joints.AddRange(tracker);
+                        treeSize += trackerSize;
+                    } else {
+                        end.Add(joint);
+                    }
                 }
             }
             resetUsed(joints,treeSize);
@@ -649,13 +655,10 @@ public class SourceCode:MonoBehaviour {
             ){
             bool futureOnly = true;
             connectionTracker(
-                futureOnly,getOnlyActive,
-                out List<Joint> tree, out List<Joint> end,
-                out int size
+                futureOnly,getOnlyActive, false,
+                out connectionTree, out connectionEnd,
+                out treeSize
                 );
-            connectionTree = tree;
-            connectionEnd = end;
-            treeSize = size;
         }
         public void getPastConnections(
             bool getOnlyActive,
@@ -665,13 +668,22 @@ public class SourceCode:MonoBehaviour {
             ){
             bool pastOnly = false;
             connectionTracker(
-                pastOnly, getOnlyActive,
-                out List<Joint> tree, out List<Joint> end,
-                out int size
+                pastOnly, getOnlyActive, false,
+                out connectionTree, out connectionEnd,
+                out treeSize
                 );
-            connectionTree = tree;
-            connectionEnd = end;
-            treeSize = size;
+        }
+        public void getAllConnections(
+            bool pastOrFuture,bool getOnlyActive,
+            out List<Joint> connectionTree, 
+            out List<Joint> connectionEnd,
+            out int treeSize
+            ){
+            connectionTracker(
+                pastOrFuture, getOnlyActive, true,
+                out connectionTree, out connectionEnd,
+                out treeSize
+                );
         }
         public void connectJointTo(Joint newJoint){
             bool getOnlyActive = false;
@@ -712,23 +724,16 @@ public class SourceCode:MonoBehaviour {
             if (!connectTo.Contains(current)) connectTo.Add(current);
         }
         public void disconnectFromFuture(){
-            bool futureOnly = true;
-            disconnect(future,futureOnly);
+            int size = future.Count;
+            for (int i =0; i<size;i++){
+                future[i].connection.past.Remove(current);
+            }
         }
         public void disconnectFromPast(){
-            bool pastOnly = false;
-            disconnect(past,pastOnly);
-        }
-        void disconnect(List<Joint> joints, bool pastOrFuture){
-            int size = joints.Count;
-            if (pastOrFuture) 
-                for (int i =0; i<size;i++){
-                    joints[i].connection.future.Remove(current);
-                }
-                else 
-                for (int i =0; i<size;i++){
-                    joints[i].connection.past.Remove(current);
-                }
+            int size = past.Count;
+            for (int i =0; i<size;i++){
+                past[i].connection.future.Remove(current);
+            }
         }
         public List<Joint> nextConnections(bool pastOrFuture, bool getOnlyActive){
             List<Joint> connectedJoints = new List<Joint>();
@@ -747,15 +752,30 @@ public class SourceCode:MonoBehaviour {
             }
             return connectedJoints;
         }
+        public List<Joint> getPast(bool getOnlyActive){
+            return nextConnections(false,getOnlyActive);
+        }
+        public List<Joint> getFuture(bool getOnlyActive){
+            return nextConnections(true,getOnlyActive);
+        }
+        public List<Joint> getAll(bool getOnlyActive){
+            List<Joint> pastAndFuture = new List<Joint>();
+            pastAndFuture.AddRange(getPast(getOnlyActive));
+            used = false;
+            pastAndFuture.AddRange(getFuture(getOnlyActive));
+            return pastAndFuture;
+        }
         void connectionTracker(
-            bool pastOrFuture, bool getOnlyActive,
+            bool pastOrFuture, bool getOnlyActive, bool getPastAndFuture,
             out List<Joint> tree, out List<Joint> end,
             out int treeSize
             ){
             tree = new List<Joint>{current};  
-            tree.AddRange(nextConnections(pastOrFuture,getOnlyActive));
+            if (getPastAndFuture)
+                tree.AddRange(getAll(getOnlyActive)); else
+                tree.AddRange(nextConnections(pastOrFuture,getOnlyActive));
             current.body.tracker(
-                tree, pastOrFuture, getOnlyActive,
+                tree, pastOrFuture, getOnlyActive, getPastAndFuture,
                 out tree, out end, out treeSize
                 );
         }

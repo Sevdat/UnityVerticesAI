@@ -152,8 +152,9 @@ public class UnityPluginTest : MonoBehaviour
     }
     Experiment exp = new Experiment();
     void Start(){
-        exp.strt();
-        GameObject[] lol = new GameObject[5];
+
+       
+        
         // exp.strt();
 
     }
