@@ -137,9 +137,11 @@ public class UnityPluginTest : MonoBehaviour
     }
     
     class Experiment:SourceCode{
+        public Axis ax;
+        public Body lol;
         public void strt(){
-            Axis ax = new Axis(new Vector3(5,5,5),5);
-            Body lol = new Body(ax,10);
+            ax = new Axis(new Vector3(5,5,5),5);
+            lol = new Body(ax,10);
             lol.resizeArray(12);
             lol.optimizeBody();
             print(lol.bodyStructure.Length);
@@ -155,7 +157,7 @@ public class UnityPluginTest : MonoBehaviour
 
        
         
-        // exp.strt();
+        exp.strt();
 
     }
     int time = 0;
@@ -163,6 +165,7 @@ public class UnityPluginTest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        exp.lol.editor.keyboardControls.AxisControls();
         // if (time == 60 && count!= 360) {
         //     lol.rotate(lol.quat(Mathf.PI/180),lol.rotationAxis);
         //     time = 0;
