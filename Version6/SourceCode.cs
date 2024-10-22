@@ -306,9 +306,6 @@ public class SourceCode:MonoBehaviour {
             angleY *= degreeToRadian;
             angleX *= degreeToRadian;
             setRotationAxis(angleY, angleX);
-            if (renderAxis.created){
-                renderAxis.updateRotationAxis();
-            }
         }
 
         public Vector4 quat(float radian){
@@ -323,6 +320,7 @@ public class SourceCode:MonoBehaviour {
             x = quatRotate(x,rotationOrigin,quat);
             y = quatRotate(y,rotationOrigin,quat);
             z = quatRotate(z,rotationOrigin,quat);
+            getWorldRotation();
             rotationAxis = quatRotate(rotationAxis,rotationOrigin,quat);
             if (renderAxis.created){
                 renderAxis.updateAxis();
@@ -449,11 +447,16 @@ public class SourceCode:MonoBehaviour {
     }
     public class JointSelector{
         public Editor editor;
+        public CollisionSphereSelector collisionSphereSelector;
         public Joint selected;
         public Joint connectTo;
         public List<Joint> joints;
         public int size;
         public int index;
+        public Color red = new Color(1, 0, 0, 1);
+        public Color green = new Color(0,1,0,1);
+        public Color blue = new Color(0,0,1,1);
+        public Color yellow = new Color(1, 1, 0, 1);
 
         public JointSelector(){}
         public JointSelector(Editor editor,List<Joint> joints){
@@ -462,33 +465,49 @@ public class SourceCode:MonoBehaviour {
             size = joints.Count;
             index = 0;
             if (size >0) selected = joints[index];
-            select(editor.green);
+            selectPointCloud(green);
+            collisionSphereSelector = new CollisionSphereSelector(this);
         }   
              
-        public void select(Color color){
-            if (size >0) selected.pointCloud.selectSpheres(color);
+        public void selectPointCloud(Color color){
+            if (size >0) selected.pointCloud.updateAllSphereColors(color);
         }
-        public void deselect(){
-            if (size >0) selected.pointCloud.deselectSpheres();
+        public void deselectPointCloud(){
+            if (size >0) selected.pointCloud.resetAllSphereColors();
         }
-        void selectArray(){
+        public void selectJoint(){
+            deselectJoints();
+            List<Joint> newJoints = new List<Joint>();
+            List<Joint> selectedPast = selected.connection.past;
+            List<Joint> selectedFuture = selected.connection.future;
+            newJoints.AddRange(selectedPast);
+            newJoints.Add(selected);
+            newJoints.AddRange(selectedFuture);
+            index = selectedPast.Count;
+            size = newJoints.Count;
             for (int i = 0; i<size;i++){
                 if (i == index) 
-                    joints[i].pointCloud.selectSpheres(editor.yellow); 
+                    joints[i].pointCloud.updateAllSphereColors(yellow); 
                 else
-                    joints[i].pointCloud.selectSpheres(editor.green);
+                    joints[i].pointCloud.updateAllSphereColors(green);
             }
         }
-        void deselectArray(){
+        void deselectJoints(){
             for (int i = 0; i<size;i++){
-                joints[i].pointCloud.deselectSpheres(); 
+                joints[i].pointCloud.resetAllSphereColors(); 
             }            
         }
         
         void reColor(){
-            select(editor.green);
-            if (size >0) selected = joints[index];
-            select(editor.yellow);
+            selectPointCloud(green);
+            selected = joints[index];
+            collisionSphereSelector.collisionSpheres = selected.pointCloud.arrayToList();
+            int count = collisionSphereSelector.collisionSpheres.Count;
+            if (count >0){
+                collisionSphereSelector.selected = selected.pointCloud.collisionSpheres[0];
+                collisionSphereSelector.selectCollisionSphere();
+            }
+            selectPointCloud(yellow);
         }
         public void nextJoint(){
             if (index +1 <size) { index++; reColor(); }
@@ -496,62 +515,60 @@ public class SourceCode:MonoBehaviour {
         public void previousJoint(){
             if (index-1>0) { index--; reColor(); }         
         }
-        public void pastJoints(){
-            List<Joint> past = selected.connection.past;
-            int size = past.Count;
-            if (size > 0) {
-                this.size = size;
-                deselectArray();
-                joints = past;
-                index = 0;
-                selected = past[index];
-                selectArray(); 
+
+        public void jointSelectorControls(){
+            if (Input.GetKeyDown("right")) {
+                previousJoint();
             }
-        }
-        public void futureJoints(){
-            List<Joint> future = selected.connection.future;
-            int size = future.Count;
-            if (size > 0) {
-                this.size = size;
-                deselectArray();
-                joints = future;
-                index = 0;
-                selected = future[index];
-                selectArray(); 
+            if (Input.GetKeyDown("left")) {
+                nextJoint();
+            }
+            if (Input.GetKeyDown("enter")) {
+                selectJoint();
             }
         }
     }
     public class CollisionSphereSelector{
-        public Editor editor;
+        public JointSelector jointSelector;
         public CollisionSphere selected;
         public List<CollisionSphere> collisionSpheres;
         public int size;
         public int index;
 
         public CollisionSphereSelector(){}
-        public CollisionSphereSelector(Editor editor){
-            this.editor = editor;
-            collisionSpheres = new List<CollisionSphere>();
-            size = 0;
+        public CollisionSphereSelector(JointSelector jointSelector){
+            this.jointSelector = jointSelector;
+            collisionSpheres = jointSelector.selected.pointCloud.arrayToList();
+            size = collisionSpheres.Count;
             index = 0;
         }
 
-        public void reColor(){
-            deselect();
-            if (size >0) selected = collisionSpheres[index];
-            select();
+        public void selectCollisionSphere(){
+            if (size >0) selected.sphere.updateColor(jointSelector.blue);
         }
-        public void select(){
-            if (size >0) selected.sphere.updateColor(editor.green);
-        }
-        public void deselect(){
+        public void deselectCollisionSphere(){
             if (size >0) selected.sphere.resetColor();
+        }
+
+        void reColor(){
+            deselectCollisionSphere();
+            selected = collisionSpheres[index];
+            selectCollisionSphere();
         }
         public void nextCollisionSphere(){
             if (index+1<size) { index++; reColor(); }
         }
         public void previousCollisionSphere(){
             if (index-1>0) { index--; reColor(); }         
+        }
+       
+        public void collisionSphereSelectorControls(){
+            if (Input.GetKeyDown("up")) {
+                nextCollisionSphere();
+            }
+            if (Input.GetKeyDown("down")) {
+                previousCollisionSphere();
+            }
         }
     }
     public class KeyboardControls {
@@ -582,19 +599,15 @@ public class SourceCode:MonoBehaviour {
         public KeyboardControls keyboardControls;
         public JointSelector jointSelector;
         public CollisionSphereSelector collisionSphereSelector; 
-        public Color green = new Color(0,1,0,1);
-        public Color yellow = new Color(1, 1, 0, 1);
-        public Color red = new Color(1, 0, 0, 1);
 
         public Editor(){}
         public Editor(Body body){
             jointSelector = new JointSelector(this,body.getPastEnds());
-            collisionSphereSelector = new CollisionSphereSelector(this);
             keyboardControls = new KeyboardControls(this);
         } 
 
         public void selectJoint(){
-            jointSelector.deselect();
+            jointSelector.deselectPointCloud();
             collisionSphereSelector.collisionSpheres = new List<CollisionSphere>();
             CollisionSphere[] collisionSpheres = jointSelector.selected.pointCloud.collisionSpheres;
             int size = collisionSpheres.Length;
@@ -610,7 +623,7 @@ public class SourceCode:MonoBehaviour {
             collisionSphereSelector.index = 0;
             if (count > 0){
                 collisionSphereSelector.selected = collisionSpheres[0];
-                collisionSphereSelector.select();
+                collisionSphereSelector.selectCollisionSphere();
                 }
         }
         public void reselectJoint(){
@@ -893,7 +906,8 @@ public class SourceCode:MonoBehaviour {
             ){
             tree = new List<Joint>{current};  
             if (getPastAndFuture)
-                tree.AddRange(getAll(getOnlyActive)); else
+                tree.AddRange(getAll(getOnlyActive));
+            else 
                 tree.AddRange(nextConnections(pastOrFuture,getOnlyActive));
             current.body.tracker(
                 tree, pastOrFuture, getOnlyActive, getPastAndFuture,
@@ -1047,17 +1061,29 @@ public class SourceCode:MonoBehaviour {
                     );
             }
         }
-        public void selectSpheres(Color color){
+        public void updateAllSphereColors(Color color){
             int sphereCount = collisionSpheres.Length;
             for (int i = 0; i<sphereCount; i++){
                 collisionSpheres[i]?.sphere.updateColor(color);
             }
         }
-        public void deselectSpheres(){
+        public void resetAllSphereColors(){
             int sphereCount = collisionSpheres.Length;
                 for (int i = 0; i<sphereCount; i++){
                     collisionSpheres[i]?.sphere.resetColor();
                 }
+        }
+        public List<CollisionSphere> arrayToList(){
+            List<CollisionSphere> list = new List<CollisionSphere>();
+            int sphereCount = collisionSpheres.Length;
+            for (int i = 0; i<sphereCount; i++){
+                CollisionSphere collisionSphere = collisionSpheres[i];
+                if (collisionSphere != null){
+                    list.Add(collisionSphere);
+                }
+            }
+            return list;
+
         }
         public void resizeArray(int amount){
             int availableKeys = keyGenerator.availableKeys;
@@ -1143,6 +1169,7 @@ public class SourceCode:MonoBehaviour {
         public Color color;
         public GameObject sphere;
 
+        public Sphere(){}
         public Sphere(Vector3 origin, float radius){
             sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             sphere.GetComponent<Collider>().enabled = false;
