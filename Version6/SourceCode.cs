@@ -64,7 +64,14 @@ public class SourceCode:MonoBehaviour {
     public class Axis {
         public RenderAxis renderAxis;
         public Vector3 origin,x,y,z,rotationAxis;
-        public float distance,worldAxisAngleX,rotationAxisAngleX;
+        public float distance;
+
+        public float worldAngleY,worldSpeedY,
+                     worldAngleX,worldSpeedX,
+                     localAngleY,localSpeedY;
+              
+        public float angleY,ySpeed,
+                     angleX,xSpeed;
 
         public Axis(){}
         public Axis(Vector3 origin, float distance){
@@ -75,8 +82,13 @@ public class SourceCode:MonoBehaviour {
             z = origin + new Vector3(0,0,distance);
             rotationAxis = origin + new Vector3(0,distance,0);
             renderAxis = new RenderAxis(this);
-            worldAxisAngleX = 0;
-            rotationAxisAngleX = 0;
+            worldAngleY = 0; worldAngleX = 0; localAngleY = 0; 
+            angleY = 0;angleX = 0;
+            xSpeed = Mathf.PI/400f;
+            ySpeed = Mathf.PI/400f;
+            worldSpeedY = Mathf.PI/400f;
+            worldSpeedX = Mathf.PI/400f;
+            localSpeedY = Mathf.PI/400f;
         }
         
         public void moveAxis(Vector3 add){
@@ -170,31 +182,32 @@ public class SourceCode:MonoBehaviour {
             rotateAxis(ref localX,ref localY,ref localZ,worldY,worldAngleX);
             rotateAxis(ref localX,ref localY,ref localZ,localY,localAngleY);
         }
-        internal void getAngle(Vector3 point,Vector3 origin, Vector3 x, Vector3 y, Vector3 z, out float angleY,out float angleX){
+        internal void getAngle(Vector3 point,Vector3 origin, Vector3 x, Vector3 y, Vector3 z, out float yAngle,out float xAngle){
             Vector3 dirX = direction(x,origin);
             Vector3 dirY = direction(y,origin);
             Vector3 dirZ = direction(z,origin);
             Vector3 dirH = direction(point,origin);
-            Vector3 perpendicularOrigin = perpendicular(origin,dirY,point);
+            yAngle = angleBetweenLines(dirY,dirH);
 
-            float checkLength = length(point -perpendicularOrigin);
-            Vector3 dirPerpOrg = (checkLength !=0)?direction(point,perpendicularOrigin):normalize(point);
-            float angleSide = angleBetweenLines(dirX,dirPerpOrg);
-            
-            angleY = angleBetweenLines(dirY,dirH);
-            print(angleY*180/Mathf.PI);
-            angleX = (angleSide>Mathf.PI/2)? 
-                2*Mathf.PI-angleBetweenLines(dirZ,dirPerpOrg):
-                angleBetweenLines(dirZ,dirPerpOrg);
-            if (angleY == 0f || angleY < Mathf.PI) angleX = worldAxisAngleX;
+            if (yAngle == 0f || yAngle == Mathf.PI) 
+                xAngle = worldAngleX; 
+            else {   
+                Vector3 perpendicularOrigin = perpendicular(origin,dirY,point);
+                float checkLength = length(point -perpendicularOrigin);
+                Vector3 dirPerpOrg = (checkLength !=0)?direction(point,perpendicularOrigin):normalize(point);
+                float angleSide = angleBetweenLines(dirX,dirPerpOrg);          
+                xAngle = (angleSide>Mathf.PI/2)? 
+                    2*Mathf.PI-angleBetweenLines(dirZ,dirPerpOrg):
+                    angleBetweenLines(dirZ,dirPerpOrg);
+            }
         }
 
-        public void getWorldRotation(out float worldAngleY,out float worldAngleX,out float localAngleY){
+        public void getWorldRotation(){
             Vector3 worldX = origin + new Vector3(distance,0,0);
             Vector3 worldY = origin + new Vector3(0,distance,0);
             Vector3 worldZ = origin + new Vector3(0,0,distance);
+
             getAngle(y,origin,worldX,worldY,worldZ,out worldAngleY,out worldAngleX);
-            
             Vector3 localX = origin + new Vector3(distance,0,0);
             Vector3 localY = origin + new Vector3(0,distance,0);
             Vector3 localZ = origin + new Vector3(0,0,distance);
@@ -211,8 +224,6 @@ public class SourceCode:MonoBehaviour {
             localAngleY = (angleSide>Mathf.PI/2)? 
                 2*Mathf.PI-angleBetweenLines(dirZ,dirLocalZ):
                 angleBetweenLines(dirZ,dirLocalZ);
-            
-            if (worldAngleY == 0f || worldAngleY < Mathf.PI) worldAngleX = worldAxisAngleX;
         }
         public void setWorldRotation(float worldAngleY,float worldAngleX,float localAngleY){
             Vector3 worldX = origin + new Vector3(distance,0,0);
@@ -221,41 +232,61 @@ public class SourceCode:MonoBehaviour {
             Vector3 localX = origin + new Vector3(distance,0,0);
             Vector3 localY = origin + new Vector3(0,distance,0);
             Vector3 localZ = origin + new Vector3(0,0,distance);
-            
             axisAlignment(
                 worldAngleY,worldAngleX,localAngleY,
                 worldX,worldY,ref localX,ref localY,ref localZ
                 );
 
             x = localX; y = localY; z = localZ;
-            worldAxisAngleX = worldAngleX;
+            setRotationAxis(angleY,angleX);
             if (renderAxis.created){
                 renderAxis.updateAxis();
                 renderAxis.updateRotationAxis();
             }
+            this.worldAngleY = worldAngleY;
+            this.worldAngleX = worldAngleX;
+            this.localAngleY = localAngleY;
         }
-        public void getRotationAxis(out float angleY,out float angleX){
+        public void getRotationAxis(){
             getAngle(rotationAxis,origin,x,y,z,out angleY,out angleX);
-            if (angleY == 0f || angleY < Mathf.PI) angleX = rotationAxisAngleX;
         }
-        public void setRotationAxis(float setAngleY,float setAngleX){
+        public void setRotationAxis(float angleY,float angleX){
             rotationAxis = y;
-            Vector4 rotY = angledAxis(setAngleY,y);
-            Vector4 rotX = angledAxis(setAngleX,x);
+            Vector4 rotY = angledAxis(angleY,y);
+            Vector4 rotX = angledAxis(angleX,x);
             rotationAxis = quatRotate(rotationAxis,origin,rotX);
             rotationAxis = quatRotate(rotationAxis,origin,rotY);
-            rotationAxisAngleX = setAngleX;
+            this.angleY = angleY;
+            this.angleX = angleX;
             if (renderAxis.created){
                 renderAxis.updateRotationAxis();
             }
         }
 
+        public void getWorldRotationInRadians(out float worldAngleY,out float worldAngleX,out float localAngleY){
+            getWorldRotation();
+            worldAngleY = this.worldAngleY;
+            worldAngleX = this.worldAngleX;
+            localAngleY = this.localAngleY;
+        }
+        public void setWorldRotationInRadians(float worldAngleY, float worldAngleX, float localAngleY){
+            setWorldRotation(worldAngleY, worldAngleX, localAngleY);
+        }
+        public void getRotationAxisInRadians(out float angleY,out float angleX){
+            getRotationAxis();
+            angleY = this.angleY;
+            angleX = this.angleX;
+        }
+        public void setRotationAxisInRadians(float angleY,float angleX){
+            setRotationAxis(angleY, angleX);
+        }
+
         public void getWorldRotationInDegrees(out float worldAngleY,out float worldAngleX,out float localAngleY){
             float radianToDegree = 180/Mathf.PI;
-            getWorldRotation(out worldAngleY, out worldAngleX, out localAngleY);
-            worldAngleY *= radianToDegree;
-            worldAngleX *= radianToDegree;
-            localAngleY *= radianToDegree;
+            getWorldRotation();
+            worldAngleY = this.worldAngleY *radianToDegree;
+            worldAngleX = this.worldAngleX *radianToDegree;
+            localAngleY = this.localAngleY *radianToDegree;
         }
         public void setWorldRotationInDegrees(float worldAngleY,float worldAngleX,float localAngleY){
             float degreeToRadian = Mathf.PI/180;
@@ -263,22 +294,18 @@ public class SourceCode:MonoBehaviour {
             worldAngleX *= degreeToRadian;
             localAngleY *= degreeToRadian;
             setWorldRotation(worldAngleY, worldAngleX, localAngleY);
-            if (renderAxis.created){
-                renderAxis.updateAxis();
-                renderAxis.updateRotationAxis();
-            }
         }
-        public void getRotationAxisInDegrees(out float addAngleY,out float addAngleX){
+        public void getRotationAxisInDegrees(out float angleY,out float angleX){
             float radianToDegree = 180/Mathf.PI;
-            getRotationAxis(out addAngleY, out addAngleX);
-            addAngleY *= radianToDegree;
-            addAngleX *= radianToDegree;
+            getRotationAxis();
+            angleY = this.angleY*radianToDegree;
+            angleX = this.angleX*radianToDegree;
         }
-        public void setRotationAxisInDegrees(float setAngleY,float setAngleX){
+        public void setRotationAxisInDegrees(float angleY,float angleX){
             float degreeToRadian = Mathf.PI/180;
-            setAngleY *= degreeToRadian;
-            setAngleX *= degreeToRadian;
-            setRotationAxis(setAngleY, setAngleX);
+            angleY *= degreeToRadian;
+            angleX *= degreeToRadian;
+            setRotationAxis(angleY, angleX);
             if (renderAxis.created){
                 renderAxis.updateRotationAxis();
             }
@@ -297,8 +324,10 @@ public class SourceCode:MonoBehaviour {
             y = quatRotate(y,rotationOrigin,quat);
             z = quatRotate(z,rotationOrigin,quat);
             rotationAxis = quatRotate(rotationAxis,rotationOrigin,quat);
-            renderAxis.updateAxis();
-            renderAxis.updateRotationAxis();
+            if (renderAxis.created){
+                renderAxis.updateAxis();
+                renderAxis.updateRotationAxis();
+            }
         }
 
         public Vector4 quatMul(Vector4 q1, Vector4 q2) {
@@ -324,6 +353,51 @@ public class SourceCode:MonoBehaviour {
             Vector4 inverseQuat = new Vector4(-angledAxis.x,-angledAxis.y,-angledAxis.z,angledAxis.w);
             Vector4 rotatedQuaternion = quatMul(quatMul(angledAxis,rotatingVector), inverseQuat);
             return origin + new Vector3(rotatedQuaternion.x,rotatedQuaternion.y,rotatedQuaternion.z);
+        }
+
+        public void worldAxisControls(){
+            if (Input.GetKey("w")) {
+                worldAngleY += worldSpeedY;
+                setWorldRotation(worldAngleY,worldAngleX,localAngleY);
+            }
+            if (Input.GetKey("s")) {
+                worldAngleY -= worldSpeedY;
+                setWorldRotation(worldAngleY,worldAngleX,localAngleY);          
+            }
+            if (Input.GetKey("d")) {
+                worldAngleX += worldSpeedX;
+                setWorldRotation(worldAngleY,worldAngleX,localAngleY);
+            }
+            if (Input.GetKey("a")) {
+                worldAngleX -= worldSpeedX;
+                setWorldRotation(worldAngleY,worldAngleX,localAngleY);
+            }
+            if (Input.GetKey("e")) {
+                localAngleY += localSpeedY; 
+                setWorldRotation(worldAngleY,worldAngleX,localAngleY);
+            }
+            if (Input.GetKey("q")) {
+                localAngleY -= localSpeedY;
+                setWorldRotation(worldAngleY,worldAngleX,localAngleY);
+            }
+        }
+        public void rotationAxisControls(){
+            if (Input.GetKey("i")) {
+                angleX += xSpeed;
+                setRotationAxis(angleY,angleX);
+            }
+            if (Input.GetKey("k")) {
+                angleX -= xSpeed;
+                setRotationAxis(angleY,angleX);          
+            }
+            if (Input.GetKey("l")) {
+                angleY += ySpeed;
+                setRotationAxis(angleY,angleX);
+            }
+            if (Input.GetKey("j")) {
+                angleY -= ySpeed;
+                setRotationAxis(angleY,angleX);
+            }
         }
     }
 
@@ -482,12 +556,6 @@ public class SourceCode:MonoBehaviour {
     }
     public class KeyboardControls {
         public Editor editor;
-        float xAngle,yAngle,xSpeed = Mathf.PI/180f,ySpeed = Mathf.PI/180f;
-        public bool activateKeyboardInput = false;
-        public bool selectJoint = false;
-        public bool selectLocalAxis = false;
-        public bool selectGlobalAxis = false;
-        public bool selectCollisionSphere = false;
         public Axis axis;
 
         public KeyboardControls(){}
@@ -498,49 +566,15 @@ public class SourceCode:MonoBehaviour {
 
         public void activate(){
             if (Input.GetKeyDown("p")) {
-                activateKeyboardInput = true;
                 if (axis != editor.jointSelector.selected.localAxis){
                     axis = editor.jointSelector.selected.localAxis;
-                    axis.getRotationAxis(out yAngle,out xAngle);
                 }
             }
         }
-        public void AxisControls(){
-            if (Input.GetKey("up")) {
-                if (xAngle < 2*Mathf.PI) {
-                    xAngle += xSpeed;
-                    if (xAngle > Mathf.PI) xAngle = Mathf.PI; 
-                    axis.setRotationAxis(yAngle,xAngle);
-                }
-            }
-            if (Input.GetKey("down")) {
-                if (xAngle > 0) {
-                    xAngle -= xSpeed;
-                    if (xAngle < 0) xAngle = 0; 
-                    axis.setRotationAxis(yAngle,xAngle);
-                }           
-            }
-            if (Input.GetKey("right")) {
-                if (yAngle <= 2*Mathf.PI) {
-                    yAngle += ySpeed;
-                    print(yAngle);
-                    if (yAngle > 2*Mathf.PI) yAngle -= 2*Mathf.PI; 
-                    axis.setRotationAxis(yAngle,xAngle);
-                }
-            }
-            if (Input.GetKey("left")) {
-                if (yAngle >= 0) {
-                    yAngle -= ySpeed;
-                    if (yAngle < 0) yAngle += 2*Mathf.PI; 
-                    axis.setRotationAxis(yAngle,xAngle);
-                }
-            }
-        }
+
         public void updateKeyboard(){
-            activate();
-            if (activateKeyboardInput){
-                
-            }
+            axis.worldAxisControls();
+            axis.rotationAxisControls();
         }
     }
     public class Editor {
@@ -898,7 +932,7 @@ public class SourceCode:MonoBehaviour {
                 out globalY,out globalX
                 );
             distanceFromOrigin = body.globalAxis.length(jointOrigin-globalOrigin);
-            localAxis.getWorldRotation(out worldAngleY,out worldAngleX,out localAngleY);
+            localAxis.getWorldRotationInRadians(out worldAngleY,out worldAngleX,out localAngleY);
         }
         public void createJoint(){
             int key = body.keyGenerator.getKey();

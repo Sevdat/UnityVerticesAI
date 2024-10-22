@@ -117,6 +117,7 @@ public class UnityPluginTest : MonoBehaviour
             float minLocalAngleY = localAngleY - accuracy, maxLocalAngleY = localAngleY + accuracy;
             axis.setWorldRotationInDegrees(worldAngleY,worldAngleX,localAngleY);
             axis.getWorldRotationInDegrees(out float gotWorldAngleY,out float gotWorldAngleX,out float gotLocalAngleY);
+                        print($"{gotWorldAngleY} {gotWorldAngleX} {gotLocalAngleY}");
             if (float.IsNaN(gotWorldAngleY)) print("gotWorldAngleY: NaN error");
             if (float.IsNaN(gotWorldAngleX)) print("gotWorldAngleX: NaN error");
             if (float.IsNaN(gotLocalAngleY)) print("gotLocalAngleY: NaN error");
@@ -144,7 +145,6 @@ public class UnityPluginTest : MonoBehaviour
             lol = new Body(ax,10);
             lol.resizeArray(12);
             lol.optimizeBody();
-            print(lol.bodyStructure.Length);
             // print(lol.getPastEnds().Count);
             // print(lol.keyGenerator.maxKeys);
             // foreach (int i in lol.keyGenerator.freeKeys){
@@ -154,8 +154,8 @@ public class UnityPluginTest : MonoBehaviour
     }
     Experiment exp = new Experiment();
     void Start(){
-
-       
+        AxisTest test = new AxisTest(new Vector3(5,5,5), 5f);
+        test.testSetAxis(10,30,30);
         
         exp.strt();
 
@@ -165,7 +165,7 @@ public class UnityPluginTest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        exp.lol.editor.keyboardControls.AxisControls();
+        exp.lol.editor.keyboardControls.updateKeyboard();
         // if (time == 60 && count!= 360) {
         //     lol.rotate(lol.quat(Mathf.PI/180),lol.rotationAxis);
         //     time = 0;
