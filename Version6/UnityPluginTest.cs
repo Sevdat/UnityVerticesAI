@@ -144,7 +144,6 @@ public class UnityPluginTest : MonoBehaviour
             ax = new Axis(new Vector3(5,5,5),5);
             lol = new Body(ax,10);
             lol.resizeArray(12);
-            lol.optimizeBody();
             // print(lol.getPastEnds().Count);
             // print(lol.keyGenerator.maxKeys);
             // foreach (int i in lol.keyGenerator.freeKeys){
@@ -154,8 +153,6 @@ public class UnityPluginTest : MonoBehaviour
     }
     Experiment exp = new Experiment();
     void Start(){
-        AxisTest test = new AxisTest(new Vector3(5,5,5), 5f);
-        test.testSetAxis(10,30,30);
         
         exp.strt();
 
@@ -165,7 +162,7 @@ public class UnityPluginTest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        exp.lol.editor.keyboardControls.options();
+        exp.lol.editor.options();
         // if (time == 60 && count!= 360) {
         //     lol.rotate(lol.quat(Mathf.PI/180),lol.rotationAxis);
         //     time = 0;

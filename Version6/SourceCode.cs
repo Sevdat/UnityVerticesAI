@@ -353,69 +353,68 @@ public class SourceCode:MonoBehaviour {
             Vector4 rotatedQuaternion = quatMul(quatMul(angledAxis,rotatingVector), inverseQuat);
             return origin + new Vector3(rotatedQuaternion.x,rotatedQuaternion.y,rotatedQuaternion.z);
         }
-
         public void worldAxisControls(){
-            if (Input.GetKey("w")) {
+            if (Input.GetKey("i")) {
                 worldAngleY += worldSpeedY;
                 if (worldAngleY>Mathf.PI) worldAngleY -= 2*MathF.PI;
                 setWorldRotation(worldAngleY,worldAngleX,localAngleY);
             }
-            if (Input.GetKey("s")) {
+            if (Input.GetKey("k")) {
                 worldAngleY -= worldSpeedY;
                 if (worldAngleY<0) worldAngleY += 2*MathF.PI;
                 setWorldRotation(worldAngleY,worldAngleX,localAngleY);          
             }
-            if (Input.GetKey("d")) {
+            if (Input.GetKey("l")) {
                 worldAngleX += worldSpeedX;
                 if (worldAngleX>Mathf.PI) worldAngleX -= 2*MathF.PI;
                 setWorldRotation(worldAngleY,worldAngleX,localAngleY);
             }
-            if (Input.GetKey("a")) {
+            if (Input.GetKey("j")) {
                 worldAngleX -= worldSpeedX;
                 if (worldAngleX<0) worldAngleX += 2*MathF.PI;
                 setWorldRotation(worldAngleY,worldAngleX,localAngleY);
             }
-            if (Input.GetKey("e")) {
+            if (Input.GetKey("o")) {
                 localAngleY += localSpeedY; 
                 if (localAngleY>Mathf.PI) localAngleY -= 2*MathF.PI;
                 setWorldRotation(worldAngleY,worldAngleX,localAngleY);
             }
-            if (Input.GetKey("q")) {
+            if (Input.GetKey("u")) {
                 localAngleY -= localSpeedY;
                 if (localAngleY<0) localAngleY += 2*MathF.PI;
                 setWorldRotation(worldAngleY,worldAngleX,localAngleY);
             }
         }
         public void rotationAxisControls(){
-            if (Input.GetKey("i")) {
+            if (Input.GetKey("w")) {
                 angleX += xSpeed;
                 if (angleX>Mathf.PI) angleX -= 2*MathF.PI;
                 setRotationAxis(angleY,angleX);
             }
-            if (Input.GetKey("k")) {
+            if (Input.GetKey("s")) {
                 angleX -= xSpeed;
                 if (angleX<0) angleX += 2*MathF.PI;
                 setRotationAxis(angleY,angleX);          
             }
-            if (Input.GetKey("l")) {
+            if (Input.GetKey("d")) {
                 angleY += ySpeed;
                 if (angleY>Mathf.PI) angleY -= 2*MathF.PI;
                 setRotationAxis(angleY,angleX);
             }
-            if (Input.GetKey("j")) {
+            if (Input.GetKey("a")) {
                 angleY -= ySpeed;
                 if (angleY<0) angleY += 2*MathF.PI;
                 setRotationAxis(angleY,angleX);
             }
-            if (Input.GetKeyDown("o")) {
+            if (Input.GetKeyDown("e")) {
                 scaleRotationAxis(rotationAxisDistance + 1);
             } 
-            if (Input.GetKeyDown("u")) {
+            if (Input.GetKeyDown("q")) {
                 scaleRotationAxis(rotationAxisDistance - 1);
             }             
             if (Input.GetKeyDown("return")) {
                 placeAxis(rotationAxis);
-            }             
+            }            
         }
     }
 
@@ -449,7 +448,6 @@ public class SourceCode:MonoBehaviour {
             int key = freeKeys[index];
             freeKeys.RemoveAt(index); 
             availableKeys -= 1;
-            if (availableKeys-1<0) generateKeys();
             return key;
         }
         public void returnKey(int key){
@@ -500,15 +498,12 @@ public class SourceCode:MonoBehaviour {
             index = selectedPast.Count;
             size = newJoints.Count;
             for (int i = 0; i<size;i++){
-                if (i == index) 
-                    joints[i].pointCloud.updateAllSphereColors(yellow); 
-                else
-                    joints[i].pointCloud.updateAllSphereColors(green);
+                if (i != index) joints[i].pointCloud.updateAllSphereColors(green);
             }
         }
         void deselectJoints(){
             for (int i = 0; i<size;i++){
-                joints[i].pointCloud.resetAllSphereColors(); 
+                if (i != index) joints[i].pointCloud.resetAllSphereColors(); 
             }            
         }
         
@@ -524,6 +519,13 @@ public class SourceCode:MonoBehaviour {
         public void previousJoint(){
             if (index-1>0) { index--; reColor(); }         
         }
+        public void createJoint(){
+            selected.createJoint();
+            index = size;
+            size++;
+            reColor();
+        }
+        
 
         public void jointSelectorControls(){
             if (Input.GetKeyDown("right")) {
@@ -534,7 +536,7 @@ public class SourceCode:MonoBehaviour {
             }
             if (Input.GetKeyDown("enter")) {
                 selectJoint();
-            }
+            } 
         }
     }
     public class CollisionSphereSelector{
@@ -560,6 +562,12 @@ public class SourceCode:MonoBehaviour {
                 selected.sphere.updateColor(jointSelector.blue);
             }
         }
+        public void createCollisionSphere(){
+            collisionSpheres.Add(jointSelector.selected.pointCloud.createSphere());
+            index = size;
+            size += 1;
+            recolor();
+        }
 
         void recolor(){
             selected.sphere.updateColor(jointSelector.yellow);
@@ -580,26 +588,25 @@ public class SourceCode:MonoBehaviour {
             if (Input.GetKeyDown("down")) {
                 previousCollisionSphere();
             }
+            if (Input.GetKeyDown("space")) {
+                createCollisionSphere();
+            }  
         }
     }
-    public class KeyboardControls {
-        public Editor editor;
-        public Axis axis;
+
+    public class Editor {
+        public Body body;
+        public JointSelector jointSelector;
+
+        public Editor(){}
+        public Editor(Body body){
+            jointSelector = new JointSelector(this,body.getPastEnds());
+            
+        } 
+
         int oldOption = 0;
         int currentOption = 0;
-        public KeyboardControls(){}
-        public KeyboardControls(Editor editor){
-            this.editor = editor;
-            axis = editor.jointSelector.selected.localAxis;
-        }
-
-        public void activate(){
-            if (Input.GetKeyDown("p")) {
-                if (axis != editor.jointSelector.selected.localAxis){
-                    axis = editor.jointSelector.selected.localAxis;
-                }
-            }
-        }
+        
         public void options(){
             for (int i = 0; i<10;i++){
                 if (Input.GetKeyDown($"{i}")){
@@ -609,8 +616,9 @@ public class SourceCode:MonoBehaviour {
             }
             switch (currentOption){
                 case 0:
-                    axis.worldAxisControls();
-                    axis.rotationAxisControls();
+                    jointSelector.selected.localAxis.worldAxisControls();
+                    jointSelector.selected.localAxis.rotationAxisControls();
+                    jointSelector.collisionSphereSelector.collisionSphereSelectorControls();
                 break;
 
                 case 1:
@@ -618,19 +626,6 @@ public class SourceCode:MonoBehaviour {
                 break;
             }
         }
-
-    }
-    public class Editor {
-        public Body body;
-        public KeyboardControls keyboardControls;
-        public JointSelector jointSelector;
-        public CollisionSphereSelector collisionSphereSelector; 
-
-        public Editor(){}
-        public Editor(Body body){
-            jointSelector = new JointSelector(this,body.getPastEnds());
-            keyboardControls = new KeyboardControls(this);
-        } 
 
     }
     public class Body {
@@ -949,7 +944,7 @@ public class SourceCode:MonoBehaviour {
             distanceFromOrigin = body.globalAxis.length(jointOrigin-globalOrigin);
             localAxis.getWorldRotationInRadians(out worldAngleY,out worldAngleX,out localAngleY);
         }
-        public void createJoint(){
+        public Joint createJoint(){
             int key = body.keyGenerator.getKey();
             if (body.keyGenerator.maxKeys > body.bodyStructure.Length){
                 int amount = body.keyGenerator.maxKeys - body.bodyStructure.Length;
@@ -957,8 +952,10 @@ public class SourceCode:MonoBehaviour {
             }
             Connection connection = new Connection(key);
             connection.past.Add(this);
-            Joint addJoint = new Joint(pointCloud.keyGenerator.increaseKeysBy, localAxis,connection); 
+            Joint addJoint = new Joint(pointCloud.keyGenerator.increaseKeysBy, localAxis,connection);
+            this.connection.future.Add(addJoint); 
             body.bodyStructure[key] = addJoint;
+            return addJoint;
         }
         public void deleteJoint(){
             int countPast = connection.past.Count;
@@ -1026,14 +1023,13 @@ public class SourceCode:MonoBehaviour {
             keyGenerator = new KeyGenerator(amountOfSpheres);
         }
 
-        public void createSphere(float setAngleY,float setAngleX,float lengthFromOrigin,float sphereRadius){
-            joint.localAxis.scaleRotationAxis(lengthFromOrigin);
-            joint.localAxis.setRotationAxis(setAngleY,setAngleX);
+        public CollisionSphere createSphere(){
             resizeArray(1);
             int sphereIndex = keyGenerator.getKey();
             Path path = new Path(joint.body,joint.connection.indexInBody,sphereIndex);
-            collisionSpheres[sphereIndex] = 
-                new CollisionSphere(path,joint.localAxis.rotationAxis,sphereRadius);
+            CollisionSphere collisionSphere = new CollisionSphere(path,joint.localAxis.rotationAxis,1);
+            collisionSpheres[sphereIndex] = collisionSphere;
+            return collisionSphere;
         }
         public void deleteSphere(int key){
             CollisionSphere remove = collisionSpheres[key];
@@ -1084,7 +1080,6 @@ public class SourceCode:MonoBehaviour {
                 }
             }
             return list;
-
         }
         public void resizeArray(int amount){
             int availableKeys = keyGenerator.availableKeys;
