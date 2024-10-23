@@ -165,7 +165,7 @@ public class UnityPluginTest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        exp.lol.editor.keyboardControls.updateKeyboard();
+        exp.lol.editor.keyboardControls.options();
         // if (time == 60 && count!= 360) {
         //     lol.rotate(lol.quat(Mathf.PI/180),lol.rotationAxis);
         //     time = 0;
