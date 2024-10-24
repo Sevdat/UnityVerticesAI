@@ -103,13 +103,14 @@ public class SourceCode:MonoBehaviour {
                 renderAxis.updateRotationAxis();
             }
         }
-        public void placeAxis(Vector3 newOrigin){
+        public Vector3 placeAxis(Vector3 newOrigin){
             Vector3 newPosition = newOrigin-origin;
             moveAxis(newPosition);
             if (renderAxis.created){
                 renderAxis.updateAxis();
                 renderAxis.updateRotationAxis();
             }
+            return newPosition;
         }
         public void scaleAxis(float newDistance){
             if (newDistance > 0f){
@@ -353,68 +354,65 @@ public class SourceCode:MonoBehaviour {
             Vector4 rotatedQuaternion = quatMul(quatMul(angledAxis,rotatingVector), inverseQuat);
             return origin + new Vector3(rotatedQuaternion.x,rotatedQuaternion.y,rotatedQuaternion.z);
         }
-        public void worldAxisControls(){
-            if (Input.GetKey("i")) {
-                worldAngleY += worldSpeedY;
-                if (worldAngleY>Mathf.PI) worldAngleY -= 2*MathF.PI;
-                setWorldRotation(worldAngleY,worldAngleX,localAngleY);
-            }
-            if (Input.GetKey("k")) {
-                worldAngleY -= worldSpeedY;
-                if (worldAngleY<0) worldAngleY += 2*MathF.PI;
-                setWorldRotation(worldAngleY,worldAngleX,localAngleY);          
-            }
-            if (Input.GetKey("l")) {
-                worldAngleX += worldSpeedX;
-                if (worldAngleX>Mathf.PI) worldAngleX -= 2*MathF.PI;
-                setWorldRotation(worldAngleY,worldAngleX,localAngleY);
-            }
-            if (Input.GetKey("j")) {
-                worldAngleX -= worldSpeedX;
-                if (worldAngleX<0) worldAngleX += 2*MathF.PI;
-                setWorldRotation(worldAngleY,worldAngleX,localAngleY);
-            }
-            if (Input.GetKey("o")) {
-                localAngleY += localSpeedY; 
-                if (localAngleY>Mathf.PI) localAngleY -= 2*MathF.PI;
-                setWorldRotation(worldAngleY,worldAngleX,localAngleY);
-            }
-            if (Input.GetKey("u")) {
-                localAngleY -= localSpeedY;
-                if (localAngleY<0) localAngleY += 2*MathF.PI;
-                setWorldRotation(worldAngleY,worldAngleX,localAngleY);
-            }
+        public void worldAxisUp(){
+            worldAngleY += worldSpeedY;
+            if (worldAngleY>Mathf.PI) worldAngleY -= 2*MathF.PI;
+            setWorldRotation(worldAngleY,worldAngleX,localAngleY);
         }
-        public void rotationAxisControls(){
-            if (Input.GetKey("w")) {
-                angleX += xSpeed;
-                if (angleX>Mathf.PI) angleX -= 2*MathF.PI;
-                setRotationAxis(angleY,angleX);
-            }
-            if (Input.GetKey("s")) {
-                angleX -= xSpeed;
-                if (angleX<0) angleX += 2*MathF.PI;
-                setRotationAxis(angleY,angleX);          
-            }
-            if (Input.GetKey("d")) {
-                angleY += ySpeed;
-                if (angleY>Mathf.PI) angleY -= 2*MathF.PI;
-                setRotationAxis(angleY,angleX);
-            }
-            if (Input.GetKey("a")) {
-                angleY -= ySpeed;
-                if (angleY<0) angleY += 2*MathF.PI;
-                setRotationAxis(angleY,angleX);
-            }
-            if (Input.GetKeyDown("e")) {
-                scaleRotationAxis(rotationAxisDistance + 1);
-            } 
-            if (Input.GetKeyDown("q")) {
-                scaleRotationAxis(rotationAxisDistance - 1);
-            }             
-            if (Input.GetKeyDown("return")) {
-                placeAxis(rotationAxis);
-            }            
+        public void worldAxisDown(){
+            worldAngleY -= worldSpeedY;
+            if (worldAngleY<0) worldAngleY += 2*MathF.PI;
+            setWorldRotation(worldAngleY,worldAngleX,localAngleY);          
+        }
+        public void worldAxisRight(){
+            worldAngleX += worldSpeedX;
+            if (worldAngleX>Mathf.PI) worldAngleX -= 2*MathF.PI;
+            setWorldRotation(worldAngleY,worldAngleX,localAngleY);
+        }
+        public void worldAxisLeft(){
+            worldAngleX -= worldSpeedX;
+            if (worldAngleX<0) worldAngleX += 2*MathF.PI;
+            setWorldRotation(worldAngleY,worldAngleX,localAngleY);
+        }
+        public void worldAxisRotateClockwise(){
+            localAngleY += localSpeedY; 
+            if (localAngleY>Mathf.PI) localAngleY -= 2*MathF.PI;
+            setWorldRotation(worldAngleY,worldAngleX,localAngleY);
+        }
+        public void worldAxisRotateAntiClockwise(){
+            localAngleY -= localSpeedY;
+            if (localAngleY<0) localAngleY += 2*MathF.PI;
+            setWorldRotation(worldAngleY,worldAngleX,localAngleY);
+        }
+        
+        public void rotationAxisUp(){
+            angleX += xSpeed;
+            if (angleX>Mathf.PI) angleX -= 2*MathF.PI;
+            setRotationAxis(angleY,angleX);
+        }
+        public void rotationAxisDown(){
+            angleX -= xSpeed;
+            if (angleX<0) angleX += 2*MathF.PI;
+            setRotationAxis(angleY,angleX);          
+        }
+        public void rotationAxisRight(){
+            angleY += ySpeed;
+            if (angleY>Mathf.PI) angleY -= 2*MathF.PI;
+            setRotationAxis(angleY,angleX);
+        }
+        public void rotationAxisLeft(){
+            angleY -= ySpeed;
+            if (angleY<0) angleY += 2*MathF.PI;
+            setRotationAxis(angleY,angleX);
+        }
+        public void rotationAxisScaleUp(){
+            scaleRotationAxis(rotationAxisDistance + 1);
+        }
+        public void rotationAxisScaleDown(){
+            scaleRotationAxis(rotationAxisDistance - 1);
+        }
+        public Vector3 placeAxis(){
+            return placeAxis(rotationAxis);
         }
     }
 
@@ -525,7 +523,6 @@ public class SourceCode:MonoBehaviour {
             size++;
             reColor();
         }
-        
 
         public void jointSelectorControls(){
             if (Input.GetKeyDown("right")) {
@@ -538,6 +535,7 @@ public class SourceCode:MonoBehaviour {
                 selectJoint();
             } 
         }
+
     }
     public class CollisionSphereSelector{
         public JointSelector jointSelector;
@@ -566,7 +564,10 @@ public class SourceCode:MonoBehaviour {
             collisionSpheres.Add(jointSelector.selected.pointCloud.createSphere());
             index = size;
             size += 1;
-            recolor();
+            if (selected != null) recolor(); else {
+                selected = collisionSpheres[index];
+                selected.sphere.updateColor(jointSelector.blue);
+            }
         }
 
         void recolor(){
@@ -580,17 +581,11 @@ public class SourceCode:MonoBehaviour {
         public void previousCollisionSphere(){
             if (index-1>0) { index--; recolor(); }         
         }
-       
-        public void collisionSphereSelectorControls(){
-            if (Input.GetKeyDown("up")) {
-                nextCollisionSphere();
+
+        public void moveCollisionSpheres(Vector3 add){
+            for (int i = 0; i<size;i++){
+                collisionSpheres[i].moveOrigin(add);
             }
-            if (Input.GetKeyDown("down")) {
-                previousCollisionSphere();
-            }
-            if (Input.GetKeyDown("space")) {
-                createCollisionSphere();
-            }  
         }
     }
 
@@ -616,9 +611,10 @@ public class SourceCode:MonoBehaviour {
             }
             switch (currentOption){
                 case 0:
-                    jointSelector.selected.localAxis.worldAxisControls();
-                    jointSelector.selected.localAxis.rotationAxisControls();
-                    jointSelector.collisionSphereSelector.collisionSphereSelectorControls();
+                    worldAxisControls();
+                    rotationAxisControls();
+                    jointSelectorControls();
+                    collisionSphereSelectorControls();
                 break;
 
                 case 1:
@@ -626,7 +622,72 @@ public class SourceCode:MonoBehaviour {
                 break;
             }
         }
-
+        public void worldAxisControls(){
+            if (Input.GetKey("i")) {
+                jointSelector.selected.localAxis.worldAxisUp();
+            }
+            if (Input.GetKey("k")) {
+                jointSelector.selected.localAxis.worldAxisDown();
+            }
+            if (Input.GetKey("l")) {       
+                jointSelector.selected.localAxis.worldAxisLeft();     
+            }
+            if (Input.GetKey("j")) {    
+                jointSelector.selected.localAxis.worldAxisRight();        
+            }
+            if (Input.GetKey("o")) { 
+                jointSelector.selected.localAxis.worldAxisRotateClockwise();           
+            }
+            if (Input.GetKey("u")) {
+                jointSelector.selected.localAxis.worldAxisRotateAntiClockwise(); 
+            }
+        }
+        public void rotationAxisControls(){
+            if (Input.GetKey("w")) {
+                jointSelector.selected.localAxis.rotationAxisUp();
+            }
+            if (Input.GetKey("s")) {
+                jointSelector.selected.localAxis.rotationAxisDown();
+            }
+            if (Input.GetKey("d")) {  
+                jointSelector.selected.localAxis.rotationAxisRight();          
+            }
+            if (Input.GetKey("a")) { 
+                jointSelector.selected.localAxis.rotationAxisLeft();           
+            }
+            if (Input.GetKeyDown("e")) { 
+                jointSelector.selected.localAxis.rotationAxisScaleUp();           
+            }
+            if (Input.GetKeyDown("q")) {
+                jointSelector.selected.localAxis.rotationAxisScaleDown();
+            }
+            if (Input.GetKeyDown("return")) {
+                Vector3 newPoisition = jointSelector.selected.localAxis.placeAxis();
+                jointSelector.collisionSphereSelector.moveCollisionSpheres(newPoisition);
+            }
+        }
+        public void jointSelectorControls(){
+            if (Input.GetKeyDown("right")) {
+                jointSelector.previousJoint();
+            }
+            if (Input.GetKeyDown("left")) {
+                jointSelector.nextJoint();
+            }
+            if (Input.GetKeyDown("enter")) {
+                jointSelector.selectJoint();
+            } 
+        }
+        public void collisionSphereSelectorControls(){
+            if (Input.GetKeyDown("up")) {
+                jointSelector.collisionSphereSelector.nextCollisionSphere();
+            }
+            if (Input.GetKeyDown("down")) {
+                jointSelector.collisionSphereSelector.previousCollisionSphere();
+            }
+            if (Input.GetKeyDown("space")) {
+                jointSelector.collisionSphereSelector.createCollisionSphere();
+            }  
+        }
     }
     public class Body {
         public World world;
@@ -912,6 +973,51 @@ public class SourceCode:MonoBehaviour {
         }
     }
 
+    public struct SaveAxis{
+        public int angleX;
+        public int angleY;
+        public int distanceFromOrigin;
+        public int worldAngleY;
+        public int worldAngleX;
+        public int localAngleY;
+    }
+    public struct SaveBody{
+        public int bodyStructureSize;
+        public SaveAxis globalAxis;
+        public List <SaveJoint> savedJoints;
+    }
+    public struct SaveJoint{
+        public int indexInBody;
+        public SaveAxis localAxis;
+        public int pointCloudSize;
+        public List<SaveCollisionSphere> pointCloud;
+        public List<int> pastIndexes;
+        public List<int> futureIndexes;
+        
+        public SaveJoint(
+            int indexInBody,
+            SaveAxis localAxis,
+            int pointCloudSize,
+            List<SaveCollisionSphere> pointCloud,
+            List<int> pastIndexes,
+            List<int> futureIndexes
+            ){
+                this.indexInBody = indexInBody;
+                this.localAxis = localAxis;
+                this.pointCloudSize = pointCloudSize;
+                this.pointCloud = pointCloud;
+                this.pastIndexes = pastIndexes;
+                this.futureIndexes = futureIndexes;
+        }
+    }
+    public struct SaveCollisionSphere{
+        public int indexInArray;
+        public int localAxisAngleX;
+        public int localAxisAngleY;
+        public int distanceFromOrigin;
+        public int sphereRadius;
+    }
+
     public class Joint {
         public Body body;
         public Axis localAxis;
@@ -1155,6 +1261,9 @@ public class SourceCode:MonoBehaviour {
         public void setOrigin(Vector3 newOrigin){
             sphere.setOrigin(newOrigin);
         }
+        public void moveOrigin(Vector3 newOrigin){
+            sphere.moveOrigin(newOrigin);
+        }
         public void setRadius(float newRadius){
             sphere.setRadius(newRadius);
         }
@@ -1184,6 +1293,10 @@ public class SourceCode:MonoBehaviour {
         public void setOrigin(Vector3 newOrigin){
             origin = newOrigin;
             sphere.transform.position = newOrigin;
+        }
+        public void moveOrigin(Vector3 newOrigin){
+            origin += newOrigin;
+            sphere.transform.position += newOrigin;
         }
         public void setRadius(float newRadius){
             radius = newRadius;
