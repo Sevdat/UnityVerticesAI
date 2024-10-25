@@ -141,9 +141,8 @@ public class UnityPluginTest : MonoBehaviour
         public Axis ax;
         public Body lol;
         public void strt(){
-            ax = new Axis(new Vector3(5,5,5),5);
-            lol = new Body(ax,10);
-            lol.resizeArray(12);
+
+            lol = new Body(1);
             // print(lol.getPastEnds().Count);
             // print(lol.keyGenerator.maxKeys);
             // foreach (int i in lol.keyGenerator.freeKeys){
@@ -163,6 +162,7 @@ public class UnityPluginTest : MonoBehaviour
     void Update()
     {
         exp.lol.editor.options();
+        print(exp.lol.editor.jointSelector.selected.connection.current);
         // if (time == 60 && count!= 360) {
         //     lol.rotate(lol.quat(Mathf.PI/180),lol.rotationAxis);
         //     time = 0;
