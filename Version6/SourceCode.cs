@@ -7,7 +7,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 public class SourceCode:MonoBehaviour {
-
+// 
     public class SphericalOctTree {
         public SphericalOctTree sphereOctTree;
         public int depth;
@@ -519,13 +519,17 @@ public class SourceCode:MonoBehaviour {
             if (index +1 <size) { index++; reColor(); }
         }
         public void previousJoint(){
-            if (index-1>0) { index--; reColor(); }         
+            if (index-1>-1) { index--; reColor(); }         
         }
         public void createJoint(){
-            selected.createJoint();
+            selected.pointCloud.updateAllSphereColors(green);
+            selected = selected.createJoint();
+            joints.Add(selected);
             index = size;
             size++;
-            reColor();
+            collisionSphereSelector.renew();
+            collisionSphereSelector.size = 0;
+            collisionSphereSelector.index = 0;
         }
 
         public void jointSelectorControls(){
@@ -690,8 +694,11 @@ public class SourceCode:MonoBehaviour {
             if (Input.GetKeyDown("left")) {
                 jointSelector.nextJoint();
             }
-            if (Input.GetKeyDown("enter")) {
+            if (Input.GetKeyDown("/")) {
                 jointSelector.selectJoint();
+            } 
+            if (Input.GetKeyDown(".")) {
+                jointSelector.createJoint();
             } 
             if (Input.GetKeyDown("f")) {
                 body.saveBody().writer();
@@ -1085,9 +1092,8 @@ public class SourceCode:MonoBehaviour {
             if ( !float.IsNaN(saveAxis.angleX) && !float.IsNaN(saveAxis.angleY)){
                 globalAxis.scaleRotationAxis(saveAxis.distanceFromOrigin);
                 globalAxis.setRotationAxisInRadians(saveAxis.angleY,saveAxis.angleX);
-                print(saveAxis.angleX != float.NaN);
-            }
-            axis.placeAxis(globalAxis.rotationAxis);
+                axis.placeAxis(globalAxis.rotationAxis);
+            } else axis.placeAxis(globalAxis.origin);
             axis.setWorldRotationInRadians(saveAxis.worldAngleY,worldAngleX,localAngleY);
             return axis;
         }
@@ -1348,7 +1354,8 @@ public class SourceCode:MonoBehaviour {
             int key = body.keyGenerator.getKey();
             Connection connection = new Connection(key);
             connection.past.Add(this);
-            Joint addJoint = new Joint(body,pointCloud.keyGenerator.increaseKeysBy, localAxis,connection);
+            Axis axis = new Axis(localAxis.origin,localAxis.axisDistance);
+            Joint addJoint = new Joint(body,pointCloud.keyGenerator.increaseKeysBy, axis,connection);
             this.connection.future.Add(addJoint); 
             body.bodyStructure[key] = addJoint;
             return addJoint;

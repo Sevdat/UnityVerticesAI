@@ -162,7 +162,7 @@ public class UnityPluginTest : MonoBehaviour
     void Update()
     {
         exp.lol.editor.options();
-        print(exp.lol.editor.jointSelector.selected.connection.current);
+        // print(exp.lol.editor.jointSelector.selected.connection.current);
         // if (time == 60 && count!= 360) {
         //     lol.rotate(lol.quat(Mathf.PI/180),lol.rotationAxis);
         //     time = 0;
