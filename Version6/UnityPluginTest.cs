@@ -142,7 +142,7 @@ public class UnityPluginTest : MonoBehaviour
         public Body lol;
         public void strt(){
 
-            lol = new Body(1);
+            lol = new Body(0,new Axis(new Vector3(5,5,5),5),5);
             // print(lol.getPastEnds().Count);
             // print(lol.keyGenerator.maxKeys);
             // foreach (int i in lol.keyGenerator.freeKeys){
@@ -152,7 +152,6 @@ public class UnityPluginTest : MonoBehaviour
     }
     Experiment exp = new Experiment();
     void Start(){
-        
         exp.strt();
 
     }

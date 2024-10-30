@@ -7,8 +7,6 @@ using UnityEngine;
 public class UnityPlugin : MonoBehaviour
 {   
 
-    
-
 
 
 

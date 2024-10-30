@@ -701,7 +701,7 @@ public class SourceCode:MonoBehaviour {
                 jointSelector.createJoint();
             } 
             if (Input.GetKeyDown("f")) {
-                body.saveBody().writer();
+                new SaveBody().writer(body);
             }  
         }
         public void collisionSphereSelectorControls(){
@@ -728,7 +728,8 @@ public class SourceCode:MonoBehaviour {
         public Editor editor;
 
         public Body(){}
-        public Body(Axis globalAxis, int amountOfJoints){
+        public Body(int worldKey,Axis globalAxis, int amountOfJoints){
+            this.worldKey = worldKey;
             this.globalAxis = globalAxis;
             bodyStructure = new Joint[amountOfJoints];
             keyGenerator = new KeyGenerator(amountOfJoints);
@@ -736,25 +737,29 @@ public class SourceCode:MonoBehaviour {
             editor = new Editor(this);
         }
         public Body(int path){
-            editor = new Editor(new SaveBody().createBody(path));
+            
         }
 
-        public SaveBody saveBody(){
+        public string saveBody(){
             Vector3 globalOrigin = globalAxis.origin;
             globalAxis.getWorldRotationInRadians(out float worldAngleY,out float worldAngleX,out float localAngleY);
-            List<SaveJoint> savedJoints = new List<SaveJoint>();
+            List<int> jointIndexes = new List<int>();
+            string strJointIndexes = "";
             for (int i = 0; i<keyGenerator.maxKeys;i++){
                 Joint joint = bodyStructure[i];
                 if (joint != null){
-                    savedJoints.Add(joint.saveJoint());
+                    strJointIndexes += $" {i}";
+                    jointIndexes.Add(i);
                 }
             }
-            return new SaveBody(
-                keyGenerator.maxKeys,
-                globalOrigin,
-                worldAngleY,worldAngleX,localAngleY,
-                savedJoints
-                );
+            string stringPath = $"Body_{0}_";
+            string bodyStructureSize = $"{stringPath}BodyStructureSize: {keyGenerator.maxKeys}\n";
+            string allJointsInBody = $"{stringPath}AllSpheresInJoint: {strJointIndexes}\n";
+            string globalOriginLocation = $"{stringPath}globalOriginLocation: {globalOrigin.x} {globalOrigin.y} {globalOrigin.z}\n";
+            string globalAxisRotationXYZ = $"{stringPath}globalAxisRotationXYZ: {worldAngleY} {worldAngleX} {localAngleY}\n";
+
+            return bodyStructureSize + allJointsInBody + globalOriginLocation + globalAxisRotationXYZ;
+
         }
 
         public void reviveBody(){
@@ -805,27 +810,21 @@ public class SourceCode:MonoBehaviour {
             return joints;
         }
         public void optimizeBody(){
-            bool getOnlyActive = false;
-            bool getFuture = true;
-            List<Joint> firstJoint = getPastEnds();
-            if (firstJoint != null) {
-                tracker(
-                    firstJoint,
-                    getFuture,getOnlyActive,false,
-                    out List<Joint> connectionTree, 
-                    out _, 
-                    out int treeSize
-                );
-                Joint[] orginizedJoints = new Joint[treeSize];
-                for (int i = 0; i < treeSize; i++){
-                    Joint joint = connectionTree[i];
-                    joint.connection.indexInBody = i;
+            int max = keyGenerator.maxKeys;
+            int newSize = max - keyGenerator.availableKeys;
+            Joint[] orginizedJoints = new Joint[newSize];
+            int newIndex = 0;
+            for (int i = 0; i < max; i++){
+                Joint joint = bodyStructure[i];
+                if (joint != null){
+                    joint.connection.indexInBody = newIndex;
                     joint.pointCloud.optimizeCollisionSpheres();
-                    orginizedJoints[i] = joint; 
+                    orginizedJoints[newIndex] = joint; 
+                    newIndex++;
                 }
-                bodyStructure = orginizedJoints;
-                keyGenerator.resetGenerator(treeSize);
             }
+            bodyStructure = orginizedJoints;
+            keyGenerator.resetGenerator(newSize);
         }
         internal void tracker(
             List<Joint> joints, bool pastOrFuture, bool getOnlyActive,bool getPastAndFuture,
@@ -1022,21 +1021,21 @@ public class SourceCode:MonoBehaviour {
                 out tree, out end, out treeSize
                 );
         }
-        public List<int> pastIndex(){
-            List<int> list = new List<int>();
+        public string pastIndexes(){
+            string pastIndexes = "";
             int count = past.Count;
             for (int i = 0; i<count;i++){
-                list.Add(past[i].connection.indexInBody);
+                pastIndexes += $" {past[i].connection.indexInBody}";
             }
-            return list;
+            return pastIndexes;
         }
-        public List<int> futureIndex(){
-            List<int> list = new List<int>();
+        public string futureIndexes(){
+            string futureIndexes = "";
             int count = future.Count;
             for (int i = 0; i<count;i++){
-                list.Add(future[i].connection.indexInBody);
+                futureIndexes += $" {future[i].connection.indexInBody}";
             }
-            return list;
+            return futureIndexes;
         }
     }
 
@@ -1067,244 +1066,45 @@ public class SourceCode:MonoBehaviour {
         public int bodyStructureSize;
         public Vector3 origin;
         public float worldAngleY,worldAngleX,localAngleY;
-        public List<SaveJoint> savedJoints;
+        public int?[] allJointsInBody;
 
         public SaveBody(){}
         public SaveBody(
             int bodyStructureSize,
             Vector3 origin,
             float worldAngleY, float worldAngleX, float localAngleY,
-            List<SaveJoint> savedJoints
+            int?[] allJointsInBody
             ){
             this.bodyStructureSize = bodyStructureSize;
             this.origin = origin;
             this.worldAngleY = worldAngleY;
             this.worldAngleX = worldAngleX;
             this.localAngleY = localAngleY;
-            this.savedJoints = savedJoints;
+            this.allJointsInBody = allJointsInBody;
         }
-        public Body createBody(int index){
-            readFromFile(index);
-            return createBody();
-        }
-        public Axis createlocalAxis(SaveAxis saveAxis,Axis globalAxis){
-            Axis axis = new Axis(origin,5);
-            if ( !float.IsNaN(saveAxis.angleX) && !float.IsNaN(saveAxis.angleY)){
-                globalAxis.scaleRotationAxis(saveAxis.distanceFromOrigin);
-                globalAxis.setRotationAxisInRadians(saveAxis.angleY,saveAxis.angleX);
-                axis.placeAxis(globalAxis.rotationAxis);
-            } else axis.placeAxis(globalAxis.origin);
-            axis.setWorldRotationInRadians(saveAxis.worldAngleY,worldAngleX,localAngleY);
-            return axis;
-        }
-        public Body createBody(){
-            Axis globalAxis = new Axis(origin,5);
-            Body body = new Body(globalAxis,bodyStructureSize);
-            body.globalAxis.setWorldRotationInRadians(worldAngleY,worldAngleX,localAngleY);
-            
-            int count = savedJoints.Count;
-            for (int i = 0; i< count;i++){
-                SaveJoint saveJoint = savedJoints[i];
-                Axis localAxis = createlocalAxis(saveJoint.localAxis,globalAxis);
-                Connection connection = new Connection(saveJoint.indexInBody);
-                Joint joint = new Joint(body, saveJoint.pointCloudSize,localAxis,connection);
-                
-                int listSize = saveJoint.pointCloud.Count;
-                for (int j = 0; j<listSize;j++){
-                    SaveCollisionSphere saveCollisionSphere = saveJoint.pointCloud[j];
-                    Path path = new Path(body,saveJoint.indexInBody,saveCollisionSphere.indexInArray);
-                    localAxis.scaleRotationAxis(saveCollisionSphere.distanceFromOrigin);
-                    localAxis.setRotationAxisInRadians(saveCollisionSphere.localAxisAngleY,saveCollisionSphere.localAxisAngleX);
-                    joint.pointCloud.collisionSpheres[saveCollisionSphere.indexInArray] = new CollisionSphere(path,localAxis.rotationAxis,saveCollisionSphere.sphereRadius);
-                }
 
-                List<int> newKeygeneratorFreeKeys = new List<int>();
-                int newKeyCount = 0;
-                for (int j = 0; j<saveJoint.pointCloudSize;j++){
-                    if (joint.pointCloud.collisionSpheres[j] == null){
-                        newKeygeneratorFreeKeys.Add(j);
-                        newKeyCount += 1;
+
+        
+        public void writer(Body body){
+            using(StreamWriter writetext = new StreamWriter("Assets/v4/1.txt")) {
+                writetext.WriteLine(body.saveBody());
+                int size = body.keyGenerator.maxKeys;
+                for (int i = 0; i<size; i++){
+                    Joint joint = body.bodyStructure[i];
+                        if (joint != null){
+                        writetext.WriteLine(joint.saveJoint());
+                        writetext.WriteLine(joint.pointCloud.savePointCloud(out List<int> collisionSphereIndexes, out int listSize));
+                        CollisionSphere[] collisionSpheres = joint.pointCloud.collisionSpheres;
+                        for (int j = 0; j<listSize;j++){
+                            writetext.WriteLine(collisionSpheres[collisionSphereIndexes[j]].saveCollisionSphere());
+                        }
                     }
                 }
-                KeyGenerator keyGenerator = joint.pointCloud.keyGenerator;
-                keyGenerator.freeKeys = newKeygeneratorFreeKeys;
-                keyGenerator.availableKeys = newKeyCount;
-                body.bodyStructure[saveJoint.indexInBody] = joint;
             }
-            
-            for (int i = 0; i<count;i++){
-                SaveJoint saveJoint = savedJoints[i];
-                List<Joint> past = getJoints(body,saveJoint.pastIndexes);
-                List<Joint> future = getJoints(body,saveJoint.futureIndexes);
-
-                Joint joint = body.bodyStructure[saveJoint.indexInBody];
-                joint.connection.setPast(past);
-                joint.connection.setFuture(future);
-            }
-            return body;
-        }
-        public List<Joint> getJoints(Body body,List<int> time){
-            int count = time.Count;
-            List<Joint> list = new List<Joint>();
-            Joint[] bodyStructure = body.bodyStructure;
-            for (int i = 0;i<count;i++){
-                Joint joint = bodyStructure[time[i]];
-                if (joint != null) list.Add(joint);
-            }
-            return list;
-        }
-        public void readFromFile(int index){
-            string[] allData = File.ReadAllText($"Assets/v4/{index}.txt").Split("JointData");
-            string[] bodyData = allData[0].Split("\n");
-            bodyStructureSize = int.Parse(bodyData[0]);
-
-            string[] vectorData = bodyData[1].Split(" ");
-            float vecX = float.Parse(vectorData[0]);
-            float vecY = float.Parse(vectorData[1]);
-            float vecZ = float.Parse(vectorData[2]);
-            origin = new Vector3(vecX,vecY,vecZ);
-            worldAngleY = float.Parse(vectorData[3]);
-            worldAngleX = float.Parse(vectorData[4]);
-            localAngleY = float.Parse(vectorData[5]);
-
-            savedJoints = new List<SaveJoint>();
-            string[] jointData = allData[1].Split("\n");
-            int sizeOfJoints = (jointData.Length-2)/6;
-            for (int i = 0; i<sizeOfJoints; i++){
-                int indexInBody = int.Parse(jointData[1+6*i]);
-                string[] axisData = jointData[2+6*i].Split(" ");
-                float angleX = float.Parse(axisData[0]);
-                float angleY = float.Parse(axisData[1]);
-                float distance = float.Parse(axisData[2]);
-                float worldAngleX = float.Parse(axisData[3]);
-                float worldAngleY = float.Parse(axisData[4]);
-                float localAngleY = float.Parse(axisData[5]);
-                SaveAxis axis = new SaveAxis(angleX,angleY,distance,worldAngleX,worldAngleY,localAngleY);
-                int pointCloudSize = int.Parse(jointData[3+6*i]);
-                string[] pointCloudData = jointData[4+6*i].Split(",");
-                List<SaveCollisionSphere> collisionSpheres = new List<SaveCollisionSphere>();
-                int amountOfSpheres = pointCloudData.Length;
-
-                for (int j = 0; j<amountOfSpheres; j++){
-                    string sphereData = pointCloudData[j];
-                    if (sphereData != ""){
-                        string[] data = sphereData.Split(" ");
-                        int indexInArray = int.Parse(data[0]);
-                        float localAxisAngleX = float.Parse(data[1]);
-                        float localAxisAngleY = float.Parse(data[2]);
-                        float distanceFromOrigin = float.Parse(data[3]);
-                        float sphereRadius = float.Parse(data[4]);
-                        SaveCollisionSphere saveCollisionSphere = 
-                            new SaveCollisionSphere(indexInArray,localAxisAngleX,localAxisAngleY,distanceFromOrigin,sphereRadius);
-                        collisionSpheres.Add(saveCollisionSphere);
-                    }
-                }
-                List<int> pastData = createTime(jointData[5+6*i]);
-                List<int> futureData = createTime(jointData[6+6*i]);
-                
-                savedJoints.Add(new SaveJoint(
-                    indexInBody, axis, pointCloudSize, collisionSpheres,pastData,futureData
-                    ));     
-            }
-        }
-        List<int> createTime(string time){
-            string[] timeData = time.Split(" ");
-            int timeDataSize = timeData.Length;
-            List<int> connections = new List<int>();
-            for (int i = 0; i<timeDataSize;i++){
-                string str = timeData[i];
-                if (str != ""){
-                    connections.Add(int.Parse(str));
-                }
-            }
-            return connections;
-        }
-        
-        public void writer(){
-            File.WriteAllText("Assets/v4/1.txt",ToString());
         }
 
-        public override string ToString() {
-            string size = $"{bodyStructureSize}\n";
-            string axis = $"{origin.x} {origin.y} {origin.z} {worldAngleY} {worldAngleX} {localAngleY}\n";
-            int savedJointsSize = savedJoints.Count;
-            string joints = "";
-            for (int i = 0; i< savedJointsSize; i++){
-                joints += savedJoints[i].ToString();
-            }
-            return $"{size}{axis}JointData\n{joints}JointData";
-        }
     }
-    public struct SaveJoint{
-        public int indexInBody;
-        public SaveAxis localAxis;
-        public int pointCloudSize;
-        public List<SaveCollisionSphere> pointCloud;
-        public List<int> pastIndexes;
-        public List<int> futureIndexes;
-        
-        public SaveJoint(
-            int indexInBody,
-            SaveAxis localAxis,
-            int pointCloudSize,
-            List<SaveCollisionSphere> pointCloud,
-            List<int> pastIndexes,
-            List<int> futureIndexes
-            ){
-                this.indexInBody = indexInBody;
-                this.localAxis = localAxis;
-                this.pointCloudSize = pointCloudSize;
-                this.pointCloud = pointCloud;
-                this.pastIndexes = pastIndexes;
-                this.futureIndexes = futureIndexes;
-        }
 
-        string pointCloudToString(){
-            string str = "";
-            int listSize = pointCloud.Count;
-            for (int i = 0; i<listSize; i++){
-                str +=  pointCloud[i].ToString();
-            }
-            return str+"\n";
-        }
-        string timeToString(List<int> time){
-            string str = "";
-            int count = time.Count;
-            for (int i = 0;i<count;i++){
-                str += $"{time[i]} ";
-            }
-            return str+"\n";
-        }
-
-        public override string ToString() {
-            string pointCloud = pointCloudToString();
-            string past = timeToString(pastIndexes);
-            string future = timeToString(futureIndexes);
-            string axis = localAxis.ToString();
-            return $"{indexInBody}\n{axis}{pointCloudSize}\n{pointCloud}{past}{future}";
-        }
-    }
-    public struct SaveCollisionSphere{
-        public int indexInArray;
-        public float localAxisAngleX;
-        public float localAxisAngleY;
-        public float distanceFromOrigin;
-        public float sphereRadius;
-        public SaveCollisionSphere(
-            int indexInArray,
-            float localAxisAngleX, float localAxisAngleY,
-            float distanceFromOrigin, float sphereRadius
-            ){
-                this.indexInArray = indexInArray;
-                this.localAxisAngleX = localAxisAngleX;
-                this.localAxisAngleY = localAxisAngleY;
-                this.distanceFromOrigin = distanceFromOrigin;
-                this.sphereRadius = sphereRadius;
-        }
-        public override string ToString() {
-            return $"{indexInArray} {localAxisAngleX} {localAxisAngleY} {distanceFromOrigin} {sphereRadius},";
-        }
-    }
 
     public class Joint {
         public Body body;
@@ -1325,7 +1125,7 @@ public class SourceCode:MonoBehaviour {
         public void setBody(Body body){
             this.body=body;
         }
-        public SaveJoint saveJoint(){
+        public string saveJoint(){
             Vector3 jointOrigin = localAxis.origin;
             Vector3 globalOrigin = body.globalAxis.origin;
             body.globalAxis.getAngle(
@@ -1335,19 +1135,19 @@ public class SourceCode:MonoBehaviour {
                 );
             localAxis.getWorldRotationInRadians(out float worldAngleY,out float worldAngleX,out float localAngleY);
             float distanceFromOrigin = body.globalAxis.length(jointOrigin-globalOrigin);
-
-            return new SaveJoint(
-                connection.indexInBody,
-                new SaveAxis(
-                    globalY,globalX,
-                    distanceFromOrigin,
-                    worldAngleY,worldAngleX,localAngleY
-                    ),
-                pointCloud.keyGenerator.maxKeys,
-                pointCloud.savePointCloud(),
-                connection.pastIndex(),
-                connection.futureIndex()
-                );       
+            string stringPath = $"Body_{0}_Joint_{connection.indexInBody}_";
+            string active = $"{stringPath}Active: {connection.active}\n";
+            string distanceFromGlobalOrigin = $"{stringPath}DistanceFromGlobalOrigin: {distanceFromOrigin}\n";
+            string XYFromGlobalAxis = $"{stringPath}XYFromGlobalAxis: {globalY} {globalX}\n";
+            string localAxisRotation = $"{stringPath}LocalAxisRotation: {worldAngleY} {worldAngleX} {localAngleY}\n";
+            string XYRotationAxisFromLocalAxis = $"{stringPath}XYRotationAxisFromLocalAxis: {localAxis.angleY} {localAxis.angleX}\n";
+            string XYRotationAxisSpeed = $"{stringPath}XYRotationAxisSpeed: {localAxis.xSpeed} {localAxis.ySpeed}\n";
+            string pastConnectionsInBody = $"{stringPath}PastConnectionsInBody: {connection.pastIndexes()}\n";
+            string futureConnectionsInBody = $"{stringPath}FutureConnectionsInBody: {connection.futureIndexes()}\n";
+            return active + distanceFromGlobalOrigin + 
+                XYFromGlobalAxis + localAxisRotation + 
+                XYRotationAxisFromLocalAxis + XYRotationAxisSpeed +
+                pastConnectionsInBody + futureConnectionsInBody;
         }
         public Joint createJoint(){
             body.resizeArray(1);
@@ -1426,15 +1226,22 @@ public class SourceCode:MonoBehaviour {
             keyGenerator = new KeyGenerator(amountOfSpheres);
         }
 
-        public List<SaveCollisionSphere> savePointCloud(){
-            List<SaveCollisionSphere> saveCollisionSpheres = new List<SaveCollisionSphere>();
-            for (int i = 0; i<collisionSpheres.Length; i++){
+        public string savePointCloud(out List<int> indexes, out int listSize){
+            listSize = 0;
+            int size = collisionSpheres.Length;
+            indexes = new List<int>();
+            string stringPath = $"Body_{0}_Joint_{joint.connection.indexInBody}_";
+            string pointCloudSize = $"{stringPath}PointCloudSize: {size}\n";
+            string allSpheresInJoint = $"{stringPath}AllSpheresInJoint: ";
+            for (int i = 0; i<keyGenerator.maxKeys; i++){
                 CollisionSphere collisionSphere = collisionSpheres[i];
-                if (collisionSphere != null){
-                    saveCollisionSpheres.Add(collisionSphere.saveCollisionSphere());
+                if (collisionSphere != null) {
+                    allSpheresInJoint += $"{i} ";
+                    indexes.Add(i);
+                    listSize++;
                 }
             }
-            return saveCollisionSpheres;
+            return pointCloudSize+allSpheresInJoint+"\n";
         }
         public CollisionSphere createSphere(){
             resizeArray(1);
@@ -1565,7 +1372,7 @@ public class SourceCode:MonoBehaviour {
             this.path = path;
             sphere = new Sphere(origin,radius);
         }
-        public SaveCollisionSphere saveCollisionSphere(){
+        public string saveCollisionSphere(){
             int key = path.jointKey;
             Joint joint = path.body.bodyStructure[key];
             Axis axis = joint.localAxis;
@@ -1575,11 +1382,11 @@ public class SourceCode:MonoBehaviour {
                 axis.origin,axis.x,axis.y,axis.z,
                 out float localY,out float localX
                 );
-            return new SaveCollisionSphere(
-                    path.collisionSphereKey,
-                    localX,localY,
-                    distanceFromOrigin,sphere.radius
-                );
+            string stringPath = $"Body_{0}_Joint_{path.jointKey}_Sphere_{path.collisionSphereKey}_";
+            string distanceFromLocalOrigin = $"{stringPath}DistanceFromLocalOrigin: {distanceFromOrigin}\n";
+            string XYFromLocalAxis = $"{stringPath}XYFromLocalAxis: {localY} {localX}\n";
+            string radius = $"{stringPath}Radius: {sphere.radius}\n";
+            return distanceFromLocalOrigin + XYFromLocalAxis + radius;
         }
         public void setOrigin(Vector3 newOrigin){
             sphere.setOrigin(newOrigin);

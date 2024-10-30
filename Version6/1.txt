@@ -1,10 +1,57 @@
-10
-5 5 5 0 0 0
-JointData
-0
-NaN NaN 0 0 0 0
-21
-0 0 0 5 1,1 0 0.6518808 5 1,2 1.00531 1.405863 4.999999 1,3 2.552545 1.405863 5 1,4 3.447899 1.405863 5 1,5 4.390377 1.405863 4.999999 1,6 5.309294 1.405863 5 1,7 6.26748 1.405863 4.999999 1,8 0.8796483 1.405863 4.999999 1,9 1.696463 2.08916 5 1,10 1.696463 3.063054 5.000001 1,11 4.838056 2.419025 5 1,12 4.838056 1.680751 5 1,13 4.838056 1.005308 5 1,14 4.838056 0.2984492 5 1,
+Body_0_BodyStructureSize: 5
+Body_0_AllSpheresInJoint:  0
+Body_0_globalOriginLocation: 5 5 5
+Body_0_globalAxisRotationXYZ: 0 0 0
 
+Body_0_Joint_0_Active: True
+Body_0_Joint_0_DistanceFromGlobalOrigin: 0
+Body_0_Joint_0_XYFromGlobalAxis: NaN NaN
+Body_0_Joint_0_LocalAxisRotation: 0 0 0
+Body_0_Joint_0_XYRotationAxisFromLocalAxis: 4.759512 0.8639404
+Body_0_Joint_0_XYRotationAxisSpeed: 0.007853982 0.007853982
+Body_0_Joint_0_PastConnectionsInBody: 
+Body_0_Joint_0_FutureConnectionsInBody: 
 
-JointData
+Body_0_Joint_0_PointCloudSize: 11
+Body_0_Joint_0_AllSpheresInJoint: 0 1 2 3 4 5 6 7 8 9 
+
+Body_0_Joint_0_Sphere_0_DistanceFromLocalOrigin: 5
+Body_0_Joint_0_Sphere_0_XYFromLocalAxis: 0.7696903 0
+Body_0_Joint_0_Sphere_0_Radius: 1
+
+Body_0_Joint_0_Sphere_1_DistanceFromLocalOrigin: 5
+Body_0_Joint_0_Sphere_1_XYFromLocalAxis: 0.7696902 0.9581861
+Body_0_Joint_0_Sphere_1_Radius: 1
+
+Body_0_Joint_0_Sphere_2_DistanceFromLocalOrigin: 5
+Body_0_Joint_0_Sphere_2_XYFromLocalAxis: 0.7696903 2.434735
+Body_0_Joint_0_Sphere_2_Radius: 1
+
+Body_0_Joint_0_Sphere_3_DistanceFromLocalOrigin: 5
+Body_0_Joint_0_Sphere_3_XYFromLocalAxis: 1.775001 2.434735
+Body_0_Joint_0_Sphere_3_Radius: 1
+
+Body_0_Joint_0_Sphere_4_DistanceFromLocalOrigin: 5
+Body_0_Joint_0_Sphere_4_XYFromLocalAxis: 2.921682 2.434735
+Body_0_Joint_0_Sphere_4_Radius: 1
+
+Body_0_Joint_0_Sphere_5_DistanceFromLocalOrigin: 5
+Body_0_Joint_0_Sphere_5_XYFromLocalAxis: 2.120574 5.576328
+Body_0_Joint_0_Sphere_5_Radius: 1
+
+Body_0_Joint_0_Sphere_6_DistanceFromLocalOrigin: 5
+Body_0_Joint_0_Sphere_6_XYFromLocalAxis: 2.120574 4.264712
+Body_0_Joint_0_Sphere_6_Radius: 1
+
+Body_0_Joint_0_Sphere_7_DistanceFromLocalOrigin: 5.000001
+Body_0_Joint_0_Sphere_7_XYFromLocalAxis: 2.120574 3.102324
+Body_0_Joint_0_Sphere_7_Radius: 1
+
+Body_0_Joint_0_Sphere_8_DistanceFromLocalOrigin: 5
+Body_0_Joint_0_Sphere_8_XYFromLocalAxis: 0.8639405 5.497787
+Body_0_Joint_0_Sphere_8_Radius: 1
+
+Body_0_Joint_0_Sphere_9_DistanceFromLocalOrigin: 5
+Body_0_Joint_0_Sphere_9_XYFromLocalAxis: 0.8639405 4.759512
+Body_0_Joint_0_Sphere_9_Radius: 1
+
