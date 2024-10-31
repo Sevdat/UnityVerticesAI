@@ -1,14 +1,14 @@
 Body_0_BodyStructureSize: 5
 Body_0_AllSpheresInJoint:  0
-Body_0_globalOriginLocation: 5 5 5
-Body_0_globalAxisRotationXYZ: 0 0 0
+Body_0_GlobalOriginLocation: 5 5 5
+Body_0_GlobalAxisRotationXYZ: 0 0 0
 
 Body_0_Joint_0_Active: True
 Body_0_Joint_0_DistanceFromGlobalOrigin: 0
 Body_0_Joint_0_XYFromGlobalAxis: NaN NaN
 Body_0_Joint_0_LocalAxisRotation: 0 0 0
 Body_0_Joint_0_XYRotationAxisFromLocalAxis: 4.759512 0.8639404
-Body_0_Joint_0_XYRotationAxisSpeed: 0.007853982 0.007853982
+Body_0_Joint_0_RotationAxisSpeed: 0.007853982
 Body_0_Joint_0_PastConnectionsInBody: 
 Body_0_Joint_0_FutureConnectionsInBody: 
 
