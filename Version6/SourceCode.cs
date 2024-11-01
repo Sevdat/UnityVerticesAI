@@ -78,7 +78,6 @@ public class SourceCode:MonoBehaviour {
                      xSpeed,xAcceleration,
                      rotationAxisSpinSpeed,rotationAxisSpinAcceleration,
                      rotationAxisMoveSpeed, rotationAxisMoveAcceleration;
-        bool rotationAxisDirection;
 
         public Axis(){}
         public Axis(Vector3 origin, float distance){
@@ -99,7 +98,6 @@ public class SourceCode:MonoBehaviour {
             xSpeed = Mathf.PI/400f; xAcceleration = 1;
             rotationAxisSpinSpeed = 0; rotationAxisSpinAcceleration = 1;
             rotationAxisMoveSpeed = 0; rotationAxisMoveAcceleration = 1;
-            rotationAxisDirection = false;
         }
         
         public void moveAxis(Vector3 add){
@@ -176,7 +174,7 @@ public class SourceCode:MonoBehaviour {
         internal float angleBetweenLines(Vector3 dir1,Vector3 dir2){
             float dotProduct = dot(dir1,dir2);
             float lengthProduct = length(dir1)*length(dir2);
-            float check = (dotProduct>lengthProduct)? 1:dotProduct/lengthProduct;
+            float check = (Mathf.Abs(dotProduct)>lengthProduct)? MathF.Sign(dotProduct):dotProduct/lengthProduct;
             return Mathf.Acos(check);
         }
         internal Vector3 perpendicular(Vector3 lineOrigin, Vector3 lineDirection, Vector3 point){
@@ -215,14 +213,25 @@ public class SourceCode:MonoBehaviour {
                     angleBetweenLines(dirZ,dirPerpOrg);
             }
         }
+        bool invertAxis(float angleXBeforeGet, ref float yAngle,ref float xAngle){
+            bool inverted = MathF.Round(Mathf.Abs(xAngle - angleXBeforeGet) - Mathf.PI) == 0;
+            if (inverted) {
+                yAngle = 2*Mathf.PI -yAngle;
+                xAngle = (angleXBeforeGet>xAngle)? xAngle+Mathf.PI: xAngle-Mathf.PI;
+            }
+            return inverted;
+        }
 
         public void getWorldRotation(){
             Vector3 worldX = origin + new Vector3(axisDistance,0,0);
             Vector3 worldY = origin + new Vector3(0,axisDistance,0);
             Vector3 worldZ = origin + new Vector3(0,0,axisDistance);
 
+            float tempX = worldAngleX;
+            float tempLocalY = localAngleY;
             getAngle(y,origin,worldX,worldY,worldZ,out worldAngleY,out float tempWorldAngleX);
             if (!(worldAngleY == 0f || worldAngleY == Mathf.PI)) worldAngleX = tempWorldAngleX;
+
             Vector3 localX = origin + new Vector3(axisDistance,0,0);
             Vector3 localY = origin + new Vector3(0,axisDistance,0);
             Vector3 localZ = origin + new Vector3(0,0,axisDistance);
@@ -230,16 +239,16 @@ public class SourceCode:MonoBehaviour {
                 worldAngleY,worldAngleX,0,
                 worldX,worldY,ref localX,ref localY,ref localZ
                 );   
-            Vector3 dirX = direction(x,origin);
             Vector3 dirLocalX = direction(localX,origin);
             Vector3 dirZ = direction(z,origin);
             Vector3 dirLocalZ = direction(localZ,origin);
-            float angleSide = angleBetweenLines(dirX,dirLocalX);
-
+            float angleSide = angleBetweenLines(dirZ,dirLocalX);
             localAngleY = (angleSide>Mathf.PI/2)? 
                 2*Mathf.PI-angleBetweenLines(dirZ,dirLocalZ):
                 angleBetweenLines(dirZ,dirLocalZ);
-            
+           
+            bool check = invertAxis(tempX,ref worldAngleY,ref worldAngleX);
+            if (check) localAngleY = (tempLocalY>localAngleY)? localAngleY+Mathf.PI: localAngleY-Mathf.PI;
         }
         public void setWorldRotation(float worldAngleY,float worldAngleX,float localAngleY){
             Vector3 worldX = origin + new Vector3(axisDistance,0,0);
@@ -267,10 +276,7 @@ public class SourceCode:MonoBehaviour {
             float temp = angleX;
             getAngle(rotationAxis,origin,x,y,z,out angleY,out float tempAngleX);
             if (!(angleY == 0f || angleY == Mathf.PI)) angleX = tempAngleX;
-            if (MathF.Round(Mathf.Abs(angleX - temp) -Mathf.PI) == 0) {
-                    angleY*=-1;
-                    angleX = (temp>angleX)? angleX+Mathf.PI: angleX-Mathf.PI;
-                }
+            invertAxis(temp,ref angleY,ref angleX);
         }
         public void setRotationAxis(float angleY,float angleX){
             rotationAxis = origin + distanceFromOrigin(y,origin,rotationAxisDistance);
@@ -374,19 +380,20 @@ public class SourceCode:MonoBehaviour {
             Vector4 rotatedQuaternion = quatMul(quatMul(angledAxis,rotatingVector), inverseQuat);
             return origin + new Vector3(rotatedQuaternion.x,rotatedQuaternion.y,rotatedQuaternion.z);
         }
+        
         public void worldAxisUp(){
             worldAngleY += worldSpeedY;
-            if (worldAngleY>Mathf.PI) worldAngleY -= 2*MathF.PI;
+            if (worldAngleY>2*Mathf.PI) worldAngleY -= 2*MathF.PI;
             setWorldRotation(worldAngleY,worldAngleX,localAngleY);
         }
         public void worldAxisDown(){
             worldAngleY -= worldSpeedY;
             if (worldAngleY<0) worldAngleY += 2*MathF.PI;
-            setWorldRotation(worldAngleY,worldAngleX,localAngleY);          
+            setWorldRotation(worldAngleY,worldAngleX,localAngleY);  
         }
         public void worldAxisRight(){
             worldAngleX += worldSpeedX;
-            if (worldAngleX>Mathf.PI) worldAngleX -= 2*MathF.PI;
+            if (worldAngleX>2*Mathf.PI) worldAngleX -= 2*MathF.PI;
             setWorldRotation(worldAngleY,worldAngleX,localAngleY);
         }
         public void worldAxisLeft(){
@@ -396,7 +403,7 @@ public class SourceCode:MonoBehaviour {
         }
         public void worldAxisRotateClockwise(){
             localAngleY += localSpeedY; 
-            if (localAngleY>Mathf.PI) localAngleY -= 2*MathF.PI;
+            if (localAngleY>2*Mathf.PI) localAngleY -= 2*MathF.PI;
             setWorldRotation(worldAngleY,worldAngleX,localAngleY);
         }
         public void worldAxisRotateAntiClockwise(){
@@ -681,10 +688,10 @@ public class SourceCode:MonoBehaviour {
                 jointSelector.selected.localAxis.worldAxisDown();
             }
             if (Input.GetKey("l")) {       
-                jointSelector.selected.localAxis.worldAxisLeft();     
+                jointSelector.selected.localAxis.worldAxisRight();     
             }
             if (Input.GetKey("j")) {    
-                jointSelector.selected.localAxis.worldAxisRight();        
+                jointSelector.selected.localAxis.worldAxisLeft();        
             }
             if (Input.GetKey("o")) { 
                 jointSelector.selected.localAxis.worldAxisRotateClockwise();           
@@ -731,7 +738,7 @@ public class SourceCode:MonoBehaviour {
                 jointSelector.createJoint();
             } 
             if (Input.GetKeyDown("f")) {
-                jointSelector.selected.localAxis.getRotationAxisInDegrees(out float y, out float x);
+                jointSelector.selected.localAxis.getWorldRotationInDegrees(out float y, out float x,out float z);
             }  
         }
         public void collisionSphereSelectorControls(){
