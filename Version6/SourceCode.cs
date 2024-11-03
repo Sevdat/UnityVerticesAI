@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Linq.Expressions;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class SourceCode:MonoBehaviour {
@@ -24,7 +21,7 @@ public class SourceCode:MonoBehaviour {
     }
     public class RenderAxis{
         public Axis axis;
-        public Sphere origin,x,y,z,rotationAxis;
+        public Sphere origin,x,y,z,spin,move;
         public bool created = false;
 
         public RenderAxis(Axis axis){
@@ -37,9 +34,9 @@ public class SourceCode:MonoBehaviour {
                 x = new Sphere(axis.x,1,new Color(1,0,0,0));
                 y = new Sphere(axis.y,1,new Color(0,1,0,0));
                 z = new Sphere(axis.z,1,new Color(0,0,1,0));
-                rotationAxis = new Sphere(axis.rotationAxis,1,new Color(0,0,0,0));
+                spin = new Sphere(y.origin,1,new Color(0,0,0,0));
+                move = new Sphere(y.origin,1,new Color(1.0f, 0.64f, 0.0f,0.0f));
                 updateAxis();
-                updateRotationAxis();
                 created = true;
             }
         }
@@ -50,7 +47,8 @@ public class SourceCode:MonoBehaviour {
                 x.destroySphere();
                 y.destroySphere();
                 z.destroySphere();
-                rotationAxis.destroySphere();
+                spin.destroySphere();
+                move.destroySphere();
                 created = false;
             }
         }
@@ -60,44 +58,151 @@ public class SourceCode:MonoBehaviour {
             y.setOrigin(axis.y);
             z.setOrigin(axis.z);
         }
-        public void updateRotationAxis(){
-            rotationAxis.setOrigin(axis.rotationAxis);
+    }
+    public class AxisDirection{
+        Sphere sphere;
+        public Axis axis;
+        public Vector3 origin;
+        public float distance;
+        public float angleY, sensitivitySpeedY, sensitivityAccelerationY,
+                     angleX, sensitivitySpeedX, sensitivityAccelerationX,
+                     speed, acceleration;
+        
+        public AxisDirection(){}
+        public AxisDirection(Axis axis, Sphere sphere){
+            this.sphere = sphere;
+            this.axis = axis;
+            angleY = 0;angleX = 0;
+            sensitivitySpeedY = Mathf.PI/400f; sensitivityAccelerationY = 1;
+            sensitivitySpeedX = Mathf.PI/400f; sensitivityAccelerationX = 1;
+            speed = 0; acceleration = 1;
+            distance = axis.axisDistance;
+            origin = axis.origin + new Vector3(0,distance,0);
+        }
+        public void scale(float newDistance){
+            if (newDistance>0){
+                    distance = newDistance;
+                    origin = axis.origin + axis.distanceFromOrigin(origin,axis.origin,newDistance);
+                } else {
+                    if (newDistance != 0) distance = Mathf.Abs(newDistance);
+                    origin = axis.origin + axis.distanceFromOrigin(axis.origin,origin,distance);
+                    get();
+                }
+            if (axis.renderAxis.created){
+                updateAxis();
+            }
+        }
+        public void get(){
+            float temp = angleX;
+            axis.getAngle(origin,axis.origin,axis.x,axis.y,axis.z,out angleY,out float tempAngleX);
+            if (!(angleY == 0f || angleY == Mathf.PI)) angleX = tempAngleX;
+            axis.invertAxis(temp,ref angleY,ref angleX);
+        }
+        public void set(float angleY,float angleX){
+            origin = axis.origin + axis.distanceFromOrigin(axis.y,axis.origin,distance);
+            Vector4 rotY = axis.angledAxis(angleY,axis.x);
+            Vector4 rotX = axis.angledAxis(angleX,axis.y);
+            origin = axis.quatRotate(origin,axis.origin,rotY);
+            origin = axis.quatRotate(origin,axis.origin,rotX);
+            this.angleY = angleY;
+            this.angleX = angleX;
+            if (axis.renderAxis.created){
+                updateAxis();
+            }
+        }
+        public void getInRadians(out float angleY,out float angleX){
+            get();
+            angleY = this.angleY;
+            angleX = this.angleX;
+        }
+        public void setInRadians(float angleY,float angleX){
+            set(angleY, angleX);
+        }
+        public void getInDegrees(out float angleY,out float angleX){
+            float radianToDegree = 180/Mathf.PI;
+            get();
+            angleY = this.angleY*radianToDegree;
+            angleX = this.angleX*radianToDegree;
+        }
+        public void setInDegrees(float angleY,float angleX){
+            float degreeToRadian = Mathf.PI/180;
+            angleY *= degreeToRadian;
+            angleX *= degreeToRadian;
+            set(angleY, angleX);
+        }
+
+        public Vector4 quat(float radian){
+            return axis.angledAxis(radian,origin);
+        }
+        public Vector4 quatInDegrees(float angle){
+            float degreeToRadian = Mathf.PI/180;
+            return axis.angledAxis(angle*degreeToRadian,origin);
+        }
+        public void right(){
+            sensitivitySpeedX *= sensitivityAccelerationX;
+            angleX += sensitivitySpeedX;
+            if (angleX>2*Mathf.PI) angleX -= 2*MathF.PI;
+            set(angleY,angleX);
+        }
+        public void left(){
+            sensitivitySpeedX *= sensitivityAccelerationX;
+            angleX -= sensitivitySpeedX;
+            if (angleX<0) angleX += 2*MathF.PI;
+            set(angleY,angleX);      
+        }
+        public void up(){
+            sensitivitySpeedY *= sensitivityAccelerationY;
+            angleY += sensitivitySpeedY;
+            if (angleY>2*Mathf.PI) angleY -= 2*MathF.PI;
+            set(angleY,angleX);
+        }
+        public void down(){
+            sensitivitySpeedY *= sensitivityAccelerationY;
+            angleY -= sensitivitySpeedY;
+            if (angleY<0) angleY += 2*MathF.PI;
+            set(angleY,angleX);
+        }
+        
+        public void scaleUp(){
+            scale(distance + 1);
+        }
+        public void scaleDown(){
+            scale(distance - 1);
+        }
+
+        public Vector3 placeAxis(){
+            speed *= acceleration;
+            distance += speed;
+            scale(distance);
+            return axis.placeAxis(origin);
+        }
+        public void updateAxis(){
+            sphere.setOrigin(origin);
         }
     }
     public class Axis {
         public RenderAxis renderAxis;
-        public Vector3 origin,x,y,z,rotationAxis;
-        public float axisDistance,rotationAxisDistance;
+        public Vector3 origin,x,y,z;
+        public float axisDistance;
 
         public float worldAngleY,worldSpeedY,
                      worldAngleX,worldSpeedX,
                      localAngleY,localSpeedY;
-              
-        public float angleY,angleX,
-                     ySpeed,yAcceleration,
-                     xSpeed,xAcceleration,
-                     rotationAxisSpinSpeed,rotationAxisSpinAcceleration,
-                     rotationAxisMoveSpeed, rotationAxisMoveAcceleration;
-
+        public AxisDirection spin,move;
         public Axis(){}
         public Axis(Vector3 origin, float distance){
             this.origin = origin;
             axisDistance = (distance >0.1f)? distance:1f;
-            rotationAxisDistance = axisDistance;
             x = origin + new Vector3(distance,0,0);
             y = origin + new Vector3(0,distance,0);
             z = origin + new Vector3(0,0,distance);
-            rotationAxis = origin + new Vector3(0,distance,0);
-            renderAxis = new RenderAxis(this);
             worldAngleY = 0; worldAngleX = 0; localAngleY = 0; 
             worldSpeedY = Mathf.PI/400f;
             worldSpeedX = Mathf.PI/400f;
             localSpeedY = Mathf.PI/400f;
-            angleY = 0;angleX = 0;
-            ySpeed = Mathf.PI/400f; yAcceleration = 1;
-            xSpeed = Mathf.PI/400f; xAcceleration = 1;
-            rotationAxisSpinSpeed = 0; rotationAxisSpinAcceleration = 1;
-            rotationAxisMoveSpeed = 0; rotationAxisMoveAcceleration = 1;
+            renderAxis = new RenderAxis(this);
+            spin = new AxisDirection(this, renderAxis.spin);
+            move = new AxisDirection(this, renderAxis.move);
         }
         
         public void moveAxis(Vector3 add){
@@ -105,10 +210,12 @@ public class SourceCode:MonoBehaviour {
             x += add;
             y += add;
             z += add;
-            rotationAxis += add;
+            spin.origin += add;
+            move.origin += add;
             if (renderAxis.created){
                 renderAxis.updateAxis();
-                renderAxis.updateRotationAxis();
+                spin.updateAxis();
+                move.updateAxis();
             }
         }
         public Vector3 placeAxis(Vector3 newOrigin){
@@ -116,7 +223,8 @@ public class SourceCode:MonoBehaviour {
             moveAxis(newPosition);
             if (renderAxis.created){
                 renderAxis.updateAxis();
-                renderAxis.updateRotationAxis();
+                spin.updateAxis();
+                move.updateAxis();
             }
             return newPosition;
         }
@@ -130,19 +238,6 @@ public class SourceCode:MonoBehaviour {
                     renderAxis.updateAxis();
                 }
             }
-        }
-        public void scaleRotationAxis(float newDistance){
-            if (newDistance>0){
-                    rotationAxisDistance = newDistance;
-                    rotationAxis = origin + distanceFromOrigin(rotationAxis,origin,newDistance);
-                } else {
-                    if (newDistance != 0) rotationAxisDistance = Mathf.Abs(newDistance);
-                    rotationAxis = origin + distanceFromOrigin(origin,rotationAxis,rotationAxisDistance);
-                    getRotationAxis();
-                }
-            if (renderAxis.created){
-                    renderAxis.updateRotationAxis();
-                }
         }
         public float length(Vector3 vectorDirections){
             float radius = Mathf.Sqrt(
@@ -213,7 +308,7 @@ public class SourceCode:MonoBehaviour {
                     angleBetweenLines(dirZ,dirPerpOrg);
             }
         }
-        bool invertAxis(float angleXBeforeGet, ref float yAngle,ref float xAngle){
+        internal bool invertAxis(float angleXBeforeGet, ref float yAngle,ref float xAngle){
             bool inverted = MathF.Round(Mathf.Abs(xAngle - angleXBeforeGet) - Mathf.PI) == 0;
             if (inverted) {
                 yAngle = 2*Mathf.PI -yAngle;
@@ -263,32 +358,16 @@ public class SourceCode:MonoBehaviour {
                 );
 
             x = localX; y = localY; z = localZ;
-            setRotationAxis(angleY,angleX);
+            spin.set(spin.angleY,spin.angleX);
+            move.set(move.angleY,move.angleX);
             if (renderAxis.created){
                 renderAxis.updateAxis();
-                renderAxis.updateRotationAxis();
+                spin.updateAxis();
+                move.updateAxis();
             }
             this.worldAngleY = worldAngleY;
             this.worldAngleX = worldAngleX;
             this.localAngleY = localAngleY;
-        }
-        public void getRotationAxis(){
-            float temp = angleX;
-            getAngle(rotationAxis,origin,x,y,z,out angleY,out float tempAngleX);
-            if (!(angleY == 0f || angleY == Mathf.PI)) angleX = tempAngleX;
-            invertAxis(temp,ref angleY,ref angleX);
-        }
-        public void setRotationAxis(float angleY,float angleX){
-            rotationAxis = origin + distanceFromOrigin(y,origin,rotationAxisDistance);
-            Vector4 rotY = angledAxis(angleY,x);
-            Vector4 rotX = angledAxis(angleX,y);
-            rotationAxis = quatRotate(rotationAxis,origin,rotY);
-            rotationAxis = quatRotate(rotationAxis,origin,rotX);
-            this.angleY = angleY;
-            this.angleX = angleX;
-            if (renderAxis.created){
-                renderAxis.updateRotationAxis();
-            }
         }
 
         public void getWorldRotationInRadians(out float worldAngleY,out float worldAngleX,out float localAngleY){
@@ -299,14 +378,6 @@ public class SourceCode:MonoBehaviour {
         }
         public void setWorldRotationInRadians(float worldAngleY, float worldAngleX, float localAngleY){
             setWorldRotation(worldAngleY, worldAngleX, localAngleY);
-        }
-        public void getRotationAxisInRadians(out float angleY,out float angleX){
-            getRotationAxis();
-            angleY = this.angleY;
-            angleX = this.angleX;
-        }
-        public void setRotationAxisInRadians(float angleY,float angleX){
-            setRotationAxis(angleY, angleX);
         }
 
         public void getWorldRotationInDegrees(out float worldAngleY,out float worldAngleX,out float localAngleY){
@@ -323,36 +394,19 @@ public class SourceCode:MonoBehaviour {
             localAngleY *= degreeToRadian;
             setWorldRotation(worldAngleY, worldAngleX, localAngleY);
         }
-        public void getRotationAxisInDegrees(out float angleY,out float angleX){
-            float radianToDegree = 180/Mathf.PI;
-            getRotationAxis();
-            angleY = this.angleY*radianToDegree;
-            angleX = this.angleX*radianToDegree;
-        }
-        public void setRotationAxisInDegrees(float angleY,float angleX){
-            float degreeToRadian = Mathf.PI/180;
-            angleY *= degreeToRadian;
-            angleX *= degreeToRadian;
-            setRotationAxis(angleY, angleX);
-        }
 
-        public Vector4 quat(float radian){
-            return angledAxis(radian,rotationAxis);
-        }
-        public Vector4 quatInDegrees(float angle){
-            float degreeToRadian = Mathf.PI/180;
-            return angledAxis(angle*degreeToRadian,rotationAxis);
-        }
         public void rotate(Vector4 quat,Vector3 rotationOrigin){
             origin = quatRotate(origin,rotationOrigin,quat);
             x = quatRotate(x,rotationOrigin,quat);
             y = quatRotate(y,rotationOrigin,quat);
             z = quatRotate(z,rotationOrigin,quat);
             getWorldRotation();
-            rotationAxis = quatRotate(rotationAxis,rotationOrigin,quat);
+            spin.origin = quatRotate(spin.origin,rotationOrigin,quat);
+            move.origin = quatRotate(move.origin,rotationOrigin,quat);
             if (renderAxis.created){
                 renderAxis.updateAxis();
-                renderAxis.updateRotationAxis();
+                spin.updateAxis();
+                move.updateAxis();
             }
         }
 
@@ -381,79 +435,35 @@ public class SourceCode:MonoBehaviour {
             return origin + new Vector3(rotatedQuaternion.x,rotatedQuaternion.y,rotatedQuaternion.z);
         }
         
-        public void worldAxisUp(){
+        public void up(){
             worldAngleY += worldSpeedY;
             if (worldAngleY>2*Mathf.PI) worldAngleY -= 2*MathF.PI;
             setWorldRotation(worldAngleY,worldAngleX,localAngleY);
         }
-        public void worldAxisDown(){
+        public void down(){
             worldAngleY -= worldSpeedY;
             if (worldAngleY<0) worldAngleY += 2*MathF.PI;
             setWorldRotation(worldAngleY,worldAngleX,localAngleY);  
         }
-        public void worldAxisRight(){
+        public void right(){
             worldAngleX += worldSpeedX;
             if (worldAngleX>2*Mathf.PI) worldAngleX -= 2*MathF.PI;
             setWorldRotation(worldAngleY,worldAngleX,localAngleY);
         }
-        public void worldAxisLeft(){
+        public void left(){
             worldAngleX -= worldSpeedX;
             if (worldAngleX<0) worldAngleX += 2*MathF.PI;
             setWorldRotation(worldAngleY,worldAngleX,localAngleY);
         }
-        public void worldAxisRotateClockwise(){
+        public void clockwise(){
             localAngleY += localSpeedY; 
             if (localAngleY>2*Mathf.PI) localAngleY -= 2*MathF.PI;
             setWorldRotation(worldAngleY,worldAngleX,localAngleY);
         }
-        public void worldAxisRotateAntiClockwise(){
+        public void antiClockwise(){
             localAngleY -= localSpeedY;
             if (localAngleY<0) localAngleY += 2*MathF.PI;
             setWorldRotation(worldAngleY,worldAngleX,localAngleY);
-        }
-        
-        public void rotationAxisRight(){
-            xSpeed *= xAcceleration;
-            angleX += xSpeed;
-            if (angleX>2*Mathf.PI) angleX -= 2*MathF.PI;
-            setRotationAxis(angleY,angleX);
-        }
-        public void rotationAxisLeft(){
-            xSpeed *= xAcceleration;
-            angleX -= xSpeed;
-            if (angleX<0) angleX += 2*MathF.PI;
-            setRotationAxis(angleY,angleX);      
-        }
-        public void rotationAxisUp(){
-            ySpeed *= yAcceleration;
-            angleY += ySpeed;
-            if (angleY>2*Mathf.PI) angleY -= 2*MathF.PI;
-            setRotationAxis(angleY,angleX);
-        }
-        public void rotationAxisDown(){
-            ySpeed *= yAcceleration;
-            angleY -= ySpeed;
-            if (angleY<0) angleY += 2*MathF.PI;
-            setRotationAxis(angleY,angleX);
-        }
-        public void rotationAxisSpin(){
-            rotationAxisSpinSpeed *= rotationAxisSpinAcceleration;
-            ySpeed *= yAcceleration;
-            angleY += ySpeed;
-            if (angleY>Mathf.PI) angleY -= 2*MathF.PI;
-            setRotationAxis(angleY,angleX);
-        }
-        public void rotationAxisScaleUp(){
-            scaleRotationAxis(rotationAxisDistance + 1);
-        }
-        public void rotationAxisScaleDown(){
-            scaleRotationAxis(rotationAxisDistance - 1);
-        }
-        public Vector3 placeAxis(){
-            rotationAxisMoveSpeed *= rotationAxisMoveAcceleration;
-            rotationAxisDistance += rotationAxisMoveSpeed;
-            scaleRotationAxis(rotationAxisDistance);
-            return placeAxis(rotationAxis);
         }
     }
 
@@ -655,6 +665,7 @@ public class SourceCode:MonoBehaviour {
             this.body = body;
             jointSelector = new JointSelector(this,body.getPastEnds());
             
+            
         } 
 
         int oldOption = 0;
@@ -682,47 +693,47 @@ public class SourceCode:MonoBehaviour {
         }
         public void worldAxisControls(){
             if (Input.GetKey("i")) {
-                jointSelector.selected.localAxis.worldAxisUp();
+                jointSelector.selected.localAxis.up();
             }
             if (Input.GetKey("k")) {
-                jointSelector.selected.localAxis.worldAxisDown();
+                jointSelector.selected.localAxis.down();
             }
             if (Input.GetKey("l")) {       
-                jointSelector.selected.localAxis.worldAxisRight();     
+                jointSelector.selected.localAxis.right();     
             }
             if (Input.GetKey("j")) {    
-                jointSelector.selected.localAxis.worldAxisLeft();        
+                jointSelector.selected.localAxis.left();        
             }
             if (Input.GetKey("o")) { 
-                jointSelector.selected.localAxis.worldAxisRotateClockwise();           
+                jointSelector.selected.localAxis.clockwise();           
             }
             if (Input.GetKey("u")) {
-                jointSelector.selected.localAxis.worldAxisRotateAntiClockwise(); 
+                jointSelector.selected.localAxis.antiClockwise(); 
             }
         }
         public void rotationAxisControls(){
             if (Input.GetKey("w")) {
-                jointSelector.selected.localAxis.rotationAxisUp();
+                jointSelector.selected.localAxis.spin.up();
             }
             if (Input.GetKey("s")) {
-                jointSelector.selected.localAxis.rotationAxisDown();
+                jointSelector.selected.localAxis.spin.down();
             }
             if (Input.GetKey("d")) {  
-                jointSelector.selected.localAxis.rotationAxisRight();          
+                jointSelector.selected.localAxis.spin.right();          
             }
             if (Input.GetKey("a")) { 
-                jointSelector.selected.localAxis.rotationAxisLeft();           
+                jointSelector.selected.localAxis.spin.left();           
             }
             if (Input.GetKeyDown("e")) { 
-                jointSelector.selected.localAxis.rotationAxisScaleUp();           
+                jointSelector.selected.localAxis.spin.scaleUp();           
             }
             if (Input.GetKeyDown("q")) {
-                jointSelector.selected.localAxis.rotationAxisScaleDown();
+                jointSelector.selected.localAxis.spin.scaleDown();
             }
-            if (Input.GetKeyDown("return")) {
-                Vector3 newPoisition = jointSelector.selected.localAxis.placeAxis();
-                jointSelector.collisionSphereSelector.moveCollisionSpheres(newPoisition);
-            }
+            // if (Input.GetKeyDown("return")) {
+            //     Vector3 newPoisition = jointSelector.selected.localAxis.move.placeAxis();
+            //     jointSelector.collisionSphereSelector.moveCollisionSpheres(newPoisition);
+            // }
         }
         public void jointSelectorControls(){
             if (Input.GetKeyDown("right")) {
@@ -738,7 +749,7 @@ public class SourceCode:MonoBehaviour {
                 jointSelector.createJoint();
             } 
             if (Input.GetKeyDown("f")) {
-                jointSelector.selected.localAxis.getWorldRotationInDegrees(out float y, out float x,out float z);
+                new SaveBody().writer(body);
             }  
         }
         public void collisionSphereSelectorControls(){
@@ -789,9 +800,9 @@ public class SourceCode:MonoBehaviour {
                     jointIndexes.Add(i);
                 }
             }
-            string stringPath = $"Body_{0}_";
+            string stringPath = $"Body_{worldKey}_";
             string bodyStructureSize = $"{stringPath}BodyStructureSize: {keyGenerator.maxKeys}\n";
-            string allJointsInBody = $"{stringPath}AllJointsInBody: {strJointIndexes}\n";
+            string allJointsInBody = $"{stringPath}AllJointsInBody:{strJointIndexes}\n";
             string globalOriginLocation = $"{stringPath}globalOriginLocation: {globalOrigin.x} {globalOrigin.y} {globalOrigin.z}\n";
             string globalAxisRotationXYZ = $"{stringPath}globalAxisRotationXYZ: {worldAngleY} {worldAngleX} {localAngleY}\n";
 
@@ -812,6 +823,14 @@ public class SourceCode:MonoBehaviour {
             int size = keyGenerator.maxKeys - keyGenerator.availableKeys;
             for (int i = 0; i< size; i++){
                 bodyStructure[i].connection.active = true;
+            }
+        }
+        public void increaseArraySize(int amount){
+            if (amount>keyGenerator.maxKeys){
+                resizeArray(amount);
+            } else if (amount < keyGenerator.maxKeys){
+                optimizeBody();
+                resizeArray(amount);
             }
         }
         public void resizeArray(int amount){
@@ -963,55 +982,19 @@ public class SourceCode:MonoBehaviour {
                 out treeSize
                 );
         }
-        public void connectJointTo(Joint newJoint){
-            bool getOnlyActive = false;
-            getFutureConnections( 
-                getOnlyActive,
-                out List<Joint> connectionTree,
-                out _,
-                out int treeSize
-                );
-            if (current.body != newJoint.body){
-                newJoint.body.resizeArray(treeSize);
-                disconnectFromPast();
-                past.Clear();
-                connectPastToFuture(newJoint);
-                for (int i =0; i< treeSize;i++){
-                    Joint joint = connectionTree[i];
-                    joint.body.keyGenerator.returnKey(joint.connection.indexInBody);
-                    joint.body.bodyStructure[joint.connection.indexInBody] = null;
-                    joint.setBody(newJoint.body);
-                    int key = newJoint.body.keyGenerator.getKey();
-                    joint.connection.indexInBody = key;
-                    newJoint.body.bodyStructure[key] = joint;
-                }   
-            } else if (!connectionTree.Contains(newJoint)) {
-                disconnectFromPast();
-                past.Clear();
-                connectPastToFuture(newJoint);
-            }
-        }
-        public void connectPastToFuture(Joint joint){
-            List<Joint> connectTo = joint.connection.future;
-            if (!past.Contains(joint)) past.Add(joint);
-            if (!connectTo.Contains(current)) connectTo.Add(current);
-        }
-        public void connectFutureToPast(Joint joint){
-            List<Joint> connectTo = joint.connection.past;
-            if (!future.Contains(joint)) future.Add(joint);
-            if (!connectTo.Contains(current)) connectTo.Add(current);
-        }
         public void disconnectFromFuture(){
             int size = future.Count;
             for (int i =0; i<size;i++){
                 future[i].connection.past.Remove(current);
             }
+            future = new List<Joint>();
         }
         public void disconnectFromPast(){
             int size = past.Count;
             for (int i =0; i<size;i++){
                 past[i].connection.future.Remove(current);
             }
+            past = new List<Joint>();
         }
         public List<Joint> nextConnections(bool pastOrFuture, bool getOnlyActive){
             List<Joint> connectedJoints = new List<Joint>();
@@ -1049,8 +1032,10 @@ public class SourceCode:MonoBehaviour {
             out int treeSize
             ){
             tree = new List<Joint>{current};  
-            if (getPastAndFuture)
+            if (getPastAndFuture){
+                if (pastOrFuture) tree.AddRange(getFuture(getOnlyActive)); else tree.AddRange(getPast(getOnlyActive));
                 tree.AddRange(getAll(getOnlyActive));
+                }
             else 
                 tree.AddRange(nextConnections(pastOrFuture,getOnlyActive));
             current.body.tracker(
@@ -1058,7 +1043,7 @@ public class SourceCode:MonoBehaviour {
                 out tree, out end, out treeSize
                 );
         }
-        public string pastIndexes(){
+        public string pastToString(){
             string pastIndexes = "";
             int count = past.Count;
             for (int i = 0; i<count;i++){
@@ -1066,7 +1051,7 @@ public class SourceCode:MonoBehaviour {
             }
             return pastIndexes;
         }
-        public string futureIndexes(){
+        public string futureToString(){
             string futureIndexes = "";
             int count = future.Count;
             for (int i = 0; i<count;i++){
@@ -1076,35 +1061,13 @@ public class SourceCode:MonoBehaviour {
         }
     }
 
-    public struct SaveAxis{
-        public float angleX;
-        public float angleY;
-        public float distanceFromOrigin;
-        public float worldAngleY;
-        public float worldAngleX;
-        public float localAngleY;
-        public SaveAxis(
-            float angleX,float angleY,
-            float distanceFromOrigin, 
-            float worldAngleX,float worldAngleY, float localAngleY
-            ){
-                this.angleX = angleX;
-                this.angleY = angleY;
-                this.distanceFromOrigin = distanceFromOrigin;
-                this.worldAngleY = worldAngleY;
-                this.worldAngleX = worldAngleX;
-                this.localAngleY = localAngleY;
-            }
-        public override string ToString() {
-            return $"{angleX} {angleY} {distanceFromOrigin} {worldAngleY} {worldAngleX} {localAngleY}\n";
-        }
-    }
+
     public class SaveBody{
 
         public SaveBody(){}
         
         public void writer(Body body){
-            using(StreamWriter writetext = new StreamWriter("Assets/v4/1.txt")) {
+            using(StreamWriter writetext = new StreamWriter($"Assets/v4/{body.worldKey}.txt")) {
                 writetext.WriteLine(body.saveBody());
                 int size = body.keyGenerator.maxKeys;
                 for (int i = 0; i<size; i++){
@@ -1124,22 +1087,11 @@ public class SourceCode:MonoBehaviour {
         const string allJointsInBody = "AllJointsInBody";
         const string globalOriginLocation = "GlobalOriginLocation";
         const string globalAxisRotationXYZ = "GlobalAxisRotationXYZ";
-        const string active = "Active";
-        const string distanceFromGlobalOrigin = "DistanceFromGlobalOrigin";
-        const string XYFromGlobalAxis = "XYFromGlobalAxis";
-        const string localAxisRotation = "LocalAxisRotation";
-        const string XYRotationAxisFromLocalAxis = "XYRotationAxisFromLocalAxis";
-        const string XYRotationAxisSpeed = "XYRotationAxisSpeed";
-        const string pastConnectionsInBody = "PastConnectionsInBody";
-        const string futureConnectionsInBody = "FutureConnectionsInBody";
-        const string pointCloudSize = "PointCloudSize";
-        const string allSpheresInJoint = "AllSpheresInJoint";
-        const string XYFromLocalAxis = "XYFromLocalAxis";
-        const string radius = "Radius";
 
-        public void instructions(string instruction){
+        public void bodyInstructions(string instruction){
             switch (instruction){
                 case bodyStructureSize:
+
                 break;
                 case allJointsInBody:
                 break;
@@ -1147,6 +1099,26 @@ public class SourceCode:MonoBehaviour {
                 break;
                 case globalAxisRotationXYZ:
                 break;
+            }
+        }
+
+        const string active = "Active";
+        const string distanceFromGlobalOrigin = "DistanceFromGlobalOrigin";
+        const string XYFromGlobalAxis = "XYFromGlobalAxis";
+        const string localAxisRotation = "LocalAxisRotation";
+        const string spinX = "SpinX";
+        const string spinY = "SpinY";
+        const string spinSpeedAndAcceleration = "SpinSpeedAndAcceleration";
+        const string moveX = "MoveX";
+        const string moveY = "MoveY";
+        const string moveSpeedAndAcceleration = "MoveSpeedAndAcceleration";
+        const string XYRotationAxisFromLocalAxis = "XYRotationAxisFromLocalAxis";
+        const string XYRotationAxisSpeed = "XYRotationAxisSpeed";
+        const string pastConnectionsInBody = "PastConnectionsInBody";
+        const string futureConnectionsInBody = "FutureConnectionsInBody";
+
+        public void jointInstructions(string instruction){
+            switch (instruction){
                 case active:
                 break;
                 case distanceFromGlobalOrigin:
@@ -1155,6 +1127,18 @@ public class SourceCode:MonoBehaviour {
                 break;
                 case localAxisRotation:
                 break;
+                case spinX:
+                break;
+                case spinY:
+                break;
+                case spinSpeedAndAcceleration:
+                break;
+                case moveX:
+                break;
+                case moveY:
+                break;
+                case moveSpeedAndAcceleration:
+                break;                
                 case XYRotationAxisFromLocalAxis:
                 break;
                 case XYRotationAxisSpeed:
@@ -1163,6 +1147,17 @@ public class SourceCode:MonoBehaviour {
                 break;
                 case futureConnectionsInBody:
                 break;
+            }
+        }
+
+        const string pointCloudSize = "PointCloudSize";
+        const string allSpheresInJoint = "AllSpheresInJoint";
+        const string XYFromLocalAxis = "XYFromLocalAxis";
+        const string radius = "Radius";
+        const string colorRGBA = "ColorRGBA";
+
+        public void sphereInstructions(string instruction){
+            switch (instruction){
                 case pointCloudSize:
                 break;
                 case allSpheresInJoint:
@@ -1170,6 +1165,8 @@ public class SourceCode:MonoBehaviour {
                 case XYFromLocalAxis:
                 break;
                 case radius:
+                break;
+                case colorRGBA:
                 break;
             }
 
@@ -1207,18 +1204,23 @@ public class SourceCode:MonoBehaviour {
                 );
             localAxis.getWorldRotationInRadians(out float worldAngleY,out float worldAngleX,out float localAngleY);
             float distanceFromOrigin = body.globalAxis.length(jointOrigin-globalOrigin);
-            string stringPath = $"Body_{0}_Joint_{connection.indexInBody}_";
+            string stringPath = $"Body_{body.worldKey}_Joint_{connection.indexInBody}_";
             string active = $"{stringPath}Active: {connection.active}\n";
             string distanceFromGlobalOrigin = $"{stringPath}DistanceFromGlobalOrigin: {distanceFromOrigin}\n";
             string XYFromGlobalAxis = $"{stringPath}XYFromGlobalAxis: {globalY} {globalX}\n";
             string localAxisRotation = $"{stringPath}LocalAxisRotation: {worldAngleY} {worldAngleX} {localAngleY}\n";
-            string XYRotationAxisFromLocalAxis = $"{stringPath}XYRotationAxisFromLocalAxis: {localAxis.angleY} {localAxis.angleX}\n";
-            string XYRotationAxisSpeed = $"{stringPath}XYRotationAxisSpeed: {localAxis.xSpeed} {localAxis.ySpeed}\n";
-            string pastConnectionsInBody = $"{stringPath}PastConnectionsInBody: {connection.pastIndexes()}\n";
-            string futureConnectionsInBody = $"{stringPath}FutureConnectionsInBody: {connection.futureIndexes()}\n";
+            string spinX = $"{stringPath}SpinX: {localAxis.spin.angleX} {localAxis.spin.sensitivitySpeedX} {localAxis.spin.sensitivityAccelerationX}\n";
+            string spinY = $"{stringPath}SpinY: {localAxis.spin.angleY} {localAxis.spin.sensitivitySpeedY} {localAxis.spin.sensitivityAccelerationY}\n";
+            string spinSpeedAndAcceleration = $"{stringPath}SpinSpeedAndAcceleration: {localAxis.spin.speed} {localAxis.spin.acceleration}\n";
+            string moveX = $"{stringPath}MoveX: {localAxis.move.angleX} {localAxis.move.sensitivitySpeedX} {localAxis.move.sensitivityAccelerationX}\n";
+            string moveY = $"{stringPath}MoveY: {localAxis.move.angleY} {localAxis.move.sensitivitySpeedY} {localAxis.move.sensitivityAccelerationY}\n";
+            string moveSpeedAndAcceleration = $"{stringPath}MoveSpeedAndAcceleration: {localAxis.move.speed} {localAxis.move.acceleration}\n";
+            string pastConnectionsInBody = $"{stringPath}PastConnectionsInBody: {connection.pastToString()}\n";
+            string futureConnectionsInBody = $"{stringPath}FutureConnectionsInBody: {connection.futureToString()}\n";
             return active + distanceFromGlobalOrigin + 
                 XYFromGlobalAxis + localAxisRotation + 
-                XYRotationAxisFromLocalAxis + XYRotationAxisSpeed +
+                spinX + spinY + spinSpeedAndAcceleration +
+                moveX + moveY + moveSpeedAndAcceleration +
                 pastConnectionsInBody + futureConnectionsInBody;
         }
         public Joint createJoint(){
@@ -1238,47 +1240,43 @@ public class SourceCode:MonoBehaviour {
             bool checkMultiConnection = !(countPast >1 && countFuture >1);
             if (checkMultiConnection){
                 body.keyGenerator.returnKey(connection.indexInBody);
-                if (countPast != 0 && countFuture != 0){
-                    if (countPast == 0){
-                        connection.disconnectFromFuture();
-                        connection.future.Clear();
-                    } else if (countFuture == 0){
-                        connection.disconnectFromPast();
-                        connection.past.Clear();
-                    } else {
-                        connection.disconnectFromFuture();
-                        connection.disconnectFromPast();
-                        List<Joint> futureEnds = connection.past;
-                        List<Joint> pastEnds = connection.future;
-                        bool check = (countFuture == 1)? true:false;
-                        for (int i = 0; i<futureEnds.Count;i++){
-                            if (check) 
-                                futureEnds[0].connection.connectFutureToPast(pastEnds[i]);
-                            else
-                                futureEnds[i].connection.connectFutureToPast(pastEnds[0]);
-                        }
-                    }
-                }
+                connection.disconnectFromFuture();
+                connection.disconnectFromPast();
                 pointCloud.deleteAllSpheres();
                 body.bodyStructure[connection.indexInBody] = null;
             }
         }
-        public void rotateJointHierarchy(float radian,bool rotateOnlyActive){
-            Vector4 quat = localAxis.quat(radian);
-            rotateHierarchy(quat,rotateOnlyActive);
+
+        public void rotatePastHierarchy(bool rotateOnlyActive){
+            Vector4 quat = localAxis.spin.quat(localAxis.spin.speed);
+            rotateHierarchy(quat, false,rotateOnlyActive);
         }
-        public void rotateJointHierarchyInDegrees(float angle,bool rotateOnlyActive){
+        public void rotateFutureHierarchy(float radian,bool rotateOnlyActive){
+            Vector4 quat = localAxis.spin.quat(radian);
+            rotateHierarchy(quat, true,rotateOnlyActive);
+        }
+        public void rotatePastHierarchyInDegrees(float angle,bool rotateOnlyActive){
             float degreeToRadian = Mathf.PI/180;
-            Vector4 quat = localAxis.quat(angle*degreeToRadian);
-            rotateHierarchy(quat,rotateOnlyActive);
+            Vector4 quat = localAxis.spin.quat(angle*degreeToRadian);
+            rotateHierarchy(quat,false,rotateOnlyActive);
         }
-        void rotateHierarchy(Vector4 quat,bool rotateOnlyActive){
+        public void rotateFutureHierarchyInDegrees(float angle,bool rotateOnlyActive){
+            float degreeToRadian = Mathf.PI/180;
+            Vector4 quat = localAxis.spin.quat(angle*degreeToRadian);
+            rotateHierarchy(quat,true,rotateOnlyActive);
+        }
+
+        void rotateHierarchy(Vector4 quat, bool pastOrFuture, bool rotateOnlyActive){
             Vector3 rotationOrigin = localAxis.origin;
             List<Joint> tree = new List<Joint>{this};
-            int size = 1;       
+            int size = 1;     
+            if (pastOrFuture) 
+                tree.AddRange(connection.getFuture(rotateOnlyActive)); 
+                else 
+                tree.AddRange(connection.getPast(rotateOnlyActive));  
             for (int i = 0; i<size;i++){
                 Joint joint = tree[i];
-                List<Joint> joints = tree[i].connection.nextConnections(false,rotateOnlyActive);
+                List<Joint> joints = tree[i].connection.getAll(rotateOnlyActive);
                 tree.AddRange(joints);
                 size += joints.Count;
                 joint.localAxis.rotate(quat,rotationOrigin);
@@ -1302,7 +1300,7 @@ public class SourceCode:MonoBehaviour {
             listSize = 0;
             int size = collisionSpheres.Length;
             indexes = new List<int>();
-            string stringPath = $"Body_{0}_Joint_{joint.connection.indexInBody}_";
+            string stringPath = $"Body_{joint.body.worldKey}_Joint_{joint.connection.indexInBody}_";
             string pointCloudSize = $"{stringPath}PointCloudSize: {size}\n";
             string allSpheresInJoint = $"{stringPath}AllSpheresInJoint: ";
             for (int i = 0; i<keyGenerator.maxKeys; i++){
@@ -1319,7 +1317,7 @@ public class SourceCode:MonoBehaviour {
             resizeArray(1);
             int sphereIndex = keyGenerator.getKey();
             Path path = new Path(joint.body,joint.connection.indexInBody,sphereIndex);
-            CollisionSphere collisionSphere = new CollisionSphere(path,joint.localAxis.rotationAxis,1);
+            CollisionSphere collisionSphere = new CollisionSphere(path,joint.localAxis.spin.origin,1);
             collisionSpheres[sphereIndex] = collisionSphere;
             return collisionSphere;
         }
@@ -1454,11 +1452,12 @@ public class SourceCode:MonoBehaviour {
                 axis.origin,axis.x,axis.y,axis.z,
                 out float localY,out float localX
                 );
-            string stringPath = $"Body_{0}_Joint_{path.jointKey}_Sphere_{path.collisionSphereKey}_";
+            string stringPath = $"Body_{joint.body.worldKey}_Joint_{path.jointKey}_Sphere_{path.collisionSphereKey}_";
             string distanceFromLocalOrigin = $"{stringPath}DistanceFromLocalOrigin: {distanceFromOrigin}\n";
             string XYFromLocalAxis = $"{stringPath}XYFromLocalAxis: {localY} {localX}\n";
             string radius = $"{stringPath}Radius: {sphere.radius}\n";
-            return distanceFromLocalOrigin + XYFromLocalAxis + radius;
+            string color = $"{stringPath}ColorRGBA: {sphere.color.r} {sphere.color.g} {sphere.color.b} {sphere.color.a}\n";
+            return distanceFromLocalOrigin + XYFromLocalAxis + radius + color;
         }
         public void setOrigin(Vector3 newOrigin){
             sphere.setOrigin(newOrigin);
