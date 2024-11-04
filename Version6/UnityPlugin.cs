@@ -156,7 +156,11 @@ public class UnityPlugin : MonoBehaviour
     }
 
     void Start(){
-        
+        string[] lol = "Body_0_globalOriginLocation: 5".Split(":")[1].Split(" ");
+        for (int i = 0; i < lol.Length; i++){
+            print(lol[i] == "");
+        }
+
     }
     // Update is called once per frame
     void Update(){
