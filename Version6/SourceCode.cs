@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class SourceCode:MonoBehaviour {
 // 
@@ -98,12 +99,9 @@ public class SourceCode:MonoBehaviour {
             if (!(angleY == 0f || angleY == Mathf.PI)) angleX = tempAngleX;
             axis.invertAxis(temp,ref angleY,ref angleX);
         }
+
         public void set(float angleY,float angleX){
-            origin = axis.origin + axis.distanceFromOrigin(axis.y,axis.origin,distance);
-            Vector4 rotY = axis.angledAxis(angleY,axis.x);
-            Vector4 rotX = axis.angledAxis(angleX,axis.y);
-            origin = axis.quatRotate(origin,axis.origin,rotY);
-            origin = axis.quatRotate(origin,axis.origin,rotX);
+            origin = axis.setPointAroundOrigin(angleY,angleX,distance);
             this.angleY = angleY;
             this.angleX = angleX;
             if (axis.renderAxis.created){
@@ -169,11 +167,13 @@ public class SourceCode:MonoBehaviour {
         public void scaleDown(){
             scale(distance - 1);
         }
-
-        public Vector3 placeAxis(){
+        public void updateSpeed(){
             speed *= acceleration;
+        }
+        public Vector3 placeAxis(){
             distance += speed;
             scale(distance);
+            updateSpeed();
             return axis.placeAxis(origin);
         }
         public void updateAxis(){
@@ -275,6 +275,20 @@ public class SourceCode:MonoBehaviour {
         internal Vector3 perpendicular(Vector3 lineOrigin, Vector3 lineDirection, Vector3 point){
             float amount = dot(point-lineOrigin,lineDirection);
             return lineOrigin+amount*lineDirection;
+        }
+        public Vector3 setPointAroundOrigin(float angleY,float angleX, float distance){
+            Vector3 point = origin + distanceFromOrigin(y,origin,distance);
+            Vector4 rotY = angledAxis(angleY,x);
+            Vector4 rotX = angledAxis(angleX,y);
+            point = quatRotate(point,origin,rotY);
+            point = quatRotate(point,origin,rotX);
+            return point;
+        }
+        public void getPointAroundOrigin(Vector3 point, out float angleY,out float angleX){
+            angleX = 0;
+            getAngle(point,origin,x,y,z,out angleY,out float tempAngleX);
+            if (!(angleY == 0f || angleY == Mathf.PI)) angleX = tempAngleX;
+            invertAxis(0,ref angleY,ref angleX);
         }
         void rotateAxis(ref Vector3 x, ref Vector3 y,ref Vector3 z,Vector3 axis,float angle){
             Vector4 quat = angledAxis(angle,axis);
@@ -1189,7 +1203,7 @@ public class SourceCode:MonoBehaviour {
 
         const string active = "Active";
         const string distanceFromGlobalOrigin = "DistanceFromGlobalOrigin";
-        const string XYFromGlobalAxis = "XYFromGlobalAxis";
+        const string YXFromGlobalAxis = "YXFromGlobalAxis";
         const string localAxisRotation = "LocalAxisRotation";
         const string spinX = "SpinX";
         const string spinY = "SpinY";
@@ -1202,36 +1216,64 @@ public class SourceCode:MonoBehaviour {
         const string pastConnectionsInBody = "PastConnectionsInBody";
         const string futureConnectionsInBody = "FutureConnectionsInBody";
 
-        public void jointInstructions(string instruction, string[] value){
-            switch (instruction){
-                case active:
-                break;
-                case distanceFromGlobalOrigin:
-                break;
-                case XYFromGlobalAxis:
-                break;
-                case localAxisRotation:
-                break;
-                case spinX:
-                break;
-                case spinY:
-                break;
-                case spinSpeedAndAcceleration:
-                break;
-                case moveX:
-                break;
-                case moveY:
-                break;
-                case moveSpeedAndAcceleration:
-                break;                
-                case XYRotationAxisFromLocalAxis:
-                break;
-                case XYRotationAxisSpeed:
-                break;
-                case pastConnectionsInBody:
-                break;
-                case futureConnectionsInBody:
-                break;
+        public void jointInstructions(string jointKey, string instruction, List<string> value){
+            bool checkKey = int.TryParse(jointKey, out int key);
+            Joint joint = checkKey? body.bodyStructure[key]:null;
+            if (joint != null) {
+                switch (instruction){
+                    case active:
+                        activeInstruction(joint,value);
+                    break;
+                    case distanceFromGlobalOrigin:
+                        distanceFromGlobalOriginInstruction(joint,value);
+                    break;
+                    case YXFromGlobalAxis:
+                        YXFromGlobalAxisInstruction(joint,value);
+                    break;
+                    case localAxisRotation:
+                    break;
+                    case spinX:
+                    break;
+                    case spinY:
+                    break;
+                    case spinSpeedAndAcceleration:
+                    break;
+                    case moveX:
+                    break;
+                    case moveY:
+                    break;
+                    case moveSpeedAndAcceleration:
+                    break;                
+                    case XYRotationAxisFromLocalAxis:
+                    break;
+                    case XYRotationAxisSpeed:
+                    break;
+                    case pastConnectionsInBody:
+                    break;
+                    case futureConnectionsInBody:
+                    break;
+                }
+            }
+        }
+
+        void activeInstruction(Joint joint,List<string> value){
+            joint.connection.active = value[0] == "True";
+        }
+        void distanceFromGlobalOriginInstruction(Joint joint,List<string> value){
+            bool checkStr = float.TryParse(value[0], out float key);
+            if (checkStr){
+                joint.distanceFromGlobalOrigin(key);
+            }
+        }
+        void YXFromGlobalAxisInstruction(Joint joint,List<string> value){
+            bool checkY = float.TryParse(value[0], out float y);
+            bool checkX = float.TryParse(value[1], out float x);
+            float length = joint.localAxis.length(joint.localAxis.origin-joint.body.globalAxis.origin);
+            if (checkY && checkX) joint.localAxis.setPointAroundOrigin(y,x,length); else{
+                joint.body.globalAxis.getPointAroundOrigin(joint.localAxis.origin, out float angleY, out float angleX);
+                if (checkY) angleY = y;
+                if (checkX) angleX = x;
+                joint.localAxis.setPointAroundOrigin(angleY,angleX,length);
             }
         }
 
@@ -1292,7 +1334,7 @@ public class SourceCode:MonoBehaviour {
             string stringPath = $"Body_{body.worldKey}_Joint_{connection.indexInBody}_";
             string active = $"{stringPath}Active: {connection.active}\n";
             string distanceFromGlobalOrigin = $"{stringPath}DistanceFromGlobalOrigin: {distanceFromOrigin}\n";
-            string XYFromGlobalAxis = $"{stringPath}XYFromGlobalAxis: {globalY} {globalX}\n";
+            string YXFromGlobalAxis = $"{stringPath}YXFromGlobalAxis: {globalY} {globalX}\n";
             string localAxisRotation = $"{stringPath}LocalAxisRotation: {worldAngleY} {worldAngleX} {localAngleY}\n";
             string spinX = $"{stringPath}SpinX: {localAxis.spin.angleX} {localAxis.spin.sensitivitySpeedX} {localAxis.spin.sensitivityAccelerationX}\n";
             string spinY = $"{stringPath}SpinY: {localAxis.spin.angleY} {localAxis.spin.sensitivitySpeedY} {localAxis.spin.sensitivityAccelerationY}\n";
@@ -1303,7 +1345,7 @@ public class SourceCode:MonoBehaviour {
             string pastConnectionsInBody = $"{stringPath}PastConnectionsInBody: {connection.pastToString()}\n";
             string futureConnectionsInBody = $"{stringPath}FutureConnectionsInBody: {connection.futureToString()}\n";
             return active + distanceFromGlobalOrigin + 
-                XYFromGlobalAxis + localAxisRotation + 
+                YXFromGlobalAxis + localAxisRotation + 
                 spinX + spinY + spinSpeedAndAcceleration +
                 moveX + moveY + moveSpeedAndAcceleration +
                 pastConnectionsInBody + futureConnectionsInBody;
@@ -1320,40 +1362,56 @@ public class SourceCode:MonoBehaviour {
             return addJoint;
         }
         public void deleteJoint(){
-                body.keyGenerator.returnKey(connection.indexInBody);
-                connection.disconnectFromFuture();
-                connection.disconnectFromPast();
-                pointCloud.deleteAllSpheres();
-                body.bodyStructure[connection.indexInBody] = null;
+            body.keyGenerator.returnKey(connection.indexInBody);
+            connection.disconnectFromFuture();
+            connection.disconnectFromPast();
+            pointCloud.deleteAllSpheres();
+            body.bodyStructure[connection.indexInBody] = null;
+        }
+        public void distanceFromGlobalOrigin(float newDistance){
+            Vector3 globalOrigin = body.globalAxis.origin;
+            Vector3 localOrigin = localAxis.origin;
+            float length = localAxis.length(localOrigin-globalOrigin);
+            Vector3 direction = localAxis.direction(localOrigin,globalOrigin)*(newDistance-length);
+            localAxis.moveAxis(direction);
+            pointCloud.moveSpheres(direction);
         }
 
-        public void rotatePastHierarchy(bool rotateOnlyActive){
+        public void rotatePastHierarchy(){
             Vector4 quat = localAxis.spin.quat(localAxis.spin.speed);
-            rotateHierarchy(quat, false,rotateOnlyActive);
+            rotateHierarchy(quat, false,false,false);
+            localAxis.spin.updateSpeed();
         }
-        public void rotateFutureHierarchy(float radian,bool rotateOnlyActive){
-            Vector4 quat = localAxis.spin.quat(radian);
-            rotateHierarchy(quat, true,rotateOnlyActive);
+        public void rotateFutureHierarchy(){
+            Vector4 quat = localAxis.spin.quat(localAxis.spin.speed);
+            rotateHierarchy(quat, true,false,false);
+            localAxis.spin.updateSpeed();
         }
-        public void rotatePastHierarchyInDegrees(float angle,bool rotateOnlyActive){
-            float degreeToRadian = Mathf.PI/180;
-            Vector4 quat = localAxis.spin.quat(angle*degreeToRadian);
-            rotateHierarchy(quat,false,rotateOnlyActive);
-        }
-        public void rotateFutureHierarchyInDegrees(float angle,bool rotateOnlyActive){
-            float degreeToRadian = Mathf.PI/180;
-            Vector4 quat = localAxis.spin.quat(angle*degreeToRadian);
-            rotateHierarchy(quat,true,rotateOnlyActive);
+        public void rotateAllHierarchy(){
+            Vector4 quat = localAxis.spin.quat(localAxis.spin.speed);
+            rotateHierarchy(quat, false,false,true);
+            localAxis.spin.updateSpeed();
         }
 
-        void rotateHierarchy(Vector4 quat, bool pastOrFuture, bool rotateOnlyActive){
+        public void movePastHierarchy(){
+            Vector3 move = localAxis.move.placeAxis();
+            moveHierarchy(move, false,false,false);
+            localAxis.move.updateSpeed();
+        }
+        public void moveFutureHierarchy(){
+            Vector3 move = localAxis.move.placeAxis();
+            moveHierarchy(move, true,false,false);
+            localAxis.move.updateSpeed();
+        }
+        public void moveAllHierarchy(){
+            Vector3 move = localAxis.move.placeAxis();
+            moveHierarchy(move, false,false,true);
+            localAxis.move.updateSpeed();
+        }
+
+        void rotateHierarchy(Vector4 quat, bool pastOrFuture, bool rotateOnlyActive, bool rotateAll){
+            initTree(pastOrFuture, rotateOnlyActive, rotateAll, out List<Joint> tree, out int size);  
             Vector3 rotationOrigin = localAxis.origin;
-            List<Joint> tree = new List<Joint>{this};
-            int size = 1;     
-            if (pastOrFuture) 
-                tree.AddRange(connection.getFuture(rotateOnlyActive)); 
-                else 
-                tree.AddRange(connection.getPast(rotateOnlyActive));  
             for (int i = 0; i<size;i++){
                 Joint joint = tree[i];
                 List<Joint> joints = tree[i].connection.getAll(rotateOnlyActive);
@@ -1364,7 +1422,31 @@ public class SourceCode:MonoBehaviour {
             }
             body.resetUsed(tree,size);
         }
+
+        void moveHierarchy(Vector3 newVec, bool pastOrFuture, bool rotateOnlyActive,bool rotateAll){
+            initTree(pastOrFuture, rotateOnlyActive, rotateAll, out List<Joint> tree, out int size);  
+            for (int i = 0; i<size;i++){
+                Joint joint = tree[i];
+                List<Joint> joints = tree[i].connection.getAll(rotateOnlyActive);
+                tree.AddRange(joints);
+                size += joints.Count;
+                joint.localAxis.moveAxis(newVec);
+                joint.pointCloud.moveSpheres(newVec);
+            }
+            body.resetUsed(tree,size);
+        }
+        void initTree(bool pastOrFuture, bool rotateOnlyActive,bool rotateAll, out List<Joint> tree,out int size){
+            tree = new List<Joint>{this};
+            if (rotateAll) 
+                tree.AddRange(connection.getAll(rotateOnlyActive)); 
+                else if (pastOrFuture) 
+                        tree.AddRange(connection.getFuture(rotateOnlyActive)); 
+                    else 
+                        tree.AddRange(connection.getPast(rotateOnlyActive)); 
+            size = tree.Count;
+        }
     }
+
     public class PointCloud {
         public Joint joint;
         public KeyGenerator keyGenerator;
@@ -1396,7 +1478,7 @@ public class SourceCode:MonoBehaviour {
         public CollisionSphere createSphere(){
             resizeArray(1, true);
             int sphereIndex = keyGenerator.getKey();
-            Path path = new Path(joint.body,joint.connection.indexInBody,sphereIndex);
+            Path path = new Path(joint.body,joint,sphereIndex);
             CollisionSphere collisionSphere = new CollisionSphere(path,joint.localAxis.spin.origin,1);
             collisionSpheres[sphereIndex] = collisionSphere;
             return collisionSphere;
@@ -1426,6 +1508,13 @@ public class SourceCode:MonoBehaviour {
                             quat
                         )
                     );
+            }
+        }
+        public void moveSpheres(Vector3 move){
+            int sphereCount = collisionSpheres.Length;
+            for (int i = 0; i<sphereCount; i++){
+                CollisionSphere collisionSphere = collisionSpheres[i];
+                collisionSphere?.moveOrigin(move);
             }
         }
         public void updateAllSphereColors(Color color){
@@ -1480,7 +1569,7 @@ public class SourceCode:MonoBehaviour {
             for (int j = 0; j<maxKeys; j++){
                 CollisionSphere collision = collisionSpheres[j];
                 if (collision != null){
-                    collision.path.setJointKey(joint.connection.indexInBody);
+                    collision.path.setJoint(joint);
                     collision.path.setCollisionSphereKey(count);
                     newCollision[count] = collision;
                     count++;
@@ -1493,21 +1582,21 @@ public class SourceCode:MonoBehaviour {
 
     public class Path {
         public Body body;
-        public int jointKey;
+        public Joint joint;
         public int collisionSphereKey;
 
         public Path(){}
-        public Path(Body body, int jointKey, int collisionSphereKey){
+        public Path(Body body, Joint joint, int collisionSphereKey){
             this.body=body;
-            this.jointKey=jointKey;
+            this.joint=joint;
             this.collisionSphereKey=collisionSphereKey;
         }
 
         public void setBody(Body body){
             this.body=body;
         }
-        public void setJointKey(int jointKey){
-            this.jointKey = jointKey;
+        public void setJoint(Joint joint){
+            this.joint = joint;
         }
         public void setCollisionSphereKey(int collisionSphereKey){
             this.collisionSphereKey = collisionSphereKey;
@@ -1524,16 +1613,14 @@ public class SourceCode:MonoBehaviour {
             sphere = new Sphere(origin,radius);
         }
         public string saveCollisionSphere(){
-            int key = path.jointKey;
-            Joint joint = path.body.bodyStructure[key];
-            Axis axis = joint.localAxis;
+            Axis axis = path.joint.localAxis;
             float distanceFromOrigin = axis.length(sphere.origin-axis.origin);
             axis.getAngle(
                 sphere.origin,
                 axis.origin,axis.x,axis.y,axis.z,
                 out float localY,out float localX
                 );
-            string stringPath = $"Body_{joint.body.worldKey}_Joint_{path.jointKey}_Sphere_{path.collisionSphereKey}_";
+            string stringPath = $"Body_{path.body.worldKey}_Joint_{path.joint.connection.indexInBody}_Sphere_{path.collisionSphereKey}_";
             string distanceFromLocalOrigin = $"{stringPath}DistanceFromLocalOrigin: {distanceFromOrigin}\n";
             string XYFromLocalAxis = $"{stringPath}XYFromLocalAxis: {localY} {localX}\n";
             string radius = $"{stringPath}Radius: {sphere.radius}\n";
