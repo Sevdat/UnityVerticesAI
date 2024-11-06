@@ -1,0 +1,101 @@
+Body_0_BodyStructureSize: 5
+Body_0_AllJointsInBody: 0
+Body_0_globalOriginLocation: 5 5 5
+Body_0_globalAxisRotationXYZ: 0 0 0
+
+Body_0_Joint_0_Active: True
+Body_0_Joint_0_DistanceFromGlobalOrigin: 0
+Body_0_Joint_0_XYFromGlobalAxis: NaN NaN
+Body_0_Joint_0_LocalAxisRotation: 0 0 0
+Body_0_Joint_0_SpinX: 2.175551 0.007853982 1
+Body_0_Joint_0_SpinY: 0.8246679 0.007853982 1
+Body_0_Joint_0_SpinSpeedAndAcceleration: 0 1
+Body_0_Joint_0_MoveX: 0 0.007853982 1
+Body_0_Joint_0_MoveY: 0 0.007853982 1
+Body_0_Joint_0_MoveSpeedAndAcceleration: 0 1
+Body_0_Joint_0_PastConnectionsInBody: 
+Body_0_Joint_0_FutureConnectionsInBody: 
+
+Body_0_Joint_0_PointCloudSize: 17
+Body_0_Joint_0_AllSpheresInJoint: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 
+
+Body_0_Joint_0_Sphere_0_DistanceFromLocalOrigin: 5
+Body_0_Joint_0_Sphere_0_XYFromLocalAxis: 1.649337 0
+Body_0_Joint_0_Sphere_0_Radius: 1
+Body_0_Joint_0_Sphere_0_ColorRGBA: 0 0 0 0
+
+Body_0_Joint_0_Sphere_1_DistanceFromLocalOrigin: 5
+Body_0_Joint_0_Sphere_1_XYFromLocalAxis: 2.772456 0
+Body_0_Joint_0_Sphere_1_Radius: 1
+Body_0_Joint_0_Sphere_1_ColorRGBA: 0 0 0 0
+
+Body_0_Joint_0_Sphere_2_DistanceFromLocalOrigin: 5
+Body_0_Joint_0_Sphere_2_XYFromLocalAxis: 2.638937 3.141593
+Body_0_Joint_0_Sphere_2_Radius: 1
+Body_0_Joint_0_Sphere_2_ColorRGBA: 0 0 0 0
+
+Body_0_Joint_0_Sphere_3_DistanceFromLocalOrigin: 5
+Body_0_Joint_0_Sphere_3_XYFromLocalAxis: 1.507963 3.141593
+Body_0_Joint_0_Sphere_3_Radius: 1
+Body_0_Joint_0_Sphere_3_ColorRGBA: 0 0 0 0
+
+Body_0_Joint_0_Sphere_4_DistanceFromLocalOrigin: 5
+Body_0_Joint_0_Sphere_4_XYFromLocalAxis: 0.494799 3.141593
+Body_0_Joint_0_Sphere_4_Radius: 1
+Body_0_Joint_0_Sphere_4_ColorRGBA: 0 0 0 0
+
+Body_0_Joint_0_Sphere_5_DistanceFromLocalOrigin: 5
+Body_0_Joint_0_Sphere_5_XYFromLocalAxis: 0.2199132 6.188938
+Body_0_Joint_0_Sphere_5_Radius: 1
+Body_0_Joint_0_Sphere_5_ColorRGBA: 0 0 0 0
+
+Body_0_Joint_0_Sphere_6_DistanceFromLocalOrigin: 5
+Body_0_Joint_0_Sphere_6_XYFromLocalAxis: 0.2199132 5.144358
+Body_0_Joint_0_Sphere_6_Radius: 1
+Body_0_Joint_0_Sphere_6_ColorRGBA: 0 0 0 0
+
+Body_0_Joint_0_Sphere_7_DistanceFromLocalOrigin: 5
+Body_0_Joint_0_Sphere_7_XYFromLocalAxis: 0.2199135 4.12334
+Body_0_Joint_0_Sphere_7_Radius: 1
+Body_0_Joint_0_Sphere_7_ColorRGBA: 0 0 0 0
+
+Body_0_Joint_0_Sphere_8_DistanceFromLocalOrigin: 5
+Body_0_Joint_0_Sphere_8_XYFromLocalAxis: 0.2199135 3.125884
+Body_0_Joint_0_Sphere_8_Radius: 1
+Body_0_Joint_0_Sphere_8_ColorRGBA: 0 0 0 0
+
+Body_0_Joint_0_Sphere_9_DistanceFromLocalOrigin: 5
+Body_0_Joint_0_Sphere_9_XYFromLocalAxis: 0.2199135 2.175551
+Body_0_Joint_0_Sphere_9_Radius: 1
+Body_0_Joint_0_Sphere_9_ColorRGBA: 0 0 0 0
+
+Body_0_Joint_0_Sphere_10_DistanceFromLocalOrigin: 5
+Body_0_Joint_0_Sphere_10_XYFromLocalAxis: 0.1884935 5.317144
+Body_0_Joint_0_Sphere_10_Radius: 1
+Body_0_Joint_0_Sphere_10_ColorRGBA: 0 0 0 0
+
+Body_0_Joint_0_Sphere_11_DistanceFromLocalOrigin: 5
+Body_0_Joint_0_Sphere_11_XYFromLocalAxis: 1.335175 5.317144
+Body_0_Joint_0_Sphere_11_Radius: 1
+Body_0_Joint_0_Sphere_11_ColorRGBA: 0 0 0 0
+
+Body_0_Joint_0_Sphere_12_DistanceFromLocalOrigin: 5
+Body_0_Joint_0_Sphere_12_XYFromLocalAxis: 2.458295 5.317144
+Body_0_Joint_0_Sphere_12_Radius: 1
+Body_0_Joint_0_Sphere_12_ColorRGBA: 0 0 0 0
+
+Body_0_Joint_0_Sphere_13_DistanceFromLocalOrigin: 5
+Body_0_Joint_0_Sphere_13_XYFromLocalAxis: 2.748894 2.175551
+Body_0_Joint_0_Sphere_13_Radius: 1
+Body_0_Joint_0_Sphere_13_ColorRGBA: 0 0 0 0
+
+Body_0_Joint_0_Sphere_14_DistanceFromLocalOrigin: 5
+Body_0_Joint_0_Sphere_14_XYFromLocalAxis: 1.73573 2.175551
+Body_0_Joint_0_Sphere_14_Radius: 1
+Body_0_Joint_0_Sphere_14_ColorRGBA: 0 0 0 0
+
+Body_0_Joint_0_Sphere_15_DistanceFromLocalOrigin: 5
+Body_0_Joint_0_Sphere_15_XYFromLocalAxis: 0.8246678 2.175551
+Body_0_Joint_0_Sphere_15_Radius: 1
+Body_0_Joint_0_Sphere_15_ColorRGBA: 0 0 0 0
+
