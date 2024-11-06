@@ -38,7 +38,7 @@ public class UnityPluginTest : MonoBehaviour
             Vector3 oldX = axis.origin;
             Vector3 oldY = axis.origin;
             Vector3 oldZ = axis.origin;
-            Vector3 oldRotationAxis = axis.spin.origin;
+            Vector3 oldRotationAxis = axis.spin.sphere.origin;
             axis.moveAxis(add);
 
             expected = oldOrigin + add;
@@ -58,7 +58,7 @@ public class UnityPluginTest : MonoBehaviour
             if (expected != got) print($"originMoveError: expected {expected} got {got}");
             
             expected = oldRotationAxis + add;
-            got = axis.spin.origin;
+            got = axis.spin.sphere.origin;
             if (expected != got) print($"originMoveError: expected {expected} got {got}");
         }
         internal void testPlaceAxis(Vector3 newOrigin){
@@ -68,7 +68,7 @@ public class UnityPluginTest : MonoBehaviour
             Vector3 oldX = axis.origin;
             Vector3 oldY = axis.origin;
             Vector3 oldZ = axis.origin;
-            Vector3 oldRotationAxis = axis.spin.origin;
+            Vector3 oldRotationAxis = axis.spin.sphere.origin;
             axis.placeAxis(newOrigin);
 
             expected = oldOrigin + add;
@@ -88,7 +88,7 @@ public class UnityPluginTest : MonoBehaviour
             if (expected != got) print($"zPlaceError: expected {expected} got {got}");
             
             expected = oldRotationAxis + add;
-            got = axis.spin.origin;
+            got = axis.spin.sphere.origin;
             if (expected != got) print($"rotationAxisPlaceError: expected {expected} got {got}");
         }
         internal void testScaleAxis(float distance){
@@ -108,7 +108,7 @@ public class UnityPluginTest : MonoBehaviour
             axis.spin.scale(distance);
             float min = distance - accuracy;
             float max = distance - accuracy;
-            float gotRotationAxis = axis.length(axis.spin.origin - axis.origin);
+            float gotRotationAxis = axis.length(axis.spin.sphere.origin - axis.origin);
             if (min < gotRotationAxis && gotRotationAxis < max) print($"xScaleError: expected {distance} got {gotRotationAxis}");         
         }
         internal void testSetAxis(float worldAngleY, float worldAngleX, float localAngleY){

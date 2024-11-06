@@ -63,9 +63,9 @@ public class SourceCode:MonoBehaviour {
     public class AroundAxis{
         public Sphere sphere;
         public Axis axis;
-        public float distance;
         public float angleY, sensitivitySpeedY, sensitivityAccelerationY,
                      angleX, sensitivitySpeedX, sensitivityAccelerationX,
+                     distance, distanceSpeed, distanceAcceleration,
                      speed, acceleration;
         
         public AroundAxis(){}
@@ -77,29 +77,34 @@ public class SourceCode:MonoBehaviour {
             sensitivitySpeedX = Mathf.PI/400f; sensitivityAccelerationX = 1;
             speed = 0; acceleration = 1;
             distance = axis.axisDistance;
-            sphere.origin = axis.origin + new Vector3(0,distance,0);
+            distanceSpeed = 1; distanceAcceleration = 1;
+            sphere.setOrigin(axis.origin + new Vector3(0,distance,0));
         }
         public void scale(float newDistance){
-            if (newDistance>0){
-                    distance = newDistance;
-                    sphere.origin = axis.origin + axis.distanceFromOrigin(sphere.origin,axis.origin,newDistance);
+            bool check = Mathf.Sign(distance) >0;
+            float dis = distance+newDistance;
+            bool check2 = check? dis>0:dis<0;
+            if (check2){
+                    distance += newDistance;
+                    sphere.origin = axis.origin + axis.distanceFromOrigin(sphere.origin,axis.origin,Mathf.Abs(distance));
                 } else {
-                    if (newDistance != 0) distance = Mathf.Abs(newDistance);
-                    sphere.origin = axis.origin + axis.distanceFromOrigin(axis.origin,sphere.origin,distance);
+                    if (dis != 0) distance += newDistance;
+                    distance *=-1;
+                    sphere.origin = axis.origin + axis.distanceFromOrigin(axis.origin,sphere.origin,Mathf.Abs(distance));
                     get();
                 }
             if (axis.renderAxis.created){
                 updateAxis();
             }
         }
-        public void get(){
+        void get(){
             float tempAngleX = angleX;
             axis.getPointAroundOrigin(sphere.origin,out angleY, out angleX);
             if (!(angleY == 0f || angleY == Mathf.PI)) angleX = tempAngleX;
             axis.invertAxis(tempAngleX,ref angleY,ref angleX);
         }
 
-        public void set(float angleY,float angleX){
+        void set(float angleY,float angleX){
             sphere.origin = axis.setPointAroundOrigin(angleY,angleX,distance);
             this.angleY = angleY;
             this.angleX = angleX;
@@ -164,10 +169,12 @@ public class SourceCode:MonoBehaviour {
         }
         
         public void scaleUp(){
-            scale(distance + 1);
+            distanceSpeed*=distanceAcceleration;
+            scale(distanceSpeed);
         }
         public void scaleDown(){
-            scale(distance - 1);
+            distanceSpeed*=distanceAcceleration;
+            scale(-distanceSpeed);
         }
         public void updateSpeed(){
             speed *= acceleration;
@@ -372,8 +379,8 @@ public class SourceCode:MonoBehaviour {
                 );
 
             x = localX; y = localY; z = localZ;
-            spin.set(spin.angleY,spin.angleX);
-            move.set(move.angleY,move.angleX);
+            spin.setInRadians(spin.angleY,spin.angleX);
+            move.setInRadians(move.angleY,move.angleX);
             if (renderAxis.created){
                 renderAxis.updateAxis();
                 spin.updateAxis();
@@ -626,7 +633,7 @@ public class SourceCode:MonoBehaviour {
             int count = collisionSpheres.Count;
             if (count >0){
                 selected = collisionSpheres[0];
-                selected.axisDirection.sphere.updateColor(jointSelector.blue);
+                selected.aroundAxis.sphere.updateColor(jointSelector.blue);
             }
         }
         public void createCollisionSphere(){
@@ -635,7 +642,7 @@ public class SourceCode:MonoBehaviour {
             size += 1;
             if (selected != null) recolor(); else {
                 selected = collisionSpheres[index];
-                selected.axisDirection.sphere.updateColor(jointSelector.blue);
+                selected.aroundAxis.sphere.updateColor(jointSelector.blue);
             }
         }
         public void deleteCollisionSphere(){
@@ -646,15 +653,15 @@ public class SourceCode:MonoBehaviour {
                 size -= 1;
                 if (index >-1){
                     selected = collisionSpheres[index];
-                    selected.axisDirection.sphere.updateColor(jointSelector.blue);
+                    selected.aroundAxis.sphere.updateColor(jointSelector.blue);
                 } else selected = null;
             }
         }
 
         void recolor(){
-            selected.axisDirection.sphere.updateColor(jointSelector.yellow);
+            selected.aroundAxis.sphere.updateColor(jointSelector.yellow);
             selected = collisionSpheres[index];
-            selected.axisDirection.sphere.updateColor(jointSelector.blue);
+            selected.aroundAxis.sphere.updateColor(jointSelector.blue);
         }
         public void nextCollisionSphere(){
             if (index+1<size) { index++; recolor(); }
@@ -1398,7 +1405,7 @@ public class SourceCode:MonoBehaviour {
         }
         public void worldRotateJoint(float worldAngleY,float worldAngleX,float localAngleY){
             localAxis.setWorldRotation(worldAngleY,worldAngleX,localAngleY);
-            pointCloud.rotateSpheres();
+            pointCloud.resetAllSphereOrigins();
         }
 
         public void rotatePastHierarchy(){
@@ -1442,7 +1449,7 @@ public class SourceCode:MonoBehaviour {
                 tree.AddRange(joints);
                 size += joints.Count;
                 joint.localAxis.rotate(quat,rotationOrigin);
-                joint.pointCloud.rotateSpheres();
+                joint.pointCloud.resetAllSphereOrigins();
             }
             body.resetUsed(tree,size);
         }
@@ -1502,7 +1509,7 @@ public class SourceCode:MonoBehaviour {
             resizeArray(1, true);
             int sphereIndex = keyGenerator.getKey();
             Path path = new Path(joint.body,joint,sphereIndex);
-            CollisionSphere collisionSphere = new CollisionSphere(path,joint.localAxis.spin.sphere.origin,1);
+            CollisionSphere collisionSphere = new CollisionSphere(path,joint.localAxis);
             collisionSpheres[sphereIndex] = collisionSphere;
             return collisionSphere;
         }
@@ -1510,7 +1517,7 @@ public class SourceCode:MonoBehaviour {
             CollisionSphere remove = collisionSpheres[key];
             if(remove != null){
                 keyGenerator.returnKey(key);
-                collisionSpheres[key].axisDirection.sphere.destroySphere();
+                collisionSpheres[key].aroundAxis.sphere.destroySphere();
                 collisionSpheres[key] = null;
             }
         }
@@ -1520,11 +1527,11 @@ public class SourceCode:MonoBehaviour {
                 deleteSphere(i);
             }
         }
-        public void rotateSpheres(){
+        public void resetAllSphereOrigins(){
             int sphereCount = collisionSpheres.Length;
             for (int i = 0; i<sphereCount; i++){
                 CollisionSphere collisionSphere = collisionSpheres[i];
-                collisionSphere?.axisDirection.resetOrigin();
+                collisionSphere?.aroundAxis.resetOrigin();
             }
         }
         public void moveSpheres(Vector3 move){
@@ -1537,13 +1544,13 @@ public class SourceCode:MonoBehaviour {
         public void updateAllSphereColors(Color color){
             int sphereCount = collisionSpheres.Length;
             for (int i = 0; i<sphereCount; i++){
-                collisionSpheres[i]?.axisDirection.sphere.updateColor(color);
+                collisionSpheres[i]?.aroundAxis.sphere.updateColor(color);
             }
         }
         public void resetAllSphereColors(){
             int sphereCount = collisionSpheres.Length;
                 for (int i = 0; i<sphereCount; i++){
-                    collisionSpheres[i]?.axisDirection.sphere.resetColor();
+                    collisionSpheres[i]?.aroundAxis.sphere.resetColor();
                 }
         }
         public List<CollisionSphere> arrayToList(){
@@ -1622,19 +1629,19 @@ public class SourceCode:MonoBehaviour {
 
     public class CollisionSphere {
         public Path path;
-        public AroundAxis axisDirection;
+        public AroundAxis aroundAxis;
 
         public CollisionSphere(){}
-        public CollisionSphere(Path path,Vector3 origin,float radius){
+        public CollisionSphere(Path path, Axis axis){
             this.path = path;
-            axisDirection.sphere = new Sphere(origin,radius);
+            aroundAxis = new AroundAxis(axis,new Sphere());
         }
         public string saveCollisionSphere(){
             Axis axis = path.joint.localAxis;
-            Sphere sphere = axisDirection.sphere;
-            float distanceFromOrigin = axis.length(axisDirection.sphere.origin-axis.origin);
+            Sphere sphere = aroundAxis.sphere;
+            float distanceFromOrigin = axis.length(aroundAxis.sphere.origin-axis.origin);
             axis.getAngle(
-                axisDirection.sphere.origin,
+                aroundAxis.sphere.origin,
                 axis.origin,axis.x,axis.y,axis.z,
                 out float localY,out float localX
                 );
@@ -1646,13 +1653,13 @@ public class SourceCode:MonoBehaviour {
             return distanceFromLocalOrigin + XYFromLocalAxis + radius + color;
         }
         public void setOrigin(Vector3 newOrigin){
-            axisDirection.sphere.setOrigin(newOrigin);
+            aroundAxis.sphere.setOrigin(newOrigin);
         }
         public void moveOrigin(Vector3 newOrigin){
-            axisDirection.sphere.moveOrigin(newOrigin);
+            aroundAxis.sphere.moveOrigin(newOrigin);
         }
         public void setRadius(float newRadius){
-            axisDirection.sphere.setRadius(newRadius);
+            aroundAxis.sphere.setRadius(newRadius);
         }
     }
     public class Sphere{
@@ -1660,13 +1667,22 @@ public class SourceCode:MonoBehaviour {
         public Vector3 origin;
         public Color color;
         public GameObject sphere;
-
-        public Sphere(){}
+        
+        public Sphere(){
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.GetComponent<Collider>().enabled = false;
+            setOrigin(new Vector3(0,0,0));
+            setRadius(1);
+            setColor(new Color(1,1,1,1));
+            updateColor(color);
+        }
         public Sphere(Vector3 origin, float radius){
             sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             sphere.GetComponent<Collider>().enabled = false;
             setOrigin(origin);
             setRadius(radius);
+            setColor(new Color(1,1,1,1));
+            updateColor(color);
         }
         public Sphere(Vector3 origin, float radius, Color color){
             sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
