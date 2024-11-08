@@ -97,11 +97,12 @@ public class SourceCode:MonoBehaviour {
                 updateAxis();
             }
         }
-        void get(){
+        public void get(){
             float tempAngleX = angleX;
             axis.getPointAroundOrigin(sphere.origin,out angleY, out angleX);
-            if (!(angleY == 0f || angleY == Mathf.PI)) angleX = tempAngleX;
-            axis.invertAxis(tempAngleX,ref angleY,ref angleX);
+            if (angleY == 0f || angleY == Mathf.PI) angleX = tempAngleX;
+            // axis.invertAxis(tempAngleX,ref angleY,ref angleX);
+            print($"y:{angleY*180f/Mathf.PI} x:{angleX*180f/Mathf.PI}");
         }
 
         void set(float angleY,float angleX){
@@ -145,27 +146,45 @@ public class SourceCode:MonoBehaviour {
         }
         public void right(){
             sensitivitySpeedX *= sensitivityAccelerationX;
+            if (angleX <Mathf.PI/2 && angleX+sensitivitySpeedX>Mathf.PI/2) {
+                angleY = 2*Mathf.PI-angleY;
+                angleX += Mathf.PI;
+            }
+            if (angleX>2*Mathf.PI) angleX -= 2*Mathf.PI;
             angleX += sensitivitySpeedX;
-            if (angleX>2*Mathf.PI) angleX -= 2*MathF.PI;
             set(angleY,angleX);
+            print($"y:{angleY*180f/Mathf.PI} x:{angleX*180f/Mathf.PI}");
         }
         public void left(){
             sensitivitySpeedX *= sensitivityAccelerationX;
+            if (angleX >Mathf.PI*3/2 && angleX-sensitivitySpeedX<Mathf.PI*3/2) {
+                angleY = 2*Mathf.PI-angleY;
+                angleX -= Mathf.PI;
+            }
+            if (angleX<0) angleX += 2*Mathf.PI;
             angleX -= sensitivitySpeedX;
-            if (angleX<0) angleX += 2*MathF.PI;
             set(angleY,angleX);      
+            print($"y:{angleY*180f/Mathf.PI} x:{angleX*180f/Mathf.PI}");
         }
         public void up(){
             sensitivitySpeedY *= sensitivityAccelerationY;
             angleY += sensitivitySpeedY;
+            if (angleY <Mathf.PI && angleY+sensitivitySpeedY>Mathf.PI) {
+                angleX += 2*Mathf.PI;
+            }
             if (angleY>2*Mathf.PI) angleY -= 2*MathF.PI;
             set(angleY,angleX);
+            print($"y:{angleY*180f/Mathf.PI} x:{angleX*180f/Mathf.PI}");
         }
         public void down(){
             sensitivitySpeedY *= sensitivityAccelerationY;
             angleY -= sensitivitySpeedY;
-            if (angleY<0) angleY += 2*MathF.PI;
+            // if (angleY >2*Mathf.PI && angleY-sensitivitySpeedY<2*Mathf.PI) {
+            //     angleX += 2*Mathf.PI;
+            // }
+            // if (angleY<0) angleY += 2*MathF.PI;
             set(angleY,angleX);
+            print($"y:{angleY*180f/Mathf.PI} x:{angleX*180f/Mathf.PI}");
         }
         
         public void scaleUp(){
@@ -327,6 +346,16 @@ public class SourceCode:MonoBehaviour {
                 xAngle = (angleSide>Mathf.PI/2)? 
                     2*Mathf.PI-angleBetweenLines(dirZ,dirPerpOrg):
                     angleBetweenLines(dirZ,dirPerpOrg);
+                
+                perpendicularOrigin = perpendicular(origin,dirX,point);
+                checkLength = length(point -perpendicularOrigin);
+                dirPerpOrg = (checkLength !=0)?direction(point,perpendicularOrigin):normalize(point);
+                angleSide = angleBetweenLines(dirZ,dirPerpOrg);          
+                if (angleSide>Mathf.PI/2){
+                    yAngle = 2*Mathf.PI-yAngle;
+                    xAngle += Mathf.PI;
+                    if (xAngle >2*Mathf.PI) xAngle -= 2*Mathf.PI;
+                    }
             }
         }
         internal bool invertAxis(float angleXBeforeGet, ref float yAngle,ref float xAngle){
@@ -363,8 +392,8 @@ public class SourceCode:MonoBehaviour {
                 2*Mathf.PI-angleBetweenLines(dirZ,dirLocalZ):
                 angleBetweenLines(dirZ,dirLocalZ);
            
-            bool check = invertAxis(tempX,ref worldAngleY,ref worldAngleX);
-            if (check) localAngleY = (tempLocalY>localAngleY)? localAngleY+Mathf.PI: localAngleY-Mathf.PI;
+            // bool check = invertAxis(tempX,ref worldAngleY,ref worldAngleX);
+            // if (check) localAngleY = (tempLocalY>localAngleY)? localAngleY+Mathf.PI: localAngleY-Mathf.PI;
         }
         public void setWorldRotation(float worldAngleY,float worldAngleX,float localAngleY){
             Vector3 worldX = origin + new Vector3(axisDistance,0,0);
@@ -770,7 +799,7 @@ public class SourceCode:MonoBehaviour {
                 jointSelector.createJoint();
             } 
             if (Input.GetKeyDown("f")) {
-                new SaveBody(body).writer();
+                jointSelector.selected.localAxis.spin.get();
             }  
         }
         public void collisionSphereSelectorControls(){
@@ -1238,7 +1267,7 @@ public class SourceCode:MonoBehaviour {
                         YXFromGlobalAxisInstruction(joint,value);
                     break;
                     case localAxisRotation:
-
+                        localAxisRotationInstruction(joint,value);
                     break;
                     case spinX:
                     break;
@@ -1283,7 +1312,7 @@ public class SourceCode:MonoBehaviour {
                 if (checkY && checkX) {
                         joint.moveJoint(joint.body.globalAxis.setPointAroundOrigin(y,x,length) - joint.localAxis.origin);
                     } else {
-                        localAxis.getAngle(localAxis.origin,globalAxis.origin,globalAxis.x,globalAxis.y,globalAxis.z,out float globalAngleY,out float globalAngleX);
+                        joint.body.globalAxis.getPointAroundOrigin(localAxis.origin,out float globalAngleY,out float globalAngleX);
                         if (checkY) globalAngleY = y;
                         if (checkX) globalAngleX = x;
                         joint.moveJoint(localAxis.setPointAroundOrigin(globalAngleY,globalAngleX,length) - localAxis.origin);
@@ -1296,7 +1325,12 @@ public class SourceCode:MonoBehaviour {
                 bool checkX = float.TryParse(value[1], out float x);
                 bool checkLY = float.TryParse(value[1], out float ly);
                 if (checkY && checkX && checkLY) {
-                    ;
+                    joint.worldRotateJoint(y,x,ly);
+                } else{
+                    if (!checkY) y = joint.localAxis.worldAngleY;
+                    if (!checkX) x = joint.localAxis.worldAngleX;
+                    if (!checkLY) ly = joint.localAxis.localAngleY;
+                    joint.worldRotateJoint(y,x,ly);
                 }
             }
         }
