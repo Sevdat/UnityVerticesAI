@@ -41,7 +41,6 @@ public class SourceCode:MonoBehaviour {
                 created = true;
             }
         }
-
         public void deleteAxis(){
             if (created){
                 origin.destroySphere();
@@ -67,6 +66,7 @@ public class SourceCode:MonoBehaviour {
                      angleX, sensitivitySpeedX, sensitivityAccelerationX,
                      distance, distanceSpeed, distanceAcceleration,
                      speed, acceleration;
+        bool turnDirection = true;
         
         public AroundAxis(){}
         public AroundAxis(Axis axis, Sphere sphere){
@@ -98,16 +98,17 @@ public class SourceCode:MonoBehaviour {
             }
         }
         public void get(){
+            float sign = Mathf.Sign(angleY);
             float tempAngleX = angleX;
             axis.getPointAroundOrigin(sphere.origin,out angleY, out angleX);
             if (angleY == 0f || angleY == Mathf.PI) angleX = tempAngleX;
-            // axis.invertAxis(tempAngleX,ref angleY,ref angleX);
-            print($"y:{angleY*180f/Mathf.PI} x:{angleX*180f/Mathf.PI}");
+            if (Mathf.Sign(angleY) != sign) angleY *= sign;
         }
 
         void set(float angleY,float angleX){
-            sphere.origin = axis.setPointAroundOrigin(angleY,angleX,distance);
-            this.angleY = angleY;
+            float sign = Mathf.Sign(this.angleY);
+            sphere.origin = axis.setPointAroundOrigin(Mathf.Abs(angleY),angleX,distance);
+            this.angleY = (Mathf.Sign(angleY) != sign)? angleY *= sign: angleY;
             this.angleX = angleX;
             if (axis.renderAxis.created){
                 updateAxis();
@@ -144,45 +145,64 @@ public class SourceCode:MonoBehaviour {
             float degreeToRadian = Mathf.PI/180;
             return axis.angledAxis(angle*degreeToRadian,sphere.origin);
         }
-        public void right(){
+
+        public void rightDirection(ref float angleX,ref float sensitivitySpeedX,float sensitivityAccelerationX){
             sensitivitySpeedX *= sensitivityAccelerationX;
-            if (angleX <Mathf.PI/2 && angleX+sensitivitySpeedX>Mathf.PI/2) {
-                angleY = 2*Mathf.PI-angleY;
-                angleX += Mathf.PI;
-            }
-            if (angleX>2*Mathf.PI) angleX -= 2*Mathf.PI;
             angleX += sensitivitySpeedX;
+            if (angleX>2*Mathf.PI) angleX -= 2*Mathf.PI;
+        }
+        public void leftDirection(ref float angleX,ref float sensitivitySpeedX,float sensitivityAccelerationX){
+            sensitivitySpeedX *= sensitivityAccelerationX;
+            angleX -= sensitivitySpeedX;
+            if (angleX<0) angleX += 2*Mathf.PI;
+        } 
+        public void upDirection(ref float angleY,ref float angleX,ref float sensitivitySpeedY,float sensitivityAccelerationY){
+            sensitivitySpeedY *= sensitivityAccelerationY;
+            float sign = Mathf.Sign(angleY);
+            angleY = sign*(Mathf.Abs(angleY) + sign*sensitivitySpeedY);
+            if (Mathf.Abs(angleY)>Mathf.PI) {
+                angleY = (sign>0)? angleY - 2*Mathf.PI: 2*Mathf.PI + angleY;
+                angleX = Mathf.PI + angleX;
+            }
+            if (Mathf.Abs(angleY) +sign*sensitivitySpeedY<0){
+                angleX = Mathf.PI + angleX;
+                angleY *= -1;
+            }
+            if (angleX == 2*Mathf.PI) angleX = 0;
+            if (angleX > 2*Mathf.PI) angleX -= 2*MathF.PI;
+        }    
+        public void downDirection(ref float angleY,ref float angleX,ref float sensitivitySpeedY,float sensitivityAccelerationY){
+            sensitivitySpeedY *= sensitivityAccelerationY;
+            float sign = Mathf.Sign(angleY);
+            angleY = sign*(Mathf.Abs(angleY) - sign*sensitivitySpeedY);
+            if (Mathf.Abs(angleY)>Mathf.PI) {
+                angleY = (sign>0)? angleY - 2*Mathf.PI: 2*Mathf.PI + angleY;
+                angleX = Mathf.PI + angleX;
+            }
+            if (Mathf.Abs(angleY) -sign*sensitivitySpeedY<0){
+                angleX = Mathf.PI + angleX;
+                angleY *= -1;
+            }
+            if (angleX == 2*Mathf.PI) angleX = 0;
+            if (angleX > 2*Mathf.PI) angleX -= 2*MathF.PI;
+        }  
+        public void right(){
+            rightDirection(ref angleX,ref sensitivitySpeedX,sensitivityAccelerationX);
             set(angleY,angleX);
             print($"y:{angleY*180f/Mathf.PI} x:{angleX*180f/Mathf.PI}");
         }
         public void left(){
-            sensitivitySpeedX *= sensitivityAccelerationX;
-            if (angleX >Mathf.PI*3/2 && angleX-sensitivitySpeedX<Mathf.PI*3/2) {
-                angleY = 2*Mathf.PI-angleY;
-                angleX -= Mathf.PI;
-            }
-            if (angleX<0) angleX += 2*Mathf.PI;
-            angleX -= sensitivitySpeedX;
-            set(angleY,angleX);      
-            print($"y:{angleY*180f/Mathf.PI} x:{angleX*180f/Mathf.PI}");
+            leftDirection(ref angleX,ref sensitivitySpeedX,sensitivityAccelerationX);
+            set(angleY,angleX);  
+            print($"y:{angleY*180f/Mathf.PI} x:{angleX*180f/Mathf.PI}");   
         }
         public void up(){
-            sensitivitySpeedY *= sensitivityAccelerationY;
-            angleY += sensitivitySpeedY;
-            if (angleY <Mathf.PI && angleY+sensitivitySpeedY>Mathf.PI) {
-                angleX += 2*Mathf.PI;
-            }
-            if (angleY>2*Mathf.PI) angleY -= 2*MathF.PI;
+            upDirection(ref angleY,ref angleX,ref sensitivitySpeedY, sensitivityAccelerationY);
             set(angleY,angleX);
             print($"y:{angleY*180f/Mathf.PI} x:{angleX*180f/Mathf.PI}");
         }
         public void down(){
-            sensitivitySpeedY *= sensitivityAccelerationY;
-            angleY -= sensitivitySpeedY;
-            // if (angleY >2*Mathf.PI && angleY-sensitivitySpeedY<2*Mathf.PI) {
-            //     angleX += 2*Mathf.PI;
-            // }
-            // if (angleY<0) angleY += 2*MathF.PI;
+            downDirection(ref angleY,ref angleX,ref sensitivitySpeedY, sensitivityAccelerationY);
             set(angleY,angleX);
             print($"y:{angleY*180f/Mathf.PI} x:{angleX*180f/Mathf.PI}");
         }
@@ -216,6 +236,7 @@ public class SourceCode:MonoBehaviour {
         public float worldAngleY,worldSpeedY,
                      worldAngleX,worldSpeedX,
                      localAngleY,localSpeedY;
+        bool turnDirection;
         public AroundAxis spin,move;
         public Axis(){}
         public Axis(Vector3 origin, float distance){
@@ -346,25 +367,8 @@ public class SourceCode:MonoBehaviour {
                 xAngle = (angleSide>Mathf.PI/2)? 
                     2*Mathf.PI-angleBetweenLines(dirZ,dirPerpOrg):
                     angleBetweenLines(dirZ,dirPerpOrg);
-                
-                perpendicularOrigin = perpendicular(origin,dirX,point);
-                checkLength = length(point -perpendicularOrigin);
-                dirPerpOrg = (checkLength !=0)?direction(point,perpendicularOrigin):normalize(point);
-                angleSide = angleBetweenLines(dirZ,dirPerpOrg);          
-                if (angleSide>Mathf.PI/2){
-                    yAngle = 2*Mathf.PI-yAngle;
-                    xAngle += Mathf.PI;
-                    if (xAngle >2*Mathf.PI) xAngle -= 2*Mathf.PI;
-                    }
+                print($"y:{yAngle*180f/Mathf.PI} x:{xAngle*180f/Mathf.PI}");
             }
-        }
-        internal bool invertAxis(float angleXBeforeGet, ref float yAngle,ref float xAngle){
-            bool inverted = MathF.Round(Mathf.Abs(xAngle - angleXBeforeGet) - Mathf.PI) == 0;
-            if (inverted) {
-                yAngle = 2*Mathf.PI -yAngle;
-                xAngle = (angleXBeforeGet>xAngle)? xAngle+Mathf.PI: xAngle-Mathf.PI;
-            }
-            return inverted;
         }
 
         public void getWorldRotation(){
@@ -372,8 +376,6 @@ public class SourceCode:MonoBehaviour {
             Vector3 worldY = origin + new Vector3(0,axisDistance,0);
             Vector3 worldZ = origin + new Vector3(0,0,axisDistance);
 
-            float tempX = worldAngleX;
-            float tempLocalY = localAngleY;
             getAngle(y,origin,worldX,worldY,worldZ,out worldAngleY,out float tempWorldAngleX);
             if (!(worldAngleY == 0f || worldAngleY == Mathf.PI)) worldAngleX = tempWorldAngleX;
 
@@ -391,9 +393,8 @@ public class SourceCode:MonoBehaviour {
             localAngleY = (angleSide>Mathf.PI/2)? 
                 2*Mathf.PI-angleBetweenLines(dirZ,dirLocalZ):
                 angleBetweenLines(dirZ,dirLocalZ);
-           
-            // bool check = invertAxis(tempX,ref worldAngleY,ref worldAngleX);
-            // if (check) localAngleY = (tempLocalY>localAngleY)? localAngleY+Mathf.PI: localAngleY-Mathf.PI;
+
+            print($"y:{worldAngleY*180f/Mathf.PI} x:{worldAngleX*180f/Mathf.PI} ly:{localAngleY*180f/Mathf.PI}");
         }
         public void setWorldRotation(float worldAngleY,float worldAngleX,float localAngleY){
             Vector3 worldX = origin + new Vector3(axisDistance,0,0);
@@ -484,36 +485,68 @@ public class SourceCode:MonoBehaviour {
             Vector4 rotatedQuaternion = quatMul(quatMul(angledAxis,rotatingVector), inverseQuat);
             return origin + new Vector3(rotatedQuaternion.x,rotatedQuaternion.y,rotatedQuaternion.z);
         }
-        
+
+        // public float worldAngleY,worldSpeedY,
+        //              worldAngleX,worldSpeedX,
+        //              localAngleY,localSpeedY;
+        // bool turnDirection;
+
+        public void rightDirection(ref float worldAngleX,ref float worldSpeedX){
+            worldAngleX += worldSpeedX;
+            if (worldAngleX>2*Mathf.PI) worldAngleX -= 2*Mathf.PI;
+        }
+        public void leftDirection(ref float angleX,ref float sensitivitySpeedX,float sensitivityAccelerationX){
+            sensitivitySpeedX *= sensitivityAccelerationX;
+            angleX -= sensitivitySpeedX;
+            if (angleX<0) angleX += 2*Mathf.PI;
+        } 
+        public void upDirection(ref bool turnDirection,ref float angleY,ref float angleX,ref float sensitivitySpeedY,float sensitivityAccelerationY){
+            sensitivitySpeedY *= sensitivityAccelerationY;
+            angleY = turnDirection? angleY + sensitivitySpeedY:angleY - sensitivitySpeedY;
+            if (angleY>Mathf.PI || angleY<0) {
+                turnDirection = !turnDirection;
+                angleX = Mathf.PI + angleX;
+                float fullCircle = 2*Mathf.PI;
+                if (angleX == fullCircle) angleX = 0;
+                if (angleX>fullCircle) angleX -= fullCircle;
+            }
+        } 
+
         public void up(){
             worldAngleY += worldSpeedY;
             if (worldAngleY>2*Mathf.PI) worldAngleY -= 2*MathF.PI;
             setWorldRotation(worldAngleY,worldAngleX,localAngleY);
+            print($"y:{worldAngleY*180f/Mathf.PI} x:{worldAngleX*180f/Mathf.PI} ly:{localAngleY*180f/Mathf.PI}");
         }
         public void down(){
             worldAngleY -= worldSpeedY;
             if (worldAngleY<0) worldAngleY += 2*MathF.PI;
             setWorldRotation(worldAngleY,worldAngleX,localAngleY);  
+            print($"y:{worldAngleY*180f/Mathf.PI} x:{worldAngleX*180f/Mathf.PI} ly:{localAngleY*180f/Mathf.PI}");
         }
         public void right(){
             worldAngleX += worldSpeedX;
             if (worldAngleX>2*Mathf.PI) worldAngleX -= 2*MathF.PI;
             setWorldRotation(worldAngleY,worldAngleX,localAngleY);
+            print($"y:{worldAngleY*180f/Mathf.PI} x:{worldAngleX*180f/Mathf.PI} ly:{localAngleY*180f/Mathf.PI}");
         }
         public void left(){
             worldAngleX -= worldSpeedX;
             if (worldAngleX<0) worldAngleX += 2*MathF.PI;
             setWorldRotation(worldAngleY,worldAngleX,localAngleY);
+            print($"y:{worldAngleY*180f/Mathf.PI} x:{worldAngleX*180f/Mathf.PI} ly:{localAngleY*180f/Mathf.PI}");
         }
         public void clockwise(){
             localAngleY += localSpeedY; 
             if (localAngleY>2*Mathf.PI) localAngleY -= 2*MathF.PI;
             setWorldRotation(worldAngleY,worldAngleX,localAngleY);
+            print($"y:{worldAngleY*180f/Mathf.PI} x:{worldAngleX*180f/Mathf.PI} ly:{localAngleY*180f/Mathf.PI}");
         }
         public void antiClockwise(){
             localAngleY -= localSpeedY;
             if (localAngleY<0) localAngleY += 2*MathF.PI;
             setWorldRotation(worldAngleY,worldAngleX,localAngleY);
+            print($"y:{worldAngleY*180f/Mathf.PI} x:{worldAngleX*180f/Mathf.PI} ly:{localAngleY*180f/Mathf.PI}");
         }
     }
 
