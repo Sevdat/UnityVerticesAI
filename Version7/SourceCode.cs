@@ -147,17 +147,14 @@ public class SourceCode:MonoBehaviour {
         }
 
         public void rightDirection(){
-            sensitivitySpeedX *= sensitivityAccelerationX;
             angleX += sensitivitySpeedX;
             if (angleX>2*Mathf.PI) angleX -= 2*Mathf.PI;
         }
         public void leftDirection(){
-            sensitivitySpeedX *= sensitivityAccelerationX;
             angleX -= sensitivitySpeedX;
             if (angleX<0) angleX += 2*Mathf.PI;
         } 
         public void upDirection(){
-            sensitivitySpeedY *= sensitivityAccelerationY;
             float sign = Mathf.Sign(angleY);
             angleY = sign*(Mathf.Abs(angleY) + sign*sensitivitySpeedY);
             if (Mathf.Abs(angleY)>Mathf.PI) {
@@ -172,7 +169,6 @@ public class SourceCode:MonoBehaviour {
             if (angleX > 2*Mathf.PI) angleX -= 2*MathF.PI;
         }    
         public void downDirection(){
-            sensitivitySpeedY *= sensitivityAccelerationY;
             float sign = Mathf.Sign(angleY);
             angleY = sign*(Mathf.Abs(angleY) - sign*sensitivitySpeedY);
             if (Mathf.Abs(angleY)>Mathf.PI) {
@@ -204,20 +200,20 @@ public class SourceCode:MonoBehaviour {
         }
         
         public void scaleUp(){
-            distanceSpeed*=distanceAcceleration;
             scale(distanceSpeed);
         }
         public void scaleDown(){
-            distanceSpeed*=distanceAcceleration;
             scale(-distanceSpeed);
         }
-        public void updateSpeed(){
+        public void updatePhysics(){
+            distanceSpeed *= distanceAcceleration;
+            sensitivitySpeedY *= sensitivityAccelerationY;
+            sensitivitySpeedX *= sensitivityAccelerationX;
             speed *= acceleration;
         }
         public Vector3 placeAxis(){
             distance += speed;
             scale(distance);
-            updateSpeed();
             return axis.placeAxis(sphere.origin);
         }
         public void updateAxis(){
@@ -562,19 +558,14 @@ public class SourceCode:MonoBehaviour {
         public int maxKeys;
         public int availableKeys;
         public int increaseKeysBy;
-        public List<int> freeKeys;
 
         public KeyGenerator(){}
         public KeyGenerator(int amountOfKeys){
-            freeKeys = new List<int>();
             increaseKeysBy = amountOfKeys;
             generateKeys();
         }
 
         public void generateKeys(){
-            for(int i = 0; i < increaseKeysBy; i++){
-                freeKeys.Add(maxKeys+increaseKeysBy-i-1);
-            }
             availableKeys += increaseKeysBy;
             maxKeys += increaseKeysBy;
         }
@@ -583,178 +574,27 @@ public class SourceCode:MonoBehaviour {
                 increaseKeysBy = newLimit;
             }
         }
-        public int getKey(){
-            int index = availableKeys-1;
-            int key = freeKeys[index];
-            freeKeys.RemoveAt(index); 
+        public void getKey(){
             availableKeys -= 1;
-            return key;
         }
-        public void returnKey(int key){
+        public void returnKey(){
             if (availableKeys < maxKeys){
-                freeKeys.Add(key);
                 availableKeys +=1;
             }
         }
         public void resetGenerator(int newMax){
-            freeKeys.Clear();
-            freeKeys.TrimExcess();
             maxKeys = newMax;
             availableKeys = 0;
         }
     }
-    public class JointSelector{
-        public Editor editor;
-        public CollisionSphereSelector collisionSphereSelector;
-        public Joint selected;
-        public Joint connectTo;
-        public List<Joint> joints;
-        public int size;
-        public int index;
-        public Color red = new Color(1, 0, 0, 1);
-        public Color green = new Color(0,1,0,1);
-        public Color blue = new Color(0,0,1,1);
-        public Color yellow = new Color(1, 1, 0, 1);
 
-        public JointSelector(){}
-        public JointSelector(Editor editor,List<Joint> joints){
-            this.editor = editor;
-            this.joints = joints;
-            size = joints.Count;
-            index = 0;
-            if (size >0) selected = joints[index];
-            selected.pointCloud.updateAllSphereColors(green);
-            collisionSphereSelector = new CollisionSphereSelector(this);
-        }   
-             
-        public void selectJoint(){
-            deselectJoints();
-            List<Joint> newJoints = new List<Joint>();
-            List<Joint> selectedPast = selected.connection.past;
-            List<Joint> selectedFuture = selected.connection.future;
-            newJoints.AddRange(selectedPast);
-            newJoints.Add(selected);
-            newJoints.AddRange(selectedFuture);
-            index = selectedPast.Count;
-            size = newJoints.Count;
-            for (int i = 0; i<size;i++){
-                if (i != index) joints[i].pointCloud.updateAllSphereColors(green);
-            }
-        }
-        void deselectJoints(){
-            for (int i = 0; i<size;i++){
-                if (i != index) joints[i].pointCloud.resetAllSphereColors(); 
-            }            
-        }
-        
-        void reColor(){
-            selected.pointCloud.updateAllSphereColors(green);
-            selected = joints[index];
-            collisionSphereSelector.renew();
-            selected.pointCloud.updateAllSphereColors(yellow);
-        }
-        public void nextJoint(){
-            if (index +1 <size) { index++; reColor(); }
-        }
-        public void previousJoint(){
-            if (index-1>-1) { index--; reColor(); }         
-        }
-        public void createJoint(){
-            selected.pointCloud.updateAllSphereColors(green);
-            selected = selected.createJoint();
-            joints.Add(selected);
-            index = size;
-            size++;
-            collisionSphereSelector.renew();
-            collisionSphereSelector.size = 0;
-            collisionSphereSelector.index = 0;
-        }
-
-        public void jointSelectorControls(){
-            if (Input.GetKeyDown("right")) {
-                previousJoint();
-            }
-            if (Input.GetKeyDown("left")) {
-                nextJoint();
-            }
-            if (Input.GetKeyDown("enter")) {
-                selectJoint();
-            } 
-        }
-
-    }
-    public class CollisionSphereSelector{
-        public JointSelector jointSelector;
-        public CollisionSphere selected;
-        public List<CollisionSphere> collisionSpheres;
-        public int size;
-        public int index;
-
-        public CollisionSphereSelector(){}
-        public CollisionSphereSelector(JointSelector jointSelector){
-            this.jointSelector = jointSelector;
-            collisionSpheres = jointSelector.selected.pointCloud.arrayToList();
-            size = collisionSpheres.Count;
-            index = 0;
-        }
-
-        public void renew(){
-            collisionSpheres = jointSelector.selected.pointCloud.arrayToList();
-            int count = collisionSpheres.Count;
-            if (count >0){
-                selected = collisionSpheres[0];
-                selected.aroundAxis.sphere.updateColor(jointSelector.blue);
-            }
-        }
-        public void createCollisionSphere(){
-            collisionSpheres.Add(jointSelector.selected.pointCloud.createSphere());
-            index = size;
-            size += 1;
-            if (selected != null) recolor(); else {
-                selected = collisionSpheres[index];
-                selected.aroundAxis.sphere.updateColor(jointSelector.blue);
-            }
-        }
-        public void deleteCollisionSphere(){
-            if (size-1>-1) {
-                collisionSpheres.RemoveAt(index);
-                jointSelector.selected.pointCloud.deleteSphere(selected.path.collisionSphereKey);
-                index -= 1;
-                size -= 1;
-                if (index >-1){
-                    selected = collisionSpheres[index];
-                    selected.aroundAxis.sphere.updateColor(jointSelector.blue);
-                } else selected = null;
-            }
-        }
-
-        void recolor(){
-            selected.aroundAxis.sphere.updateColor(jointSelector.yellow);
-            selected = collisionSpheres[index];
-            selected.aroundAxis.sphere.updateColor(jointSelector.blue);
-        }
-        public void nextCollisionSphere(){
-            if (index+1<size) { index++; recolor(); }
-        }
-        public void previousCollisionSphere(){
-            if (index-1>-1) { index--; recolor(); }         
-        }
-
-        public void moveCollisionSpheres(Vector3 add){
-            for (int i = 0; i<size;i++){
-                collisionSpheres[i].moveOrigin(add);
-            }
-        }
-    }
 
     public class Editor {
         public Body body;
-        public JointSelector jointSelector;
 
         public Editor(){}
         public Editor(Body body){
             this.body = body;
-            jointSelector = new JointSelector(this,body.getPastEnds());
             
             
         } 
@@ -773,8 +613,6 @@ public class SourceCode:MonoBehaviour {
                 case 0:
                     worldAxisControls();
                     rotationAxisControls();
-                    jointSelectorControls();
-                    collisionSphereSelectorControls();
                 break;
 
                 case 1:
@@ -784,78 +622,47 @@ public class SourceCode:MonoBehaviour {
         }
         public void worldAxisControls(){
             if (Input.GetKey("i")) {
-                jointSelector.selected.localAxis.up();
+                body.globalAxis.up();
             }
             if (Input.GetKey("k")) {
-                jointSelector.selected.localAxis.down();
+                body.globalAxis.down();
             }
             if (Input.GetKey("l")) {       
-                jointSelector.selected.localAxis.right();     
+                body.globalAxis.right();     
             }
             if (Input.GetKey("j")) {    
-                jointSelector.selected.localAxis.left();        
+                body.globalAxis.left();        
             }
             if (Input.GetKey("o")) { 
-                jointSelector.selected.localAxis.clockwise();           
+                body.globalAxis.clockwise();           
             }
             if (Input.GetKey("u")) {
-                jointSelector.selected.localAxis.antiClockwise(); 
+                body.globalAxis.antiClockwise(); 
             }
         }
         public void rotationAxisControls(){
             if (Input.GetKey("w")) {
-                jointSelector.selected.localAxis.spin.up();
+                body.globalAxis.spin.up();
             }
             if (Input.GetKey("s")) {
-                jointSelector.selected.localAxis.spin.down();
+                body.globalAxis.spin.down();
             }
             if (Input.GetKey("d")) {  
-                jointSelector.selected.localAxis.spin.right();          
+                body.globalAxis.spin.right();          
             }
             if (Input.GetKey("a")) { 
-                jointSelector.selected.localAxis.spin.left();           
+                body.globalAxis.spin.left();           
             }
             if (Input.GetKeyDown("e")) { 
-                jointSelector.selected.localAxis.spin.scaleUp();           
+                body.globalAxis.spin.scaleUp();           
             }
             if (Input.GetKeyDown("q")) {
-                jointSelector.selected.localAxis.spin.scaleDown();
+                body.globalAxis.spin.scaleDown();
             }
             // if (Input.GetKeyDown("return")) {
             //     Vector3 newPoisition = jointSelector.selected.localAxis.move.placeAxis();
             //     jointSelector.collisionSphereSelector.moveCollisionSpheres(newPoisition);
             // }
-        }
-        public void jointSelectorControls(){
-            if (Input.GetKeyDown("right")) {
-                jointSelector.previousJoint();
-            }
-            if (Input.GetKeyDown("left")) {
-                jointSelector.nextJoint();
-            }
-            if (Input.GetKeyDown("/")) {
-                jointSelector.selectJoint();
-            } 
-            if (Input.GetKeyDown(".")) {
-                jointSelector.createJoint();
-            } 
-            if (Input.GetKeyDown("f")) {
-                jointSelector.selected.localAxis.getWorldRotation();
-            }  
-        }
-        public void collisionSphereSelectorControls(){
-            if (Input.GetKeyDown("up")) {
-                jointSelector.collisionSphereSelector.nextCollisionSphere();
-            }
-            if (Input.GetKeyDown("down")) {
-                jointSelector.collisionSphereSelector.previousCollisionSphere();
-            }
-            if (Input.GetKeyDown("space")) {
-                jointSelector.collisionSphereSelector.createCollisionSphere();
-            }  
-            if (Input.GetKeyDown("backspace")) {
-                jointSelector.collisionSphereSelector.deleteCollisionSphere();
-            }  
         }
     }
     public class Body {
@@ -872,7 +679,6 @@ public class SourceCode:MonoBehaviour {
             this.globalAxis = globalAxis;
             bodyStructure = new Joint[amountOfJoints];
             keyGenerator = new KeyGenerator(amountOfJoints);
-            reviveBody();
             editor = new Editor(this);
         }
         public Body(int path){
@@ -900,15 +706,11 @@ public class SourceCode:MonoBehaviour {
             return bodyStructureSize + allJointsInBody + globalOriginLocation + globalAxisRotationXYZ;
 
         }
-
-        public void reviveBody(){
-            if (keyGenerator.availableKeys == keyGenerator.maxKeys){
-                int key = keyGenerator.getKey();
-                Connection connection = new Connection(key);
-                Axis axis = new Axis(globalAxis.origin,globalAxis.axisDistance);
-                Joint addJoint = new Joint(this, keyGenerator.increaseKeysBy, axis, connection); 
-                bodyStructure[key] = addJoint;
-            } 
+        public void updatePhysics(){
+            int sphereCount = keyGenerator.maxKeys;
+            for (int i = 0; i<sphereCount; i++){
+                bodyStructure[i]?.updatePhysics();
+            }            
         }
         public void reActivateBody(){
             int size = keyGenerator.maxKeys - keyGenerator.availableKeys;
@@ -1074,20 +876,38 @@ public class SourceCode:MonoBehaviour {
                 out treeSize
                 );
         }
-        public void disconnectFromFuture(){
+        internal void disconnectFuture(int index){
+            future[index].connection.past.Remove(current);
+        }
+        public void disconnectAllFuture(){
             int size = future.Count;
             for (int i =0; i<size;i++){
-                future[i].connection.past.Remove(current);
+                disconnectFuture(indexInBody);
             }
             future = new List<Joint>();
         }
-        public void disconnectFromPast(){
+        internal void disconnectPast(int index){
+            future[index].connection.past.Remove(current);
+        }
+        public void disconnectAllPast(){
             int size = past.Count;
             for (int i =0; i<size;i++){
-                past[i].connection.future.Remove(current);
+                disconnectPast(indexInBody);
             }
             past = new List<Joint>();
         }
+
+        public void connectPastToFuture(Joint joint){
+            List<Joint> connectTo = joint.connection.future;
+            if (!past.Contains(joint)) past.Add(joint);
+            if (!connectTo.Contains(current)) connectTo.Add(current);
+        }
+        public void connectFutureToPast(Joint joint){
+            List<Joint> connectTo = joint.connection.past;
+            if (!future.Contains(joint)) future.Add(joint);
+            if (!connectTo.Contains(current)) connectTo.Add(current);
+        }
+
         public List<Joint> nextConnections(bool pastOrFuture, bool getOnlyActive){
             List<Joint> connectedJoints = new List<Joint>();
             List<Joint> joints = pastOrFuture? future:past;
@@ -1185,10 +1005,10 @@ public class SourceCode:MonoBehaviour {
                 if (splitStr.Length == 2){
                     removeEmpty(splitStr[0].Split("_"), out List<string> instruction, out int instructionSize);
                     removeEmpty(splitStr[1].Split(" "), out List<string> values, out int valueSize);
-                    
-
+                
                 }
             }
+            body.updatePhysics();
         }
         void removeEmpty(string[] strArray, out List<string> list, out int size){
             list = new List<string>();
@@ -1227,31 +1047,44 @@ public class SourceCode:MonoBehaviour {
         void bodyStructureSizeInstruction(List<string> value){
             if (value.Count>0){
                 bool check = int.TryParse(value[0], out int amount);
-                if (check) body.arraySizeManager(amount);
+                if (check) body.arraySizeManager(amount); 
             }
         }
-        void allJointsInBodyInstruction(List<string> value){
+        HashSet<int> allJointsInBodyInstruction(List<string> value){
             HashSet<int> set = new HashSet<int>();
+            List<int> nullKeys = new List<int>();
+            int nullCount = 0;
             int size = value.Count;
             int maxKey = 0;
-            bool check = false;
+            bool error = false;
+            bool check;
             for (int i = 0; i < size; i++){
                 check = int.TryParse(value[i], out int key);
-                if (check && !set.Contains(i)) {
+                if (check && !set.Contains(i)){
                     set.Add(key);
-                    if (key>maxKey) maxKey = key;
-                } else if(!check) break;
+                    if (key >= body.keyGenerator.maxKeys){
+                        nullKeys.Add(key);
+                        nullCount++;
+                    } else if (body.bodyStructure[i] == null){
+                        nullKeys.Add(key);
+                        nullCount++;
+                    }
+                    if (key > maxKey) maxKey = key;
+                } else if (!check) error = true;
             }
             if (maxKey>body.keyGenerator.maxKeys) body.resizeArray(maxKey,false);
-            if (check) {
-                Joint[] bodystructure = body.bodyStructure;
+            for (int i = 0; i < nullCount; i++){
+                body.bodyStructure[nullKeys[i]] = new Joint(body,i);
+            }
+            if (!error) {
                 for (int i = 0; i< body.keyGenerator.maxKeys; i++){
-                    Joint joint = bodystructure[i];
-                    if (joint !=null){
-                        if (!set.Contains(joint.connection.indexInBody)) joint.deleteJoint();
+                    Joint checkJoint = body.bodyStructure[i];
+                    if (checkJoint != null){
+                        if (!set.Contains(checkJoint.connection.indexInBody)) checkJoint.deleteJoint();
                     }
                 }
             }
+            return set;
         }
         void globalOriginLocationInstruction(List<string> value){
             int size = value.Count;
@@ -1288,10 +1121,10 @@ public class SourceCode:MonoBehaviour {
         const string moveX = "MoveX";
         const string moveY = "MoveY";
         const string moveSpeedAndAcceleration = "MoveSpeedAndAcceleration";
-        const string XYRotationAxisFromLocalAxis = "XYRotationAxisFromLocalAxis";
-        const string XYRotationAxisSpeed = "XYRotationAxisSpeed";
         const string pastConnectionsInBody = "PastConnectionsInBody";
         const string futureConnectionsInBody = "FutureConnectionsInBody";
+        const string pointCloudSize = "PointCloudSize";
+        const string allSpheresInJoint = "AllSpheresInJoint";
 
         public void jointInstructions(string jointKey, string instruction, List<string> value){
             bool checkKey = int.TryParse(jointKey, out int key);
@@ -1311,36 +1144,48 @@ public class SourceCode:MonoBehaviour {
                         localAxisRotationInstruction(joint,value);
                     break;
                     case spinX:
+                        spinXInstruction(joint,value);
                     break;
                     case spinY:
+                        spinYInstruction(joint,value);
                     break;
                     case spinSpeedAndAcceleration:
+                        spinSpeedAndAccelerationInstruction(joint,value);
                     break;
                     case moveX:
+                        moveXInstruction(joint,value);
                     break;
                     case moveY:
+                        moveYInstruction(joint,value);
                     break;
                     case moveSpeedAndAcceleration:
+                        moveSpeedAndAccelerationInstruction(joint,value);
                     break;                
-                    case XYRotationAxisFromLocalAxis:
-                    break;
-                    case XYRotationAxisSpeed:
-                    break;
                     case pastConnectionsInBody:
+                        pastConnectionsInBodyInstruction(joint,value);
                     break;
                     case futureConnectionsInBody:
+                    break;
+                    case pointCloudSize:
+                        pointCloudSizeInstruction(joint,value);
+                    break;
+                    case allSpheresInJoint:
                     break;
                 }
             }
         }
 
         void activeInstruction(Joint joint,List<string> value){
-            joint.connection.active = value[0] == "True";
+            if (value.Count>0){
+                joint.connection.active = value[0] == "True";
+            }
         }
         void distanceFromGlobalOriginInstruction(Joint joint,List<string> value){
-            bool checkStr = float.TryParse(value[0], out float key);
-            if (checkStr){
-                joint.distanceFromGlobalOrigin(key);
+            if (value.Count>0){
+                bool checkStr = float.TryParse(value[0], out float key);
+                if (checkStr){
+                    joint.distanceFromGlobalOrigin(key);
+                }
             }
         }
         void YXFromGlobalAxisInstruction(Joint joint,List<string> value){
@@ -1364,7 +1209,7 @@ public class SourceCode:MonoBehaviour {
             if (value.Count>=3){
                 bool checkY = float.TryParse(value[0], out float y);
                 bool checkX = float.TryParse(value[1], out float x);
-                bool checkLY = float.TryParse(value[1], out float ly);
+                bool checkLY = float.TryParse(value[2], out float ly);
                 if (checkY && checkX && checkLY) {
                     joint.worldRotateJoint(y,x,ly);
                 } else{
@@ -1375,19 +1220,116 @@ public class SourceCode:MonoBehaviour {
                 }
             }
         }
+        void spinXInstruction(Joint joint,List<string> value){
+            if (value.Count>=3){
+                AroundAxis aroundAxis = joint.localAxis.spin;
+                bool checkX = float.TryParse(value[0], out float angleX);
+                bool checkSpeedX = float.TryParse(value[1], out float speedX);
+                bool checkAccelerationX = float.TryParse(value[2], out float accelerationX);
+                if (checkSpeedX) aroundAxis.sensitivitySpeedX = speedX;
+                if (checkAccelerationX) aroundAxis.sensitivityAccelerationX = accelerationX;
+                if (checkX && angleX != aroundAxis.angleY) aroundAxis.setInRadians(angleX,aroundAxis.angleX);  
+                float direction = aroundAxis.sensitivitySpeedX*aroundAxis.sensitivityAccelerationX;  
+                if (direction >= 0) {
+                    aroundAxis.right();
+                } else if (direction <= 0) {
+                    aroundAxis.left();
+                }
+            }
+        }
+        void spinYInstruction(Joint joint,List<string> value){
+            if (value.Count>=3){
+                AroundAxis aroundAxis = joint.localAxis.spin;
+                bool checkY = float.TryParse(value[0], out float angleY);
+                bool checkSpeedY = float.TryParse(value[1], out float speedY);
+                bool checkAccelerationY = float.TryParse(value[2], out float accelerationY);     
+                if (checkSpeedY) aroundAxis.sensitivitySpeedY = speedY;
+                if (checkAccelerationY) aroundAxis.sensitivityAccelerationY = accelerationY;
+                if (checkY && angleY != aroundAxis.angleY) aroundAxis.setInRadians(angleY,aroundAxis.angleX);  
+                float direction = aroundAxis.sensitivitySpeedY*aroundAxis.sensitivityAccelerationY;              
+                if (direction >= 0) {
+                    aroundAxis.up();
+                } else if (direction <= 0) {
+                    aroundAxis.down();
+                }  
+            }
+        }
+        void spinSpeedAndAccelerationInstruction(Joint joint,List<string> value){
+            if (value.Count>=2){
+                AroundAxis aroundAxis = joint.localAxis.spin;
+                bool checkSpeed = float.TryParse(value[1], out float speed);
+                bool checkAcceleration = float.TryParse(value[2], out float acceleration);     
+                if (checkSpeed) aroundAxis.speed = speed;
+                if (checkAcceleration) aroundAxis.acceleration = acceleration;
+                joint.rotateFutureHierarchy();
+            }
+        }
+        void moveXInstruction(Joint joint,List<string> value){
+            if (value.Count>=3){
+                AroundAxis aroundAxis = joint.localAxis.move;
+                bool checkX = float.TryParse(value[0], out float angleX);
+                bool checkSpeedX = float.TryParse(value[1], out float speedX);
+                bool checkAccelerationX = float.TryParse(value[2], out float accelerationX);
+                if (checkSpeedX) aroundAxis.sensitivitySpeedX = speedX;
+                if (checkAccelerationX) aroundAxis.sensitivityAccelerationX = accelerationX;
+                if (checkX && angleX != aroundAxis.angleY) aroundAxis.setInRadians(angleX,aroundAxis.angleX);  
+                float direction = aroundAxis.sensitivitySpeedX*aroundAxis.sensitivityAccelerationX;  
+                if (direction >= 0) {
+                    aroundAxis.right();
+                } else if (direction <= 0) {
+                    aroundAxis.left();
+                }
+            }
+        }
+        void moveYInstruction(Joint joint,List<string> value){
+            if (value.Count>=3){
+                AroundAxis aroundAxis = joint.localAxis.move;
+                bool checkY = float.TryParse(value[0], out float angleY);
+                bool checkSpeedY = float.TryParse(value[1], out float speedY);
+                bool checkAccelerationY = float.TryParse(value[2], out float accelerationY);     
+                if (checkSpeedY) aroundAxis.sensitivitySpeedY = speedY;
+                if (checkAccelerationY) aroundAxis.sensitivityAccelerationY = accelerationY;
+                if (checkY && angleY != aroundAxis.angleY) aroundAxis.setInRadians(angleY,aroundAxis.angleX);  
+                float direction = aroundAxis.sensitivitySpeedY*aroundAxis.sensitivityAccelerationY;              
+                if (direction >= 0) {
+                    aroundAxis.up();
+                } else if (direction <= 0) {
+                    aroundAxis.down();
+                }  
+            }
+        }
+        void moveSpeedAndAccelerationInstruction(Joint joint,List<string> value){
+            if (value.Count>=2){
+                AroundAxis aroundAxis = joint.localAxis.move;
+                bool checkSpeed = float.TryParse(value[1], out float speed);
+                bool checkAcceleration = float.TryParse(value[2], out float acceleration);     
+                if (checkSpeed) aroundAxis.speed = speed;
+                if (checkAcceleration) aroundAxis.acceleration = acceleration;
+                joint.moveAllHierarchy();
+            }
+        }
+        void pastConnectionsInBodyInstruction(Joint joint,List<string> value){
+            HashSet<int> set = allJointsInBodyInstruction(value);
+            List<Joint> past = joint.connection.past;
+            int size = past.Count;
+            List<int> list = new List<int>(set);
+            for (int i = 0; i< size; i++){
+                if (!set.Contains(past[i].connection.indexInBody)) joint.connection.disconnectPast(i);
+            }
+        }
+        void pointCloudSizeInstruction(Joint joint,List<string> value){
+            if (value.Count>=0){
+                bool check = int.TryParse(value[0], out int amount);
+                if (check) joint.pointCloud.arraySizeManager(amount); 
+            }
+        }
 
-        const string pointCloudSize = "PointCloudSize";
-        const string allSpheresInJoint = "AllSpheresInJoint";
         const string XYFromLocalAxis = "XYFromLocalAxis";
         const string radius = "Radius";
         const string colorRGBA = "ColorRGBA";
 
         public void sphereInstructions(string instruction, string[] value){
             switch (instruction){
-                case pointCloudSize:
-                break;
-                case allSpheresInJoint:
-                break;
                 case XYFromLocalAxis:
                 break;
                 case radius:
@@ -1408,13 +1350,11 @@ public class SourceCode:MonoBehaviour {
         public PointCloud pointCloud;
 
         public Joint(){}
-        public Joint(Body body, int amountOfSpheres, Axis localAxis,Connection connection){
+        public Joint(Body body, int indexInBody){
             this.body = body;
-            pointCloud = new PointCloud(amountOfSpheres);
-            this.localAxis = localAxis;
-            this.connection = connection;
-            connection.current = this;
-            pointCloud.joint = this;
+            localAxis = new Axis(new Vector3(0,0,0),5);
+            connection = new Connection(indexInBody);
+            pointCloud = new PointCloud(0);
         }
 
         public void setBody(Body body){
@@ -1449,21 +1389,11 @@ public class SourceCode:MonoBehaviour {
                 moveX + moveY + moveSpeedAndAcceleration +
                 pastConnectionsInBody + futureConnectionsInBody;
         }
-        public Joint createJoint(){
-            body.resizeArray(1, true);
-            int key = body.keyGenerator.getKey();
-            Connection connection = new Connection(key);
-            connection.past.Add(this);
-            Axis axis = new Axis(localAxis.origin,localAxis.axisDistance);
-            Joint addJoint = new Joint(body,pointCloud.keyGenerator.increaseKeysBy, axis,connection);
-            this.connection.future.Add(addJoint); 
-            body.bodyStructure[key] = addJoint;
-            return addJoint;
-        }
+
         public void deleteJoint(){
-            body.keyGenerator.returnKey(connection.indexInBody);
-            connection.disconnectFromFuture();
-            connection.disconnectFromPast();
+            body.keyGenerator.returnKey();
+            connection.disconnectAllFuture();
+            connection.disconnectAllPast();
             pointCloud.deleteAllSpheres();
             body.bodyStructure[connection.indexInBody] = null;
         }
@@ -1483,36 +1413,36 @@ public class SourceCode:MonoBehaviour {
             pointCloud.resetAllSphereOrigins();
         }
 
+        public void updatePhysics(){
+            localAxis.spin.updatePhysics();
+            localAxis.move.updatePhysics();
+            pointCloud.updatePhysics();     
+        }
+
         public void rotatePastHierarchy(){
             Vector4 quat = localAxis.spin.quat(localAxis.spin.speed);
             rotateHierarchy(quat, false,false,false);
-            localAxis.spin.updateSpeed();
         }
         public void rotateFutureHierarchy(){
             Vector4 quat = localAxis.spin.quat(localAxis.spin.speed);
             rotateHierarchy(quat, true,false,false);
-            localAxis.spin.updateSpeed();
         }
         public void rotateAllHierarchy(){
             Vector4 quat = localAxis.spin.quat(localAxis.spin.speed);
             rotateHierarchy(quat, false,false,true);
-            localAxis.spin.updateSpeed();
         }
 
         public void movePastHierarchy(){
             Vector3 move = localAxis.move.placeAxis();
             moveHierarchy(move, false,false,false);
-            localAxis.move.updateSpeed();
         }
         public void moveFutureHierarchy(){
             Vector3 move = localAxis.move.placeAxis();
             moveHierarchy(move, true,false,false);
-            localAxis.move.updateSpeed();
         }
         public void moveAllHierarchy(){
             Vector3 move = localAxis.move.placeAxis();
             moveHierarchy(move, false,false,true);
-            localAxis.move.updateSpeed();
         }
 
         void rotateHierarchy(Vector4 quat, bool pastOrFuture, bool rotateOnlyActive, bool rotateAll){
@@ -1524,7 +1454,7 @@ public class SourceCode:MonoBehaviour {
                 tree.AddRange(joints);
                 size += joints.Count;
                 joint.localAxis.rotate(quat,rotationOrigin);
-                joint.pointCloud.resetAllSphereOrigins();
+                joint.pointCloud.rotateAllSpheres(quat,rotationOrigin);
             }
             body.resetUsed(tree,size);
         }
@@ -1532,7 +1462,6 @@ public class SourceCode:MonoBehaviour {
         void moveHierarchy(Vector3 newVec, bool pastOrFuture, bool rotateOnlyActive,bool rotateAll){
             initTree(pastOrFuture, rotateOnlyActive, rotateAll, out List<Joint> tree, out int size);  
             for (int i = 0; i<size;i++){
-                Joint joint = tree[i];
                 List<Joint> joints = tree[i].connection.getAll(rotateOnlyActive);
                 tree.AddRange(joints);
                 size += joints.Count;
@@ -1580,9 +1509,9 @@ public class SourceCode:MonoBehaviour {
             }
             return pointCloudSize+allSpheresInJoint+"\n";
         }
-        public CollisionSphere createSphere(){
+        public CollisionSphere createSphere(int sphereIndex){
             resizeArray(1, true);
-            int sphereIndex = keyGenerator.getKey();
+            keyGenerator.getKey();
             Path path = new Path(joint.body,joint,sphereIndex);
             CollisionSphere collisionSphere = new CollisionSphere(path,joint.localAxis);
             collisionSpheres[sphereIndex] = collisionSphere;
@@ -1591,42 +1520,60 @@ public class SourceCode:MonoBehaviour {
         public void deleteSphere(int key){
             CollisionSphere remove = collisionSpheres[key];
             if(remove != null){
-                keyGenerator.returnKey(key);
+                keyGenerator.returnKey();
                 collisionSpheres[key].aroundAxis.sphere.destroySphere();
                 collisionSpheres[key] = null;
             }
         }
         public void deleteAllSpheres(){
-            int size = collisionSpheres.Length;
+            int size = keyGenerator.maxKeys;
             for (int i = 0; i<size;i++){
                 deleteSphere(i);
             }
         }
         public void resetAllSphereOrigins(){
-            int sphereCount = collisionSpheres.Length;
+            int sphereCount = keyGenerator.maxKeys;
             for (int i = 0; i<sphereCount; i++){
                 CollisionSphere collisionSphere = collisionSpheres[i];
                 collisionSphere?.aroundAxis.resetOrigin();
             }
         }
+        public void rotateAllSpheres(Vector4 quat, Vector3 rotationOrigin){
+            int sphereCount = keyGenerator.maxKeys;
+            for (int i = 0; i<sphereCount; i++){
+                CollisionSphere collisionSphere = collisionSpheres[i];
+                if (collisionSphere != null){
+                    Vector3 vec = collisionSphere.aroundAxis.sphere.origin;
+                    vec = joint.localAxis.quatRotate(vec,rotationOrigin,quat);
+                    collisionSphere.setOrigin(vec);
+                }
+                collisionSphere?.aroundAxis.resetOrigin();
+            }
+        }
         public void moveSpheres(Vector3 move){
-            int sphereCount = collisionSpheres.Length;
+            int sphereCount = keyGenerator.maxKeys;
             for (int i = 0; i<sphereCount; i++){
                 CollisionSphere collisionSphere = collisionSpheres[i];
                 collisionSphere?.moveOrigin(move);
             }
         }
         public void updateAllSphereColors(Color color){
-            int sphereCount = collisionSpheres.Length;
+            int sphereCount = keyGenerator.maxKeys;
             for (int i = 0; i<sphereCount; i++){
                 collisionSpheres[i]?.aroundAxis.sphere.updateColor(color);
             }
         }
         public void resetAllSphereColors(){
             int sphereCount = collisionSpheres.Length;
-                for (int i = 0; i<sphereCount; i++){
-                    collisionSpheres[i]?.aroundAxis.sphere.resetColor();
-                }
+            for (int i = 0; i<sphereCount; i++){
+                collisionSpheres[i]?.aroundAxis.sphere.resetColor();
+            }
+        }
+        public void updatePhysics(){
+            int sphereCount = collisionSpheres.Length;
+            for (int i = 0; i<sphereCount; i++){
+                collisionSpheres[i]?.aroundAxis.updatePhysics();
+            }            
         }
         public List<CollisionSphere> arrayToList(){
             List<CollisionSphere> list = new List<CollisionSphere>();
@@ -1638,6 +1585,14 @@ public class SourceCode:MonoBehaviour {
                 }
             }
             return list;
+        }
+        public void arraySizeManager(int amount){
+            if (amount>keyGenerator.maxKeys){
+                resizeArray(amount,false);
+            } else if (amount < keyGenerator.maxKeys){
+                optimizeCollisionSpheres();
+                resizeArray(amount,false);
+            }
         }
         public void resizeArray(int amount, bool extra){
             int availableKeys = keyGenerator.availableKeys;
@@ -1735,6 +1690,9 @@ public class SourceCode:MonoBehaviour {
         }
         public void setRadius(float newRadius){
             aroundAxis.sphere.setRadius(newRadius);
+        }
+        public void updatePhysics(){
+            aroundAxis.updatePhysics();
         }
     }
     public class Sphere{
