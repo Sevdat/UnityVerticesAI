@@ -152,6 +152,15 @@ public class UnityPluginTest : MonoBehaviour
     }
     Experiment exp = new Experiment();
     void Start(){
+        HashSet<int> set = new HashSet<int>();
+        set.Add(0);
+        set.Add(21);
+        set.Add(200);
+        set.Add(15);
+        set.Remove(21);
+        foreach (int i in set){
+            print(i);
+        }
         exp.strt();
 
     }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 public class SourceCode:MonoBehaviour {
@@ -887,7 +888,7 @@ public class SourceCode:MonoBehaviour {
             future = new List<Joint>();
         }
         internal void disconnectPast(int index){
-            future[index].connection.past.Remove(current);
+            past[index].connection.future.Remove(current);
         }
         public void disconnectAllPast(){
             int size = past.Count;
@@ -897,15 +898,15 @@ public class SourceCode:MonoBehaviour {
             past = new List<Joint>();
         }
 
-        public void connectPastToFuture(Joint joint){
+        public void connectThisPastToFuture(Joint joint){
             List<Joint> connectTo = joint.connection.future;
-            if (!past.Contains(joint)) past.Add(joint);
-            if (!connectTo.Contains(current)) connectTo.Add(current);
+            past.Add(joint);
+            connectTo.Add(current);
         }
-        public void connectFutureToPast(Joint joint){
+        public void connectThisFutureToPast(Joint joint){
             List<Joint> connectTo = joint.connection.past;
-            if (!future.Contains(joint)) future.Add(joint);
-            if (!connectTo.Contains(current)) connectTo.Add(current);
+            future.Add(joint);
+            connectTo.Add(current);
         }
 
         public List<Joint> nextConnections(bool pastOrFuture, bool getOnlyActive){
@@ -1050,17 +1051,18 @@ public class SourceCode:MonoBehaviour {
                 if (check) body.arraySizeManager(amount); 
             }
         }
-        HashSet<int> allJointsInBodyInstruction(List<string> value){
-            HashSet<int> set = new HashSet<int>();
-            List<int> nullKeys = new List<int>();
-            int nullCount = 0;
+
+        void gatherBodyData(List<string> value,out bool error, out int maxKey, out int nullCount, out HashSet<int> set,out List<int> nullKeys){
+            set = new HashSet<int>();
+            nullKeys = new List<int>();
+            nullCount = 0;
             int size = value.Count;
-            int maxKey = 0;
-            bool error = false;
+            maxKey = 0;
+            error = false;
             bool check;
             for (int i = 0; i < size; i++){
                 check = int.TryParse(value[i], out int key);
-                if (check && !set.Contains(i)){
+                if (check && !set.Contains(key)){
                     set.Add(key);
                     if (key >= body.keyGenerator.maxKeys){
                         nullKeys.Add(key);
@@ -1068,23 +1070,27 @@ public class SourceCode:MonoBehaviour {
                     } else if (body.bodyStructure[i] == null){
                         nullKeys.Add(key);
                         nullCount++;
-                    }
+                    } 
                     if (key > maxKey) maxKey = key;
-                } else if (!check) error = true;
+                } else if (!error && !check) error = true;
             }
-            if (maxKey>body.keyGenerator.maxKeys) body.resizeArray(maxKey,false);
+        }
+        HashSet<int> resizeBody(List<string> value, out bool error){
+            gatherBodyData(value,out error, out int maxKey, out int nullCount, out HashSet<int> set,out List<int> nullKeys);
+            if (maxKey>=body.keyGenerator.maxKeys) body.resizeArray(maxKey,false);
             for (int i = 0; i < nullCount; i++){
-                body.bodyStructure[nullKeys[i]] = new Joint(body,i);
-            }
-            if (!error) {
-                for (int i = 0; i< body.keyGenerator.maxKeys; i++){
-                    Joint checkJoint = body.bodyStructure[i];
-                    if (checkJoint != null){
-                        if (!set.Contains(checkJoint.connection.indexInBody)) checkJoint.deleteJoint();
-                    }
-                }
+                body.bodyStructure[nullKeys[i]] = new Joint(body,nullKeys[i]);
             }
             return set;
+        }
+
+        void allJointsInBodyInstruction(List<string> value){
+            HashSet<int> set = resizeBody(value, out bool error);
+            if (!error) {
+                for (int i = 0; i< body.keyGenerator.maxKeys; i++){
+                    if (!set.Contains(i)) body.bodyStructure[i]?.deleteJoint();        
+                }
+            }
         }
         void globalOriginLocationInstruction(List<string> value){
             int size = value.Count;
@@ -1165,11 +1171,13 @@ public class SourceCode:MonoBehaviour {
                         pastConnectionsInBodyInstruction(joint,value);
                     break;
                     case futureConnectionsInBody:
+                        futureConnectionsInBodyInstruction(joint,value);
                     break;
                     case pointCloudSize:
                         pointCloudSizeInstruction(joint,value);
                     break;
                     case allSpheresInJoint:
+                        allSpheresInJointInstruction(joint,value);
                     break;
                 }
             }
@@ -1309,12 +1317,55 @@ public class SourceCode:MonoBehaviour {
             }
         }
         void pastConnectionsInBodyInstruction(Joint joint,List<string> value){
-            HashSet<int> set = allJointsInBodyInstruction(value);
+            HashSet<int> set = resizeBody(value, out _);
             List<Joint> past = joint.connection.past;
             int size = past.Count;
-            List<int> list = new List<int>(set);
+            List<Joint> newPast = new List<Joint>();
+            bool checkChange = false;
+            
             for (int i = 0; i< size; i++){
-                if (!set.Contains(past[i].connection.indexInBody)) joint.connection.disconnectPast(i);
+                int index = past[i].connection.indexInBody;
+                if (!set.Contains(index)) {
+                    joint.connection.disconnectPast(i);
+                    checkChange = true;
+                } else {
+                    newPast.Add(body.bodyStructure[index]);
+                    set.Remove(index);
+                    }
+            }
+            if (checkChange || size != set.Count){
+                foreach (int i in set){
+                    Joint newjoint = new Joint(body,i);
+                    newjoint.connection.connectThisFutureToPast(joint);
+                    newPast.Add(newjoint);
+                }
+                joint.connection.past = newPast;
+            }
+        }
+        void futureConnectionsInBodyInstruction(Joint joint,List<string> value){
+            HashSet<int> set = resizeBody(value, out _);
+            List<Joint> future = joint.connection.future;
+            int size = future.Count;
+            List<Joint> newPast = new List<Joint>();
+            bool checkChange = false;
+            
+            for (int i = 0; i< size; i++){
+                int index = future[i].connection.indexInBody;
+                if (!set.Contains(index)) {
+                    joint.connection.disconnectFuture(i);
+                    checkChange = true;
+                } else {
+                    newPast.Add(body.bodyStructure[index]);
+                    set.Remove(index);
+                    }
+            }
+            if (checkChange || size != set.Count){
+                foreach (int i in set){
+                    Joint newjoint = new Joint(body,i);
+                    newjoint.connection.connectThisPastToFuture(joint);
+                    newPast.Add(newjoint);
+                }
+                joint.connection.past = newPast;
             }
         }
         void pointCloudSizeInstruction(Joint joint,List<string> value){
@@ -1323,12 +1374,56 @@ public class SourceCode:MonoBehaviour {
                 if (check) joint.pointCloud.arraySizeManager(amount); 
             }
         }
-
+        void gatherJointData(Joint joint,List<string> value,out bool error, out int maxKey, out int nullCount, out HashSet<int> set,out List<int> nullKeys){
+            set = new HashSet<int>();
+            nullKeys = new List<int>();
+            nullCount = 0;
+            int size = value.Count;
+            maxKey = 0;
+            error = false;
+            bool check;
+            PointCloud pointCloud = joint.pointCloud;
+            for (int i = 0; i < size; i++){
+                check = int.TryParse(value[i], out int key);
+                if (check && !set.Contains(key)){
+                    set.Add(key);
+                    if (key >= pointCloud.keyGenerator.maxKeys){
+                        nullKeys.Add(key);
+                        nullCount++;
+                    } else if (pointCloud.collisionSpheres[i] == null){
+                        nullKeys.Add(key);
+                        nullCount++;
+                    } 
+                    if (key > maxKey) maxKey = key;
+                } else if (!error && !check) error = true;
+            }
+        }
+        HashSet<int> resizePointCloud(Joint joint,List<string> value, out bool error){
+            gatherJointData(joint, value,out error, out int maxKey, out int nullCount, out HashSet<int> set,out List<int> nullKeys);
+            if (maxKey>=body.keyGenerator.maxKeys) joint.pointCloud.resizeArray(maxKey,false);
+            for (int i = 0; i < nullCount; i++){
+               joint.pointCloud.collisionSpheres[nullKeys[i]] = new CollisionSphere(joint,nullKeys[i]);
+            }
+            return set;
+        }
+        void allSpheresInJointInstruction(Joint joint,List<string> value){
+            HashSet<int> set = resizePointCloud(joint,value, out bool error);
+            if (!error) {
+                for (int i = 0; i< body.keyGenerator.maxKeys; i++){
+                    if (!set.Contains(i)) joint.pointCloud?.deleteSphere(i);        
+                }
+            }
+        }
+// angleY, sensitivitySpeedY, sensitivityAccelerationY,
+// angleX, sensitivitySpeedX, sensitivityAccelerationX,
+// distance, distanceSpeed, distanceAcceleration,
+// speed, acceleration;
         const string XYFromLocalAxis = "XYFromLocalAxis";
+        const string distanceFromLocalAxis = "DistanceFromLocalAxis";
         const string radius = "Radius";
         const string colorRGBA = "ColorRGBA";
-
-        public void sphereInstructions(string instruction, string[] value){
+ 
+        public void sphereInstructions(string instruction, List<string> value){
             switch (instruction){
                 case XYFromLocalAxis:
                 break;
@@ -1355,6 +1450,7 @@ public class SourceCode:MonoBehaviour {
             localAxis = new Axis(new Vector3(0,0,0),5);
             connection = new Connection(indexInBody);
             pointCloud = new PointCloud(0);
+            body.keyGenerator.getKey();
         }
 
         public void setBody(Body body){
@@ -1509,14 +1605,6 @@ public class SourceCode:MonoBehaviour {
             }
             return pointCloudSize+allSpheresInJoint+"\n";
         }
-        public CollisionSphere createSphere(int sphereIndex){
-            resizeArray(1, true);
-            keyGenerator.getKey();
-            Path path = new Path(joint.body,joint,sphereIndex);
-            CollisionSphere collisionSphere = new CollisionSphere(path,joint.localAxis);
-            collisionSpheres[sphereIndex] = collisionSphere;
-            return collisionSphere;
-        }
         public void deleteSphere(int key){
             CollisionSphere remove = collisionSpheres[key];
             if(remove != null){
@@ -1662,10 +1750,12 @@ public class SourceCode:MonoBehaviour {
         public AroundAxis aroundAxis;
 
         public CollisionSphere(){}
-        public CollisionSphere(Path path, Axis axis){
-            this.path = path;
-            aroundAxis = new AroundAxis(axis,new Sphere());
+        public CollisionSphere(Joint joint, int sphereIndex){
+            path = new Path(joint.body,joint,sphereIndex);
+            aroundAxis = new AroundAxis(joint.localAxis,new Sphere());
+            joint.pointCloud.keyGenerator.getKey();
         }
+        
         public string saveCollisionSphere(){
             Axis axis = path.joint.localAxis;
             Sphere sphere = aroundAxis.sphere;
