@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 
 public class SourceCode:MonoBehaviour {
-// 
+
     public class SphericalOctTree {
         public SphericalOctTree sphereOctTree;
         public int depth;
@@ -72,11 +72,11 @@ public class SourceCode:MonoBehaviour {
             this.sphere = sphere;
             this.axis = axis;
             angleY = 0;angleX = 0;
-            sensitivitySpeedY = Mathf.PI/400f; sensitivityAccelerationY = 1;
-            sensitivitySpeedX = Mathf.PI/400f; sensitivityAccelerationX = 1;
+            sensitivitySpeedY = 0; sensitivityAccelerationY = 1;
+            sensitivitySpeedX = 0; sensitivityAccelerationX = 1;
             speed = 0; acceleration = 1;
             distance = axis.axisDistance;
-            distanceSpeed = 1; distanceAcceleration = 1;
+            distanceSpeed = 0; distanceAcceleration = 1;
             sphere.setOrigin(axis.origin + new Vector3(0,distance,0));
         }
         public void scale(float newDistance){
@@ -557,35 +557,23 @@ public class SourceCode:MonoBehaviour {
     }
 
     public class KeyGenerator{
-        public int maxKeys;
         public int availableKeys;
-        public int increaseKeysBy;
 
         public KeyGenerator(){}
         public KeyGenerator(int amountOfKeys){
-            increaseKeysBy = amountOfKeys;
-            generateKeys();
+            generateKeys(amountOfKeys);
         }
 
-        public void generateKeys(){
+        public void generateKeys(int increaseKeysBy){
             availableKeys += increaseKeysBy;
-            maxKeys += increaseKeysBy;
-        }
-        public void setIncreaseKeysBy(int newLimit){
-            if(newLimit > 0){
-                increaseKeysBy = newLimit;
-            }
         }
         public void getKey(){
             availableKeys -= 1;
         }
         public void returnKey(){
-            if (availableKeys < maxKeys){
-                availableKeys +=1;
-            }
+            availableKeys +=1;
         }
-        public void resetGenerator(int newMax){
-            maxKeys = newMax;
+        public void resetGenerator(){
             availableKeys = 0;
         }
     }
@@ -618,6 +606,9 @@ public class SourceCode:MonoBehaviour {
                     if (Input.GetKeyDown("b")) {
                         saveBody.reader();
                         saveBody.writer();
+                    }
+                    if (Input.GetKeyDown("v")) {
+                        saveBody.reader();
                     }
                 break;
 
@@ -687,16 +678,13 @@ public class SourceCode:MonoBehaviour {
             keyGenerator = new KeyGenerator(amountOfJoints);
             editor = new Editor(this);
         }
-        public Body(int path){
-            
-        }
 
         public string saveBody(){
             Vector3 globalOrigin = globalAxis.origin;
             globalAxis.getWorldRotationInRadians(out float worldAngleY,out float worldAngleX,out float localAngleY);
             List<int> jointIndexes = new List<int>();
             string strJointIndexes = "";
-            for (int i = 0; i<keyGenerator.maxKeys;i++){
+            for (int i = 0; i<bodyStructure.Length;i++){
                 Joint joint = bodyStructure[i];
                 if (joint != null){
                     strJointIndexes += $" {i}";
@@ -704,7 +692,7 @@ public class SourceCode:MonoBehaviour {
                 }
             }
             string stringPath = $"Body_{worldKey}_";
-            string bodyStructureSize = $"{stringPath}BodyStructureSize: {keyGenerator.maxKeys}\n";
+            string bodyStructureSize = $"{stringPath}BodyStructureSize: {bodyStructure.Length}\n";
             string allJointsInBody = $"{stringPath}AllJointsInBody:{strJointIndexes}\n";
             string globalOriginLocation = $"{stringPath}globalOriginLocation: {globalOrigin.x} {globalOrigin.y} {globalOrigin.z}\n";
             string globalAxisRotationXYZ = $"{stringPath}globalAxisRotationXYZ: {worldAngleY} {worldAngleX} {localAngleY}\n";
@@ -713,49 +701,38 @@ public class SourceCode:MonoBehaviour {
 
         }
         public void updatePhysics(){
-            int sphereCount = keyGenerator.maxKeys;
+            int sphereCount = bodyStructure.Length;
             for (int i = 0; i<sphereCount; i++){
                 bodyStructure[i]?.updatePhysics();
             }            
         }
-        public void reActivateBody(){
-            int size = keyGenerator.maxKeys - keyGenerator.availableKeys;
-            for (int i = 0; i< size; i++){
-                bodyStructure[i].connection.active = true;
+        public Dictionary<int,int> arraySizeManager(int amount){
+            Dictionary<int,int> newKeys = new Dictionary<int,int>();
+            if (amount > bodyStructure.Length){
+                resizeArray(amount);
+            } else if (amount < bodyStructure.Length){
+                newKeys = optimizeBody();
             }
+            return newKeys;
         }
-        public void arraySizeManager(int amount){
-            if (amount>keyGenerator.maxKeys){
-                resizeArray(amount,false);
-            } else if (amount < keyGenerator.maxKeys){
-                optimizeBody();
-                resizeArray(amount,false);
-            }
-        }
-        public void resizeArray(int amount,bool extra){
-            int availableKeys = keyGenerator.availableKeys;
-            int limitCheck = availableKeys - amount;
-            if(limitCheck < 0) {
-                int oldLimit = keyGenerator.increaseKeysBy;
-                int oldMax = keyGenerator.maxKeys;
-                int increaseby = extra? Mathf.Abs(limitCheck) + oldLimit:Mathf.Abs(limitCheck);
-                keyGenerator.setIncreaseKeysBy(increaseby);
-                keyGenerator.generateKeys();
-                int newMax = keyGenerator.maxKeys;
+        public void resizeArray(int maxKey){
+            int limitCheck = bodyStructure.Length - maxKey;
+            if(limitCheck <= 0) {
+                int newMax = bodyStructure.Length + Mathf.Abs(limitCheck)+1;
+                keyGenerator.generateKeys(Mathf.Abs(limitCheck)+1);
                 Joint[] newJointArray = new Joint[newMax];
-                for (int i = 0; i<oldMax; i++){
+                for (int i = 0; i<bodyStructure.Length; i++){
                     Joint joint = bodyStructure[i];
                     if (joint != null){
                         newJointArray[i] = joint;
                     }
                 }
                 bodyStructure = newJointArray;
-                keyGenerator.setIncreaseKeysBy(oldLimit);
             }
         }
         public List<Joint> getPastEnds(){
             List<Joint> joints = new List<Joint>();
-            for (int i =0; i<keyGenerator.maxKeys; i++){
+            for (int i =0; i<bodyStructure.Length; i++){
                 Joint joint = bodyStructure[i];
                 if (joint != null){
                     if (joint.connection.past.Count == 0){
@@ -765,22 +742,26 @@ public class SourceCode:MonoBehaviour {
             }
             return joints;
         }
-        public void optimizeBody(){
-            int max = keyGenerator.maxKeys;
+        public Dictionary<int,int> optimizeBody(){
+            int max = bodyStructure.Length;
             int newSize = max - keyGenerator.availableKeys;
+            print($"{max} {keyGenerator.availableKeys}");
             Joint[] orginizedJoints = new Joint[newSize];
             int newIndex = 0;
+            Dictionary<int,int> newKeys = new Dictionary<int,int>();
             for (int i = 0; i < max; i++){
                 Joint joint = bodyStructure[i];
                 if (joint != null){
+                    newKeys.Add(joint.connection.indexInBody,newIndex);
                     joint.connection.indexInBody = newIndex;
-                    joint.pointCloud.optimizeCollisionSpheres();
                     orginizedJoints[newIndex] = joint; 
                     newIndex++;
                 }
             }
             bodyStructure = orginizedJoints;
-            keyGenerator.resetGenerator(newSize);
+            
+            keyGenerator.resetGenerator();
+            return newKeys;
         }
         internal void tracker(
             List<Joint> joints, bool pastOrFuture, bool getOnlyActive,bool getPastAndFuture,
@@ -982,6 +963,8 @@ public class SourceCode:MonoBehaviour {
 
     public class SaveBody{
         Body body;
+        Dictionary<int,int> newJointKeys = new Dictionary<int,int>();
+        Dictionary<int,int> newSphereKeys = new Dictionary<int,int>();
         public SaveBody(){}
         public SaveBody(Body body){
             this.body = body;
@@ -990,7 +973,7 @@ public class SourceCode:MonoBehaviour {
         public void writer(){
             using(StreamWriter writetext = new StreamWriter($"Assets/v4/{body.worldKey}.txt")) {
                 writetext.WriteLine(body.saveBody());
-                int size = body.keyGenerator.maxKeys;
+                int size = body.bodyStructure.Length;
                 for (int i = 0; i<size; i++){
                     Joint joint = body.bodyStructure[i];
                         if (joint != null){
@@ -1013,10 +996,8 @@ public class SourceCode:MonoBehaviour {
                         removeEmpty(splitStr[0].Split("_"), out List<string> instruction, out int instructionSize);
                         removeEmpty(splitStr[1].Split(" "), out List<string> values, out int valueSize);
                         if (instructionSize == 3){
-                            print(instruction[2]);
                             bodyInstructions(instruction[2],values);
                         } else if (instructionSize == 5){
-
                             jointInstructions(instruction[3],instruction[4],values);
 
                         } else if (instructionSize == 7){
@@ -1064,7 +1045,7 @@ public class SourceCode:MonoBehaviour {
         void bodyStructureSizeInstruction(List<string> value){
             if (value.Count>0){
                 bool check = int.TryParse(value[0], out int amount);
-                if (check) body.arraySizeManager(amount); 
+                if (check) newJointKeys = body.arraySizeManager(amount); 
             }
         }
 
@@ -1078,33 +1059,38 @@ public class SourceCode:MonoBehaviour {
             bool check;
             for (int i = 0; i < size; i++){
                 check = int.TryParse(value[i], out int key);
-                if (check && !set.Contains(key)){
-                    set.Add(key);
-                    if (key >= body.keyGenerator.maxKeys){
-                        nullKeys.Add(key);
-                        nullCount++;
-                    } else if (body.bodyStructure[i] == null){
-                        nullKeys.Add(key);
-                        nullCount++;
-                    } 
-                    if (key > maxKey) maxKey = key;
+                if (check){
+                    if (newJointKeys.TryGetValue(key, out int newKey)){
+                        key = newKey;
+                    }
+                    if (!set.Contains(key)){
+                        set.Add(key);
+                        if (key >= body.bodyStructure.Length){
+                            nullKeys.Add(key);
+                            nullCount++;
+                        } else if (body.bodyStructure[i] == null){
+                            nullKeys.Add(key);
+                            nullCount++;
+                        } 
+                        if (key > maxKey) maxKey = key;
+                    }
                 } else if (!error && !check) error = true;
             }
         }
         HashSet<int> resizeBody(List<string> value, out bool error){
             gatherBodyData(value,out error, out int maxKey, out int nullCount, out HashSet<int> set,out List<int> nullKeys);
-            if (maxKey>=body.keyGenerator.maxKeys) body.resizeArray(maxKey,false);
+            if (maxKey>=body.bodyStructure.Length) body.resizeArray(maxKey);
             for (int i = 0; i < nullCount; i++){
-                body.bodyStructure[nullKeys[i]] = new Joint(body,nullKeys[i]);
+                if (body.bodyStructure[nullKeys[i]] == null)
+                    body.bodyStructure[nullKeys[i]] = new Joint(body,nullKeys[i]);
             }
             return set;
         }
 
         void allJointsInBodyInstruction(List<string> value){
             HashSet<int> set = resizeBody(value, out bool error);
-            print("lol");
             if (!error) {
-                for (int i = 0; i< body.keyGenerator.maxKeys; i++){
+                for (int i = 0; i< body.bodyStructure.Length; i++){
                     if (!set.Contains(i)) body.bodyStructure[i]?.deleteJoint();        
                 }
             }
@@ -1151,6 +1137,9 @@ public class SourceCode:MonoBehaviour {
 
         public void jointInstructions(string jointKey, string instruction, List<string> value){
             bool checkKey = int.TryParse(jointKey, out int key);
+            if (newJointKeys.TryGetValue(key, out int newKey)){
+                key = newKey;
+            }
             Joint joint = checkKey? body.bodyStructure[key]:null;
             if (joint != null) {
                 switch (instruction){
@@ -1221,13 +1210,12 @@ public class SourceCode:MonoBehaviour {
                 Axis localAxis = joint.localAxis;
                 float length = localAxis.length(localAxis.origin-globalAxis.origin);
                 if (checkY && checkX) {
-                        joint.moveJoint(joint.body.globalAxis.setPointAroundOrigin(y,x,length) - joint.localAxis.origin);
-                    } else {
-                        joint.body.globalAxis.getPointAroundOrigin(localAxis.origin,out float globalAngleY,out float globalAngleX);
-                        if (checkY) globalAngleY = y;
-                        if (checkX) globalAngleX = x;
-                        joint.moveJoint(localAxis.setPointAroundOrigin(globalAngleY,globalAngleX,length) - localAxis.origin);
-                }
+                        if (length>0){
+                            joint.moveJoint(globalAxis.setPointAroundOrigin(y,x,length) - localAxis.origin);
+                        } else {
+                            joint.moveJoint(localAxis.origin-globalAxis.origin);
+                        }
+                    } 
             }
         }
         void localAxisRotationInstruction(Joint joint,List<string> value){
@@ -1268,11 +1256,11 @@ public class SourceCode:MonoBehaviour {
                 bool checkAccelerationX = float.TryParse(value[2], out float accelerationX);
                 if (checkSpeedX) aroundAxis.sensitivitySpeedX = speedX;
                 if (checkAccelerationX) aroundAxis.sensitivityAccelerationX = accelerationX;
-                if (checkX && angleX != aroundAxis.angleY) aroundAxis.setInRadians(angleX,aroundAxis.angleX);  
+                if (checkX && angleX != aroundAxis.angleY) aroundAxis.setInRadians(aroundAxis.angleY,angleX);  
                 float direction = aroundAxis.sensitivitySpeedX*aroundAxis.sensitivityAccelerationX;  
-                if (direction >= 0) {
+                if (direction > 0) {
                     aroundAxis.right();
-                } else if (direction <= 0) {
+                } else if (direction < 0) {
                     aroundAxis.left();
                 }
             }
@@ -1286,9 +1274,9 @@ public class SourceCode:MonoBehaviour {
                 if (checkAccelerationY) aroundAxis.sensitivityAccelerationY = accelerationY;
                 if (checkY && angleY != aroundAxis.angleY) aroundAxis.setInRadians(angleY,aroundAxis.angleX);  
                 float direction = aroundAxis.sensitivitySpeedY*aroundAxis.sensitivityAccelerationY;              
-                if (direction >= 0) {
+                if (direction > 0) {
                     aroundAxis.up();
-                } else if (direction <= 0) {
+                } else if (direction < 0) {
                     aroundAxis.down();
                 }  
             }
@@ -1306,7 +1294,7 @@ public class SourceCode:MonoBehaviour {
                 bool checkAcceleration = float.TryParse(value[1], out float acceleration);     
                 if (checkSpeed) aroundAxis.speed = speed;
                 if (checkAcceleration) aroundAxis.acceleration = acceleration;
-                joint.moveAllHierarchy();
+                if (Mathf.Abs(speed*acceleration)>0) joint.moveAllHierarchy();
             }
         }
         void pastConnectionsInBodyInstruction(Joint joint,List<string> value){
@@ -1364,7 +1352,7 @@ public class SourceCode:MonoBehaviour {
         void pointCloudSizeInstruction(Joint joint,List<string> value){
             if (value.Count>=0){
                 bool check = int.TryParse(value[0], out int amount);
-                if (check) joint.pointCloud.arraySizeManager(amount); 
+                if (check) newSphereKeys = joint.pointCloud.arraySizeManager(amount);
             }
         }
         void gatherJointData(Joint joint,List<string> value,out bool error, out int maxKey, out int nullCount, out HashSet<int> set,out List<int> nullKeys){
@@ -1379,8 +1367,11 @@ public class SourceCode:MonoBehaviour {
             for (int i = 0; i < size; i++){
                 check = int.TryParse(value[i], out int key);
                 if (check && !set.Contains(key)){
+                    if (newSphereKeys.TryGetValue(key, out int newKey)){
+                        key = newKey;
+                    }
                     set.Add(key);
-                    if (key >= pointCloud.keyGenerator.maxKeys){
+                    if (key >= pointCloud.collisionSpheres.Length){
                         nullKeys.Add(key);
                         nullCount++;
                     } else if (pointCloud.collisionSpheres[i] == null){
@@ -1393,25 +1384,22 @@ public class SourceCode:MonoBehaviour {
         }
         HashSet<int> resizePointCloud(Joint joint,List<string> value, out bool error){
             gatherJointData(joint, value,out error, out int maxKey, out int nullCount, out HashSet<int> set,out List<int> nullKeys);
-            if (maxKey>=joint.pointCloud.keyGenerator.maxKeys) joint.pointCloud.resizeArray(maxKey,false);
+            if (maxKey>=joint.pointCloud.collisionSpheres.Length) joint.pointCloud.resizeArray(maxKey);
             for (int i = 0; i < nullCount; i++){
-                print(joint.pointCloud.keyGenerator);
-               joint.pointCloud.collisionSpheres[nullKeys[i]] = new CollisionSphere(joint,nullKeys[i]);
+                if (joint.pointCloud.collisionSpheres[nullKeys[i]] == null)
+                    joint.pointCloud.collisionSpheres[nullKeys[i]] = new CollisionSphere(joint,nullKeys[i]);
             }
             return set;
         }
         void allSpheresInJointInstruction(Joint joint,List<string> value){
             HashSet<int> set = resizePointCloud(joint,value, out bool error);
             if (!error) {
-                for (int i = 0; i< joint.pointCloud.keyGenerator.maxKeys; i++){
+                for (int i = 0; i< joint.pointCloud.collisionSpheres.Length; i++){
                     if (!set.Contains(i)) joint.pointCloud?.deleteSphere(i);        
                 }
             }
         }
-// angleY, sensitivitySpeedY, sensitivityAccelerationY,
-// angleX, sensitivitySpeedX, sensitivityAccelerationX,
-// distance, distanceSpeed, distanceAcceleration,
-// speed, acceleration;
+
         const string distanceFromLocalAxis = "DistanceFromLocalAxis";
         const string XFromLocalAxis = "XFromLocalAxis";
         const string YFromLocalAxis = "YFromLocalAxis";
@@ -1420,6 +1408,9 @@ public class SourceCode:MonoBehaviour {
  
         public void sphereInstructions(string jointKey,string collisionSphereKey, string instruction, List<string> value){
             bool checkKey = int.TryParse(jointKey, out int key);
+            if (newSphereKeys.TryGetValue(key, out int newKey)){
+                key = newKey;
+            }
             Joint joint = checkKey? body.bodyStructure[key]:null;
             if (joint != null) { 
                 bool checkKey2 = int.TryParse(collisionSphereKey, out int key2);
@@ -1505,11 +1496,7 @@ public class SourceCode:MonoBehaviour {
         public string saveJoint(){
             Vector3 jointOrigin = localAxis.origin;
             Vector3 globalOrigin = body.globalAxis.origin;
-            body.globalAxis.getAngle(
-                jointOrigin,
-                globalOrigin,body.globalAxis.x,body.globalAxis.y,body.globalAxis.z,
-                out float globalY,out float globalX
-                );
+            body.globalAxis.getPointAroundOrigin(jointOrigin,out float globalY,out float globalX);
             localAxis.getWorldRotationInRadians(out float worldAngleY,out float worldAngleX,out float localAngleY);
             float distanceFromOrigin = body.globalAxis.length(jointOrigin-globalOrigin);
             string stringPath = $"Body_{body.worldKey}_Joint_{connection.indexInBody}_";
@@ -1537,13 +1524,15 @@ public class SourceCode:MonoBehaviour {
             connection.disconnectAllFuture();
             connection.disconnectAllPast();
             pointCloud.deleteAllSpheres();
+            localAxis.renderAxis.deleteAxis();
             body.bodyStructure[connection.indexInBody] = null;
         }
         public void distanceFromGlobalOrigin(float newDistance){
             Vector3 globalOrigin = body.globalAxis.origin;
             Vector3 localOrigin = localAxis.origin;
+            Vector3 lol = localOrigin-globalOrigin;
             float length = localAxis.length(localOrigin-globalOrigin);
-            Vector3 direction = localAxis.direction(localOrigin,globalOrigin)*(newDistance-length);
+            Vector3 direction = (length>0)? localAxis.direction(localOrigin,globalOrigin)*(newDistance-length): lol;
             moveJoint(direction);
         }
         public void moveJoint(Vector3 add){
@@ -1639,11 +1628,10 @@ public class SourceCode:MonoBehaviour {
             listSize = 0;
             int size = collisionSpheres.Length;
             indexes = new List<int>();
-            print(joint);
             string stringPath = $"Body_{joint.body.worldKey}_Joint_{joint.connection.indexInBody}_";
             string pointCloudSize = $"{stringPath}PointCloudSize: {size}\n";
             string allSpheresInJoint = $"{stringPath}AllSpheresInJoint: ";
-            for (int i = 0; i<keyGenerator.maxKeys; i++){
+            for (int i = 0; i<collisionSpheres.Length; i++){
                 CollisionSphere collisionSphere = collisionSpheres[i];
                 if (collisionSphere != null) {
                     allSpheresInJoint += $"{i} ";
@@ -1662,20 +1650,20 @@ public class SourceCode:MonoBehaviour {
             }
         }
         public void deleteAllSpheres(){
-            int size = keyGenerator.maxKeys;
+            int size = collisionSpheres.Length;
             for (int i = 0; i<size;i++){
                 deleteSphere(i);
             }
         }
         public void resetAllSphereOrigins(){
-            int sphereCount = keyGenerator.maxKeys;
+            int sphereCount = collisionSpheres.Length;
             for (int i = 0; i<sphereCount; i++){
                 CollisionSphere collisionSphere = collisionSpheres[i];
                 collisionSphere?.aroundAxis.resetOrigin();
             }
         }
         public void rotateAllSpheres(Vector4 quat, Vector3 rotationOrigin){
-            int sphereCount = keyGenerator.maxKeys;
+            int sphereCount = collisionSpheres.Length;
             for (int i = 0; i<sphereCount; i++){
                 CollisionSphere collisionSphere = collisionSpheres[i];
                 if (collisionSphere != null){
@@ -1687,14 +1675,14 @@ public class SourceCode:MonoBehaviour {
             }
         }
         public void moveSpheres(Vector3 move){
-            int sphereCount = keyGenerator.maxKeys;
+            int sphereCount = collisionSpheres.Length;
             for (int i = 0; i<sphereCount; i++){
                 CollisionSphere collisionSphere = collisionSpheres[i];
                 collisionSphere?.moveOrigin(move);
             }
         }
         public void updateAllSphereColors(Color color){
-            int sphereCount = keyGenerator.maxKeys;
+            int sphereCount = collisionSpheres.Length;
             for (int i = 0; i<sphereCount; i++){
                 collisionSpheres[i]?.aroundAxis.sphere.updateColor(color);
             }
@@ -1722,25 +1710,23 @@ public class SourceCode:MonoBehaviour {
             }
             return list;
         }
-        public void arraySizeManager(int amount){
-            if (amount>keyGenerator.maxKeys){
-                resizeArray(amount,false);
-            } else if (amount < keyGenerator.maxKeys){
-                optimizeCollisionSpheres();
-                resizeArray(amount,false);
+        public Dictionary<int,int> arraySizeManager(int amount){
+            Dictionary<int,int> newKeys = new Dictionary<int,int>();
+            if (amount>collisionSpheres.Length){
+                resizeArray(amount);
+            } else if (amount < collisionSpheres.Length){
+                newKeys = optimizeCollisionSpheres();
+                resizeArray(amount);
             }
+            return newKeys;
         }
-        public void resizeArray(int amount, bool extra){
-            int availableKeys = keyGenerator.availableKeys;
-            int limitCheck = availableKeys - amount;
-            print(limitCheck);
+        public void resizeArray(int maxKey){
+            int max = collisionSpheres.Length;
+            int limitCheck = max - maxKey;
             if(limitCheck < 0) {
-                int oldLimit = keyGenerator.increaseKeysBy;
-                int oldMax = keyGenerator.maxKeys;
-                int increaseby = extra? Mathf.Abs(limitCheck) + oldLimit:Mathf.Abs(limitCheck);
-                keyGenerator.setIncreaseKeysBy(increaseby);
-                keyGenerator.generateKeys();
-                int newMax = keyGenerator.maxKeys;
+                int oldMax = collisionSpheres.Length;
+                int newMax = oldMax + Mathf.Abs(limitCheck);
+                keyGenerator.generateKeys(Mathf.Abs(limitCheck));
                 CollisionSphere[] newCollisionSpheresArray = new CollisionSphere[newMax];
                 for (int i = 0; i<oldMax; i++){
                     CollisionSphere collisionSphere = collisionSpheres[i];
@@ -1749,25 +1735,26 @@ public class SourceCode:MonoBehaviour {
                     }
                 }
                 collisionSpheres = newCollisionSpheresArray;
-                keyGenerator.setIncreaseKeysBy(oldLimit);
             }
         }
-        public void optimizeCollisionSpheres(){
-            int maxKeys = keyGenerator.maxKeys;
+        public Dictionary<int,int> optimizeCollisionSpheres(){
+            int maxKeys = collisionSpheres.Length;
             int used = keyGenerator.availableKeys;
             CollisionSphere[] newCollision = new CollisionSphere[used];
+            Dictionary<int,int> newKeys = new Dictionary<int,int>();
             int count = 0;
             for (int j = 0; j<maxKeys; j++){
                 CollisionSphere collision = collisionSpheres[j];
                 if (collision != null){
-                    collision.path.setJoint(joint);
+                    newKeys.Add(collision.path.collisionSphereKey,count);
                     collision.path.setCollisionSphereKey(count);
                     newCollision[count] = collision;
                     count++;
                 }
             }
             collisionSpheres = newCollision;
-            keyGenerator.resetGenerator(count);
+            keyGenerator.resetGenerator();
+            return newKeys;
         }
     }
 
@@ -1804,10 +1791,7 @@ public class SourceCode:MonoBehaviour {
             aroundAxis = new AroundAxis(joint.localAxis,new Sphere());
             joint.pointCloud.keyGenerator.getKey();
         }
-   // angleY, sensitivitySpeedY, sensitivityAccelerationY,
-// angleX, sensitivitySpeedX, sensitivityAccelerationX,
-// distance, distanceSpeed, distanceAcceleration,
-// speed, acceleration;     
+   
         public string saveCollisionSphere(){
             Sphere sphere = aroundAxis.sphere;
             string stringPath = $"Body_{path.body.worldKey}_Joint_{path.joint.connection.indexInBody}_Sphere_{path.collisionSphereKey}_";
