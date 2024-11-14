@@ -141,26 +141,27 @@ public class UnityPluginTest : MonoBehaviour
         public Axis ax;
         public Body lol;
         public void strt(){
-            ax = new Axis(new Vector3(5,5,5),5);
-            lol = new Body(0,ax,5);
-            // print(lol.getPastEnds().Count);
-            // print(lol.keyGenerator.maxKeys);
-            // foreach (int i in lol.keyGenerator.freeKeys){
-            //     print(i);
-            // }
+            lol = new Body(0);
+        }
+        public void readWrite(){
+            lol.editor.saveBody.reader();
+            lol.editor.saveBody.writer();
         }
     }
     Experiment exp = new Experiment();
     void Start(){
         exp.strt();
-
     }
-    int time = 0;
+
     int count = 0;
     // Update is called once per frame
     void Update()
     {
-        
+        if (count == 60){
+            exp.readWrite();
+            count = 0;
+        }
+        count++;
         exp.lol.editor.options();
         // print(exp.lol.editor.jointSelector.selected.connection.current);
         // if (time == 60 && count!= 360) {

@@ -214,8 +214,6 @@ public class SourceCode:MonoBehaviour {
             speed *= acceleration;
         }
         public Vector3 placeAxis(){
-            distance += speed;
-            scale(distance);
             return axis.placeAxis(sphere.origin);
         }
         public void updateAxis(){
@@ -330,6 +328,7 @@ public class SourceCode:MonoBehaviour {
         
         public void getPointAroundOrigin(Vector3 point, out float angleY,out float angleX){
             getAngle(point,origin,x,y,z,out angleY,out angleX);
+            if (angleY == 0f || angleX == Mathf.PI) angleX = 0;
         }
         void rotateAxis(ref Vector3 x, ref Vector3 y,ref Vector3 z,Vector3 axis,float angle){
             Vector4 quat = angledAxis(angle,axis);
@@ -677,6 +676,14 @@ public class SourceCode:MonoBehaviour {
             bodyStructure = new Joint[amountOfJoints];
             keyGenerator = new KeyGenerator(amountOfJoints);
             editor = new Editor(this);
+        }
+        public Body(int worldKey){
+            this.worldKey = worldKey;
+            globalAxis = new Axis(new Vector3(0,0,0),5);
+            bodyStructure = new Joint[0];
+            keyGenerator = new KeyGenerator(0);
+            editor = new Editor(this);
+            editor.saveBody.reader();
         }
 
         public string saveBody(){
@@ -1211,6 +1218,8 @@ public class SourceCode:MonoBehaviour {
                 float length = localAxis.length(localAxis.origin-globalAxis.origin);
                 if (checkY && checkX) {
                         if (length>0){
+                            if (float.IsNaN(y)) y = 0;
+                            if (float.IsNaN(x)) x = 0;
                             joint.moveJoint(globalAxis.setPointAroundOrigin(y,x,length) - localAxis.origin);
                         } else {
                             joint.moveJoint(localAxis.origin-globalAxis.origin);
@@ -1295,6 +1304,7 @@ public class SourceCode:MonoBehaviour {
                 if (checkSpeed) aroundAxis.speed = speed;
                 if (checkAcceleration) aroundAxis.acceleration = acceleration;
                 if (Mathf.Abs(speed*acceleration)>0) joint.moveAllHierarchy();
+                print(speed);
             }
         }
         void pastConnectionsInBodyInstruction(Joint joint,List<string> value){
@@ -1446,7 +1456,6 @@ public class SourceCode:MonoBehaviour {
         }
         void XFromLocalAxisInstruction(CollisionSphere collisionSphere, List<string> value){
             xAroundAxis(collisionSphere.aroundAxis,value);
-            print("lol");
         }
         void YFromLocalAxisInstruction(CollisionSphere collisionSphere, List<string> value){
             yAroundAxis(collisionSphere.aroundAxis,value);
@@ -1530,9 +1539,8 @@ public class SourceCode:MonoBehaviour {
         public void distanceFromGlobalOrigin(float newDistance){
             Vector3 globalOrigin = body.globalAxis.origin;
             Vector3 localOrigin = localAxis.origin;
-            Vector3 lol = localOrigin-globalOrigin;
             float length = localAxis.length(localOrigin-globalOrigin);
-            Vector3 direction = (length>0)? localAxis.direction(localOrigin,globalOrigin)*(newDistance-length): lol;
+            Vector3 direction = (length>0)? localAxis.direction(localOrigin,globalOrigin)*(newDistance-length): localAxis.direction(localAxis.y,globalOrigin)*(newDistance-length);
             moveJoint(direction);
         }
         public void moveJoint(Vector3 add){
@@ -1573,6 +1581,7 @@ public class SourceCode:MonoBehaviour {
         }
         public void moveAllHierarchy(){
             Vector3 move = localAxis.move.placeAxis();
+            print(move);
             moveHierarchy(move, false,false,true);
         }
 
