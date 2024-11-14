@@ -1001,7 +1001,7 @@ public class SourceCode:MonoBehaviour {
                             jointInstructions(instruction[3],instruction[4],values);
 
                         } else if (instructionSize == 7){
-                            sphereInstructions(instruction[1],instruction[3],instruction[4],values);
+                            sphereInstructions(instruction[3],instruction[5],instruction[6],values);
                         }
                     }
                 }
@@ -1442,28 +1442,28 @@ public class SourceCode:MonoBehaviour {
                  if (checkDistance){
                     collisionSphere.aroundAxis.scale(distance);
                 }
-
             }
         }
         void XFromLocalAxisInstruction(CollisionSphere collisionSphere, List<string> value){
             xAroundAxis(collisionSphere.aroundAxis,value);
+            print("lol");
         }
         void YFromLocalAxisInstruction(CollisionSphere collisionSphere, List<string> value){
             yAroundAxis(collisionSphere.aroundAxis,value);
         }
         void radiusInstruction(CollisionSphere collisionSphere, List<string> value){
             if (value.Count>0){
-                bool checkRadius = float.TryParse(value[1], out float radius);
+                bool checkRadius = float.TryParse(value[0], out float radius);
                 if (checkRadius) collisionSphere.aroundAxis.sphere.setRadius(radius);
             }
         }
         void colorRGBAInstruction(CollisionSphere collisionSphere, List<string> value){
             if (value.Count>=4){
                 Sphere sphere = collisionSphere.aroundAxis.sphere;
-                bool checkR = float.TryParse(value[1], out float r);
+                bool checkR = float.TryParse(value[0], out float r);
                 bool checkG = float.TryParse(value[1], out float g);
-                bool checkB= float.TryParse(value[1], out float b);
-                bool checkA = float.TryParse(value[1], out float a);
+                bool checkB= float.TryParse(value[2], out float b);
+                bool checkA = float.TryParse(value[3], out float a);
                 if (checkR) sphere.color.r = r;
                 if (checkG) sphere.color.g = g;
                 if (checkB) sphere.color.b = b;
@@ -1712,26 +1712,23 @@ public class SourceCode:MonoBehaviour {
         }
         public Dictionary<int,int> arraySizeManager(int amount){
             Dictionary<int,int> newKeys = new Dictionary<int,int>();
-            if (amount>collisionSpheres.Length){
+            if (amount > collisionSpheres.Length){
                 resizeArray(amount);
             } else if (amount < collisionSpheres.Length){
                 newKeys = optimizeCollisionSpheres();
-                resizeArray(amount);
             }
             return newKeys;
         }
         public void resizeArray(int maxKey){
-            int max = collisionSpheres.Length;
-            int limitCheck = max - maxKey;
-            if(limitCheck < 0) {
-                int oldMax = collisionSpheres.Length;
-                int newMax = oldMax + Mathf.Abs(limitCheck);
-                keyGenerator.generateKeys(Mathf.Abs(limitCheck));
+            int limitCheck = collisionSpheres.Length - maxKey;
+            if(limitCheck <= 0) {
+                int newMax = collisionSpheres.Length + Mathf.Abs(limitCheck)+1;
+                keyGenerator.generateKeys(Mathf.Abs(limitCheck)+1);
                 CollisionSphere[] newCollisionSpheresArray = new CollisionSphere[newMax];
-                for (int i = 0; i<oldMax; i++){
-                    CollisionSphere collisionSphere = collisionSpheres[i];
-                    if (collisionSphere != null){
-                        newCollisionSpheresArray[i] = collisionSphere;
+                for (int i = 0; i<collisionSpheres.Length; i++){
+                    CollisionSphere joint = collisionSpheres[i];
+                    if (joint != null){
+                        newCollisionSpheresArray[i] = joint;
                     }
                 }
                 collisionSpheres = newCollisionSpheresArray;
