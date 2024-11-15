@@ -213,9 +213,6 @@ public class SourceCode:MonoBehaviour {
             sensitivitySpeedX *= sensitivityAccelerationX;
             speed *= acceleration;
         }
-        public Vector3 placeAxis(){
-            return axis.placeAxis(sphere.origin);
-        }
         public void updateAxis(){
             sphere.setOrigin(sphere.origin);
         }
@@ -770,35 +767,6 @@ public class SourceCode:MonoBehaviour {
             keyGenerator.resetGenerator();
             return newKeys;
         }
-        internal void tracker(
-            List<Joint> joints, bool pastOrFuture, bool getOnlyActive,bool getPastAndFuture,
-            out List<Joint> tree, out List<Joint> end, out int treeSize
-            ){
-            treeSize = joints.Count;
-            end = new List<Joint>();
-            for (int i=0; i< treeSize; i++){
-                Joint joint = joints[i];
-                if (!joint.connection.used){
-                    List<Joint> tracker = getPastAndFuture ? 
-                        joint.connection.getAll(getOnlyActive):
-                        joint.connection.nextConnections(pastOrFuture,getOnlyActive);
-                    int trackerSize = tracker.Count;
-                    if (trackerSize > 0){
-                        joints.AddRange(tracker);
-                        treeSize += trackerSize;
-                    } else {
-                        end.Add(joint);
-                    }
-                }
-            }
-            resetUsed(joints,treeSize);
-            tree = joints;
-        }
-        internal void resetUsed(List<Joint> joints, int size){
-            for (int i = 0; i<size;i++){
-                joints[i].connection.used = false;
-            }
-        }
     }
 
     public class Connection {
@@ -820,56 +788,6 @@ public class SourceCode:MonoBehaviour {
             this.future = future;
         }
 
-        public void setActive(bool active){
-            this.active = active;
-        }
-        public void setCurrent(int indexInBody){
-            this.indexInBody = indexInBody;
-        }
-        public void setPast(List<Joint> past){
-            this.past = past;
-        }
-        public void setFuture(List<Joint> future){
-            this.future = future;
-        }
-        public void getFutureConnections(
-            bool getOnlyActive,
-            out List<Joint> connectionTree, 
-            out List<Joint> connectionEnd,
-            out int treeSize
-            ){
-            bool futureOnly = true;
-            connectionTracker(
-                futureOnly,getOnlyActive, false,
-                out connectionTree, out connectionEnd,
-                out treeSize
-                );
-        }
-        public void getPastConnections(
-            bool getOnlyActive,
-            out List<Joint> connectionTree, 
-            out List<Joint> connectionEnd,
-            out int treeSize
-            ){
-            bool pastOnly = false;
-            connectionTracker(
-                pastOnly, getOnlyActive, false,
-                out connectionTree, out connectionEnd,
-                out treeSize
-                );
-        }
-        public void getAllConnections(
-            bool pastOrFuture,bool getOnlyActive,
-            out List<Joint> connectionTree, 
-            out List<Joint> connectionEnd,
-            out int treeSize
-            ){
-            connectionTracker(
-                pastOrFuture, getOnlyActive, true,
-                out connectionTree, out connectionEnd,
-                out treeSize
-                );
-        }
         internal void disconnectFuture(int index){
             future[index].connection.past.Remove(current);
         }
@@ -902,52 +820,33 @@ public class SourceCode:MonoBehaviour {
             connectTo.Add(current);
         }
 
-        public List<Joint> nextConnections(bool pastOrFuture, bool getOnlyActive){
+        public List<Joint> nextConnections(bool pastOrFuture){
             List<Joint> connectedJoints = new List<Joint>();
             List<Joint> joints = pastOrFuture? future:past;
             int listSize = joints.Count;
             for (int j = 0;j<listSize;j++){
                 Joint joint = joints[j];
                 bool used = joint.connection.used;
-                if (getOnlyActive && joint.connection.active && !used){
-                    connectedJoints.Add(joint);
-                    joint.connection.used = true;
-                } else if (!getOnlyActive && !used){
+                if (joint.connection.active && !used){
                     connectedJoints.Add(joint);
                     joint.connection.used = true;
                 }
             }
             return connectedJoints;
         }
-        public List<Joint> getPast(bool getOnlyActive){
-            return nextConnections(false,getOnlyActive);
+        public List<Joint> getPast(){
+            return nextConnections(false);
         }
-        public List<Joint> getFuture(bool getOnlyActive){
-            return nextConnections(true,getOnlyActive);
+        public List<Joint> getFuture(){
+            return nextConnections(true);
         }
-        public List<Joint> getAll(bool getOnlyActive){
+
+        public List<Joint> getAll(){
             List<Joint> pastAndFuture = new List<Joint>();
-            pastAndFuture.AddRange(getPast(getOnlyActive));
+            pastAndFuture.AddRange(getPast());
             used = false;
-            pastAndFuture.AddRange(getFuture(getOnlyActive));
+            pastAndFuture.AddRange(getFuture());
             return pastAndFuture;
-        }
-        void connectionTracker(
-            bool pastOrFuture, bool getOnlyActive, bool getPastAndFuture,
-            out List<Joint> tree, out List<Joint> end,
-            out int treeSize
-            ){
-            tree = new List<Joint>{current};  
-            if (getPastAndFuture){
-                if (pastOrFuture) tree.AddRange(getFuture(getOnlyActive)); else tree.AddRange(getPast(getOnlyActive));
-                tree.AddRange(getAll(getOnlyActive));
-                }
-            else 
-                tree.AddRange(nextConnections(pastOrFuture,getOnlyActive));
-            current.body.tracker(
-                tree, pastOrFuture, getOnlyActive, getPastAndFuture,
-                out tree, out end, out treeSize
-                );
         }
         public string pastToString(){
             string pastIndexes = "";
@@ -1480,7 +1379,6 @@ public class SourceCode:MonoBehaviour {
                 sphere.resetColor();
             }
         }
-
     }
 
 
@@ -1547,6 +1445,10 @@ public class SourceCode:MonoBehaviour {
             localAxis.moveAxis(add);
             pointCloud.moveSpheres(add);
         }
+        public void rotateJoint(Vector4 quat, Vector3 rotationOrigin){
+            localAxis.rotate(quat,rotationOrigin);
+            pointCloud.rotateAllSpheres(quat,rotationOrigin);
+        }
         public void worldRotateJoint(float worldAngleY,float worldAngleX,float localAngleY){
             localAxis.setWorldRotation(worldAngleY,worldAngleX,localAngleY);
             pointCloud.resetAllSphereOrigins();
@@ -1560,64 +1462,67 @@ public class SourceCode:MonoBehaviour {
 
         public void rotatePastHierarchy(){
             Vector4 quat = localAxis.spin.quat(localAxis.spin.speed);
-            rotateHierarchy(quat, false,false,false);
+            rotateHierarchy(quat, false,false);
         }
         public void rotateFutureHierarchy(){
             Vector4 quat = localAxis.spin.quat(localAxis.spin.speed);
-            rotateHierarchy(quat, true,false,false);
+            rotateHierarchy(quat, true,false);
         }
         public void rotateAllHierarchy(){
             Vector4 quat = localAxis.spin.quat(localAxis.spin.speed);
-            rotateHierarchy(quat, false,false,true);
+            rotateHierarchy(quat, false,true);
         }
-
-        public void movePastHierarchy(){
-            Vector3 move = localAxis.move.placeAxis();
-            moveHierarchy(move, false,false,false);
-        }
-        public void moveFutureHierarchy(){
-            Vector3 move = localAxis.move.placeAxis();
-            moveHierarchy(move, true,false,false);
-        }
-        public void moveAllHierarchy(){
-            Vector3 move = localAxis.move.placeAxis();
-            print(move);
-            moveHierarchy(move, false,false,true);
-        }
-
-        void rotateHierarchy(Vector4 quat, bool pastOrFuture, bool rotateOnlyActive, bool rotateAll){
-            initTree(pastOrFuture, rotateOnlyActive, rotateAll, out List<Joint> tree, out int size);  
+        void rotateHierarchy(Vector4 quat, bool pastOrFuture, bool rotateAll){
+            initTree(pastOrFuture, rotateAll, out List<Joint> tree, out int size);  
             Vector3 rotationOrigin = localAxis.origin;
             for (int i = 0; i<size;i++){
                 Joint joint = tree[i];
-                List<Joint> joints = tree[i].connection.getAll(rotateOnlyActive);
+                List<Joint> joints = joint.connection.getAll();
                 tree.AddRange(joints);
                 size += joints.Count;
-                joint.localAxis.rotate(quat,rotationOrigin);
-                joint.pointCloud.rotateAllSpheres(quat,rotationOrigin);
+                joint.rotateJoint(quat,rotationOrigin);
             }
-            body.resetUsed(tree,size);
+            resetUsed(tree,size);
         }
 
-        void moveHierarchy(Vector3 newVec, bool pastOrFuture, bool rotateOnlyActive,bool rotateAll){
-            initTree(pastOrFuture, rotateOnlyActive, rotateAll, out List<Joint> tree, out int size);  
+        public void movePastHierarchy(){
+            Vector3 move = localAxis.move.sphere.origin - localAxis.origin;
+            moveHierarchy(move, false,false);
+        }
+        public void moveFutureHierarchy(){
+            Vector3 move = localAxis.move.sphere.origin - localAxis.origin;
+            moveHierarchy(move, true,false);
+        }
+        public void moveAllHierarchy(){
+            Vector3 move = localAxis.move.sphere.origin - localAxis.origin;
+            moveHierarchy(move, false,true);
+        }
+        void moveHierarchy(Vector3 newVec, bool pastOrFuture, bool rotateAll){
+            initTree(pastOrFuture, rotateAll, out List<Joint> tree, out int size);  
             for (int i = 0; i<size;i++){
-                List<Joint> joints = tree[i].connection.getAll(rotateOnlyActive);
+                Joint joint = tree[i];
+                List<Joint> joints = joint.connection.getAll();
                 tree.AddRange(joints);
                 size += joints.Count;
-                moveJoint(newVec);
+                joint.moveJoint(newVec);
             }
-            body.resetUsed(tree,size);
+            resetUsed(tree,size);
         }
-        void initTree(bool pastOrFuture, bool rotateOnlyActive,bool rotateAll, out List<Joint> tree,out int size){
+
+        void initTree(bool pastOrFuture,bool rotateAll, out List<Joint> tree,out int size){
             tree = new List<Joint>{this};
             if (rotateAll) 
-                tree.AddRange(connection.getAll(rotateOnlyActive)); 
+                tree.AddRange(connection.getAll()); 
                 else if (pastOrFuture) 
-                        tree.AddRange(connection.getFuture(rotateOnlyActive)); 
+                        tree.AddRange(connection.getFuture()); 
                     else 
-                        tree.AddRange(connection.getPast(rotateOnlyActive)); 
+                        tree.AddRange(connection.getPast()); 
             size = tree.Count;
+        }
+        internal void resetUsed(List<Joint> joints, int size){
+            for (int i = 0; i<size;i++){
+                joints[i].connection.used = false;
+            }
         }
     }
 
