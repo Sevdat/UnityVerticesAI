@@ -157,7 +157,7 @@ public class UnityPluginTest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (count == 1000){
+        if (count == 100){
             exp.readWrite();
             count = 0;
         }

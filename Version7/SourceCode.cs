@@ -734,22 +734,9 @@ public class SourceCode:MonoBehaviour {
                 bodyStructure = newJointArray;
             }
         }
-        public List<Joint> getPastEnds(){
-            List<Joint> joints = new List<Joint>();
-            for (int i =0; i<bodyStructure.Length; i++){
-                Joint joint = bodyStructure[i];
-                if (joint != null){
-                    if (joint.connection.past.Count == 0){
-                        joints.Add(joint);
-                    }
-                }
-            }
-            return joints;
-        }
         public Dictionary<int,int> optimizeBody(){
             int max = bodyStructure.Length;
             int newSize = max - keyGenerator.availableKeys;
-            print($"{max} {keyGenerator.availableKeys}");
             Joint[] orginizedJoints = new Joint[newSize];
             int newIndex = 0;
             Dictionary<int,int> newKeys = new Dictionary<int,int>();
@@ -763,7 +750,6 @@ public class SourceCode:MonoBehaviour {
                 }
             }
             bodyStructure = orginizedJoints;
-            
             keyGenerator.resetGenerator();
             return newKeys;
         }
@@ -948,6 +934,7 @@ public class SourceCode:MonoBehaviour {
                 break;
             }
         }
+        
         void bodyStructureSizeInstruction(List<string> value){
             if (value.Count>0){
                 bool check = int.TryParse(value[0], out int amount);
@@ -1203,7 +1190,6 @@ public class SourceCode:MonoBehaviour {
                 if (checkSpeed) aroundAxis.speed = speed;
                 if (checkAcceleration) aroundAxis.acceleration = acceleration;
                 if (Mathf.Abs(speed*acceleration)>0) joint.moveAllHierarchy();
-                print(speed);
             }
         }
         void pastConnectionsInBodyInstruction(Joint joint,List<string> value){
@@ -1259,11 +1245,12 @@ public class SourceCode:MonoBehaviour {
             }
         }
         void pointCloudSizeInstruction(Joint joint,List<string> value){
-            if (value.Count>=0){
+            if (value.Count> 0){
                 bool check = int.TryParse(value[0], out int amount);
                 if (check) newSphereKeys = joint.pointCloud.arraySizeManager(amount);
             }
         }
+
         void gatherJointData(Joint joint,List<string> value,out bool error, out int maxKey, out int nullCount, out HashSet<int> set,out List<int> nullKeys){
             set = new HashSet<int>();
             nullKeys = new List<int>();
@@ -1275,19 +1262,22 @@ public class SourceCode:MonoBehaviour {
             PointCloud pointCloud = joint.pointCloud;
             for (int i = 0; i < size; i++){
                 check = int.TryParse(value[i], out int key);
-                if (check && !set.Contains(key)){
+                if (check){
                     if (newSphereKeys.TryGetValue(key, out int newKey)){
                         key = newKey;
                     }
-                    set.Add(key);
-                    if (key >= pointCloud.collisionSpheres.Length){
-                        nullKeys.Add(key);
-                        nullCount++;
-                    } else if (pointCloud.collisionSpheres[i] == null){
-                        nullKeys.Add(key);
-                        nullCount++;
-                    } 
-                    if (key > maxKey) maxKey = key;
+                    if (!set.Contains(key)){
+                        print(key);
+                        set.Add(key);
+                        if (key >= pointCloud.collisionSpheres.Length){
+                            nullKeys.Add(key);
+                            nullCount++;
+                        } else if (pointCloud.collisionSpheres[i] == null){
+                            nullKeys.Add(key);
+                            nullCount++;
+                        } 
+                        if (key > maxKey) maxKey = key;
+                    }
                 } else if (!error && !check) error = true;
             }
         }
@@ -1317,12 +1307,15 @@ public class SourceCode:MonoBehaviour {
  
         public void sphereInstructions(string jointKey,string collisionSphereKey, string instruction, List<string> value){
             bool checkKey = int.TryParse(jointKey, out int key);
-            if (newSphereKeys.TryGetValue(key, out int newKey)){
+            if (newJointKeys.TryGetValue(key, out int newKey)){
                 key = newKey;
             }
             Joint joint = checkKey? body.bodyStructure[key]:null;
             if (joint != null) { 
                 bool checkKey2 = int.TryParse(collisionSphereKey, out int key2);
+                if (newSphereKeys.TryGetValue(key, out int newKey2)){
+                    key2 = newKey2;
+                }
                 CollisionSphere collisionSphere = checkKey2?joint.pointCloud.collisionSpheres[key2]:null;
                 if (collisionSphere != null){
                     switch (instruction){
@@ -1650,7 +1643,7 @@ public class SourceCode:MonoBehaviour {
         }
         public Dictionary<int,int> optimizeCollisionSpheres(){
             int maxKeys = collisionSpheres.Length;
-            int used = keyGenerator.availableKeys;
+            int used = maxKeys - keyGenerator.availableKeys;
             CollisionSphere[] newCollision = new CollisionSphere[used];
             Dictionary<int,int> newKeys = new Dictionary<int,int>();
             int count = 0;
