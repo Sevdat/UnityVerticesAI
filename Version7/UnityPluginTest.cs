@@ -12,7 +12,7 @@ public class UnityPluginTest : MonoBehaviour
 
         public AxisTest(){}
         public AxisTest(Vector3 origin, float distance){
-            axis = new Axis(origin,distance);
+            // axis = new Axis(origin,distance);
             testCreateAxis(origin,distance);
         }
 
@@ -144,7 +144,7 @@ public class UnityPluginTest : MonoBehaviour
             lol = new Body(0);
         }
         public void readWrite(){
-            lol.editor.saveBody.reader();
+            // lol.editor.saveBody.reader();
             lol.editor.saveBody.writer();
         }
     }
