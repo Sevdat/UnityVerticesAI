@@ -144,8 +144,7 @@ public class UnityPluginTest : MonoBehaviour
             lol = new Body(0);
         }
         public void readWrite(){
-            // lol.editor.saveBody.reader();
-            lol.editor.saveBody.writer();
+            lol.editor.saveBody.readWrite();
         }
     }
     Experiment exp = new Experiment();
