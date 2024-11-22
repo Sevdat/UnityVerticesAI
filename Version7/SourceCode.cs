@@ -73,8 +73,8 @@ public class SourceCode:MonoBehaviour {
             this.sphere = sphere;
             this.axis = axis;
             angleY = 0; angleX = 0;
-            sensitivitySpeedY = Mathf.PI/1000; sensitivityAccelerationY = 1;
-            sensitivitySpeedX = Mathf.PI/1000; sensitivityAccelerationX = 1;
+            sensitivitySpeedY = Mathf.PI/400; sensitivityAccelerationY = 1;
+            sensitivitySpeedX = Mathf.PI/400; sensitivityAccelerationX = 1;
             speed = 0; acceleration = 1;
             distance = axis.axisDistance;
             distanceSpeed = 0; distanceAcceleration = 1;
@@ -102,21 +102,23 @@ public class SourceCode:MonoBehaviour {
             float sign = Mathf.Sign(angleY);
             float tempAngleX = angleX;
             axis.getPointAroundOrigin(sphere.origin,out angleY, out angleX);
-            if (angleY == 0f || angleY == Mathf.PI) angleX = tempAngleX;
-            if (sign<0 && Mathf.Sign(angleY) != sign) angleY *= sign;
+            if (!(angleY == 0f || angleY == Mathf.PI)) angleX = tempAngleX;
+            if (sign<0) angleY *= sign;
             if (angleY == 2*Mathf.PI) angleY = 0;
             if (angleX == 2*Mathf.PI) angleX = 0;
         }
 
         void set(float angleY,float angleX){
             sphere.origin = axis.setPointAroundOrigin(angleY,angleX,distance);
-            fixWorldAngleY(ref angleY);
-            fixWorldAngleX(ref angleX);
-            this.angleY = angleY;
+            float newSign = Mathf.Sign(angleY);
+            float oldSign = Mathf.Sign(this.angleY);
+            angleY = Mathf.Abs(angleY)%(2*Mathf.PI);
+            if (angleY > Mathf.PI) angleY = 2*Mathf.PI - angleY;
+            angleX = (newSign != oldSign)? (Mathf.PI+ axis.convertTo360(angleX))%(2*Mathf.PI):axis.convertTo360(angleX);
+            this.angleY = newSign*angleY;
             this.angleX = angleX;
-            if (axis.renderAxis.created){
-                updateAxis();
-            }
+            if (axis.renderAxis.created) updateAxis();
+            
         }
         public void resetOrigin(){
             set(angleY,angleX);
@@ -151,43 +153,42 @@ public class SourceCode:MonoBehaviour {
         }
 
         public void rightDirection(){
-            float speedX = Mathf.Sign(sensitivitySpeedX)*(Mathf.Abs(sensitivitySpeedX)%2*Mathf.PI);
+            float speedX = Mathf.Sign(sensitivitySpeedX)*(Mathf.Abs(sensitivitySpeedX)%(2*Mathf.PI));
             angleX = (angleX +speedX)%(2*Mathf.PI);
             fixWorldAngleX(ref angleX);
         }
         public void leftDirection(){
-            float speedX = Mathf.Sign(sensitivitySpeedX)*(Mathf.Abs(sensitivitySpeedX)%2*Mathf.PI);
+            float speedX = Mathf.Sign(sensitivitySpeedX)*(Mathf.Abs(sensitivitySpeedX)%(2*Mathf.PI));
             angleX = (angleX - speedX)%(2*Mathf.PI);
             fixWorldAngleX(ref angleX);
         } 
         public void upDirection(){
             float sign = Mathf.Sign(angleY);
             float abs = Mathf.Abs(angleY) % (2*Mathf.PI);
-            float speedY = Mathf.Sign(sensitivitySpeedY)*(Mathf.Abs(sensitivitySpeedY)%2*Mathf.PI);
+            float speedY = Mathf.Sign(sensitivitySpeedY)*(Mathf.Abs(sensitivitySpeedY)%(2*Mathf.PI));
             float rotation = (sign>0)? abs + speedY: abs - speedY;
             angleY = sign*rotation;
-            fixWorldAngleY(ref angleY);
+            fixWorldAngleY(ref angleY, sign);
         }    
         public void downDirection(){
             float sign = Mathf.Sign(angleY);
             float abs = Mathf.Abs(angleY) % (2*Mathf.PI);
-            float speedY = Mathf.Sign(sensitivitySpeedY)*(Mathf.Abs(sensitivitySpeedY)%2*Mathf.PI);
+            float speedY = Mathf.Sign(sensitivitySpeedY)*(Mathf.Abs(sensitivitySpeedY)%(2*Mathf.PI));
             float rotation = (sign>0)? abs - speedY: abs + speedY;
             angleY = sign*rotation;
-            fixWorldAngleY(ref angleY);
+            fixWorldAngleY(ref angleY,sign);
         }  
         public void fixWorldAngleX(ref float angleX){
             if (angleX < 0) angleX = 2*Mathf.PI + angleX;
         }
-        public void fixWorldAngleY(ref float angleY){
-            float sign = Mathf.Sign(angleY);
+        public void fixWorldAngleY(ref float angleY, float signBefore){
             float from180 = Mathf.PI - Mathf.Abs(angleY);
             float from360 = 2*Mathf.PI - Mathf.Abs(angleY);
             if (from180 < 0){
-                angleY = (sign> 0)?-Mathf.PI - from180:Mathf.PI - from180;
+                angleY = (signBefore> 0)?-Mathf.PI - from180:Mathf.PI - from180;
                 angleX = (Mathf.PI + angleX)%(2*Mathf.PI);
             }
-            if (Mathf.Sign(angleY) != sign && from360> Mathf.PI){
+            if (Mathf.Sign(angleY) != signBefore && from360> Mathf.PI){
                 angleX = (Mathf.PI + angleX)%(2*Mathf.PI);
             }
         }
@@ -330,6 +331,8 @@ public class SourceCode:MonoBehaviour {
         }
         public Vector3 setPointAroundOrigin(float angleY,float angleX, float distance){
             Vector3 point = origin + distanceFromOrigin(y,origin,Mathf.Abs(distance));
+            angleY = convertTo360(angleY);
+            angleX = (angleY>Mathf.PI)? (Mathf.PI+convertTo360(angleX))%(2*Mathf.PI):convertTo360(angleX);
             Vector4 rotY = angledAxis(angleY,x);
             Vector4 rotX = angledAxis(angleX,y);
             point = quatRotate(point,origin,rotY);
@@ -401,10 +404,7 @@ public class SourceCode:MonoBehaviour {
                 2*Mathf.PI-angleBetweenLines(dirZ,dirLocalZ):
                 angleBetweenLines(dirZ,dirLocalZ);
             
-            if (sign<0) {
-                worldAngleY*= sign;
-                // localAngleY += 2*Mathf.PI;
-                }
+            if (sign<0) worldAngleY*= sign;
             if (worldAngleX == 2*Mathf.PI) worldAngleX = 0;
             if (localAngleY == 2*Mathf.PI) localAngleY = 0;
             
@@ -416,13 +416,13 @@ public class SourceCode:MonoBehaviour {
             Vector3 localX = origin + new Vector3(axisDistance,0,0);
             Vector3 localY = origin + new Vector3(0,axisDistance,0);
             Vector3 localZ = origin + new Vector3(0,0,axisDistance);
-            float sign = Mathf.Sign(worldAngleY);
+            float newSign = Mathf.Sign(worldAngleY);
             float oldSign = Mathf.Sign(this.worldAngleY);
 
             worldAngleY = Mathf.Abs(worldAngleY)%(2*Mathf.PI);
-            if (worldAngleY > Mathf.PI) worldAngleY -= Mathf.PI;
-            worldAngleX = (sign != oldSign)? (Mathf.PI+ convertTo360(worldAngleX))%(2*Mathf.PI):convertTo360(worldAngleX);
-            localAngleY = (sign != oldSign)? (Mathf.PI+ convertTo360(localAngleY))%(2*Mathf.PI):convertTo360(localAngleY);
+            if (worldAngleY > Mathf.PI) worldAngleY = 2*Mathf.PI - worldAngleY;
+            worldAngleX = (newSign != oldSign)? (Mathf.PI+ convertTo360(worldAngleX))%(2*Mathf.PI):convertTo360(worldAngleX);
+            localAngleY = (newSign != oldSign)? (Mathf.PI+ convertTo360(localAngleY))%(2*Mathf.PI):convertTo360(localAngleY);
 
             axisAlignment(
                 worldAngleY,worldAngleX,localAngleY,
@@ -431,7 +431,7 @@ public class SourceCode:MonoBehaviour {
 
             x = localX; y = localY; z = localZ;
 
-            this.worldAngleY = sign*worldAngleY;
+            this.worldAngleY = newSign*worldAngleY;
             this.worldAngleX = worldAngleX;
             this.localAngleY = localAngleY;
 
@@ -509,42 +509,41 @@ public class SourceCode:MonoBehaviour {
         }
 
         public void rightDirection(){
-            float speedX = Mathf.Sign(worldSpeedX)*(Mathf.Abs(worldSpeedX)%2*Mathf.PI);
+            float speedX = Mathf.Sign(worldSpeedX)*(Mathf.Abs(worldSpeedX)%(2*Mathf.PI));
             worldAngleX = (worldAngleX +speedX)%(2*Mathf.PI);
             fixWorldAngleX(ref worldAngleX);
         }
         public void leftDirection(){
-            float speedX = Mathf.Sign(worldSpeedX)*(Mathf.Abs(worldSpeedX)%2*Mathf.PI);
+            float speedX = Mathf.Sign(worldSpeedX)*(Mathf.Abs(worldSpeedX)%(2*Mathf.PI));
             worldAngleX = (worldAngleX - speedX)%(2*Mathf.PI);
             fixWorldAngleX(ref worldAngleX);
         } 
         public void upDirection(){
             float sign = Mathf.Sign(worldAngleY);
             float abs = Mathf.Abs(worldAngleY) % (2*Mathf.PI);
-            float speedY = Mathf.Sign(worldSpeedY)*(Mathf.Abs(worldSpeedY)%2*Mathf.PI);
+            float speedY = Mathf.Sign(worldSpeedY)*(Mathf.Abs(worldSpeedY)%(2*Mathf.PI));
             float rotation = (sign>0)? abs + speedY: abs - speedY;
             worldAngleY = sign*rotation;
-            fixWorldAngleY(ref worldAngleY);
+            fixWorldAngleY(ref worldAngleY,sign);
         }    
         public void downDirection(){
             float sign = Mathf.Sign(worldAngleY);
             float abs = Mathf.Abs(worldAngleY) % (2*Mathf.PI);
-            float speedY = Mathf.Sign(worldSpeedY)*(Mathf.Abs(worldSpeedY)%2*Mathf.PI);
+            float speedY = Mathf.Sign(worldSpeedY)*(Mathf.Abs(worldSpeedY)%(2*Mathf.PI));
             float rotation = (sign>0)? abs - speedY: abs + speedY;
             worldAngleY = sign*rotation;
-            fixWorldAngleY(ref worldAngleY);
+            fixWorldAngleY(ref worldAngleY,sign);
         }
 
-        public void fixWorldAngleY(ref float worldAngleY){
-            float sign = Mathf.Sign(worldAngleY);
+        public void fixWorldAngleY(ref float worldAngleY, float signBefore){
             float from180 = Mathf.PI - Mathf.Abs(worldAngleY);
             float from360 = 2*Mathf.PI - Mathf.Abs(worldAngleY);
             if (from180 < 0){
-                worldAngleY = (sign> 0)?-Mathf.PI - from180:Mathf.PI - from180;
+                worldAngleY = (signBefore> 0)?-Mathf.PI - from180:Mathf.PI - from180;
                 worldAngleX = (Mathf.PI + worldAngleX)%(2*Mathf.PI);
                 localAngleY = (Mathf.PI + localAngleY)%(2*Mathf.PI);
             }
-            if (Mathf.Sign(worldAngleY) != sign && from360> Mathf.PI){
+            if (Mathf.Sign(worldAngleY) != signBefore && from360> Mathf.PI){
                 worldAngleX = (Mathf.PI + worldAngleX)%(2*Mathf.PI);
                 localAngleY = (Mathf.PI + localAngleY)%(2*Mathf.PI);
             }
@@ -585,7 +584,7 @@ public class SourceCode:MonoBehaviour {
         }
         public void antiClockwise(){
             float speedLY = Mathf.Sign(localSpeedY)*(Mathf.Abs(localSpeedY)%(2*Mathf.PI));
-            localAngleY = (localAngleY +speedLY)%(2*Mathf.PI);
+            localAngleY = (localAngleY -speedLY)%(2*Mathf.PI);
             fixClockWiseAngle(ref localAngleY);
             setWorldRotationInRadians(worldAngleY,worldAngleX,localAngleY);
             print($"{worldAngleY*180f/Mathf.PI} {worldAngleX*180f/Mathf.PI} {localAngleY*180f/Mathf.PI}");
@@ -693,8 +692,8 @@ public class SourceCode:MonoBehaviour {
                 body.globalAxis.spin.scaleDown();
             }
             if (Input.GetKeyDown("f")) {
-                body.globalAxis.getWorldRotationInDegrees(out float y,out float x,out float z);
-                print($"{y} {x} {z}");
+                body.globalAxis.spin.getInDegrees(out float y,out float x);
+                print($"{y} {x}");
             }
             // if (Input.GetKeyDown("return")) {
             //     Vector3 newPoisition = jointSelector.selected.localAxis.move.placeAxis();
@@ -772,30 +771,30 @@ public class SourceCode:MonoBehaviour {
                 globalAxis.spin.updateAxis();
                 globalAxis.move.updateAxis();
             }
-            print($"1 = {bodyStructure[0].localAxis.worldAngleY}");
-            print($"2 =  {diffWorldAngleY}");
+            float signWorldY;
             Joint[] joints = bodyStructure;
             for (int i = 0; i < joints.Length; i++){
                 Joint joint = bodyStructure[i];
                 if (joint != null){ 
                     Axis axis = joint.localAxis;
+                    signWorldY = Mathf.Sign(axis.worldAngleY);
                     axis.rotate(quatY,globalAxis.origin);
                     axis.rotate(quatX,globalAxis.origin);
                     axis.rotate(quatLY,globalAxis.origin);
                     axis.worldAngleY += diffWorldAngleY;
                     axis.worldAngleX += diffWorldAngleX;
                     axis.localAngleY += diffLocalAngleY;
-                    axis.fixWorldAngleY(ref axis.worldAngleY);
+                    axis.fixWorldAngleY(ref axis.worldAngleY,signWorldY);
                     axis.fixWorldAngleX(ref axis.worldAngleX);
                     axis.fixClockWiseAngle(ref axis.localAngleY);
                     joint.pointCloud.resetAllSphereOrigins();
                 }
             }
-            print($"2 ={bodyStructure[0].localAxis.worldAngleY}");
+            signWorldY = Mathf.Sign(globalAxis.worldAngleY);
             globalAxis.worldAngleY += diffWorldAngleY;
             globalAxis.worldAngleX += diffWorldAngleX;
             globalAxis.localAngleY += diffLocalAngleY;
-            globalAxis.fixWorldAngleY(ref globalAxis.worldAngleY);
+            globalAxis.fixWorldAngleY(ref globalAxis.worldAngleY,signWorldY);
             globalAxis.fixWorldAngleX(ref globalAxis.worldAngleX);
             globalAxis.fixClockWiseAngle(ref globalAxis.localAngleY);
         }

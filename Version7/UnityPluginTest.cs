@@ -144,7 +144,7 @@ public class UnityPluginTest : MonoBehaviour
             lol = new Body(0);
         }
         public void readWrite(){
-            lol.editor.saveBody.readWrite();
+            // lol.editor.saveBody.readWrite();
         }
     }
     Experiment exp = new Experiment();
@@ -156,7 +156,7 @@ public class UnityPluginTest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (count == 500){
+        if (count == 100){
             exp.readWrite();
             count = 0;
         }
