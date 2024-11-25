@@ -38,7 +38,7 @@ public class UnityPluginTest : MonoBehaviour
             Vector3 oldX = axis.origin;
             Vector3 oldY = axis.origin;
             Vector3 oldZ = axis.origin;
-            Vector3 oldRotationAxis = axis.spin.sphere.origin;
+            Vector3 oldRotationAxis = axis.spinFuture.sphere.origin;
             axis.moveAxis(add);
 
             expected = oldOrigin + add;
@@ -58,7 +58,7 @@ public class UnityPluginTest : MonoBehaviour
             if (expected != got) print($"originMoveError: expected {expected} got {got}");
             
             expected = oldRotationAxis + add;
-            got = axis.spin.sphere.origin;
+            got = axis.spinFuture.sphere.origin;
             if (expected != got) print($"originMoveError: expected {expected} got {got}");
         }
         internal void testPlaceAxis(Vector3 newOrigin){
@@ -68,7 +68,7 @@ public class UnityPluginTest : MonoBehaviour
             Vector3 oldX = axis.origin;
             Vector3 oldY = axis.origin;
             Vector3 oldZ = axis.origin;
-            Vector3 oldRotationAxis = axis.spin.sphere.origin;
+            Vector3 oldRotationAxis = axis.spinFuture.sphere.origin;
             axis.placeAxis(newOrigin);
 
             expected = oldOrigin + add;
@@ -88,7 +88,7 @@ public class UnityPluginTest : MonoBehaviour
             if (expected != got) print($"zPlaceError: expected {expected} got {got}");
             
             expected = oldRotationAxis + add;
-            got = axis.spin.sphere.origin;
+            got = axis.spinFuture.sphere.origin;
             if (expected != got) print($"rotationAxisPlaceError: expected {expected} got {got}");
         }
         internal void testScaleAxis(float distance){
@@ -105,10 +105,10 @@ public class UnityPluginTest : MonoBehaviour
             if (gotX < min || max < gotX) print($"zScaleError: expected {distance} got {gotZ}");           
         }
         internal void testScaleRotationAxis(float distance){
-            axis.spin.scale(distance);
+            axis.spinFuture.scale(distance);
             float min = distance - accuracy;
             float max = distance - accuracy;
-            float gotRotationAxis = axis.length(axis.spin.sphere.origin - axis.origin);
+            float gotRotationAxis = axis.length(axis.spinFuture.sphere.origin - axis.origin);
             if (min < gotRotationAxis && gotRotationAxis < max) print($"xScaleError: expected {distance} got {gotRotationAxis}");         
         }
         internal void testSetAxis(float worldAngleY, float worldAngleX, float localAngleY){
@@ -128,8 +128,8 @@ public class UnityPluginTest : MonoBehaviour
         internal void testSetRotationAxis(float angleY, float angleX){
             float minWorldAngleY = angleY - accuracy, maxWorldAngleY = angleY + accuracy;
             float minWorldAngleX = angleX - accuracy, maxWorldAngleX = angleX + accuracy;
-            axis.spin.setInDegrees(angleY,angleX);
-            axis.spin.getInDegrees(out float gotWorldAngleY,out float gotWorldAngleX);
+            axis.spinFuture.setInDegrees(angleY,angleX);
+            axis.spinFuture.getInDegrees(out float gotWorldAngleY,out float gotWorldAngleX);
             if (float.IsNaN(gotWorldAngleY)) print("gotWorldAngleY: NaN error");
             if (float.IsNaN(gotWorldAngleX)) print("gotWorldAngleX: NaN error");
             if (gotWorldAngleY < minWorldAngleY || maxWorldAngleY < gotWorldAngleY) print($"worldAngleY: expected {angleY} got {gotWorldAngleY}");

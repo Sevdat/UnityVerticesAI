@@ -1,16 +1,19 @@
 Body_0_BodyStructureSize: 1
 Body_0_AllJointsInBody: 0
 
+Body_0_Joint_0_YXFromGlobalAxis: 0.00 0.00
 Body_0_Joint_0_DistanceFromGlobalOrigin: 6.00
-Body_0_Joint_0_YXFromGlobalAxis: 276.00 0.00
 Body_0_Joint_0_LocalAxisRotation: 0.00 0.00 0.00
 Body_0_Joint_0_PointCloudSize: 1
 Body_0_Joint_0_AllSpheresInJoint: 
 
 Body_0_Joint_0_Active: True
-Body_0_Joint_0_SpinX: 345.25 -0.57 1.00
-Body_0_Joint_0_SpinY: 229.04 0.57 1.00
-Body_0_Joint_0_SpinSpeedAndAcceleration: 0.00 1.00
+Body_0_Joint_0_SpinPastX: 0.00 0.00 1.00
+Body_0_Joint_0_SpinPastY: 0.00 0.00 1.00
+Body_0_Joint_0_SpinPastSpeedAndAcceleration: 0.00 1.00
+Body_0_Joint_0_SpinFutureX: 0.00 0.00 1.00
+Body_0_Joint_0_SpinFutureY: 0.00 0.00 1.00
+Body_0_Joint_0_SpinFutureSpeedAndAcceleration: 0.00 1.00
 Body_0_Joint_0_MoveX: 0.00 0.00 1.00
 Body_0_Joint_0_MoveY: 0.00 0.00 1.00
 Body_0_Joint_0_MoveSpeedAndAcceleration: 0.00 1.00
