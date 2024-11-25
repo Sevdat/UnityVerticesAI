@@ -144,7 +144,7 @@ public class UnityPluginTest : MonoBehaviour
             lol = new Body(0);
         }
         public void readWrite(){
-            lol.editor.saveBody.readWrite();
+            lol.editor.readWrite();
         }
     }
     Experiment exp = new Experiment();
@@ -161,7 +161,6 @@ public class UnityPluginTest : MonoBehaviour
             count = 0;
         }
         count++;
-        exp.lol.editor.options();
         // print(exp.lol.editor.jointSelector.selected.connection.current);
         // if (time == 60 && count!= 360) {
         //     lol.rotate(lol.quat(Mathf.PI/180),lol.rotationAxis);

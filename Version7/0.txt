@@ -1,60 +1,23 @@
-Body_0_BodyStructureSize: 3
-Body_0_AllJointsInBody: 0 1 2
+Body_0_BodyStructureSize: 1
+Body_0_AllJointsInBody: 0
 
-Body_0_Joint_0_DistanceFromGlobalOrigin: 0
-Body_0_Joint_0_YXFromGlobalAxis: NaN NaN
-Body_0_Joint_0_LocalAxisRotation: 0 0 0
+Body_0_Joint_0_DistanceFromGlobalOrigin: 6.00
+Body_0_Joint_0_YXFromGlobalAxis: 276.00 0.00
+Body_0_Joint_0_LocalAxisRotation: 0.00 0.00 0.00
 Body_0_Joint_0_PointCloudSize: 1
 Body_0_Joint_0_AllSpheresInJoint: 
 
-Body_0_Joint_1_DistanceFromGlobalOrigin: 0
-Body_0_Joint_1_YXFromGlobalAxis: NaN NaN
-Body_0_Joint_1_LocalAxisRotation: 0 0 0
-Body_0_Joint_1_PointCloudSize: 1
-Body_0_Joint_1_AllSpheresInJoint: 0 
-
-Body_0_Joint_1_Sphere_0_DistanceFromLocalOrigin: 5 0 1
-Body_0_Joint_1_Sphere_0_YFromLocalAxis: 0.09424779 0.005235988 1
-Body_0_Joint_1_Sphere_0_XFromLocalAxis: 0.09424779 0.005235988 1
-Body_0_Joint_1_Sphere_0_Radius: 1
-Body_0_Joint_1_Sphere_0_ColorRGBA: 1 1 1 1
-
-Body_0_Joint_2_DistanceFromGlobalOrigin: 0
-Body_0_Joint_2_YXFromGlobalAxis: NaN NaN
-Body_0_Joint_2_LocalAxisRotation: 0 0 0
-Body_0_Joint_2_PointCloudSize: 1
-Body_0_Joint_2_AllSpheresInJoint: 
-
 Body_0_Joint_0_Active: True
-Body_0_Joint_0_SpinX: 1.235695 0.005235988 1
-Body_0_Joint_0_SpinY: 1.235695 0.005235988 1
-Body_0_Joint_0_SpinSpeedAndAcceleration: 0 1
-Body_0_Joint_0_MoveX: 1.235695 0.005235988 1
-Body_0_Joint_0_MoveY: 1.235695 0.005235988 1
-Body_0_Joint_0_MoveSpeedAndAcceleration: 0 1
+Body_0_Joint_0_SpinX: 345.25 -0.57 1.00
+Body_0_Joint_0_SpinY: 229.04 0.57 1.00
+Body_0_Joint_0_SpinSpeedAndAcceleration: 0.00 1.00
+Body_0_Joint_0_MoveX: 0.00 0.00 1.00
+Body_0_Joint_0_MoveY: 0.00 0.00 1.00
+Body_0_Joint_0_MoveSpeedAndAcceleration: 0.00 1.00
 Body_0_Joint_0_PastConnectionsInBody: 
 Body_0_Joint_0_FutureConnectionsInBody: 
 
-Body_0_Joint_1_Active: True
-Body_0_Joint_1_SpinX: 1.235695 0.005235988 1
-Body_0_Joint_1_SpinY: 1.235695 0.005235988 1
-Body_0_Joint_1_SpinSpeedAndAcceleration: 0 1
-Body_0_Joint_1_MoveX: 1.235695 0.005235988 1
-Body_0_Joint_1_MoveY: 1.235695 0.005235988 1
-Body_0_Joint_1_MoveSpeedAndAcceleration: 0 1
-Body_0_Joint_1_PastConnectionsInBody: 
-Body_0_Joint_1_FutureConnectionsInBody: 
-
-Body_0_Joint_2_Active: True
-Body_0_Joint_2_SpinX: 1.235695 0.005235988 1
-Body_0_Joint_2_SpinY: 1.235695 0.005235988 1
-Body_0_Joint_2_SpinSpeedAndAcceleration: 0 1
-Body_0_Joint_2_MoveX: 1.235695 0.005235988 1
-Body_0_Joint_2_MoveY: 1.235695 0.005235988 1
-Body_0_Joint_2_MoveSpeedAndAcceleration: 0 1
-Body_0_Joint_2_PastConnectionsInBody: 
-Body_0_Joint_2_FutureConnectionsInBody: 
-
-Body_0_GlobalOriginLocation: 0 0 0
-Body_0_GlobalAxisRotationXYZ: 0 0 0
+Body_0_GlobalOriginLocation: 0.00 0.00 0.00
+Body_0_GlobalAxisRotationXYZ: 0.00 0.00 0.00
+Body_0_RadianOrAngle: True
 
