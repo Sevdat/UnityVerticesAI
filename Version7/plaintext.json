@@ -1,0 +1,135 @@
+{
+	// Place your snippets for plaintext here. Each snippet is defined under a snippet name and has a prefix, body and 
+	// description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. Placeholders with the 
+	// same ids are connected.
+	// Example:
+	"BodyStructureSize": {
+		"prefix": "BodyStructureSize_body",
+		"body": [
+			"Body_${1:0}_BodyStructureSize: ${2:0}\n"
+		]
+	},
+	"AllJointsInBody": {
+		"prefix": "AllJointsInBody_body",
+		"body": [
+			"Body_${1:0}_AllJointsInBody: ${2:}"
+		]
+	},
+	"GlobalOriginLocation": {
+		"prefix": "GlobalOriginLocation_body",
+		"body": [
+			"Body_${1:0}_GlobalOriginLocation: ${2:0.00} ${3:0.00} ${4:0.00}"
+		]
+	},
+	"GlobalAxisRotationXYZ": {
+		"prefix": "GlobalAxisRotationXYZ_body",
+		"body": [
+			"Body_${1:0}_GlobalAxisRotationXYZ: ${2:0.00} ${3:0.00} ${4:0.00}"
+		]
+	},
+
+	"DistanceFromGlobalOrigin": {
+		"prefix": "DistanceFromGlobalOrigin_Joint",
+		"body": [
+			"Body_${1:0}_Joint_${2:0}_DistanceFromGlobalOrigin: ${3:0.00}"
+		]
+	},
+	"YXFromGlobalAxis": {
+		"prefix": "YXFromGlobalAxis_Joint",
+		"body": [
+			"Body_${1:0}_Joint_${2:0}_YXFromGlobalAxis: ${3:0.00} ${4:0.00}"
+		]
+	},
+	"PointCloudSize": {
+		"prefix": "PointCloudSize_Joint",
+		"body": [
+			"Body_${1:0}_Joint_${1:0}_PointCloudSize: ${3:0}"
+		]
+	},
+	"Active": {
+		"prefix": "Active_Joint",
+		"body": [
+			"Body_${1:0}_Joint_${2:0}_Active: ${3|true,false|}"
+		]
+	},
+	"SpinX": {
+		"prefix": "SpinX_Joint",
+		"body": [
+			"Body_${1:0}_Joint_${2:0}_SpinX: ${3:0.00} ${4:0.00} ${5:1.00}"
+		]
+	},
+	"SpinY": {
+		"prefix": "SpinY_Joint",
+		"body": [
+			"Body_${1:0}_Joint_${2:0}_SpinY: ${3:0.00} ${4:0.00} ${5:1.00}"
+		]
+	},
+	"SpinSpeedAndAcceleration": {
+		"prefix": "SpinSpeedAndAcceleration_Joint",
+		"body": [
+			"Body_${1:0}_Joint_${2:0}_SpinSpeedAndAcceleration: ${3:0.00} ${4:1.00}"
+		]
+	},
+	"MoveX": {
+		"prefix": "SpinX_Joint",
+		"body": [
+			"Body_${1:0}_Joint_${2:0}_MoveX: ${3:0.00} ${4:0.00} ${5:1.00}"
+		]
+	},
+	"MoveY": {
+		"prefix": "SpinY_Joint",
+		"body": [
+			"Body_${1:0}_Joint_${2:0}_MoveY: ${3:0.00} ${4:0.00} ${5:1.00}"
+		]
+	},
+	"MoveSpeedAndAcceleration": {
+		"prefix": "MoveSpeedAndAcceleration_Joint",
+		"body": [
+			"Body_${1:0}_Joint_${2:0}_MoveSpeedAndAcceleration: ${3:0.00} ${4:1.00}"
+		]
+	},
+	"PastConnectionsInBody": {
+		"prefix": "PastConnectionsInBody_Joint",
+		"body": [
+			"Body_${1:0}_Joint_${2:0}_PastConnectionsInBody: ${3:}"
+		]
+	},
+	"FutureConnectionsInBody": {
+		"prefix": "FutureConnectionsInBody_Joint",
+		"body": [
+			"Body_${1:0}_Joint_${2:0}_FutureConnectionsInBody: ${3:}"
+		]
+	},
+
+	"DistanceFromLocalOrigin": {
+		"prefix": "DistanceFromLocalOrigin_Sphere",
+		"body": [
+			"Body_${1:0}_Joint_${2:0}_Sphere_${3:0}_DistanceFromLocalOrigin: ${4:0.00} ${5:0.00} ${6:0.00}"
+		]
+	},
+	"YFromLocalAxis": {
+		"prefix": "YFromLocalAxis_Sphere",
+		"body": [
+			"Body_${1:0}_Joint_${2:0}_Sphere_${3:0}_YFromLocalAxis: ${4:0.00} ${5:0.00} ${6:1.00}"
+		]
+	},
+	"XFromLocalAxis": {
+		"prefix": "XFromLocalAxis_Sphere",
+		"body": [
+			"Body_${1:0}_Joint_${2:0}_Sphere_${3:0}_XFromLocalAxis: ${4:0.00} ${5:0.00} ${6:1.00}"
+		]
+	},
+	"Radius": {
+		"prefix": "Radius_Sphere",
+		"body": [
+			"Body_${1:0}_Joint_${2:0}_Sphere_${3:0}_Radius: ${4:0.00}"
+		]
+	},
+	"ColorRGBA": {
+		"prefix": "ColorRGBA_Sphere",
+		"body": [
+			"Body_${1:0}_Joint_${2:0}_Sphere_${3:0}_ColorRGBA: ${4:0.00} ${5:0.00} ${6:0.00} ${7:0.00}"
+		]
+	}
+}
