@@ -698,9 +698,25 @@ public class SourceCode:MonoBehaviour {
             future = new List<LockedConnection>();
         }
 
+        public void resetFutureLockPositions(List<LockedConnection> future){
+            int futureSize = past.Count;
+            for (int i =0;i<futureSize;i++){
+                LockedConnection locked = future[i];
+                Vector3 newPosition = current.localAxis.setPointAroundOrigin(locked.y,locked.x,locked.length);
+                locked.joint.moveJoint(newPosition - locked.joint.localAxis.origin);
+            }
+        }
+        public void resetPastLockPositions(List<LockedConnection> past){
+            int futureSize = past.Count;
+            for (int i =0;i<futureSize;i++){
+                LockedConnection locked = future[i];
+                Vector3 newPosition = current.localAxis.setPointAroundOrigin(locked.y,locked.x,locked.length);
+                locked.joint.moveJoint(newPosition - locked.joint.localAxis.origin);
+            }
+        }
         internal void disconnectFuture(int index){
             future[index].joint.connection.past.RemoveAll(e => e.joint == current);
-        }
+        } 
         public void disconnectAllFuture(){
             int size = future.Count;
             for (int i =0; i<size;i++){
@@ -782,7 +798,7 @@ public class SourceCode:MonoBehaviour {
             string pastIndexes = "";
             int count = past.Count;
             for (int i = 0; i<count;i++){
-                pastIndexes += $"{past[i].joint.connection.indexInBody}";
+                pastIndexes += $"{past[i].joint.connection.indexInBody} ";
             }
             return pastIndexes;
         }
@@ -790,7 +806,7 @@ public class SourceCode:MonoBehaviour {
             string futureIndexes = "";
             int count = future.Count;
             for (int i = 0; i<count;i++){
-                futureIndexes += $"{future[i].joint.connection.indexInBody}";
+                futureIndexes += $"{future[i].joint.connection.indexInBody} ";
             }
             return futureIndexes;
         }
@@ -1215,6 +1231,7 @@ public class SourceCode:MonoBehaviour {
         Body body;
         Dictionary<int,int> newJointKeys = new Dictionary<int,int>();
         Dictionary<int,int> newSphereKeys = new Dictionary<int,int>();
+        Dictionary<int,List<int>> deleted = new Dictionary<int, List<int>>();
         public Editor(){}
         public Editor(Body body){
             this.body = body;
@@ -1263,6 +1280,9 @@ public class SourceCode:MonoBehaviour {
                     }
                 } 
             }
+            newJointKeys = new Dictionary<int,int>();
+            newSphereKeys = new Dictionary<int,int>();
+            deleted = new Dictionary<int, List<int>>();
         }
         public void initilizeBody(){
             initilize = true;
@@ -1647,11 +1667,24 @@ public class SourceCode:MonoBehaviour {
             List<LockedConnection> past = joint.connection.past;
             int size = past.Count;
             List<LockedConnection> newPast = new List<LockedConnection>();
+            bool checkDelete = deleted.TryGetValue(joint.connection.indexInBody,out List<int> delete);
+            if (checkDelete){
+                int deletSize = delete.Count;
+                for (int i = 0; i < deletSize; i++){
+                    set.Remove(delete[i]);
+                }
+            }
             bool checkChange = false;
             for (int i = 0; i< size; i++){
                 int index = past[i].joint.connection.indexInBody;
                 if (!set.Contains(index) ) {
                     joint.connection.disconnectPast(i);
+                    checkDelete = deleted.TryGetValue(index,out delete);
+                    if (checkDelete){
+                        delete.Add(joint.connection.indexInBody);
+                    } else {
+                        deleted[index] = new List<int>(){joint.connection.indexInBody};
+                    }
                     checkChange = true;
                 } else {
                     newPast.Add(past[i]);
@@ -1675,11 +1708,24 @@ public class SourceCode:MonoBehaviour {
             List<LockedConnection> future = joint.connection.future;
             int size = future.Count;
             List<LockedConnection> newFuture = new List<LockedConnection>();
+            bool checkDelete = deleted.TryGetValue(joint.connection.indexInBody,out List<int> delete);
+            if (checkDelete){
+                int deletSize = delete.Count;
+                for (int i = 0; i < deletSize; i++){
+                    set.Remove(delete[i]);
+                }
+            }
             bool checkChange = false;
             for (int i = 0; i< size; i++){
                 int index = future[i].joint.connection.indexInBody;
                 if (!set.Contains(index)) {
                     joint.connection.disconnectFuture(i);
+                    checkDelete = deleted.TryGetValue(index,out delete);
+                    if (checkDelete){
+                        delete.Add(joint.connection.indexInBody);
+                    } else {
+                        deleted[index] = new List<int>(){joint.connection.indexInBody};
+                    }
                     checkChange = true;
                 } else {
                     newFuture.Add(future[i]);
