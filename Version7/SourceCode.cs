@@ -692,7 +692,6 @@ public class SourceCode:MonoBehaviour {
             this.y = y;
             this.x = x;
             this.length = length;
-            print($"{joint.connection.indexInBody} {y} {x} {length}");
         }
     }
     public class Connection {
@@ -798,11 +797,9 @@ public class SourceCode:MonoBehaviour {
 
         public List<Joint> getAll(){
             List<Joint> pastAndFuture = new List<Joint>();
-            if (used == false){
-                pastAndFuture.AddRange(getPast());
-                used = false;
-                pastAndFuture.AddRange(getFuture());
-            }
+            pastAndFuture.AddRange(getPast());
+            used = false;
+            pastAndFuture.AddRange(getFuture());
             return pastAndFuture;
         }
         public string pastToString(){
@@ -830,6 +827,7 @@ public class SourceCode:MonoBehaviour {
         public Connection connection;
         public PointCloud pointCloud;
         public float fromGlobalAxisY,fromGlobalAxisX,distanceFromGlobalAxis;
+        public bool movementOption;
 
         public Joint(){}
         public Joint(Body body, int indexInBody){
@@ -840,6 +838,7 @@ public class SourceCode:MonoBehaviour {
             body.keyGenerator.getKey();
             fromGlobalAxisY = 0;
             fromGlobalAxisX = 0;
+            movementOption = false;
         }
 
         public void setBody(Body body){
@@ -867,11 +866,12 @@ public class SourceCode:MonoBehaviour {
                 else 
                 localAxis.getWorldRotationInRadians(out worldAngleY,out worldAngleX,out localAngleY);
             string stringPath = $"Body_{body.worldKey}_Joint_{connection.indexInBody}_";
+            string movementOption = $"{stringPath}MovementOption: {this.movementOption}\n";
             string distanceFromGlobalOrigin = $"{stringPath}DistanceFromGlobalOrigin: {string.Format("{0:0.00}", distanceFromOrigin)}\n";
             string YXFromGlobalAxis = $"{stringPath}YXFromGlobalAxis: {string.Format("{0:0.00}", fromGlobalAxisY*convert)} {string.Format("{0:0.00}", fromGlobalAxisX*convert)}\n";
             string localAxisRotation = $"{stringPath}LocalAxisRotation: {string.Format("{0:0.00}", worldAngleY)} {string.Format("{0:0.00}", worldAngleX)} {string.Format("{0:0.00}", localAngleY)}\n";
             string localOriginLocation = $"{stringPath}LocalOriginLocation: {string.Format("{0:0.00}", localAxis.origin.x)} {string.Format("{0:0.00}", localAxis.origin.y)} {string.Format("{0:0.00}", localAxis.origin.z)}";
-            return distanceFromGlobalOrigin + YXFromGlobalAxis + localAxisRotation + localOriginLocation;
+            return movementOption + distanceFromGlobalOrigin + YXFromGlobalAxis + localAxisRotation + localOriginLocation;
         }
         public string saveJoint(bool radianOrAngle){
             float convert = radianOrAngle? 180f/Mathf.PI:1;
@@ -948,7 +948,8 @@ public class SourceCode:MonoBehaviour {
         void rotateHierarchy(Vector4 quat, bool pastOrFuture, bool rotateAll){
             initTree(pastOrFuture, rotateAll, out List<Joint> tree, out int size); 
             Vector3 rotationOrigin = localAxis.origin;
-            for (int i = 0; i<size;i++){
+            tree[0].rotateJoint(quat,rotationOrigin);
+            for (int i = 1; i<size;i++){
                 Joint joint = tree[i];
                 List<Joint> joints = joint.connection.getAll();
                 tree.AddRange(joints);
@@ -1490,6 +1491,7 @@ public class SourceCode:MonoBehaviour {
 
         const string active = "Active";
         const string showAxis = "ShowAxis";
+        const string movementOption = "MovementOption";
         const string distanceFromGlobalOrigin = "DistanceFromGlobalOrigin";
         const string YXFromGlobalAxis = "YXFromGlobalAxis";
         const string localAxisRotation = "LocalAxisRotation";
@@ -1523,6 +1525,9 @@ public class SourceCode:MonoBehaviour {
                     break;
                     case showAxis:
                         showAxisInstruction(joint,value);
+                    break;
+                    case movementOption:
+                        movementOptionInstruction(joint,value);
                     break;
                     case distanceFromGlobalOrigin:
                         distanceFromGlobalOriginInstruction(joint,value);
@@ -1598,12 +1603,20 @@ public class SourceCode:MonoBehaviour {
                     joint.localAxis.renderAxis.deleteAxis();
             }
         }
+        void movementOptionInstruction(Joint joint,List<string> value){
+            if (value.Count>0){
+                if (value[0] == "True") 
+                    joint.movementOption = true;
+                else if (value[0] == "False") 
+                    joint.movementOption = false;
+            }
+        }
         void distanceFromGlobalOriginInstruction(Joint joint,List<string> value){
             if (value.Count>0){
-                bool checkStr = float.TryParse(value[0], out float key);
-                if (checkStr){
+                bool checkStr = float.TryParse(value[0], out float distance);
+                if (checkStr && !joint.movementOption){
+                    joint.distanceFromGlobalOrigin(distance);
                     oldOrigin = joint.localAxis.origin;
-                    joint.distanceFromGlobalOrigin(key);
                 }
             }
         }
@@ -1614,7 +1627,7 @@ public class SourceCode:MonoBehaviour {
                 Axis globalAxis = joint.body.globalAxis;
                 Axis localAxis = joint.localAxis;
                 float length = localAxis.length(localAxis.origin-globalAxis.origin);
-                if (checkY && checkX) {
+                if (checkY && checkX && !joint.movementOption) {
                         joint.fromGlobalAxisY = y;
                         joint.fromGlobalAxisX = x;
                         if (radianOrDegree) {
@@ -1649,11 +1662,10 @@ public class SourceCode:MonoBehaviour {
                 bool checkX = float.TryParse(value[0], out float x);
                 bool checkY = float.TryParse(value[1], out float y);
                 bool checkZ = float.TryParse(value[2], out float z);
-                float vecX = checkX? x: joint.localAxis.origin.x;
-                float vecY = checkY? y: joint.localAxis.origin.y;
-                float vecZ = checkZ? z: joint.localAxis.origin.z;
-                Vector3 add = initilize? new Vector3(0,0,0):oldOrigin;
-                joint.localAxis.placeAxis(new Vector3(vecX,vecY,vecZ)+add);
+                if (checkX && checkY && checkZ && joint.movementOption) {
+                    Vector3 add = initilize? new Vector3(0,0,0):oldOrigin;
+                    joint.localAxis.placeAxis(new Vector3(x,y,z)+add);
+                }
             }
         }
         void xAroundAxis(AroundAxis aroundAxis, List<string> value){
@@ -1900,7 +1912,7 @@ public class SourceCode:MonoBehaviour {
             }
         }
 
-        const string distanceFromLocalAxis = "DistanceFromLocalAxis";
+        const string distanceFromLocalOrigin = "DistanceFromLocalOrigin";
         const string XFromLocalAxis = "XFromLocalAxis";
         const string YFromLocalAxis = "YFromLocalAxis";
         const string radius = "Radius";
@@ -1920,7 +1932,7 @@ public class SourceCode:MonoBehaviour {
                 CollisionSphere collisionSphere = checkKey2?joint.pointCloud.collisionSpheres[key2]:null;
                 if (collisionSphere != null){
                     switch (instruction){
-                        case distanceFromLocalAxis:  
+                        case distanceFromLocalOrigin:  
                             distanceFromLocalAxisInstruction(collisionSphere, value);
                         break;
                         case YFromLocalAxis:
@@ -1943,7 +1955,7 @@ public class SourceCode:MonoBehaviour {
             if (value.Count>= 1){
                 bool checkDistance = float.TryParse(value[0], out float distance);
                  if (checkDistance){
-                    collisionSphere.aroundAxis.scale(distance);
+                    collisionSphere.aroundAxis.scale(distance-collisionSphere.aroundAxis.distance);
                 }
             }
         }
