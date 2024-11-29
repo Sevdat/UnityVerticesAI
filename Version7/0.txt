@@ -1,21 +1,25 @@
+Body_0_ShowAxis: False
 Body_0_BodyStructureSize: 3
 Body_0_AllJointsInBody: 0 1 2
 
 Body_0_Joint_0_DistanceFromGlobalOrigin: 10.00
 Body_0_Joint_0_YXFromGlobalAxis: 1.00 5.28
 Body_0_Joint_0_LocalAxisRotation: 0.00 0.00 0.00
+Body_0_Joint_0_LocalOriginLocation: -7.10 5.40 4.52
 Body_0_Joint_0_PointCloudSize: 1
 Body_0_Joint_0_AllSpheresInJoint: 
 
 Body_0_Joint_1_DistanceFromGlobalOrigin: 15.00
 Body_0_Joint_1_YXFromGlobalAxis: 0.00 0.00
 Body_0_Joint_1_LocalAxisRotation: 0.00 0.00 0.00
+Body_0_Joint_1_LocalOriginLocation: 0.00 15.00 0.00
 Body_0_Joint_1_PointCloudSize: 1
 Body_0_Joint_1_AllSpheresInJoint: 
 
 Body_0_Joint_2_DistanceFromGlobalOrigin: 10.00
 Body_0_Joint_2_YXFromGlobalAxis: 1.00 1.00
 Body_0_Joint_2_LocalAxisRotation: 0.00 0.00 0.00
+Body_0_Joint_2_LocalOriginLocation: 7.09 5.40 4.54
 Body_0_Joint_2_PointCloudSize: 1
 Body_0_Joint_2_AllSpheresInJoint: 
 

@@ -544,10 +544,11 @@ public class SourceCode:MonoBehaviour {
                 }
             }
             string stringPath = $"Body_{worldKey}_";
+            string showAxis = $"{stringPath}ShowAxis: {globalAxis.renderAxis.created}\n";
             string bodyStructureSize = $"{stringPath}BodyStructureSize: {bodyStructure.Length}\n";
             string allJointsInBody = $"{stringPath}AllJointsInBody:{strJointIndexes}\n";
 
-            return bodyStructureSize + allJointsInBody;
+            return showAxis + bodyStructureSize + allJointsInBody;
 
         }
         public void rotateBody(float worldAngleY, float worldAngleX, float localAngleY){
@@ -868,8 +869,9 @@ public class SourceCode:MonoBehaviour {
             string stringPath = $"Body_{body.worldKey}_Joint_{connection.indexInBody}_";
             string distanceFromGlobalOrigin = $"{stringPath}DistanceFromGlobalOrigin: {string.Format("{0:0.00}", distanceFromOrigin)}\n";
             string YXFromGlobalAxis = $"{stringPath}YXFromGlobalAxis: {string.Format("{0:0.00}", fromGlobalAxisY*convert)} {string.Format("{0:0.00}", fromGlobalAxisX*convert)}\n";
-            string localAxisRotation = $"{stringPath}LocalAxisRotation: {string.Format("{0:0.00}", worldAngleY)} {string.Format("{0:0.00}", worldAngleX)} {string.Format("{0:0.00}", localAngleY)}";
-            return distanceFromGlobalOrigin + YXFromGlobalAxis + localAxisRotation;
+            string localAxisRotation = $"{stringPath}LocalAxisRotation: {string.Format("{0:0.00}", worldAngleY)} {string.Format("{0:0.00}", worldAngleX)} {string.Format("{0:0.00}", localAngleY)}\n";
+            string localOriginLocation = $"{stringPath}LocalOriginLocation: {string.Format("{0:0.00}", localAxis.origin.x)} {string.Format("{0:0.00}", localAxis.origin.y)} {string.Format("{0:0.00}", localAxis.origin.z)}";
+            return distanceFromGlobalOrigin + YXFromGlobalAxis + localAxisRotation + localOriginLocation;
         }
         public string saveJoint(bool radianOrAngle){
             float convert = radianOrAngle? 180f/Mathf.PI:1;
@@ -1273,6 +1275,7 @@ public class SourceCode:MonoBehaviour {
         Dictionary<int,int> newJointKeys = new Dictionary<int,int>();
         Dictionary<int,int> newSphereKeys = new Dictionary<int,int>();
         Dictionary<int,List<int>> deleted = new Dictionary<int, List<int>>();
+        Vector3 oldOrigin = new Vector3(0,0,0);
         public Editor(){}
         public Editor(Body body){
             this.body = body;
@@ -1359,6 +1362,9 @@ public class SourceCode:MonoBehaviour {
                 case bodyStructureSize:
                     bodyStructureSizeInstruction(value);
                 break;
+                case showAxis:
+                    showAxisInstruction(value);
+                break;
                 case allJointsInBody:
                     allJointsInBodyInstruction(value);
                 break;
@@ -1373,7 +1379,6 @@ public class SourceCode:MonoBehaviour {
                 break;
             }
         }
-        
         void bodyStructureSizeInstruction(List<string> value){
             if (value.Count>0){
                 bool check = int.TryParse(value[0], out int amount);
@@ -1418,7 +1423,14 @@ public class SourceCode:MonoBehaviour {
             }
             return set;
         }
-
+        void showAxisInstruction(List<string> value){
+            if (value.Count>0){
+                if (value[0] == "True") 
+                    body.globalAxis.renderAxis.createAxis();
+                else if (value[0] == "False") 
+                    body.globalAxis.renderAxis.deleteAxis();
+            }
+        }
         void allJointsInBodyInstruction(List<string> value){
             HashSet<int> set = resizeBody(value, out bool error);
             if (!error) {
@@ -1481,6 +1493,7 @@ public class SourceCode:MonoBehaviour {
         const string distanceFromGlobalOrigin = "DistanceFromGlobalOrigin";
         const string YXFromGlobalAxis = "YXFromGlobalAxis";
         const string localAxisRotation = "LocalAxisRotation";
+        const string localOriginLocation = "LocalOriginLocation";
         const string spinPastX = "SpinPastX";
         const string spinPastY = "SpinPastY";
         const string spinPastSpeedAndAcceleration = "SpinPastSpeedAndAcceleration";
@@ -1509,7 +1522,7 @@ public class SourceCode:MonoBehaviour {
                         activeInstruction(joint,value);
                     break;
                     case showAxis:
-                        showActiveInstruction(joint,value);
+                        showAxisInstruction(joint,value);
                     break;
                     case distanceFromGlobalOrigin:
                         distanceFromGlobalOriginInstruction(joint,value);
@@ -1519,6 +1532,9 @@ public class SourceCode:MonoBehaviour {
                     break;
                     case localAxisRotation:
                         localAxisRotationInstruction(joint,value);
+                    break;
+                    case localOriginLocation:
+                        localOriginLocationInstruction(joint,value);
                     break;
                     case spinPastX:
                         spinPastXInstruction(joint,value);
@@ -1574,7 +1590,7 @@ public class SourceCode:MonoBehaviour {
                 joint.connection.active = value[0] == "True";
             }
         }
-        void showActiveInstruction(Joint joint,List<string> value){
+        void showAxisInstruction(Joint joint,List<string> value){
             if (value.Count>0){
                 if (value[0] == "True") 
                     joint.localAxis.renderAxis.createAxis();
@@ -1586,6 +1602,7 @@ public class SourceCode:MonoBehaviour {
             if (value.Count>0){
                 bool checkStr = float.TryParse(value[0], out float key);
                 if (checkStr){
+                    oldOrigin = joint.localAxis.origin;
                     joint.distanceFromGlobalOrigin(key);
                 }
             }
@@ -1607,6 +1624,7 @@ public class SourceCode:MonoBehaviour {
                             joint.fromGlobalAxisX*= Mathf.PI/180f;
                         }
                         joint.moveJoint(globalAxis.setPointAroundOrigin(y,x,length) - localAxis.origin);
+                        oldOrigin = joint.localAxis.origin - oldOrigin;
                     } 
             }
         }
@@ -1623,6 +1641,19 @@ public class SourceCode:MonoBehaviour {
                     }
                     joint.worldRotateJoint(y,x,ly);
                 }
+            }
+        }
+        void localOriginLocationInstruction(Joint joint,List<string> value){
+            int size = value.Count;
+            if (size >= 3) {
+                bool checkX = float.TryParse(value[0], out float x);
+                bool checkY = float.TryParse(value[1], out float y);
+                bool checkZ = float.TryParse(value[2], out float z);
+                float vecX = checkX? x: joint.localAxis.origin.x;
+                float vecY = checkY? y: joint.localAxis.origin.y;
+                float vecZ = checkZ? z: joint.localAxis.origin.z;
+                Vector3 add = initilize? new Vector3(0,0,0):oldOrigin;
+                joint.localAxis.placeAxis(new Vector3(vecX,vecY,vecZ)+add);
             }
         }
         void xAroundAxis(AroundAxis aroundAxis, List<string> value){
