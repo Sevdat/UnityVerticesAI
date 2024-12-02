@@ -1,32 +1,31 @@
-Body_0_ShowAxis: False
+Body_0_ShowAxis: True
+Body_0_GlobalAxisScale: 6.00
 Body_0_BodyStructureSize: 1
 Body_0_AllJointsInBody: 0
 
-Body_0_Joint_0_MovementOption: True
-Body_0_Joint_0_DistanceFromGlobalOrigin: 6.99
-Body_0_Joint_0_YXFromGlobalAxis: 1.02 1.00
+Body_0_Joint_0_MovementOption: False
+Body_0_Joint_0_DistanceFromGlobalOrigin: 0.00
+Body_0_Joint_0_YXFromGlobalAxis: 0.00 0.00
 Body_0_Joint_0_LocalAxisRotation: 0.00 0.00 0.00
-Body_0_Joint_0_LocalOriginLocation: 5.01 3.66 3.22
+Body_0_Joint_0_LocalOriginLocation: 0.00 0.00 0.00
 Body_0_Joint_0_PointCloudSize: 1
-Body_0_Joint_0_AllSpheresInJoint: 0 
-
-Body_0_Joint_0_Sphere_0_DistanceFromLocalOrigin: 1.00 0.00 1.00
-Body_0_Joint_0_Sphere_0_YFromLocalAxis: 1.00 0.00 1.00
-Body_0_Joint_0_Sphere_0_XFromLocalAxis: 0.00 0.00 1.00
-Body_0_Joint_0_Sphere_0_Radius: 1.00
-Body_0_Joint_0_Sphere_0_ColorRGBA: 1.00 1.00 1.00 1.00
+Body_0_Joint_0_AllSpheresInJoint: 
 
 Body_0_Joint_0_Active: True
 Body_0_Joint_0_ShowAxis: True
-Body_0_Joint_0_SpinPastX: 0.00 0.00 1.00
-Body_0_Joint_0_SpinPastY: 0.00 0.00 1.00
-Body_0_Joint_0_SpinPastSpeedAndAcceleration: 0.00 1.00
-Body_0_Joint_0_SpinFutureX: 0.00 0.00 1.00
-Body_0_Joint_0_SpinFutureY: 0.00 0.00 1.00
-Body_0_Joint_0_SpinFutureSpeedAndAcceleration: 0.00 1.00
-Body_0_Joint_0_MoveX: 0.00 0.00 1.00
-Body_0_Joint_0_MoveY: 0.00 0.00 1.00
-Body_0_Joint_0_MoveSpeedAndAcceleration: 0.00 1.00
+Body_0_Joint_0_LocalAxisScale: 6.00
+Body_0_Joint_0_SpinPastX: 0.00 0.00 2.00
+Body_0_Joint_0_SpinPastY: 0.00 0.00 2.00
+Body_0_Joint_0_SpinPastSpeedAndAcceleration: 0.00 2.00
+Body_0_Joint_0_SpinFutureX: 0.00 0.00 2.00
+Body_0_Joint_0_SpinFutureY: 0.00 0.00 2.00
+Body_0_Joint_0_SpinFutureSpeedAndAcceleration: 0.00 2.00
+Body_0_Joint_0_MovePastX: 0.00 0.00 1.00
+Body_0_Joint_0_MovePastY: 0.00 0.00 1.00
+Body_0_Joint_0_MovePastSpeedAndAcceleration: 0.00 1.00
+Body_0_Joint_0_MoveFutureX: 0.00 0.00 1.00
+Body_0_Joint_0_MoveFutureY: 0.00 0.00 1.00
+Body_0_Joint_0_MoveFutureSpeedAndAcceleration: 0.00 1.00
 Body_0_Joint_0_PastConnectionsInBody: 
 Body_0_Joint_0_FutureConnectionsInBody: 
 Body_0_Joint_0_ResetPastJoints: False
@@ -35,4 +34,5 @@ Body_0_Joint_0_ResetFutureJoints: False
 Body_0_GlobalOriginLocation: 0.00 0.00 0.00
 Body_0_GlobalAxisRotationXYZ: 0.00 0.00 0.00
 Body_0_RadianOrAngle: False
+Body_0_Accuracy: 2
 

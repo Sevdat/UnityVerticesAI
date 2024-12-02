@@ -23,7 +23,7 @@ public class SourceCode:MonoBehaviour {
     }
     public class RenderAxis{
         public Axis axis;
-        public Sphere origin,x,y,z,spinFuture,spinPast,move;
+        public Sphere origin,x,y,z,spinPast,spinFuture,movePast,moveFuture;
         public bool created = false;
 
         public RenderAxis(Axis axis){
@@ -34,7 +34,8 @@ public class SourceCode:MonoBehaviour {
             z = new Sphere(axis.z,1,new Color(0,0,1,0));
             spinPast = new Sphere(y.origin,1,new Color(1,0,1,1));
             spinFuture = new Sphere(y.origin,1,new Color(0,0,0,0));
-            move = new Sphere(y.origin,1,new Color(1.0f, 0.64f, 0.0f,0.0f));
+            movePast = new Sphere(y.origin,1,new Color(1.0f, 0.64f, 0.0f,0.0f));
+            moveFuture = new Sphere(y.origin,1,new Color(1.0f, 0.64f, 0.0f,0.0f));
             created = true;
         }
         public void createAxis(){
@@ -43,12 +44,14 @@ public class SourceCode:MonoBehaviour {
                 x.restoreSphere();
                 y.restoreSphere();
                 z.restoreSphere();
-                spinFuture.restoreSphere();
                 spinPast.restoreSphere();
-                move.restoreSphere();
+                spinFuture.restoreSphere();
+                movePast.restoreSphere();
+                moveFuture.restoreSphere();
                 axis.spinPast.sphere = spinPast;
                 axis.spinFuture.sphere = spinFuture;
-                axis.move.sphere = move;
+                axis.movePast.sphere = movePast;
+                axis.moveFuture.sphere = moveFuture;
                 updateAxis();
                 created = true;
             }
@@ -59,9 +62,10 @@ public class SourceCode:MonoBehaviour {
                 x.destroySphere();
                 y.destroySphere();
                 z.destroySphere();
-                spinFuture.destroySphere();
                 spinPast.destroySphere();
-                move.destroySphere();
+                spinFuture.destroySphere();
+                movePast.destroySphere();
+                moveFuture.destroySphere();
                 created = false;
             }
         }
@@ -93,20 +97,12 @@ public class SourceCode:MonoBehaviour {
             sphere.setOrigin(axis.origin + new Vector3(0,distance,0));
         }
         public void scale(float newDistance){
-            bool check = Mathf.Sign(distance) >0;
-            float dis = distance+newDistance;
-            bool check2 = check? dis>0:dis<0;
-            if (check2){
-                    distance += newDistance;
-                    sphere.origin = axis.origin + axis.distanceFromOrigin(sphere.origin,axis.origin,Mathf.Abs(distance));
-                } else {
-                    if (dis != 0) distance += newDistance;
-                    distance *=-1;
-                    sphere.origin = axis.origin + axis.distanceFromOrigin(axis.origin,sphere.origin,Mathf.Abs(distance));
-                    get();
+            if (newDistance>0){
+                distance = newDistance;
+                sphere.origin = axis.origin + axis.distanceFromOrigin(sphere.origin,axis.origin,Mathf.Abs(distance));
+                if (axis.renderAxis.created){
+                    updateAxis();
                 }
-            if (axis.renderAxis.created){
-                updateAxis();
             }
         }
 
@@ -201,7 +197,7 @@ public class SourceCode:MonoBehaviour {
                      worldAngleX,worldSpeedX,
                      localAngleY,localSpeedY;
                      
-        public AroundAxis spinFuture,spinPast,move;
+        public AroundAxis spinPast,spinFuture,movePast,moveFuture;
         public Axis(){}
         public Axis(Body body,Vector3 origin, float distance){
             this.body = body;
@@ -215,9 +211,10 @@ public class SourceCode:MonoBehaviour {
             worldSpeedX = 0;
             localSpeedY = 0;
             renderAxis = new RenderAxis(this);
-            spinFuture = new AroundAxis(this, renderAxis.spinFuture);
             spinPast = new AroundAxis(this, renderAxis.spinPast);
-            move = new AroundAxis(this, renderAxis.move);
+            spinFuture = new AroundAxis(this, renderAxis.spinFuture);
+            movePast = new AroundAxis(this, renderAxis.moveFuture);
+            moveFuture = new AroundAxis(this, renderAxis.moveFuture);
         }
         
         public void moveAxis(Vector3 add){
@@ -225,14 +222,15 @@ public class SourceCode:MonoBehaviour {
             x += add;
             y += add;
             z += add;
-            spinFuture.sphere.origin += add;
             spinPast.sphere.origin += add;
-            move.sphere.origin += add;
+            spinFuture.sphere.origin += add;
+            movePast.sphere.origin += add;
+            moveFuture.sphere.origin += add;
             if (renderAxis.created){
                 renderAxis.updateAxis();
                 spinFuture.updateAxis();
                 spinPast.updateAxis();
-                move.updateAxis();
+                moveFuture.updateAxis();
             }
         }
         public Vector3 placeAxis(Vector3 newOrigin){
@@ -242,7 +240,7 @@ public class SourceCode:MonoBehaviour {
                 renderAxis.updateAxis();
                 spinFuture.updateAxis();
                 spinPast.updateAxis();
-                move.updateAxis();
+                moveFuture.updateAxis();
             }
             return newPosition;
         }
@@ -358,7 +356,6 @@ public class SourceCode:MonoBehaviour {
             getAngle(y,origin,worldX,worldY,worldZ,out worldAngleY,out float tempWorldAngleX);
             if (!(worldAngleY == 0f || worldAngleY == Mathf.PI)) worldAngleX = tempWorldAngleX;
                 
-
             Vector3 localX = origin + new Vector3(axisDistance,0,0);
             Vector3 localY = origin + new Vector3(0,axisDistance,0);
             Vector3 localZ = origin + new Vector3(0,0,axisDistance);
@@ -401,15 +398,16 @@ public class SourceCode:MonoBehaviour {
             this.worldAngleY = worldAngleY;
             this.worldAngleX = worldAngleX;
             this.localAngleY = localAngleY;
-
-            spinFuture.resetOrigin();
             spinPast.resetOrigin();
-            move.resetOrigin();
+            spinFuture.resetOrigin();
+            movePast.resetOrigin();
+            moveFuture.resetOrigin();
             if (renderAxis.created){
                 renderAxis.updateAxis();
-                spinFuture.updateAxis();
                 spinPast.updateAxis();
-                move.updateAxis();
+                spinFuture.updateAxis();
+                movePast.updateAxis();
+                moveFuture.updateAxis();
             }
         }
 
@@ -445,12 +443,13 @@ public class SourceCode:MonoBehaviour {
             z = quatRotate(z,rotationOrigin,quat);
             spinFuture.sphere.origin = quatRotate(spinFuture.sphere.origin,rotationOrigin,quat);
             spinPast.sphere.origin = quatRotate(spinPast.sphere.origin,rotationOrigin,quat);
-            move.sphere.origin = quatRotate(move.sphere.origin,rotationOrigin,quat);
+            moveFuture.sphere.origin = quatRotate(moveFuture.sphere.origin,rotationOrigin,quat);
             if (renderAxis.created){
                 renderAxis.updateAxis();
-                spinFuture.updateAxis();
                 spinPast.updateAxis();
-                move.updateAxis();
+                spinFuture.updateAxis();
+                movePast.updateAxis();
+                moveFuture.updateAxis();
             }
         }
 
@@ -509,6 +508,7 @@ public class SourceCode:MonoBehaviour {
         public Joint[] bodyStructure;
         public KeyGenerator keyGenerator;
         public Editor editor;
+        public string amountOfDigits; 
 
         public Body(){}
         public Body(int worldKey){
@@ -518,8 +518,23 @@ public class SourceCode:MonoBehaviour {
             keyGenerator = new KeyGenerator(0);
             editor = new Editor(this);
             editor.initilizeBody();
+            amountOfDigits = "0.0";
+        }
+        public void newAccuracy(int amount){
+            string newString;
+            if (amount>0){
+                newString = "0.0";
+                for (int i = 1; i < amount; i++){
+                    newString += "0";
+                }
+                amountOfDigits = newString;
+            }
         }
 
+        public string accuracy(float num){
+            float amount = Mathf.Pow(10,amountOfDigits.Length-2);
+            return (MathF.Ceiling(num*amount)/amount).ToString(amountOfDigits);
+        }
         public string saveBodyPosition(bool radianOrAngle){
             Vector3 globalOrigin = globalAxis.origin;
             float worldAngleY,worldAngleX,localAngleY;
@@ -528,10 +543,11 @@ public class SourceCode:MonoBehaviour {
                 else 
                 globalAxis.getWorldRotationInRadians(out worldAngleY,out worldAngleX,out localAngleY);
             string stringPath = $"Body_{worldKey}_";
-            string globalOriginLocation = $"{stringPath}GlobalOriginLocation: {string.Format("{0:0.00}", globalOrigin.x)} {string.Format("{0:0.00}", globalOrigin.y)} {string.Format("{0:0.00}", globalOrigin.z)}\n";
-            string globalAxisRotationXYZ = $"{stringPath}GlobalAxisRotationXYZ: {string.Format("{0:0.00}", worldAngleY)} {string.Format("{0:0.00}", worldAngleX)} {string.Format("{0:0.00}", localAngleY)}\n";
-            string radianOrDegree = $"{stringPath}RadianOrAngle: {radianOrAngle}";
-            return globalOriginLocation + globalAxisRotationXYZ + radianOrDegree;
+            string globalOriginLocation = $"{stringPath}GlobalOriginLocation: {accuracy(globalOrigin.x)} {accuracy(globalOrigin.y)} {accuracy(globalOrigin.z)}\n";
+            string globalAxisRotationXYZ = $"{stringPath}GlobalAxisRotationXYZ: {accuracy(worldAngleY)} {accuracy(worldAngleX)} {accuracy(localAngleY)}\n";
+            string radianOrDegree = $"{stringPath}RadianOrAngle: {radianOrAngle}\n";
+            string accuracyAmount = $"{stringPath}Accuracy: {amountOfDigits.Length-2}";
+            return globalOriginLocation + globalAxisRotationXYZ + radianOrDegree + accuracyAmount;
         }
         public string saveBody(){
             List<int> jointIndexes = new List<int>();
@@ -545,12 +561,14 @@ public class SourceCode:MonoBehaviour {
             }
             string stringPath = $"Body_{worldKey}_";
             string showAxis = $"{stringPath}ShowAxis: {globalAxis.renderAxis.created}\n";
+            string globalAxisScale = $"{stringPath}GlobalAxisScale: {accuracy(globalAxis.axisDistance)}\n";
             string bodyStructureSize = $"{stringPath}BodyStructureSize: {bodyStructure.Length}\n";
             string allJointsInBody = $"{stringPath}AllJointsInBody:{strJointIndexes}\n";
 
-            return showAxis + bodyStructureSize + allJointsInBody;
+            return showAxis + globalAxisScale + bodyStructureSize + allJointsInBody;
 
         }
+
         public void rotateBody(float worldAngleY, float worldAngleX, float localAngleY){
             resetRotateBody();
             float diffWorldAngleY = globalAxis.convertTo360(worldAngleY) - globalAxis.convertTo360(globalAxis.worldAngleY);
@@ -563,15 +581,16 @@ public class SourceCode:MonoBehaviour {
             Vector4 quatY = globalAxis.rotateAxis(ref globalAxis.x,ref globalAxis.y,ref globalAxis.z,worldX,globalAxis.convertTo360(diffWorldAngleY));
             Vector4 quatX = globalAxis.rotateAxis(ref globalAxis.x,ref globalAxis.y,ref globalAxis.z,worldY,globalAxis.convertTo360(diffWorldAngleX));
             Vector4 quatLY = globalAxis.rotateAxis(ref globalAxis.x,ref globalAxis.y,ref globalAxis.z,globalAxis.y,globalAxis.convertTo360(diffLocalAngleY));
-            
+            globalAxis.spinPast.resetOrigin();           
             globalAxis.spinFuture.resetOrigin();
-            globalAxis.spinPast.resetOrigin();
-            globalAxis.move.resetOrigin();
+            globalAxis.movePast.resetOrigin();
+            globalAxis.moveFuture.resetOrigin();
             if (globalAxis.renderAxis.created){
                 globalAxis.renderAxis.updateAxis();
-                globalAxis.spinFuture.updateAxis();
                 globalAxis.spinPast.updateAxis();
-                globalAxis.move.updateAxis();
+                globalAxis.spinFuture.updateAxis();
+                globalAxis.movePast.updateAxis();
+                globalAxis.moveFuture.updateAxis();
             }
             Joint[] joints = bodyStructure;
             for (int i = 0; i < joints.Length; i++){
@@ -604,14 +623,16 @@ public class SourceCode:MonoBehaviour {
             Vector4 quatX = globalAxis.rotateAxis(ref globalAxis.x,ref globalAxis.y,ref globalAxis.z,worldY,globalAxis.convertTo360(diffWorldAngleX));
             Vector4 quatY = globalAxis.rotateAxis(ref globalAxis.x,ref globalAxis.y,ref globalAxis.z,worldX,globalAxis.convertTo360(diffWorldAngleY));
             
+            globalAxis.spinPast.resetOrigin();           
             globalAxis.spinFuture.resetOrigin();
-            globalAxis.spinPast.resetOrigin();
-            globalAxis.move.resetOrigin();
+            globalAxis.movePast.resetOrigin();
+            globalAxis.moveFuture.resetOrigin();
             if (globalAxis.renderAxis.created){
                 globalAxis.renderAxis.updateAxis();
-                globalAxis.spinFuture.updateAxis();
                 globalAxis.spinPast.updateAxis();
-                globalAxis.move.updateAxis();
+                globalAxis.spinFuture.updateAxis();
+                globalAxis.movePast.updateAxis();
+                globalAxis.moveFuture.updateAxis();
             }
 
             Joint[] joints = bodyStructure;
@@ -867,10 +888,10 @@ public class SourceCode:MonoBehaviour {
                 localAxis.getWorldRotationInRadians(out worldAngleY,out worldAngleX,out localAngleY);
             string stringPath = $"Body_{body.worldKey}_Joint_{connection.indexInBody}_";
             string movementOption = $"{stringPath}MovementOption: {this.movementOption}\n";
-            string distanceFromGlobalOrigin = $"{stringPath}DistanceFromGlobalOrigin: {string.Format("{0:0.00}", distanceFromOrigin)}\n";
-            string YXFromGlobalAxis = $"{stringPath}YXFromGlobalAxis: {string.Format("{0:0.00}", fromGlobalAxisY*convert)} {string.Format("{0:0.00}", fromGlobalAxisX*convert)}\n";
-            string localAxisRotation = $"{stringPath}LocalAxisRotation: {string.Format("{0:0.00}", worldAngleY)} {string.Format("{0:0.00}", worldAngleX)} {string.Format("{0:0.00}", localAngleY)}\n";
-            string localOriginLocation = $"{stringPath}LocalOriginLocation: {string.Format("{0:0.00}", localAxis.origin.x)} {string.Format("{0:0.00}", localAxis.origin.y)} {string.Format("{0:0.00}", localAxis.origin.z)}";
+            string distanceFromGlobalOrigin = $"{stringPath}DistanceFromGlobalOrigin: {body.accuracy(distanceFromOrigin)}\n";
+            string YXFromGlobalAxis = $"{stringPath}YXFromGlobalAxis: {body.accuracy(fromGlobalAxisY*convert)} {body.accuracy(fromGlobalAxisX*convert)}\n";
+            string localAxisRotation = $"{stringPath}LocalAxisRotation: {body.accuracy(worldAngleY)} {body.accuracy(worldAngleX)} {body.accuracy(localAngleY)}\n";
+            string localOriginLocation = $"{stringPath}LocalOriginLocation: {body.accuracy(localAxis.origin.x)} {body.accuracy(localAxis.origin.y)} {body.accuracy(localAxis.origin.z)}";
             return movementOption + distanceFromGlobalOrigin + YXFromGlobalAxis + localAxisRotation + localOriginLocation;
         }
         public string saveJoint(bool radianOrAngle){
@@ -878,23 +899,28 @@ public class SourceCode:MonoBehaviour {
             string stringPath = $"Body_{body.worldKey}_Joint_{connection.indexInBody}_";
             string active = $"{stringPath}Active: {connection.active}\n";
             string showAxis = $"{stringPath}ShowAxis: {localAxis.renderAxis.created}\n";
-            string spinPastX = $"{stringPath}SpinPastX: {string.Format("{0:0.00}", localAxis.spinPast.angleX*convert)} {string.Format("{0:0.00}", localAxis.spinPast.sensitivitySpeedX*convert)} {string.Format("{0:0.00}", localAxis.spinPast.sensitivityAccelerationX)}\n";
-            string spinPastY = $"{stringPath}SpinPastY: {string.Format("{0:0.00}", localAxis.spinPast.angleY*convert)} {string.Format("{0:0.00}", localAxis.spinPast.sensitivitySpeedY*convert)} {string.Format("{0:0.00}", localAxis.spinPast.sensitivityAccelerationY)}\n";
-            string spinPastSpeedAndAcceleration = $"{stringPath}SpinPastSpeedAndAcceleration: {string.Format("{0:0.00}", localAxis.spinPast.speed*convert)} {string.Format("{0:0.00}", localAxis.spinPast.acceleration)}\n";
-            string spinFutureX = $"{stringPath}SpinFutureX: {string.Format("{0:0.00}", localAxis.spinFuture.angleX*convert)} {string.Format("{0:0.00}", localAxis.spinFuture.sensitivitySpeedX*convert)} {string.Format("{0:0.00}", localAxis.spinFuture.sensitivityAccelerationX)}\n";
-            string spinFutureY = $"{stringPath}SpinFutureY: {string.Format("{0:0.00}", localAxis.spinFuture.angleY*convert)} {string.Format("{0:0.00}", localAxis.spinFuture.sensitivitySpeedY*convert)} {string.Format("{0:0.00}", localAxis.spinFuture.sensitivityAccelerationY)}\n";
-            string spinFutureSpeedAndAcceleration = $"{stringPath}SpinFutureSpeedAndAcceleration: {string.Format("{0:0.00}", localAxis.spinFuture.speed*convert)} {string.Format("{0:0.00}", localAxis.spinFuture.acceleration)}\n";
-            string moveX = $"{stringPath}MoveX: {string.Format("{0:0.00}", localAxis.move.angleX)} {string.Format("{0:0.00}", localAxis.move.sensitivitySpeedX)} {string.Format("{0:0.00}", localAxis.move.sensitivityAccelerationX)}\n";
-            string moveY = $"{stringPath}MoveY: {string.Format("{0:0.00}", localAxis.move.angleY)} {string.Format("{0:0.00}", localAxis.move.sensitivitySpeedY)} {string.Format("{0:0.00}", localAxis.move.sensitivityAccelerationY)}\n";
-            string moveSpeedAndAcceleration = $"{stringPath}MoveSpeedAndAcceleration: {string.Format("{0:0.00}", localAxis.move.speed)} {string.Format("{0:0.00}", localAxis.move.acceleration)}\n";
+            string localAxisScale = $"{stringPath}LocalAxisScale: {body.accuracy(localAxis.axisDistance)}\n";
+            string spinPastX = $"{stringPath}SpinPastX: {body.accuracy(localAxis.spinPast.angleX*convert)} {body.accuracy(localAxis.spinPast.sensitivitySpeedX*convert)} {body.accuracy(localAxis.spinPast.sensitivityAccelerationX)}\n";
+            string spinPastY = $"{stringPath}SpinPastY: {body.accuracy(localAxis.spinPast.angleY*convert)} {body.accuracy(localAxis.spinPast.sensitivitySpeedY*convert)} {body.accuracy(localAxis.spinPast.sensitivityAccelerationY)}\n";
+            string spinPastSpeedAndAcceleration = $"{stringPath}SpinPastSpeedAndAcceleration: {body.accuracy(localAxis.spinPast.speed*convert)} {body.accuracy(localAxis.spinPast.acceleration)}\n";
+            string spinFutureX = $"{stringPath}SpinFutureX: {body.accuracy(localAxis.spinFuture.angleX*convert)} {body.accuracy(localAxis.spinFuture.sensitivitySpeedX*convert)} {body.accuracy(localAxis.spinFuture.sensitivityAccelerationX)}\n";
+            string spinFutureY = $"{stringPath}SpinFutureY: {body.accuracy(localAxis.spinFuture.angleY*convert)} {body.accuracy(localAxis.spinFuture.sensitivitySpeedY*convert)} {body.accuracy(localAxis.spinFuture.sensitivityAccelerationY)}\n";
+            string spinFutureSpeedAndAcceleration = $"{stringPath}SpinFutureSpeedAndAcceleration: {body.accuracy(localAxis.spinFuture.speed*convert)} {body.accuracy(localAxis.spinFuture.acceleration)}\n";
+            string movePastX = $"{stringPath}MovePastX: {body.accuracy(localAxis.movePast.angleX)} {body.accuracy(localAxis.movePast.sensitivitySpeedX)} {body.accuracy(localAxis.movePast.sensitivityAccelerationX)}\n";
+            string movePastY = $"{stringPath}MovePastY: {body.accuracy(localAxis.movePast.angleY)} {body.accuracy(localAxis.movePast.sensitivitySpeedY)} {body.accuracy(localAxis.movePast.sensitivityAccelerationY)}\n";
+            string movePastSpeedAndAcceleration = $"{stringPath}MovePastSpeedAndAcceleration: {body.accuracy(localAxis.movePast.speed)} {body.accuracy(localAxis.movePast.acceleration)}\n";
+            string moveFutureX = $"{stringPath}MoveFutureX: {body.accuracy(localAxis.moveFuture.angleX)} {body.accuracy(localAxis.moveFuture.sensitivitySpeedX)} {body.accuracy(localAxis.moveFuture.sensitivityAccelerationX)}\n";
+            string moveFutureY = $"{stringPath}MoveFutureY: {body.accuracy(localAxis.moveFuture.angleY)} {body.accuracy(localAxis.moveFuture.sensitivitySpeedY)} {body.accuracy(localAxis.moveFuture.sensitivityAccelerationY)}\n";
+            string moveFutureSpeedAndAcceleration = $"{stringPath}MoveFutureSpeedAndAcceleration: {body.accuracy(localAxis.moveFuture.speed)} {body.accuracy(localAxis.moveFuture.acceleration)}\n";
             string pastConnectionsInBody = $"{stringPath}PastConnectionsInBody: {connection.pastToString()}\n";
             string futureConnectionsInBody = $"{stringPath}FutureConnectionsInBody: {connection.futureToString()}\n";
             string resetPastJoints = $"{stringPath}ResetPastJoints: False\n";
             string resetFutureJoints = $"{stringPath}ResetFutureJoints: False\n";
-            return active + showAxis +
+            return active + showAxis + localAxisScale +
                 spinPastX + spinPastY + spinPastSpeedAndAcceleration +
                 spinFutureX + spinFutureY + spinFutureSpeedAndAcceleration +
-                moveX + moveY + moveSpeedAndAcceleration +
+                movePastX + movePastY + movePastSpeedAndAcceleration +
+                moveFutureX + moveFutureY + moveFutureSpeedAndAcceleration +
                 pastConnectionsInBody + futureConnectionsInBody + 
                 resetPastJoints + resetFutureJoints;
         }
@@ -932,24 +958,24 @@ public class SourceCode:MonoBehaviour {
         public void updatePhysics(){
             localAxis.spinFuture.updatePhysics();
             localAxis.spinPast.updatePhysics();
-            localAxis.move.updatePhysics();
+            localAxis.moveFuture.updatePhysics();
             pointCloud.updatePhysics();     
         }
 
         public void rotatePastHierarchy(){
             Vector4 quat = localAxis.spinFuture.quat(localAxis.spinPast.speed);
-            rotateHierarchy(quat, false,false);
+            rotateHierarchy(quat, false);
         }
         public void rotateFutureHierarchy(){
             Vector4 quat = localAxis.spinFuture.quat(localAxis.spinFuture.speed);
-            rotateHierarchy(quat, true,false);
+            rotateHierarchy(quat, true);
         }
 
-        void rotateHierarchy(Vector4 quat, bool pastOrFuture, bool rotateAll){
-            initTree(pastOrFuture, rotateAll, out List<Joint> tree, out int size); 
+        void rotateHierarchy(Vector4 quat, bool pastOrFuture){
+            initTree(pastOrFuture, out List<Joint> tree, out int size); 
             Vector3 rotationOrigin = localAxis.origin;
-            tree[0].rotateJoint(quat,rotationOrigin);
-            for (int i = 1; i<size;i++){
+            if (!pastOrFuture) tree[0].rotateJoint(quat,rotationOrigin);
+            for (int i = pastOrFuture ? 0 : 1; i<size;i++){
                 Joint joint = tree[i];
                 List<Joint> joints = joint.connection.getAll();
                 tree.AddRange(joints);
@@ -959,13 +985,18 @@ public class SourceCode:MonoBehaviour {
             resetUsed(tree,size);
         }
 
-        public void moveAllHierarchy(){
-            Vector3 move = localAxis.move.sphere.origin - localAxis.origin;
-            moveHierarchy(move, false,true);
+        public void movePastHierarchy(){
+            Vector3 move = localAxis.moveFuture.sphere.origin - localAxis.origin;
+            moveHierarchy(move, false);
         }
-        void moveHierarchy(Vector3 newVec, bool pastOrFuture, bool rotateAll){
-            initTree(pastOrFuture, rotateAll, out List<Joint> tree, out int size);  
-            for (int i = 0; i<size;i++){
+        public void moveFutureHierarchy(){
+            Vector3 move = localAxis.moveFuture.sphere.origin - localAxis.origin;
+            moveHierarchy(move, false);
+        }
+        void moveHierarchy(Vector3 newVec, bool pastOrFuture){
+            initTree(pastOrFuture, out List<Joint> tree, out int size);  
+            if (!pastOrFuture) tree[0].moveJoint(newVec);
+            for (int i = pastOrFuture ? 0 : 1; i<size;i++){
                 Joint joint = tree[i];
                 List<Joint> joints = joint.connection.getAll();
                 tree.AddRange(joints);
@@ -975,7 +1006,7 @@ public class SourceCode:MonoBehaviour {
             resetUsed(tree,size);
         }
         public void resetPastJoints(){
-            initTree(false,false, out List<Joint> tree, out int size);  
+            initTree(false, out List<Joint> tree, out int size);  
             for (int i = 0; i<size;i++){
                 Joint joint = tree[i];
                 List<Joint> joints = joint.connection.getAll();
@@ -986,7 +1017,7 @@ public class SourceCode:MonoBehaviour {
             resetUsed(tree,size);
         }
         public void resetFutureJoints(){
-            initTree(true, false, out List<Joint> tree, out int size);  
+            initTree(true, out List<Joint> tree, out int size);  
             for (int i = 0; i<size;i++){
                 Joint joint = tree[i];
                 List<Joint> joints = joint.connection.getAll();
@@ -996,14 +1027,12 @@ public class SourceCode:MonoBehaviour {
             }
             resetUsed(tree,size);
         }
-        void initTree(bool pastOrFuture,bool rotateAll, out List<Joint> tree,out int size){
+        void initTree(bool pastOrFuture, out List<Joint> tree,out int size){
             tree = new List<Joint>{this};
-            if (rotateAll) 
-                tree.AddRange(connection.getAll()); 
-                else if (pastOrFuture) 
-                        tree.AddRange(connection.getFuture()); 
-                    else 
-                        tree.AddRange(connection.getPast()); 
+            if (pastOrFuture) 
+                    tree.AddRange(connection.getFuture()); 
+                else 
+                    tree.AddRange(connection.getPast()); 
             size = tree.Count;
         }
         internal void resetUsed(List<Joint> joints, int size){
@@ -1191,14 +1220,15 @@ public class SourceCode:MonoBehaviour {
         }
    
         public string saveCollisionSphere(bool radianOrAngle){
+            Body body = path.body;
             Sphere sphere = aroundAxis.sphere;
             float convert = radianOrAngle? 180f/Mathf.PI:1;
             string stringPath = $"Body_{path.body.worldKey}_Joint_{path.joint.connection.indexInBody}_Sphere_{path.collisionSphereKey}_";
-            string distanceFromLocalOrigin = $"{stringPath}DistanceFromLocalOrigin: {string.Format("{0:0.00}", aroundAxis.distance)} {string.Format("{0:0.00}", aroundAxis.distanceSpeed)} {string.Format("{0:0.00}", aroundAxis.distanceAcceleration)}\n";
-            string YFromLocalAxis = $"{stringPath}YFromLocalAxis: {string.Format("{0:0.00}", aroundAxis.angleY*convert)} {string.Format("{0:0.00}", aroundAxis.sensitivitySpeedY*convert)} {string.Format("{0:0.00}", aroundAxis.sensitivityAccelerationY)}\n";
-            string XFromLocalAxis = $"{stringPath}XFromLocalAxis: {string.Format("{0:0.00}", aroundAxis.angleX*convert)} {string.Format("{0:0.00}", aroundAxis.sensitivitySpeedX*convert)} {string.Format("{0:0.00}", aroundAxis.sensitivityAccelerationX)}\n";
-            string radius = $"{stringPath}Radius: {string.Format("{0:0.00}", sphere.radius)}\n";
-            string color = $"{stringPath}ColorRGBA: {string.Format("{0:0.00}", sphere.color.r)} {string.Format("{0:0.00}", sphere.color.g)} {string.Format("{0:0.00}", sphere.color.b)} {string.Format("{0:0.00}", sphere.color.a)}\n";
+            string distanceFromLocalOrigin = $"{stringPath}DistanceFromLocalOrigin: {body.accuracy(aroundAxis.distance)} {body.accuracy(aroundAxis.distanceSpeed)} {body.accuracy(aroundAxis.distanceAcceleration)}\n";
+            string YFromLocalAxis = $"{stringPath}YFromLocalAxis: {body.accuracy(aroundAxis.angleY*convert)} {body.accuracy(aroundAxis.sensitivitySpeedY*convert)} {body.accuracy(aroundAxis.sensitivityAccelerationY)}\n";
+            string XFromLocalAxis = $"{stringPath}XFromLocalAxis: {body.accuracy(aroundAxis.angleX*convert)} {body.accuracy(aroundAxis.sensitivitySpeedX*convert)} {body.accuracy(aroundAxis.sensitivityAccelerationX)}\n";
+            string radius = $"{stringPath}Radius: {body.accuracy(sphere.radius)}\n";
+            string color = $"{stringPath}ColorRGBA: {body.accuracy(sphere.color.r)} {body.accuracy(sphere.color.g)} {body.accuracy(sphere.color.b)} {body.accuracy(sphere.color.a)}\n";
             return distanceFromLocalOrigin + YFromLocalAxis + XFromLocalAxis + radius + color;
         }
         public void setOrigin(Vector3 newOrigin){
@@ -1354,8 +1384,10 @@ public class SourceCode:MonoBehaviour {
 
         const string bodyStructureSize = "BodyStructureSize";
         const string allJointsInBody = "AllJointsInBody";
+        const string globalAxisScale = "GlobalAxisScale";
         const string globalOriginLocation = "GlobalOriginLocation";
         const string globalAxisRotationXYZ = "GlobalAxisRotationXYZ";
+        const string accuracy = "Accuracy";
         const string radianOrAngle = "RadianOrAngle";
 
         public void bodyInstructions(string instruction, List<string> value){
@@ -1366,6 +1398,9 @@ public class SourceCode:MonoBehaviour {
                 case showAxis:
                     showAxisInstruction(value);
                 break;
+                case globalAxisScale:
+                    globalAxisScaleInstruction(value);
+                break;
                 case allJointsInBody:
                     allJointsInBodyInstruction(value);
                 break;
@@ -1374,6 +1409,9 @@ public class SourceCode:MonoBehaviour {
                 break;
                 case globalAxisRotationXYZ:
                     globalAxisRotationXYZInstruction(value);
+                break;
+                case accuracy:
+                    accuracyInstruction(value);
                 break;
                 case radianOrAngle:
                     radianOrAngleInstruction(value);
@@ -1432,6 +1470,17 @@ public class SourceCode:MonoBehaviour {
                     body.globalAxis.renderAxis.deleteAxis();
             }
         }
+        void globalAxisScaleInstruction(List<string> value){
+            if (value.Count>0){
+                bool checkScale = float.TryParse(value[0], out float newScale);
+                if (checkScale && Mathf.Abs(body.globalAxis.axisDistance-newScale)>0){
+                    body.globalAxis.scaleAxis(newScale);    
+                    body.globalAxis.spinFuture.scale(newScale);
+                    body.globalAxis.spinPast.scale(newScale);
+                }
+
+            }
+        }
         void allJointsInBodyInstruction(List<string> value){
             HashSet<int> set = resizeBody(value, out bool error);
             if (!error) {
@@ -1480,6 +1529,14 @@ public class SourceCode:MonoBehaviour {
                 }
             }            
         }
+        void accuracyInstruction(List<string> value){
+            if (value.Count>0){
+                bool checkAccuracy = int.TryParse(value[0], out int newAccuracy);
+                if (checkAccuracy){
+                    body.newAccuracy(newAccuracy);
+                }
+            }
+        }
         void radianOrAngleInstruction(List<string> value){
             int size = value.Count;
             if (size>= 1){
@@ -1491,6 +1548,7 @@ public class SourceCode:MonoBehaviour {
 
         const string active = "Active";
         const string showAxis = "ShowAxis";
+        const string localAxisScale = "LocalAxisScale";
         const string movementOption = "MovementOption";
         const string distanceFromGlobalOrigin = "DistanceFromGlobalOrigin";
         const string YXFromGlobalAxis = "YXFromGlobalAxis";
@@ -1502,9 +1560,12 @@ public class SourceCode:MonoBehaviour {
         const string spinFutureX = "SpinFutureX";
         const string spinFutureY = "SpinFutureY";
         const string spinFutureSpeedAndAcceleration = "SpinFutureSpeedAndAcceleration";
-        const string moveX = "MoveX";
-        const string moveY = "MoveY";
-        const string moveSpeedAndAcceleration = "MoveSpeedAndAcceleration";
+        const string movePastX = "MovePastX";
+        const string movePastY = "MovePastY";
+        const string movePastSpeedAndAcceleration = "MovePastSpeedAndAcceleration";
+        const string moveFutureX = "MoveFutureX";
+        const string moveFutureY = "MoveFutureY";
+        const string moveFutureSpeedAndAcceleration = "MoveFutureSpeedAndAcceleration";
         const string pastConnectionsInBody = "PastConnectionsInBody";
         const string futureConnectionsInBody = "FutureConnectionsInBody";
         const string resetPastJoints = "ResetPastJoints";
@@ -1525,6 +1586,9 @@ public class SourceCode:MonoBehaviour {
                     break;
                     case showAxis:
                         showAxisInstruction(joint,value);
+                    break;
+                    case localAxisScale:
+                        localAxisScaleInstruction(joint,value);
                     break;
                     case movementOption:
                         movementOptionInstruction(joint,value);
@@ -1559,15 +1623,24 @@ public class SourceCode:MonoBehaviour {
                     case spinFutureSpeedAndAcceleration:
                         spinFutureSpeedAndAccelerationInstruction(joint,value);
                     break;
-                    case moveX:
-                        moveXInstruction(joint,value);
+                    case movePastX:
+                        movePastXInstruction(joint,value);
                     break;
-                    case moveY:
-                        moveYInstruction(joint,value);
+                    case movePastY:
+                        movePastYInstruction(joint,value);
                     break;
-                    case moveSpeedAndAcceleration:
-                        moveSpeedAndAccelerationInstruction(joint,value);
-                    break;                
+                    case movePastSpeedAndAcceleration:
+                        movePastSpeedAndAccelerationInstruction(joint,value);
+                    break;
+                    case moveFutureX:
+                        moveFutureXInstruction(joint,value);
+                    break;
+                    case moveFutureY:
+                        moveFutureYInstruction(joint,value);
+                    break;
+                    case moveFutureSpeedAndAcceleration:
+                        moveFutureSpeedAndAccelerationInstruction(joint,value);
+                    break;                  
                     case pastConnectionsInBody:
                         pastConnectionsInBodyInstruction(joint,value);
                     break;
@@ -1601,6 +1674,16 @@ public class SourceCode:MonoBehaviour {
                     joint.localAxis.renderAxis.createAxis();
                 else if (value[0] == "False") 
                     joint.localAxis.renderAxis.deleteAxis();
+            }
+        }
+        void localAxisScaleInstruction(Joint joint,List<string> value){
+            if (value.Count>0){
+                bool checkScale = float.TryParse(value[0], out float newScale);
+                if (checkScale && Mathf.Abs(joint.localAxis.axisDistance-newScale)>0){
+                    joint.localAxis.scaleAxis(newScale);
+                    joint.localAxis.spinFuture.scale(newScale);
+                    joint.localAxis.spinPast.scale(newScale);
+                }
             }
         }
         void movementOptionInstruction(Joint joint,List<string> value){
@@ -1748,21 +1831,39 @@ public class SourceCode:MonoBehaviour {
                 }
             }
         }
-        void moveXInstruction(Joint joint,List<string> value){
-            xAroundAxis(joint.localAxis.move,value);
+        void movePastXInstruction(Joint joint,List<string> value){
+            xAroundAxis(joint.localAxis.movePast,value);
         }
-        void moveYInstruction(Joint joint,List<string> value){
-            yAroundAxis(joint.localAxis.move,value);
+        void movePastYInstruction(Joint joint,List<string> value){
+            yAroundAxis(joint.localAxis.movePast,value);
         }
-        void moveSpeedAndAccelerationInstruction(Joint joint,List<string> value){
+        void movePastSpeedAndAccelerationInstruction(Joint joint,List<string> value){
             if (value.Count>=2){
-                AroundAxis aroundAxis = joint.localAxis.move;
+                AroundAxis aroundAxis = joint.localAxis.movePast;
                 bool checkSpeed = float.TryParse(value[0], out float speed);
                 bool checkAcceleration = float.TryParse(value[1], out float acceleration);  
                 if (checkSpeed && checkAcceleration){    
                     aroundAxis.speed = speed;
                     aroundAxis.acceleration = acceleration;
-                    if (Mathf.Abs(speed*acceleration)>0) joint.moveAllHierarchy();
+                    if (Mathf.Abs(speed*acceleration)>0) joint.movePastHierarchy();
+                }
+            }
+        }
+        void moveFutureXInstruction(Joint joint,List<string> value){
+            xAroundAxis(joint.localAxis.moveFuture,value);
+        }
+        void moveFutureYInstruction(Joint joint,List<string> value){
+            yAroundAxis(joint.localAxis.moveFuture,value);
+        }
+        void moveFutureSpeedAndAccelerationInstruction(Joint joint,List<string> value){
+            if (value.Count>=2){
+                AroundAxis aroundAxis = joint.localAxis.moveFuture;
+                bool checkSpeed = float.TryParse(value[0], out float speed);
+                bool checkAcceleration = float.TryParse(value[1], out float acceleration);  
+                if (checkSpeed && checkAcceleration){    
+                    aroundAxis.speed = speed;
+                    aroundAxis.acceleration = acceleration;
+                    if (Mathf.Abs(speed*acceleration)>0) joint.moveFutureHierarchy();
                 }
             }
         }
