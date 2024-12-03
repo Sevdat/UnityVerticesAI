@@ -152,15 +152,10 @@ public class UnityPluginTest : MonoBehaviour
         exp.strt();
     }
 
-    int count = 0;
     // Update is called once per frame
     void Update()
     {
-        if (count == 100){
-            exp.readWrite();
-            count = 0;
-        }
-        count++;
+        exp.readWrite();
         // print(exp.lol.editor.jointSelector.selected.connection.current);
         // if (time == 60 && count!= 360) {
         //     lol.rotate(lol.quat(Mathf.PI/180),lol.rotationAxis);
