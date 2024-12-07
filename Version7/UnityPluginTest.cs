@@ -150,6 +150,7 @@ public class UnityPluginTest : MonoBehaviour
     Experiment exp = new Experiment();
     void Start(){
         exp.strt();
+        
     }
 
     // Update is called once per frame

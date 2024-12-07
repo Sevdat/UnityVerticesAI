@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class VertexVisualizer : MonoBehaviour
 {
+    public GameObject fbx;
     public class SceneBuilder:SourceCode{
-        public GameObject fbx;
         public Body body;
         List<GameObject> allChildrenInParent(GameObject topParent){
             List<GameObject> allChildren = new List<GameObject>();
@@ -53,22 +53,12 @@ public class VertexVisualizer : MonoBehaviour
             }
         }
     }
-    public GameObject createUnityAxis(Vector3 vec){
-        GameObject unityAxis = new GameObject("UnityAxis"); 
-        unityAxis.transform.position = vec;
-        GameObject x = new GameObject("x");
-        x.transform.position = vec + new Vector3(1,0,0);
-        GameObject y = new GameObject("y");
-        y.transform.position = vec + new Vector3(0,1,0);
-        GameObject z = new GameObject("z");
-        z.transform.position = vec + new Vector3(0,0,1);
-        x.transform.SetParent(unityAxis.transform);
-        y.transform.SetParent(unityAxis.transform);
-        z.transform.SetParent(unityAxis.transform);
-        return unityAxis;
-    }
+
     void Start() {
-        createUnityAxis(new Vector3(5,1,2));
+
+    }
+    void LateUpdate() {
+
     }
     // void Start(){
     //     SkinnedMeshRenderer skinnedMeshRenderer = fbx.GetComponent<SkinnedMeshRenderer>();

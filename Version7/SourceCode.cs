@@ -253,7 +253,6 @@ public class SourceCode:MonoBehaviour {
                 }
             }
         }
-        
         public float length(Vector3 vectorDirections){
             float radius = Mathf.Sqrt(
                 Mathf.Pow(vectorDirections.x,2.0f)+
@@ -261,13 +260,6 @@ public class SourceCode:MonoBehaviour {
                 Mathf.Pow(vectorDirections.z,2.0f)
             );
             return radius;
-        }
-        internal Vector3 direction(Vector3 point,Vector3 origin){ 
-            Vector3 v = point-origin;
-            return v/length(v);
-        }
-        internal Vector3 distanceFromOrigin(Vector3 point,Vector3 origin, float distance){
-            return direction(point,origin)*distance;
         }
         public Vector3 normalize(Vector3 vec){    
             float radius = length(vec);
@@ -277,6 +269,32 @@ public class SourceCode:MonoBehaviour {
                 vec.z /= radius;
             }
             return vec;
+        }
+        public float length(Vector4 vectorDirections){
+            float radius = Mathf.Sqrt(
+                Mathf.Pow(vectorDirections.x,2.0f)+
+                Mathf.Pow(vectorDirections.y,2.0f)+
+                Mathf.Pow(vectorDirections.z,2.0f)+
+                Mathf.Pow(vectorDirections.w,2.0f)
+            );
+            return radius;
+        }
+        public Vector4 normalize(Vector4 vec){    
+            float radius = length(vec);
+            if (radius > 0){
+                vec.x /= radius;
+                vec.y /= radius;
+                vec.z /= radius;
+                vec.w /= radius;
+            }
+            return vec;
+        }
+        internal Vector3 direction(Vector3 point,Vector3 origin){ 
+            Vector3 v = point-origin;
+            return v/length(v);
+        }
+        internal Vector3 distanceFromOrigin(Vector3 point,Vector3 origin, float distance){
+            return direction(point,origin)*distance;
         }
         float dot(Vector3 vec1,Vector3 vec2){
             return vec1.x*vec2.x+vec1.y*vec2.y+vec1.z*vec2.z;
@@ -469,12 +487,39 @@ public class SourceCode:MonoBehaviour {
             float z = normilized.z * sinHalfAngle;
             return new Vector4(x,y,z,w);
         }
+        public void convertAngleAxis(Vector4 q, out float angle, out Vector3 axis){
+            q = normalize(q);
+            float angleInRadians = 2.0f * Mathf.Acos(q.w);
+            angle = angleInRadians * Mathf.Rad2Deg;
+
+            if (Mathf.Approximately(angleInRadians, 0.0f)){
+                axis = Vector3.zero;
+                return;
+            }
+
+            float sinHalfAngle = Mathf.Sin(angleInRadians / 2.0f);
+            axis = new Vector3(
+                q.x / sinHalfAngle,
+                q.y / sinHalfAngle,
+                q.z / sinHalfAngle
+            );
+            axis = axis.normalized;
+        }
         public Vector3 quatRotate(Vector3 point, Vector3 origin, Vector4 angledAxis){
             Vector3 pointDirection = point - origin;     
             Vector4 rotatingVector = new Vector4(pointDirection.x, pointDirection.y, pointDirection.z,0);
             Vector4 inverseQuat = new Vector4(-angledAxis.x,-angledAxis.y,-angledAxis.z,angledAxis.w);
             Vector4 rotatedQuaternion = quatMul(quatMul(angledAxis,rotatingVector), inverseQuat);
             return origin + new Vector3(rotatedQuaternion.x,rotatedQuaternion.y,rotatedQuaternion.z);
+        }
+
+        void alignTwoRotations(GameObject gameObject1,GameObject gameObject2, out float angle, out Vector3 axis){
+            Quaternion rotation1 = gameObject1.transform.rotation;
+            Quaternion rotation2 = gameObject2.transform.rotation;
+
+            Quaternion relativeRotation = rotation2 * Quaternion.Inverse(rotation1);
+
+            relativeRotation.ToAngleAxis(out angle, out axis);
         }
 
     }
@@ -870,7 +915,25 @@ public class SourceCode:MonoBehaviour {
             return futureIndexes;
         }
     }
+    public class UnityAxis{
+        public Joint joint;
+        public GameObject fbxGameObject;
 
+        public UnityAxis(){}
+        public UnityAxis(Joint joint,GameObject fbxGameObject){
+            this.joint = joint;
+            this.fbxGameObject = fbxGameObject;
+        }
+        public Vector3 xDirection(){
+            return fbxGameObject.transform.right;
+        }
+        public Vector3 yDirection(){
+            return fbxGameObject.transform.up;
+        }
+        public Vector3 zDirection(){
+            return fbxGameObject.transform.forward;
+        }     
+    }
     public class Joint {
         public Body body;
         public Axis localAxis;
@@ -879,6 +942,7 @@ public class SourceCode:MonoBehaviour {
         public float fromGlobalAxisY,fromGlobalAxisX,distanceFromGlobalAxis;
         public bool movementOption;
         public bool keepBodyTogether;
+        public GameObject unityAxis;
 
         public Joint(){}
         public Joint(Body body, int indexInBody){
