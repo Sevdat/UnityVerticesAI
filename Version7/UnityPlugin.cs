@@ -1,168 +1,137 @@
-// using System.Collections;
-// using System.Collections.Generic;
-// using System.Runtime.InteropServices;
-// using Unity.VisualScripting;
-// using UnityEngine;
+using System.Collections.Generic;
+using UnityEngine;
 
-// public class UnityPlugin : MonoBehaviour
-// {   
+public class VertexVisualizer : MonoBehaviour
+{
+    public class SceneBuilder:SourceCode{
+        public GameObject fbx;
+        public Body body;
+        List<GameObject> allChildrenInParent(GameObject topParent){
+            List<GameObject> allChildren = new List<GameObject>();
+            for (int i = 0; i < topParent.transform.childCount; i++){
+                allChildren.Add(topParent.transform.GetChild(i).gameObject);
+            }
+            return allChildren;
+        }
+        class AssembleJoints{
+            public int jointIndex;
+            public List<BakedMeshIndex> bakedMeshIndex;
 
+            public AssembleJoints(int jointIndex){
+                this.jointIndex = jointIndex;
+                bakedMeshIndex = new List<BakedMeshIndex>();
+            }
 
+        }
+        void loadModelToBody(GameObject topParent){
+            List<BakedMesh> bakedMeshes = new List<BakedMesh>();
+            Dictionary<GameObject,AssembleJoints> dictionary = new Dictionary<GameObject,AssembleJoints>();
+            List<GameObject> tree = new List<GameObject>(){topParent};
+            int jointIndex = 0;
+            for (int i = 0; i < tree.Count; i++){
+                GameObject root = tree[i];
+                tree.AddRange(allChildrenInParent(root));
+                SkinnedMeshRenderer skin = root.GetComponent<SkinnedMeshRenderer>();
+                if (!dictionary.ContainsKey(root)) dictionary[root] = new AssembleJoints(jointIndex);
+                if (skin) bakedMeshes.Add(new BakedMesh(skin));
+                jointIndex++;
+            }
+            for (int i = 0; i<bakedMeshes.Count; i++){
+                BakedMesh bakedMesh = bakedMeshes[i];
+                for (int j = 0; j < bakedMesh.vertices.Length; j++){
+                    dictionary[bakedMesh.getGameObject(j)].bakedMeshIndex.Add(new BakedMeshIndex(i,j));
+                }
+            }
+            body = new Body(0);
+            body.arraySizeManager(dictionary.Count);
+            
+            foreach (GameObject gameObject in dictionary.Keys){
+                AssembleJoints assembleJoints = dictionary[gameObject];
+                int indexInBody = assembleJoints.jointIndex;
 
+                Joint joint = new Joint(body,indexInBody);
+            }
+        }
+    }
+    public GameObject createUnityAxis(Vector3 vec){
+        GameObject unityAxis = new GameObject("UnityAxis"); 
+        unityAxis.transform.position = vec;
+        GameObject x = new GameObject("x");
+        x.transform.position = vec + new Vector3(1,0,0);
+        GameObject y = new GameObject("y");
+        y.transform.position = vec + new Vector3(0,1,0);
+        GameObject z = new GameObject("z");
+        z.transform.position = vec + new Vector3(0,0,1);
+        x.transform.SetParent(unityAxis.transform);
+        y.transform.SetParent(unityAxis.transform);
+        z.transform.SetParent(unityAxis.transform);
+        return unityAxis;
+    }
+    void Start() {
+        createUnityAxis(new Vector3(5,1,2));
+    }
+    // void Start(){
+    //     SkinnedMeshRenderer skinnedMeshRenderer = fbx.GetComponent<SkinnedMeshRenderer>();
+    //     Mesh mesh = skinnedMeshRenderer.sharedMesh;
+    //     Vector3[] vertices = mesh.vertices;
+    //     BoneWeight[] boneWeights = mesh.boneWeights; 
+    //     Transform[] bones = skinnedMeshRenderer.bones;
 
+    //     for (int i = 0; i < vertices.Length; i++)
+    //     {
+    //         Vector3 localVertex = vertices[i];
+    //         Vector3 worldPosition = skinnedMeshRenderer.transform.TransformPoint(localVertex);
+    //         BoneWeight boneWeight = boneWeights[i];
+    //         GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+    //         cube.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+    //         cube.transform.position = worldPosition;
+    //         Debug.Log($"Vertex {i} {worldPosition}");
+    //         if (boneWeight.weight0 > 0)
+    //         {
+    //             Debug.Log($"Bone 0 {bones[boneWeight.boneIndex0].name}");
+    //         }
+    //         if (boneWeight.weight1 > 0)
+    //         {
+    //             Debug.Log($"Bone 1 {bones[boneWeight.boneIndex1].name}");
+    //         }
+    //         if (boneWeight.weight2 > 0)
+    //         {
+    //             Debug.Log($"Bone 2 {bones[boneWeight.boneIndex2].name}");
+    //         }
+    //         if (boneWeight.weight3 > 0)
+    //         {
+    //             Debug.Log($"Bone 3 {bones[boneWeight.boneIndex3].name}");
+    //         }
+    //     }
+    // }
+    //--------------------------------------
+    // private GameObject[] cubes;
+    // private Mesh bakedMesh;
 
-//     public class KeyGeneratorSimulation:SourceCode{
-//         public KeyGenerator keyGenerator;
-//         public List<GameObject> maxKeys,availableKeys,increaseKeysBy,freeKeys;
-//         public Color maxKeysColor,availableKeysColor,increaseKeysByColor,freeKeysColor,capacityColor;
-//         public Vector3 displayVec = new Vector3(0,5,10);
-//         bool created = false;
-//         public void createGenerator(int amount){
-//             if (!created){
-//                 keyGenerator = new KeyGenerator(amount);
-//                 maxKeys = new List<GameObject>();
-//                 availableKeys = new List<GameObject>();
-//                 increaseKeysBy= new List<GameObject>();
-//                 freeKeys= new List<GameObject>();
-//                 freeKeysColor = new Color(0,1,0,0);
-//                 maxKeysColor = new Color(0,0,0,0);
-//                 availableKeysColor = new Color(0,1,1,0);
-//                 increaseKeysByColor = new Color(1,1,0,0);
-//                 capacityColor = new Color(0,0,1,0);
-//                 created = true;
-//                 showGenerator();
-//             }
-//         }
-//         public void deleteGameObjects(){
-//             if (created){
-//                 delete(maxKeys);
-//                 maxKeys = new List<GameObject>();
-//                 delete(availableKeys);
-//                 availableKeys = new List<GameObject>();
-//                 delete(increaseKeysBy);
-//                 increaseKeysBy = new List<GameObject>();
-//                 delete(freeKeys);
-//                 freeKeys = new List<GameObject>();
-//             }
-//         }
-//         public void replaceKeyGenerator(KeyGenerator newKeyGenerator){
-//             deleteGameObjects();
-//             keyGenerator = newKeyGenerator;
-//             created = true;
-//             showGenerator();
-//         }
-//         public void generateKeys(){
-//             keyGenerator.generateKeys();
-//             if (created){
-//             displayFreeKeysList(displayVec, freeKeysColor);
-//             displayList(maxKeys,keyGenerator.maxKeys,displayVec - new Vector3(0,1,0),maxKeysColor);
-//             displayList(availableKeys,keyGenerator.availableKeys,displayVec - new Vector3(0,2,0),availableKeysColor);
-//             } 
-//         }
-//         public void setLimit(int newLimit){
-//             keyGenerator.setIncreaseKeysBy(newLimit);
-//             if(created) {
-//                 displayList(increaseKeysBy,keyGenerator.increaseKeysBy,displayVec - new Vector3(0,3,0),increaseKeysByColor);
-//             }
-//         }
-//         public int getKey(){
-//             int key = keyGenerator.getKey();
-//             if (created) {
-//                 displayFreeKeysList(displayVec, freeKeysColor);
-//                 displayList(availableKeys,keyGenerator.availableKeys,displayVec - new Vector3(0,2,0),availableKeysColor);
-//             }
-//             return key;
-//         }
-//         public void returnKey(int key){
-//             keyGenerator.returnKey(key);
-//             if (created) {
-//                 displayFreeKeysList(displayVec, freeKeysColor);
-//                 displayList(availableKeys,keyGenerator.availableKeys,displayVec - new Vector3(0,2,0),availableKeysColor);
-//             }
-//         }
-//         public void resetGenerator(int newMax){
-//             keyGenerator.resetGenerator(newMax);
-//             displayFreeKeysList(displayVec, freeKeysColor);
-//             freeKeys.TrimExcess();
-//             displayList(maxKeys,keyGenerator.maxKeys,displayVec - new Vector3(0,1,0),maxKeysColor);
-//             displayList(availableKeys,keyGenerator.availableKeys,displayVec - new Vector3(0,2,0),availableKeysColor);
-//         }
-//         void displayFreeKeysList(Vector3 vec, Color color){
-//             int keyGeneratorCapacity = keyGenerator.freeKeys.Capacity;
-//             int listCapacity = freeKeys.Capacity;
-//             int resize = keyGeneratorCapacity-listCapacity;
-//             if (resize> 0){
-//                 for (int i = 0;i<resize;i++){
-//                     GameObject key = GameObject.CreatePrimitive(PrimitiveType.Cube);
-//                     key.GetComponent<Renderer>().material.color = capacityColor;
-//                     key.transform.position = new Vector3(2*(i + listCapacity),0,0)+vec;
-//                     freeKeys.Add(key);
-//                 }
-//             } else if (resize <0) {
-//                 for (int i = listCapacity-1; i > -1 && i<-resize; i--){
-//                     Destroy(freeKeys[i]);
-//                     freeKeys.RemoveAt(i);
-//                 }
-//             }
-//             if (freeKeys.Count >0){
-//                 int keyGeneratorAvailableKeys = keyGenerator.availableKeys-1;
-//                 int size = freeKeys.Count;
-//                 Renderer keyColor = freeKeys[keyGeneratorAvailableKeys].GetComponent<Renderer>();
-//                 if (keyColor.material.color == color){
-//                     for (int i = keyGeneratorAvailableKeys;i<size;i++){
-//                         Renderer render = freeKeys[i].GetComponent<Renderer>();
-//                         if (render.material.color == capacityColor) break;
-//                         render.material.color = capacityColor;
-//                     }
-//                     keyColor.material.color = color;
-//                 } else {
-//                     for (int i = keyGeneratorAvailableKeys;i >-1;i--){
-//                         Renderer render = freeKeys[i].GetComponent<Renderer>();
-//                         if (render.material.color == color) break;
-//                         render.material.color = color;
-//                     }
-//                 }
-//             }
-//         }
-//         void displayList(List<GameObject> list, int amount, Vector3 vec, Color color){
-//             int count = list.Count;
-//             int resize = amount - count;
-//             if (resize>0){
-//                 for (int i = 0;i< resize;i++){
-//                     GameObject key = GameObject.CreatePrimitive(PrimitiveType.Cube);
-//                     key.GetComponent<Renderer>().material.color = color;
-//                     key.transform.position = new Vector3(2*(i+count),0,0)+vec;
-//                     list.Add(key);
-//                 }
-//             } else if (resize<0){
-//                 for (int i = count-1; i>amount-1;i--){
-//                     Destroy(list[i]);
-//                     list.RemoveAt(i);
-//                 }
-//             }
-//         }
-//         void delete(List<GameObject> list){
-//             int size = list.Count;
-//             for (int i = size-1;i>-1;i--){
-//                 Destroy(list[i]);
-//             }
-//         }
-//         void showGenerator(){
-//             displayFreeKeysList(displayVec, freeKeysColor);
-//             displayList(maxKeys,keyGenerator.maxKeys,displayVec - new Vector3(0,1,0),maxKeysColor);
-//             displayList(availableKeys,keyGenerator.availableKeys,displayVec - new Vector3(0,2,0),availableKeysColor);
-//             displayList(increaseKeysBy,keyGenerator.increaseKeysBy,displayVec - new Vector3(0,3,0),increaseKeysByColor);
-//         }
-//     }
+    // void Start() {
+    //     SkinnedMeshRenderer skin = fbx.GetComponent<SkinnedMeshRenderer>();
+    //     Mesh mesh = skin.sharedMesh;
+    //     Vector3[] vertices = mesh.vertices;
 
-//     void Start(){
-//         string[] lol = "Body_0_globalOriginLocation: 5".Split(":")[1].Split(" ");
-//         for (int i = 0; i < lol.Length; i++){
-//             print(lol[i] == "");
-//         }
+    //     cubes = new GameObject[vertices.Length];
+    //     bakedMesh = new Mesh();
 
-//     }
-//     // Update is called once per frame
-//     void Update(){
-//     }
-// }
+    //     for (int i = 0; i < vertices.Length; i++){
+    //         GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+    //         cube.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+    //         cubes[i] = cube;
+    //     }
+    // }
+
+    // void LateUpdate() {
+    //     SkinnedMeshRenderer skinnedMeshRenderer = fbx.GetComponent<SkinnedMeshRenderer>();
+    //     skinnedMeshRenderer.BakeMesh(bakedMesh); // Bake the current state of the skinned mesh
+    //     Vector3[] vertices = bakedMesh.vertices;
+
+    //     for (int i = 0; i < vertices.Length; i++){
+    //         Vector3 localVertex = vertices[i];
+    //         Vector3 worldPosition = skinnedMeshRenderer.transform.TransformPoint(localVertex);
+    //         cubes[i].transform.position = worldPosition;
+    //     }
+    // }
+}

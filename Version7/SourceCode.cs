@@ -500,6 +500,30 @@ public class SourceCode:MonoBehaviour {
             availableKeys = 0;
         }
     }
+    public class BakedMesh{
+        SkinnedMeshRenderer skinnedMeshRenderer;
+        Mesh mesh;
+        public Vector3[] vertices;
+
+        public BakedMesh(SkinnedMeshRenderer skinnedMeshRenderer){
+            this.skinnedMeshRenderer=skinnedMeshRenderer;
+            mesh = new Mesh();
+            bakeMesh();
+        }
+        public void bakeMesh(){
+            skinnedMeshRenderer.BakeMesh(mesh);
+            vertices = mesh.vertices;
+        }
+        public Vector3 worldPosition(int index){
+            return skinnedMeshRenderer.transform.TransformPoint(vertices[index]);
+        }
+        public GameObject getGameObject(int index){
+            Transform[] bones = skinnedMeshRenderer.bones;
+            BoneWeight[] boneWeights = mesh.boneWeights; 
+            BoneWeight boneWeight = boneWeights[index];
+            return bones[boneWeight.boneIndex0].gameObject;
+        }
+    }
     public class Body {
         public World world;
         public int worldKey;
@@ -507,6 +531,7 @@ public class SourceCode:MonoBehaviour {
         public Joint[] bodyStructure;
         public KeyGenerator keyGenerator;
         public Editor editor;
+        public List<BakedMesh> bakedMeshes;
         public string amountOfDigits; 
         public int countStart, count;
 
@@ -522,6 +547,7 @@ public class SourceCode:MonoBehaviour {
             count = 0;
             countStart = 20;
         }
+
         public void newCountStart(int countStart){
             this.countStart = countStart;    
         }
@@ -845,7 +871,6 @@ public class SourceCode:MonoBehaviour {
         }
     }
 
-
     public class Joint {
         public Body body;
         public Axis localAxis;
@@ -1051,7 +1076,6 @@ public class SourceCode:MonoBehaviour {
             }
         }
     }
-
     public class PointCloud {
         public Joint joint;
         public KeyGenerator keyGenerator;
@@ -1217,10 +1241,19 @@ public class SourceCode:MonoBehaviour {
             this.collisionSphereKey = collisionSphereKey;
         }
     }
-
+    public class BakedMeshIndex{
+        public int indexInBakedMesh;
+        public int indexInVertex;
+        public BakedMeshIndex(){}
+        public BakedMeshIndex(int indexInBakedMesh,int indexInVertex){
+            this.indexInBakedMesh = indexInBakedMesh;
+            this.indexInVertex = indexInVertex;
+        }
+    }
     public class CollisionSphere {
         public Path path;
         public AroundAxis aroundAxis;
+        public BakedMeshIndex bakedMeshIndex;
 
         public CollisionSphere(){}
         public CollisionSphere(Joint joint, int sphereIndex){
@@ -1350,16 +1383,20 @@ public class SourceCode:MonoBehaviour {
             using(StreamReader readtext = new StreamReader($"Assets/v4/{body.worldKey}.txt")){
                 string readText;
                 while ((readText = readtext.ReadLine()) != null){
-                    string[] splitStr = readText.Split(": ");
+                    string[] splitStr = readText.Split(":");
                     if (splitStr.Length == 2){
-                        removeEmpty(splitStr[0].Split("_"), out List<string> instruction, out int instructionSize);
-                        removeEmpty(splitStr[1].Split(" "), out List<string> values, out int valueSize);
-                        if (instructionSize == 3){
-                            bodyInstructions(instruction[2],values);
-                        } else if (instructionSize == 5){
-                            jointInstructions(instruction[3],instruction[4],values);
-                        } else if (instructionSize == 7){
-                            sphereInstructions(instruction[3],instruction[5],instruction[6],values);
+                        removeEmpty(splitStr[0].Split("_"), out List<string> instruction);
+                        removeEmpty(splitStr[1].Split(" "), out List<string> values);
+                        switch (instruction.Count){
+                            case 3:
+                                bodyInstructions(instruction[2],values);
+                            break;
+                            case 5:
+                                jointInstructions(instruction[3],instruction[4],values);
+                            break;
+                            case 7:
+                                sphereInstructions(instruction[3],instruction[5],instruction[6],values);
+                            break;
                         }
                     }
                 } 
@@ -1383,17 +1420,27 @@ public class SourceCode:MonoBehaviour {
                 body.count -=1;
             }
         }
-        void removeEmpty(string[] strArray, out List<string> list, out int size){
+        void removeEmpty(string[] strArray, out List<string> list){
             list = new List<string>();
-            size = 0;
             int arraySize = strArray.Length;
             for (int i = 0; i < arraySize; i++){
                 string str = strArray[i];
-                if (str != ""){
-                    list.Add(str);
-                    size++;
-                }
+                if (str != "") list.Add(str);
             }
+        }
+        Joint getJoint(string jointKey){
+            bool checkKey = int.TryParse(jointKey, out int key);
+            if (newJointKeys.TryGetValue(key, out int newKey)){
+                key = newKey;
+            }
+            return checkKey? body.bodyStructure[key]:null;
+        }
+        CollisionSphere getCollisionSphere(Joint joint,string collisionSphereKey){
+            bool checkKey = int.TryParse(collisionSphereKey, out int key);
+            if (newSphereKeys.TryGetValue(key, out int newKey)){
+                key = newKey;
+            }
+            return checkKey?joint.pointCloud.collisionSpheres[key]:null;
         }
 
         const string bodyStructureSize = "BodyStructureSize";
@@ -1404,7 +1451,6 @@ public class SourceCode:MonoBehaviour {
         const string globalAxisRotationXYZ = "GlobalAxisRotationXYZ";
         const string accuracy = "Accuracy";
         const string radianOrAngle = "RadianOrAngle";
-
         public void bodyInstructions(string instruction, List<string> value){
             switch (instruction){
                 case bodyStructureSize:
@@ -1597,11 +1643,7 @@ public class SourceCode:MonoBehaviour {
         const string pointCloudSize = "PointCloudSize";
         const string allSpheresInJoint = "AllSpheresInJoint";
         public void jointInstructions(string jointKey, string instruction, List<string> value){
-            bool checkKey = int.TryParse(jointKey, out int key);
-            if (newJointKeys.TryGetValue(key, out int newKey)){
-                key = newKey;
-            }
-            Joint joint = checkKey? body.bodyStructure[key]:null;
+            Joint joint = getJoint(jointKey);
             if (joint != null) {
                 switch (instruction){
                     case active:
@@ -2056,19 +2098,10 @@ public class SourceCode:MonoBehaviour {
         const string YFromLocalAxis = "YFromLocalAxis";
         const string radius = "Radius";
         const string colorRGBA = "ColorRGBA";
- 
         public void sphereInstructions(string jointKey,string collisionSphereKey, string instruction, List<string> value){
-            bool checkKey = int.TryParse(jointKey, out int key);
-            if (newJointKeys.TryGetValue(key, out int newKey)){
-                key = newKey;
-            }
-            Joint joint = checkKey? body.bodyStructure[key]:null;
+            Joint joint = getJoint(jointKey);
             if (joint != null) { 
-                bool checkKey2 = int.TryParse(collisionSphereKey, out int key2);
-                if (newSphereKeys.TryGetValue(key, out int newKey2)){
-                    key2 = newKey2;
-                }
-                CollisionSphere collisionSphere = checkKey2?joint.pointCloud.collisionSpheres[key2]:null;
+                CollisionSphere collisionSphere = getCollisionSphere(joint,collisionSphereKey);
                 if (collisionSphere != null){
                     switch (instruction){
                         case distanceFromLocalOrigin:  
