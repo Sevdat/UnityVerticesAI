@@ -53,7 +53,6 @@ public class VertexVisualizer : MonoBehaviour
             }
         }
     }
-
     void Start() {
 
     }

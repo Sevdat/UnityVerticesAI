@@ -148,15 +148,23 @@ public class UnityPluginTest : MonoBehaviour
         }
     }
     Experiment exp = new Experiment();
+    SourceCode.Joint joint1;
+    SourceCode.Joint joint2;
     void Start(){
         exp.strt();
+        joint1 = new SourceCode.Joint(exp.lol,0);
+        joint1.localAxis.placeAxis(new Vector3(0,5,0));
+        joint2 = new SourceCode.Joint(exp.lol,0);
+        joint2.localAxis.placeAxis(new Vector3(0,5,0));
+        joint2.localAxis.setWorldRotation(2,0,0);
         
+        joint1.localAxis.alignTwoRotations(joint1.localAxis,joint2.localAxis, out _,out _);
     }
 
     // Update is called once per frame
     void Update()
     {
-        exp.readWrite();
+        // exp.readWrite();
         // print(exp.lol.editor.jointSelector.selected.connection.current);
         // if (time == 60 && count!= 360) {
         //     lol.rotate(lol.quat(Mathf.PI/180),lol.rotationAxis);

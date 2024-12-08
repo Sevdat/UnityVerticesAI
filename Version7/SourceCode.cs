@@ -489,15 +489,14 @@ public class SourceCode:MonoBehaviour {
         }
         public void convertAngleAxis(Vector4 q, out float angle, out Vector3 axis){
             q = normalize(q);
-            float angleInRadians = 2.0f * Mathf.Acos(q.w);
-            angle = angleInRadians * Mathf.Rad2Deg;
+            angle = 2.0f * Mathf.Acos(q.w);
 
-            if (Mathf.Approximately(angleInRadians, 0.0f)){
+            if (Mathf.Approximately(angle, 0.0f)){
                 axis = Vector3.zero;
                 return;
             }
 
-            float sinHalfAngle = Mathf.Sin(angleInRadians / 2.0f);
+            float sinHalfAngle = Mathf.Sin(angle / 2.0f);
             axis = new Vector3(
                 q.x / sinHalfAngle,
                 q.y / sinHalfAngle,
@@ -505,21 +504,74 @@ public class SourceCode:MonoBehaviour {
             );
             axis = axis.normalized;
         }
+        public Vector4 inverseQuat(Vector4 q) {
+            return new Vector4(-q.x,-q.y,-q.z,q.w);
+        }
         public Vector3 quatRotate(Vector3 point, Vector3 origin, Vector4 angledAxis){
             Vector3 pointDirection = point - origin;     
             Vector4 rotatingVector = new Vector4(pointDirection.x, pointDirection.y, pointDirection.z,0);
-            Vector4 inverseQuat = new Vector4(-angledAxis.x,-angledAxis.y,-angledAxis.z,angledAxis.w);
-            Vector4 rotatedQuaternion = quatMul(quatMul(angledAxis,rotatingVector), inverseQuat);
+            Vector4 rotatedQuaternion = quatMul(quatMul(angledAxis,rotatingVector), inverseQuat(angledAxis));
             return origin + new Vector3(rotatedQuaternion.x,rotatedQuaternion.y,rotatedQuaternion.z);
         }
 
-        void alignTwoRotations(GameObject gameObject1,GameObject gameObject2, out float angle, out Vector3 axis){
-            Quaternion rotation1 = gameObject1.transform.rotation;
-            Quaternion rotation2 = gameObject2.transform.rotation;
+        public void alignTwoRotations(Axis from, Axis to, out float angle, out Vector3 axis){
+            Vector4 engineQuat = matrixToQuat(rotationMatrix(from));
+            Vector4 engineQuat2 = matrixToQuat(rotationMatrix(to));
+            Vector4 relativeRotation = quatMul(engineQuat2, inverseQuat(engineQuat));
 
-            Quaternion relativeRotation = rotation2 * Quaternion.Inverse(rotation1);
+            convertAngleAxis(relativeRotation,out angle, out axis);
+            rotate(angledAxis(angle,axis+origin),origin);
+        }
+        Matrix4x4 rotationMatrix(Axis axis){
+            Vector3 right = direction(axis.x,axis.origin);
+            Vector3 up = direction(axis.y,axis.origin);
+            Vector3 forward = direction(axis.z,axis.origin);
+            return new Matrix4x4(
+                new Vector4(right.x, right.y, right.z, 0),
+                new Vector4(up.x, up.y, up.z, 0),
+                new Vector4(forward.x, forward.y, forward.z, 0),
+                new Vector4(0, 0, 0, 1)
+            );
+        }
+        
+        public Vector4 matrixToQuat(Matrix4x4 m){
+            float trace = m.m00 + m.m11 + m.m22;
+            float w, x, y, z;
 
-            relativeRotation.ToAngleAxis(out angle, out axis);
+            if (trace > 0)
+            {
+                float s = Mathf.Sqrt(1 + trace) * 2;
+                w = 0.25f * s;
+                x = (m.m21 - m.m12) / s;
+                y = (m.m02 - m.m20) / s;
+                z = (m.m10 - m.m01) / s;
+            }
+            else if ((m.m00 > m.m11) && (m.m00 > m.m22))
+            {
+                float s = Mathf.Sqrt(1 + m.m00 - m.m11 - m.m22) * 2;
+                w = (m.m21 - m.m12) / s;
+                x = 0.25f * s;
+                y = (m.m01 + m.m10) / s;
+                z = (m.m02 + m.m20) / s;
+            }
+            else if (m.m11 > m.m22)
+            {
+                float s = Mathf.Sqrt(1 + m.m11 - m.m00 - m.m22) * 2;
+                w = (m.m02 - m.m20) / s;
+                x = (m.m01 + m.m10) / s;
+                y = 0.25f * s;
+                z = (m.m12 + m.m21) / s;
+            }
+            else
+            {
+                float s = Mathf.Sqrt(1 + m.m22 - m.m00 - m.m11) * 2;
+                w = (m.m10 - m.m01) / s;
+                x = (m.m02 + m.m20) / s;
+                y = (m.m12 + m.m21) / s;
+                z = 0.25f * s;
+            }
+
+            return new Vector4(x, y, z, w);
         }
 
     }
