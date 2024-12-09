@@ -609,7 +609,9 @@ public class SourceCode:MonoBehaviour {
 
         public BakedMesh(SkinnedMeshRenderer skinnedMeshRenderer){
             this.skinnedMeshRenderer=skinnedMeshRenderer;
-            mesh = skinnedMeshRenderer.sharedMesh;
+            mesh = new Mesh(){
+                vertices = new Vector3[skinnedMeshRenderer.sharedMesh.vertices.Length]
+            };
             bakeMesh();
         }
         public void bakeMesh(){
@@ -621,11 +623,12 @@ public class SourceCode:MonoBehaviour {
         }
         public GameObject getGameObject(int index){
             Transform[] bones = skinnedMeshRenderer.bones;
-            BoneWeight[] boneWeights = mesh.boneWeights; 
+            BoneWeight[] boneWeights = skinnedMeshRenderer.sharedMesh.boneWeights; 
             BoneWeight boneWeight = boneWeights[index];
             return bones[boneWeight.boneIndex0].gameObject;
         }
     }
+
     public class Body {
         public World world;
         public int worldKey;
@@ -785,13 +788,11 @@ public class SourceCode:MonoBehaviour {
             globalAxis.worldAngleX = globalAxis.convertTo360(globalAxis.worldAngleX +diffWorldAngleX)%(2*Mathf.PI);
             globalAxis.worldAngleY = globalAxis.convertTo360(globalAxis.worldAngleY +diffWorldAngleY)%(2*Mathf.PI);
         }
-
         public void updatePhysics(){
             for (int i = 0; i < bakedMeshes.Count;i++){
                 bakedMeshes[i].bakeMesh();
             }
-            int sphereCount = bodyStructure.Length;
-            for (int i = 0; i<sphereCount; i++){
+            for (int i = 0; i<bodyStructure.Length; i++){
                 bodyStructure[i]?.updatePhysics();
             }            
         }
@@ -1102,6 +1103,17 @@ public class SourceCode:MonoBehaviour {
             localAxis.movePast.updatePhysics(true);
             localAxis.moveFuture.updatePhysics(true);
             pointCloud.updatePhysics();     
+            if (unityAxis != null){
+                if (connection.indexInBody == 0){
+                    Vector3 move = unityAxis.transform.position - localAxis.origin;
+                    moveHierarchy(move, true);
+                }
+                localAxis.alignRotationTo(unityAxis, out float angle, out Vector3 axis, out Vector4 quat);
+                localAxis.spinFuture.sphere.setOrigin(unityAxis.transform.position+axis*localAxis.axisDistance);
+                localAxis.spinFuture.get();
+                localAxis.spinFuture.speed = angle;
+                // rotateHierarchy(quat, true);
+            }
         }
 
         public void rotatePastHierarchy(){
@@ -1109,16 +1121,8 @@ public class SourceCode:MonoBehaviour {
             rotateHierarchy(quat, false);
         }
         public void rotateFutureHierarchy(){
-            if (unityAxis==null){
-                Vector4 quat = localAxis.spinFuture.quat(localAxis.spinFuture.speed);
-                rotateHierarchy(quat, true);
-            } else {
-                localAxis.alignRotationTo(unityAxis, out float angle, out Vector3 axis, out Vector4 quat);
-                localAxis.spinFuture.sphere.setOrigin(axis*localAxis.axisDistance);
-                localAxis.spinFuture.get();
-                localAxis.spinFuture.speed = angle;
-                rotateHierarchy(quat, true);
-            }
+            Vector4 quat = localAxis.spinFuture.quat(localAxis.spinFuture.speed);
+            rotateHierarchy(quat, true);
         }
 
         internal void rotateHierarchy(Vector4 quat, bool pastOrFuture){
@@ -1142,14 +1146,10 @@ public class SourceCode:MonoBehaviour {
         }
         public void moveFutureHierarchy(){
             Vector3 move;
-            if (unityAxis==null){
-                move = localAxis.moveFuture.sphere.origin - localAxis.origin;
-                moveHierarchy(move, true);
-                if (keepBodyTogether) moveHierarchy(move, false);
-            } else if (connection.indexInBody == 0){
-                move = unityAxis.transform.position - localAxis.origin;
-                moveHierarchy(move, true);
-            }
+            move = localAxis.moveFuture.sphere.origin - localAxis.origin;
+            moveHierarchy(move, true);
+            if (keepBodyTogether) moveHierarchy(move, false);
+            
         }
         internal void moveHierarchy(Vector3 newVec, bool pastOrFuture){
             initTree(pastOrFuture, out List<Joint> tree, out int size);  
@@ -1284,7 +1284,7 @@ public class SourceCode:MonoBehaviour {
             int sphereCount = collisionSpheres.Length;
             for (int i = 0; i<sphereCount; i++){
                 collisionSpheres[i]?.aroundAxis.updatePhysics(false);
-                collisionSpheres[i]?.bakedMeshIndex.updatePoint();
+                collisionSpheres[i]?.updatePhysics();
             }            
         }
         public List<CollisionSphere> arrayToList(){
@@ -1365,6 +1365,7 @@ public class SourceCode:MonoBehaviour {
             this.collisionSphereKey = collisionSphereKey;
         }
     }
+
     public class BakedMeshIndex{
         public CollisionSphere collisionSphere;
         public int indexInBakedMesh;
@@ -1422,6 +1423,7 @@ public class SourceCode:MonoBehaviour {
             aroundAxis.sphere.setRadius(newRadius);
         }
         public void updatePhysics(){
+            bakedMeshIndex.updatePoint();
             aroundAxis.updatePhysics(false);
         }
     }

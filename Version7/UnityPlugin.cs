@@ -60,6 +60,7 @@ public class VertexVisualizer : MonoBehaviour
                     collisionSphere.bakedMeshIndex.updatePoint();
                     joint.pointCloud.collisionSpheres[i] = collisionSphere;
                 }
+                body.bodyStructure[indexInBody] = joint;
             }
         }
     }
