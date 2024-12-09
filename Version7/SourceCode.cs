@@ -25,17 +25,18 @@ public class SourceCode:MonoBehaviour {
         public Axis axis;
         public Sphere origin,x,y,z,spinPast,spinFuture,movePast,moveFuture;
         public bool created = false;
+        public float distance = 0.1f;
 
         public RenderAxis(Axis axis){
             this.axis = axis;
-            origin = new Sphere(axis.origin,1,new Color(1,1,1,0));
-            x = new Sphere(axis.x,1,new Color(1,0,0,0));
-            y = new Sphere(axis.y,1,new Color(0,1,0,0));
-            z = new Sphere(axis.z,1,new Color(0,0,1,0));
-            spinPast = new Sphere(y.origin,1,new Color(1,0,1,1));
-            spinFuture = new Sphere(y.origin,1,new Color(0,0,0,0));
-            movePast = new Sphere(axis.origin,1,new Color(1.0f, 0.64f, 0.0f,0.0f));
-            moveFuture = new Sphere(axis.origin,1,new Color(1.0f, 0.64f, 0.0f,0.0f));
+            origin = new Sphere(axis.origin,distance,new Color(1,1,1,0));
+            x = new Sphere(axis.x,distance,new Color(1,0,0,0));
+            y = new Sphere(axis.y,distance,new Color(0,1,0,0));
+            z = new Sphere(axis.z,distance,new Color(0,0,1,0));
+            spinPast = new Sphere(y.origin,distance,new Color(1,0,1,1));
+            spinFuture = new Sphere(y.origin,distance,new Color(0,0,0,0));
+            movePast = new Sphere(axis.origin,distance,new Color(1.0f, 0.64f, 0.0f,0.0f));
+            moveFuture = new Sphere(axis.origin,distance,new Color(1.0f, 0.64f, 0.0f,0.0f));
             created = true;
         }
         public void createAxis(){
@@ -514,13 +515,22 @@ public class SourceCode:MonoBehaviour {
             return origin + new Vector3(rotatedQuaternion.x,rotatedQuaternion.y,rotatedQuaternion.z);
         }
 
-        public void alignTwoRotations(Axis from, Axis to, out float angle, out Vector3 axis){
-            Vector4 engineQuat = matrixToQuat(rotationMatrix(from));
-            Vector4 engineQuat2 = matrixToQuat(rotationMatrix(to));
-            Vector4 relativeRotation = quatMul(engineQuat2, inverseQuat(engineQuat));
-
-            convertAngleAxis(relativeRotation,out angle, out axis);
-            rotate(angledAxis(angle,axis+origin),origin);
+        public void alignRotationTo(Axis engineAxis, out float angle, out Vector3 axis, out Vector4 quat){
+            Vector4 from = matrixToQuat(rotationMatrix(this));
+            Vector4 to = matrixToQuat(rotationMatrix(engineAxis));
+            quat = quatMul(to, inverseQuat(from));
+            convertAngleAxis(quat,out angle, out axis);
+        }
+        public void alignRotationTo(GameObject unityAxis, out float angle, out Vector3 axis, out Vector4 quat){
+            Vector4 from = matrixToQuat(rotationMatrix(this));
+            Vector4 to = new Vector4(
+                    unityAxis.transform.rotation.x,
+                    unityAxis.transform.rotation.y,
+                    unityAxis.transform.rotation.z,
+                    unityAxis.transform.rotation.w
+                );
+            quat = quatMul(to, inverseQuat(from));
+            convertAngleAxis(quat,out angle, out axis);
         }
         Matrix4x4 rotationMatrix(Axis axis){
             Vector3 right = direction(axis.x,axis.origin);
@@ -538,39 +548,34 @@ public class SourceCode:MonoBehaviour {
             float trace = m.m00 + m.m11 + m.m22;
             float w, x, y, z;
 
-            if (trace > 0)
-            {
+            if (trace > 0) {
                 float s = Mathf.Sqrt(1 + trace) * 2;
                 w = 0.25f * s;
                 x = (m.m21 - m.m12) / s;
                 y = (m.m02 - m.m20) / s;
                 z = (m.m10 - m.m01) / s;
             }
-            else if ((m.m00 > m.m11) && (m.m00 > m.m22))
-            {
+            else if ((m.m00 > m.m11) && (m.m00 > m.m22)) {
                 float s = Mathf.Sqrt(1 + m.m00 - m.m11 - m.m22) * 2;
                 w = (m.m21 - m.m12) / s;
                 x = 0.25f * s;
                 y = (m.m01 + m.m10) / s;
                 z = (m.m02 + m.m20) / s;
             }
-            else if (m.m11 > m.m22)
-            {
+            else if (m.m11 > m.m22) {
                 float s = Mathf.Sqrt(1 + m.m11 - m.m00 - m.m22) * 2;
                 w = (m.m02 - m.m20) / s;
                 x = (m.m01 + m.m10) / s;
                 y = 0.25f * s;
                 z = (m.m12 + m.m21) / s;
             }
-            else
-            {
+            else {
                 float s = Mathf.Sqrt(1 + m.m22 - m.m00 - m.m11) * 2;
                 w = (m.m10 - m.m01) / s;
                 x = (m.m02 + m.m20) / s;
                 y = (m.m12 + m.m21) / s;
                 z = 0.25f * s;
             }
-
             return new Vector4(x, y, z, w);
         }
 
@@ -604,7 +609,7 @@ public class SourceCode:MonoBehaviour {
 
         public BakedMesh(SkinnedMeshRenderer skinnedMeshRenderer){
             this.skinnedMeshRenderer=skinnedMeshRenderer;
-            mesh = new Mesh();
+            mesh = skinnedMeshRenderer.sharedMesh;
             bakeMesh();
         }
         public void bakeMesh(){
@@ -635,7 +640,7 @@ public class SourceCode:MonoBehaviour {
         public Body(){}
         public Body(int worldKey){
             this.worldKey = worldKey;
-            globalAxis = new Axis(this,new Vector3(0,0,0),5);
+            globalAxis = new Axis(this,new Vector3(0,0,0),1);
             bodyStructure = new Joint[0];
             keyGenerator = new KeyGenerator(0);
             editor = new Editor(this);
@@ -782,6 +787,9 @@ public class SourceCode:MonoBehaviour {
         }
 
         public void updatePhysics(){
+            for (int i = 0; i < bakedMeshes.Count;i++){
+                bakedMeshes[i].bakeMesh();
+            }
             int sphereCount = bodyStructure.Length;
             for (int i = 0; i<sphereCount; i++){
                 bodyStructure[i]?.updatePhysics();
@@ -967,25 +975,6 @@ public class SourceCode:MonoBehaviour {
             return futureIndexes;
         }
     }
-    public class UnityAxis{
-        public Joint joint;
-        public GameObject fbxGameObject;
-
-        public UnityAxis(){}
-        public UnityAxis(Joint joint,GameObject fbxGameObject){
-            this.joint = joint;
-            this.fbxGameObject = fbxGameObject;
-        }
-        public Vector3 xDirection(){
-            return fbxGameObject.transform.right;
-        }
-        public Vector3 yDirection(){
-            return fbxGameObject.transform.up;
-        }
-        public Vector3 zDirection(){
-            return fbxGameObject.transform.forward;
-        }     
-    }
     public class Joint {
         public Body body;
         public Axis localAxis;
@@ -998,8 +987,15 @@ public class SourceCode:MonoBehaviour {
 
         public Joint(){}
         public Joint(Body body, int indexInBody){
+            init(body, indexInBody);
+        }
+        public Joint(Body body, int indexInBody, GameObject unityAxis){
+            init(body, indexInBody);
+            this.unityAxis = unityAxis;
+        }
+        void init(Body body, int indexInBody){
             this.body = body;
-            localAxis = new Axis(body,new Vector3(0,0,0),5);
+            localAxis = new Axis(body,new Vector3(0,0,0),1);
             connection = new Connection(this,indexInBody);
             pointCloud = new PointCloud(this,0);
             body.keyGenerator.getKey();
@@ -1009,9 +1005,6 @@ public class SourceCode:MonoBehaviour {
             keepBodyTogether = true;
         }
 
-        public void setBody(Body body){
-            this.body=body;
-        }
         public string saveJointPosition(bool radianOrAngle){
             float convert = radianOrAngle? 180f/Mathf.PI:1;
             float worldAngleY,worldAngleX,localAngleY;
@@ -1116,11 +1109,19 @@ public class SourceCode:MonoBehaviour {
             rotateHierarchy(quat, false);
         }
         public void rotateFutureHierarchy(){
-            Vector4 quat = localAxis.spinFuture.quat(localAxis.spinFuture.speed);
-            rotateHierarchy(quat, true);
+            if (unityAxis==null){
+                Vector4 quat = localAxis.spinFuture.quat(localAxis.spinFuture.speed);
+                rotateHierarchy(quat, true);
+            } else {
+                localAxis.alignRotationTo(unityAxis, out float angle, out Vector3 axis, out Vector4 quat);
+                localAxis.spinFuture.sphere.setOrigin(axis*localAxis.axisDistance);
+                localAxis.spinFuture.get();
+                localAxis.spinFuture.speed = angle;
+                rotateHierarchy(quat, true);
+            }
         }
 
-        void rotateHierarchy(Vector4 quat, bool pastOrFuture){
+        internal void rotateHierarchy(Vector4 quat, bool pastOrFuture){
             initTree(pastOrFuture, out List<Joint> tree, out int size); 
             Vector3 rotationOrigin = localAxis.origin;
             if (pastOrFuture) tree[0].rotateJoint(quat,rotationOrigin);
@@ -1140,11 +1141,17 @@ public class SourceCode:MonoBehaviour {
             if (keepBodyTogether) moveHierarchy(move, true);
         }
         public void moveFutureHierarchy(){
-            Vector3 move = localAxis.moveFuture.sphere.origin - localAxis.origin;
-            moveHierarchy(move, true);
-            if (keepBodyTogether) moveHierarchy(move, false);
+            Vector3 move;
+            if (unityAxis==null){
+                move = localAxis.moveFuture.sphere.origin - localAxis.origin;
+                moveHierarchy(move, true);
+                if (keepBodyTogether) moveHierarchy(move, false);
+            } else if (connection.indexInBody == 0){
+                move = unityAxis.transform.position - localAxis.origin;
+                moveHierarchy(move, true);
+            }
         }
-        void moveHierarchy(Vector3 newVec, bool pastOrFuture){
+        internal void moveHierarchy(Vector3 newVec, bool pastOrFuture){
             initTree(pastOrFuture, out List<Joint> tree, out int size);  
             if (pastOrFuture) tree[0].moveJoint(newVec);
             for (int i = 1; i<size;i++){
@@ -1277,6 +1284,7 @@ public class SourceCode:MonoBehaviour {
             int sphereCount = collisionSpheres.Length;
             for (int i = 0; i<sphereCount; i++){
                 collisionSpheres[i]?.aroundAxis.updatePhysics(false);
+                collisionSpheres[i]?.bakedMeshIndex.updatePoint();
             }            
         }
         public List<CollisionSphere> arrayToList(){
@@ -1358,12 +1366,19 @@ public class SourceCode:MonoBehaviour {
         }
     }
     public class BakedMeshIndex{
+        public CollisionSphere collisionSphere;
         public int indexInBakedMesh;
         public int indexInVertex;
         public BakedMeshIndex(){}
         public BakedMeshIndex(int indexInBakedMesh,int indexInVertex){
             this.indexInBakedMesh = indexInBakedMesh;
             this.indexInVertex = indexInVertex;
+        }
+        public void updatePoint(){
+            BakedMesh bakedMesh = collisionSphere.path.body.bakedMeshes[indexInBakedMesh];
+            collisionSphere.setOrigin(
+                bakedMesh.worldPosition(indexInVertex)
+                );
         }
     }
     public class CollisionSphere {
@@ -1373,11 +1388,18 @@ public class SourceCode:MonoBehaviour {
 
         public CollisionSphere(){}
         public CollisionSphere(Joint joint, int sphereIndex){
+            init(joint, sphereIndex);
+        }
+        public CollisionSphere(Joint joint, int sphereIndex,BakedMeshIndex bakedMeshIndex){
+            init(joint, sphereIndex);
+            this.bakedMeshIndex = bakedMeshIndex;
+            bakedMeshIndex.collisionSphere = this;
+        }
+        void init(Joint joint, int sphereIndex){
             path = new Path(joint.body,joint,sphereIndex);
             aroundAxis = new AroundAxis(joint.localAxis,new Sphere());
             joint.pointCloud.keyGenerator.getKey();
         }
-   
         public string saveCollisionSphere(bool radianOrAngle){
             Body body = path.body;
             Sphere sphere = aroundAxis.sphere;
@@ -1410,15 +1432,15 @@ public class SourceCode:MonoBehaviour {
         public GameObject sphere;
         
         public Sphere(){
-            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Cube);
             sphere.GetComponent<Collider>().enabled = false;
             setOrigin(new Vector3(0,0,0));
-            setRadius(1);
+            setRadius(0.01f);
             setColor(new Color(1,1,1,1));
             updateColor(color);
         }
         public Sphere(Vector3 origin, float radius, Color color){
-            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Cube);
             sphere.GetComponent<Collider>().enabled = false;
             setOrigin(origin);
             setRadius(radius);

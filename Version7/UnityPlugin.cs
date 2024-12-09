@@ -4,6 +4,7 @@ using UnityEngine;
 public class VertexVisualizer : MonoBehaviour
 {
     public GameObject fbx;
+    public SceneBuilder sceneBuilder;
     public class SceneBuilder:SourceCode{
         public Body body;
         List<GameObject> allChildrenInParent(GameObject topParent){
@@ -23,7 +24,7 @@ public class VertexVisualizer : MonoBehaviour
             }
 
         }
-        void loadModelToBody(GameObject topParent){
+        public void loadModelToBody(GameObject topParent){
             List<BakedMesh> bakedMeshes = new List<BakedMesh>();
             Dictionary<GameObject,AssembleJoints> dictionary = new Dictionary<GameObject,AssembleJoints>();
             List<GameObject> tree = new List<GameObject>(){topParent};
@@ -36,28 +37,38 @@ public class VertexVisualizer : MonoBehaviour
                 if (skin) bakedMeshes.Add(new BakedMesh(skin));
                 jointIndex++;
             }
+            body = new Body(0);
+            body.bakedMeshes = bakedMeshes;
+            body.arraySizeManager(dictionary.Count);
             for (int i = 0; i<bakedMeshes.Count; i++){
                 BakedMesh bakedMesh = bakedMeshes[i];
                 for (int j = 0; j < bakedMesh.vertices.Length; j++){
                     dictionary[bakedMesh.getGameObject(j)].bakedMeshIndex.Add(new BakedMeshIndex(i,j));
                 }
             }
-            body = new Body(0);
-            body.arraySizeManager(dictionary.Count);
-            
             foreach (GameObject gameObject in dictionary.Keys){
                 AssembleJoints assembleJoints = dictionary[gameObject];
                 int indexInBody = assembleJoints.jointIndex;
-
-                Joint joint = new Joint(body,indexInBody);
+                Joint joint = new Joint(body,indexInBody,gameObject);
+                joint.localAxis.placeAxis(gameObject.transform.position);
+                joint.localAxis.alignRotationTo(gameObject, out _, out _, out _);
+                int pointCloudSize = assembleJoints.bakedMeshIndex.Count;
+                joint.pointCloud = new PointCloud(joint,pointCloudSize);
+                for (int i = 0;i < pointCloudSize;i++){
+                    CollisionSphere collisionSphere = new CollisionSphere(joint,i,assembleJoints.bakedMeshIndex[i]);
+                    collisionSphere.bakedMeshIndex = assembleJoints.bakedMeshIndex[i];
+                    collisionSphere.bakedMeshIndex.updatePoint();
+                    joint.pointCloud.collisionSpheres[i] = collisionSphere;
+                }
             }
         }
     }
     void Start() {
-
+        sceneBuilder= new SceneBuilder();
+        sceneBuilder.loadModelToBody(fbx);
     }
     void LateUpdate() {
-
+        sceneBuilder.body.updatePhysics();
     }
     // void Start(){
     //     SkinnedMeshRenderer skinnedMeshRenderer = fbx.GetComponent<SkinnedMeshRenderer>();
@@ -96,9 +107,9 @@ public class VertexVisualizer : MonoBehaviour
     //--------------------------------------
     // private GameObject[] cubes;
     // private Mesh bakedMesh;
-
+    // SkinnedMeshRenderer skin;
     // void Start() {
-    //     SkinnedMeshRenderer skin = fbx.GetComponent<SkinnedMeshRenderer>();
+    //     skin = fbx.GetComponent<SkinnedMeshRenderer>();
     //     Mesh mesh = skin.sharedMesh;
     //     Vector3[] vertices = mesh.vertices;
 
@@ -113,13 +124,11 @@ public class VertexVisualizer : MonoBehaviour
     // }
 
     // void LateUpdate() {
-    //     SkinnedMeshRenderer skinnedMeshRenderer = fbx.GetComponent<SkinnedMeshRenderer>();
-    //     skinnedMeshRenderer.BakeMesh(bakedMesh); // Bake the current state of the skinned mesh
+    //     skin.BakeMesh(bakedMesh); // Bake the current state of the skinned mesh
     //     Vector3[] vertices = bakedMesh.vertices;
 
     //     for (int i = 0; i < vertices.Length; i++){
-    //         Vector3 localVertex = vertices[i];
-    //         Vector3 worldPosition = skinnedMeshRenderer.transform.TransformPoint(localVertex);
+    //         Vector3 worldPosition = skin.transform.TransformPoint(vertices[i]);
     //         cubes[i].transform.position = worldPosition;
     //     }
     // }
