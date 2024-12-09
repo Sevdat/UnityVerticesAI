@@ -17,6 +17,7 @@ public class VertexVisualizer : MonoBehaviour
         class AssembleJoints{
             public int jointIndex;
             public List<BakedMeshIndex> bakedMeshIndex;
+            public List<Joint> future; // do comments
 
             public AssembleJoints(int jointIndex){
                 this.jointIndex = jointIndex;

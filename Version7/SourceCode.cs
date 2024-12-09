@@ -25,18 +25,18 @@ public class SourceCode:MonoBehaviour {
         public Axis axis;
         public Sphere origin,x,y,z,spinPast,spinFuture,movePast,moveFuture;
         public bool created = false;
-        public float distance = 0.1f;
+        public float radius = 0.1f;
 
         public RenderAxis(Axis axis){
             this.axis = axis;
-            origin = new Sphere(axis.origin,distance,new Color(1,1,1,0));
-            x = new Sphere(axis.x,distance,new Color(1,0,0,0));
-            y = new Sphere(axis.y,distance,new Color(0,1,0,0));
-            z = new Sphere(axis.z,distance,new Color(0,0,1,0));
-            spinPast = new Sphere(y.origin,distance,new Color(1,0,1,1));
-            spinFuture = new Sphere(y.origin,distance,new Color(0,0,0,0));
-            movePast = new Sphere(axis.origin,distance,new Color(1.0f, 0.64f, 0.0f,0.0f));
-            moveFuture = new Sphere(axis.origin,distance,new Color(1.0f, 0.64f, 0.0f,0.0f));
+            origin = new Sphere(axis.origin,radius,new Color(1,1,1,0));
+            x = new Sphere(axis.x,radius,new Color(1,0,0,0));
+            y = new Sphere(axis.y,radius,new Color(0,1,0,0));
+            z = new Sphere(axis.z,radius,new Color(0,0,1,0));
+            spinPast = new Sphere(y.origin,radius,new Color(1,0,1,1));
+            spinFuture = new Sphere(y.origin,radius,new Color(0,0,0,0));
+            movePast = new Sphere(axis.origin,radius,new Color(1.0f, 0.64f, 0.0f,0.0f));
+            moveFuture = new Sphere(axis.origin,radius,new Color(1.0f, 0.64f, 0.0f,0.0f));
             created = true;
         }
         public void createAxis(){
@@ -1112,7 +1112,8 @@ public class SourceCode:MonoBehaviour {
                 localAxis.spinFuture.sphere.setOrigin(unityAxis.transform.position+axis*localAxis.axisDistance);
                 localAxis.spinFuture.get();
                 localAxis.spinFuture.speed = angle;
-                // rotateHierarchy(quat, true);
+                localAxis.placeAxis(unityAxis.transform.position);
+                // rotateHierarchy(localAxis.angledAxis(angle,axis), true);
             }
         }
 
@@ -1145,8 +1146,7 @@ public class SourceCode:MonoBehaviour {
             if (keepBodyTogether) moveHierarchy(move, true);
         }
         public void moveFutureHierarchy(){
-            Vector3 move;
-            move = localAxis.moveFuture.sphere.origin - localAxis.origin;
+            Vector3 move = localAxis.moveFuture.sphere.origin - localAxis.origin;
             moveHierarchy(move, true);
             if (keepBodyTogether) moveHierarchy(move, false);
             
@@ -1377,9 +1377,11 @@ public class SourceCode:MonoBehaviour {
         }
         public void updatePoint(){
             BakedMesh bakedMesh = collisionSphere.path.body.bakedMeshes[indexInBakedMesh];
-            collisionSphere.setOrigin(
-                bakedMesh.worldPosition(indexInVertex)
-                );
+            Vector3 point = bakedMesh.worldPosition(indexInVertex);
+            collisionSphere.setOrigin(point);
+            collisionSphere.aroundAxis.distance = collisionSphere.aroundAxis.axis.length(point - collisionSphere.aroundAxis.axis.origin);
+            collisionSphere.aroundAxis.get();
+
         }
     }
     public class CollisionSphere {
@@ -1423,7 +1425,7 @@ public class SourceCode:MonoBehaviour {
             aroundAxis.sphere.setRadius(newRadius);
         }
         public void updatePhysics(){
-            bakedMeshIndex.updatePoint();
+            // bakedMeshIndex.updatePoint();
             aroundAxis.updatePhysics(false);
         }
     }
