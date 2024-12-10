@@ -212,6 +212,7 @@ public class SourceCode:MonoBehaviour {
             spinFuture = new AroundAxis(this, renderAxis.spinFuture);
             movePast = new AroundAxis(this, renderAxis.movePast);
             moveFuture = new AroundAxis(this, renderAxis.moveFuture);
+            renderAxis.deleteAxis();
         }
         
         public void moveAxis(Vector3 add){
@@ -1101,8 +1102,7 @@ public class SourceCode:MonoBehaviour {
             localAxis.spinFuture.updatePhysics(false);
             localAxis.spinPast.updatePhysics(false);
             localAxis.movePast.updatePhysics(true);
-            localAxis.moveFuture.updatePhysics(true);
-            pointCloud.updatePhysics();     
+            localAxis.moveFuture.updatePhysics(true);   
             if (unityAxis != null){
                 if (connection.indexInBody == 0){
                     Vector3 move = unityAxis.transform.position - localAxis.origin;
@@ -1112,9 +1112,9 @@ public class SourceCode:MonoBehaviour {
                 localAxis.spinFuture.sphere.setOrigin(unityAxis.transform.position+axis*localAxis.axisDistance);
                 localAxis.spinFuture.get();
                 localAxis.spinFuture.speed = angle;
-                localAxis.placeAxis(unityAxis.transform.position);
-                // rotateHierarchy(localAxis.angledAxis(angle,axis), true);
+                rotateHierarchy(quat, true);
             }
+            pointCloud.updatePhysics();  
         }
 
         public void rotatePastHierarchy(){
@@ -1149,7 +1149,6 @@ public class SourceCode:MonoBehaviour {
             Vector3 move = localAxis.moveFuture.sphere.origin - localAxis.origin;
             moveHierarchy(move, true);
             if (keepBodyTogether) moveHierarchy(move, false);
-            
         }
         internal void moveHierarchy(Vector3 newVec, bool pastOrFuture){
             initTree(pastOrFuture, out List<Joint> tree, out int size);  
@@ -1425,7 +1424,7 @@ public class SourceCode:MonoBehaviour {
             aroundAxis.sphere.setRadius(newRadius);
         }
         public void updatePhysics(){
-            // bakedMeshIndex.updatePoint();
+            bakedMeshIndex.updatePoint();
             aroundAxis.updatePhysics(false);
         }
     }
@@ -1453,15 +1452,15 @@ public class SourceCode:MonoBehaviour {
         }
         public void setOrigin(Vector3 newOrigin){
             origin = newOrigin;
-            sphere.transform.position = newOrigin;
+            if (sphere != null) sphere.transform.position = newOrigin;
         }
         public void moveOrigin(Vector3 newOrigin){
             origin += newOrigin;
-            sphere.transform.position += newOrigin;
+            if (sphere != null)sphere.transform.position += newOrigin;
         }
         public void setRadius(float newRadius){
             radius = newRadius;
-            sphere.transform.localScale = new Vector3(radius, radius, radius);
+            if (sphere != null) sphere.transform.localScale = new Vector3(radius, radius, radius);
         }
         public void setColor(Color newColor){
             color = newColor;

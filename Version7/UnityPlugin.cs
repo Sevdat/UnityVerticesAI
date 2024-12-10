@@ -7,6 +7,7 @@ public class VertexVisualizer : MonoBehaviour
     public SceneBuilder sceneBuilder;
     public class SceneBuilder:SourceCode{
         public Body body;
+        public int decreasePoints = 5;
         List<GameObject> allChildrenInParent(GameObject topParent){
             List<GameObject> allChildren = new List<GameObject>();
             for (int i = 0; i < topParent.transform.childCount; i++){
@@ -17,11 +18,12 @@ public class VertexVisualizer : MonoBehaviour
         class AssembleJoints{
             public int jointIndex;
             public List<BakedMeshIndex> bakedMeshIndex;
-            public List<Joint> future; // do comments
+            public List<GameObject> futureConnections; // do comments
 
-            public AssembleJoints(int jointIndex){
+            public AssembleJoints(int jointIndex,List<GameObject> futureConnections){
                 this.jointIndex = jointIndex;
                 bakedMeshIndex = new List<BakedMeshIndex>();
+                this.futureConnections = futureConnections;
             }
 
         }
@@ -32,10 +34,12 @@ public class VertexVisualizer : MonoBehaviour
             int jointIndex = 0;
             for (int i = 0; i < tree.Count; i++){
                 GameObject root = tree[i];
-                tree.AddRange(allChildrenInParent(root));
+                List<GameObject> futureConnections = allChildrenInParent(root);
+                tree.AddRange(futureConnections);
                 SkinnedMeshRenderer skin = root.GetComponent<SkinnedMeshRenderer>();
-                if (!dictionary.ContainsKey(root)) dictionary[root] = new AssembleJoints(jointIndex);
+                if (!dictionary.ContainsKey(root)) dictionary[root] = new AssembleJoints(jointIndex,futureConnections);
                 if (skin) bakedMeshes.Add(new BakedMesh(skin));
+
                 jointIndex++;
             }
             body = new Body(0);
@@ -52,17 +56,31 @@ public class VertexVisualizer : MonoBehaviour
                 int indexInBody = assembleJoints.jointIndex;
                 Joint joint = new Joint(body,indexInBody,gameObject);
                 joint.localAxis.placeAxis(gameObject.transform.position);
-                joint.localAxis.alignRotationTo(gameObject, out _, out _, out _);
+                joint.localAxis.alignRotationTo(gameObject, out float angle, out Vector3 axis, out Vector4 quat);
+                joint.localAxis.rotate(quat,gameObject.transform.position);
                 int pointCloudSize = assembleJoints.bakedMeshIndex.Count;
                 joint.pointCloud = new PointCloud(joint,pointCloudSize);
                 for (int i = 0;i < pointCloudSize;i++){
+                    if (i%decreasePoints == 0){
                     CollisionSphere collisionSphere = new CollisionSphere(joint,i,assembleJoints.bakedMeshIndex[i]);
                     collisionSphere.bakedMeshIndex = assembleJoints.bakedMeshIndex[i];
                     collisionSphere.bakedMeshIndex.updatePoint();
                     joint.pointCloud.collisionSpheres[i] = collisionSphere;
+                    }
                 }
                 body.bodyStructure[indexInBody] = joint;
             }
+            foreach (GameObject gameObject in dictionary.Keys){
+                AssembleJoints assembleJoints = dictionary[gameObject];
+                Joint joint = body.bodyStructure[assembleJoints.jointIndex];
+                List<GameObject> list = assembleJoints.futureConnections;
+                for (int i = 0; i<list.Count;i++){
+                    int index = dictionary[list[i]].jointIndex;
+                    Joint future = body.bodyStructure[index];
+                    joint.connection.connectThisFutureToPast(future,out _, out _);
+                }
+            }
+
         }
     }
     void Start() {
