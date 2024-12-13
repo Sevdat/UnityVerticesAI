@@ -1,5 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
+using System.Diagnostics;
+using System.IO;
+using System;
+using System.Linq;
 
 public class VertexVisualizer : MonoBehaviour
 {
@@ -83,13 +88,47 @@ public class VertexVisualizer : MonoBehaviour
 
         }
     }
-    void Start() {
-        sceneBuilder= new SceneBuilder();
-        sceneBuilder.loadModelToBody(fbx);
+    public class TravelInFilesAndFolders{
+        string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        string[] contents;
+        public void deleteLast(){
+            string[] p = path.Split("/");
+            if (p.Length>1){
+                path = "";
+                for (int i = 0;i<p.Length;i++){
+                    addLast(p[i]);
+                }
+            }
+        }
+        public void addLast(string str){
+            path += str;
+        }
+        public string[] getFolders(){
+            return Directory.GetDirectories(path);
+        }
+        public string[] getFiles(){
+            return Directory.GetFiles(path);
+        }
     }
-    void LateUpdate() {
-        sceneBuilder.body.updatePhysics();
+    void Start()
+    {
+
+        // string appDataPath = System.Environment.GetEnvironmentVariable("LOCALAPPDATA");
+        
+        // string firefoxPath = System.IO.Path.Combine(appDataPath, @"Mozilla Firefox\firefox.exe");
+        // // Path to the Firefox executable
+
+        // // URL or file you want to open
+        // string url = "https://www.google.com";
+        // Process.Start(firefoxPath, url);
     }
+    // void Start() {
+    //     sceneBuilder= new SceneBuilder();
+    //     sceneBuilder.loadModelToBody(fbx);
+    // }
+    // void LateUpdate() {
+    //     sceneBuilder.body.updatePhysics();
+    // }
     // void Start(){
     //     SkinnedMeshRenderer skinnedMeshRenderer = fbx.GetComponent<SkinnedMeshRenderer>();
     //     Mesh mesh = skinnedMeshRenderer.sharedMesh;
