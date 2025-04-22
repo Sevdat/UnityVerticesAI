@@ -1,0 +1,1257 @@
+Body_0_ShowAxis: False
+Body_0_GlobalAxisScale: 5.0
+Body_0_BodyStructureSize: 43
+Body_0_AllJointsInBody: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42
+
+Body_0_Joint_0_MovementOption: False
+Body_0_Joint_0_DistanceFromGlobalOrigin: 150.0
+Body_0_Joint_0_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_0_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_0_LocalOriginLocation: 0.0 150.0 0.0
+Body_0_Joint_0_PointCloudSize: 1
+Body_0_Joint_0_AllSpheresInJoint: 
+
+Body_0_Joint_1_MovementOption: False
+Body_0_Joint_1_DistanceFromGlobalOrigin: 140.0
+Body_0_Joint_1_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_1_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_1_LocalOriginLocation: 0.0 140.0 0.0
+Body_0_Joint_1_PointCloudSize: 1
+Body_0_Joint_1_AllSpheresInJoint: 
+
+Body_0_Joint_2_MovementOption: False
+Body_0_Joint_2_DistanceFromGlobalOrigin: 135.0
+Body_0_Joint_2_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_2_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_2_LocalOriginLocation: 0.0 135.0 0.0
+Body_0_Joint_2_PointCloudSize: 1
+Body_0_Joint_2_AllSpheresInJoint: 
+
+Body_0_Joint_3_MovementOption: False
+Body_0_Joint_3_DistanceFromGlobalOrigin: 130.0
+Body_0_Joint_3_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_3_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_3_LocalOriginLocation: 0.0 130.0 0.0
+Body_0_Joint_3_PointCloudSize: 1
+Body_0_Joint_3_AllSpheresInJoint: 
+
+Body_0_Joint_4_MovementOption: False
+Body_0_Joint_4_DistanceFromGlobalOrigin: 115.0
+Body_0_Joint_4_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_4_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_4_LocalOriginLocation: 0.0 115.0 0.0
+Body_0_Joint_4_PointCloudSize: 1
+Body_0_Joint_4_AllSpheresInJoint: 
+
+Body_0_Joint_5_MovementOption: False
+Body_0_Joint_5_DistanceFromGlobalOrigin: 100.0
+Body_0_Joint_5_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_5_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_5_LocalOriginLocation: 0.0 100.0 0.0
+Body_0_Joint_5_PointCloudSize: 1
+Body_0_Joint_5_AllSpheresInJoint: 
+
+Body_0_Joint_6_MovementOption: False
+Body_0_Joint_6_DistanceFromGlobalOrigin: 90.0
+Body_0_Joint_6_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_6_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_6_LocalOriginLocation: 0.0 90.0 0.0
+Body_0_Joint_6_PointCloudSize: 1
+Body_0_Joint_6_AllSpheresInJoint: 
+
+Body_0_Joint_7_MovementOption: False
+Body_0_Joint_7_DistanceFromGlobalOrigin: 80.0
+Body_0_Joint_7_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_7_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_7_LocalOriginLocation: 0.0 80.0 0.0
+Body_0_Joint_7_PointCloudSize: 1
+Body_0_Joint_7_AllSpheresInJoint: 
+
+Body_0_Joint_8_MovementOption: False
+Body_0_Joint_8_DistanceFromGlobalOrigin: 80.0
+Body_0_Joint_8_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_8_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_8_LocalOriginLocation: 0.0 80.0 0.0
+Body_0_Joint_8_PointCloudSize: 1
+Body_0_Joint_8_AllSpheresInJoint: 
+
+Body_0_Joint_9_MovementOption: False
+Body_0_Joint_9_DistanceFromGlobalOrigin: 65.0
+Body_0_Joint_9_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_9_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_9_LocalOriginLocation: 0.0 65.0 0.0
+Body_0_Joint_9_PointCloudSize: 1
+Body_0_Joint_9_AllSpheresInJoint: 
+
+Body_0_Joint_10_MovementOption: False
+Body_0_Joint_10_DistanceFromGlobalOrigin: 65.0
+Body_0_Joint_10_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_10_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_10_LocalOriginLocation: 0.0 65.0 0.0
+Body_0_Joint_10_PointCloudSize: 1
+Body_0_Joint_10_AllSpheresInJoint: 
+
+Body_0_Joint_11_MovementOption: False
+Body_0_Joint_11_DistanceFromGlobalOrigin: 50.0
+Body_0_Joint_11_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_11_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_11_LocalOriginLocation: 0.0 50.0 0.0
+Body_0_Joint_11_PointCloudSize: 1
+Body_0_Joint_11_AllSpheresInJoint: 
+
+Body_0_Joint_12_MovementOption: False
+Body_0_Joint_12_DistanceFromGlobalOrigin: 50.0
+Body_0_Joint_12_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_12_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_12_LocalOriginLocation: 0.0 50.0 0.0
+Body_0_Joint_12_PointCloudSize: 1
+Body_0_Joint_12_AllSpheresInJoint: 
+
+Body_0_Joint_13_MovementOption: False
+Body_0_Joint_13_DistanceFromGlobalOrigin: 40.0
+Body_0_Joint_13_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_13_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_13_LocalOriginLocation: 0.0 40.0 0.0
+Body_0_Joint_13_PointCloudSize: 1
+Body_0_Joint_13_AllSpheresInJoint: 
+
+Body_0_Joint_14_MovementOption: False
+Body_0_Joint_14_DistanceFromGlobalOrigin: 40.0
+Body_0_Joint_14_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_14_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_14_LocalOriginLocation: 0.0 40.0 0.0
+Body_0_Joint_14_PointCloudSize: 1
+Body_0_Joint_14_AllSpheresInJoint: 
+
+Body_0_Joint_15_MovementOption: False
+Body_0_Joint_15_DistanceFromGlobalOrigin: 115.0
+Body_0_Joint_15_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_15_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_15_LocalOriginLocation: 0.0 115.0 0.0
+Body_0_Joint_15_PointCloudSize: 1
+Body_0_Joint_15_AllSpheresInJoint: 
+
+Body_0_Joint_16_MovementOption: False
+Body_0_Joint_16_DistanceFromGlobalOrigin: 115.0
+Body_0_Joint_16_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_16_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_16_LocalOriginLocation: 0.0 115.0 0.0
+Body_0_Joint_16_PointCloudSize: 1
+Body_0_Joint_16_AllSpheresInJoint: 
+
+Body_0_Joint_17_MovementOption: False
+Body_0_Joint_17_DistanceFromGlobalOrigin: 100.0
+Body_0_Joint_17_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_17_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_17_LocalOriginLocation: 0.0 100.0 0.0
+Body_0_Joint_17_PointCloudSize: 1
+Body_0_Joint_17_AllSpheresInJoint: 
+
+Body_0_Joint_18_MovementOption: False
+Body_0_Joint_18_DistanceFromGlobalOrigin: 100.0
+Body_0_Joint_18_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_18_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_18_LocalOriginLocation: 0.0 100.0 0.0
+Body_0_Joint_18_PointCloudSize: 1
+Body_0_Joint_18_AllSpheresInJoint: 
+
+Body_0_Joint_19_MovementOption: False
+Body_0_Joint_19_DistanceFromGlobalOrigin: 85.0
+Body_0_Joint_19_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_19_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_19_LocalOriginLocation: 0.0 85.0 0.0
+Body_0_Joint_19_PointCloudSize: 1
+Body_0_Joint_19_AllSpheresInJoint: 
+
+Body_0_Joint_20_MovementOption: False
+Body_0_Joint_20_DistanceFromGlobalOrigin: 85.0
+Body_0_Joint_20_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_20_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_20_LocalOriginLocation: 0.0 85.0 0.0
+Body_0_Joint_20_PointCloudSize: 1
+Body_0_Joint_20_AllSpheresInJoint: 
+
+Body_0_Joint_21_MovementOption: False
+Body_0_Joint_21_DistanceFromGlobalOrigin: 80.0
+Body_0_Joint_21_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_21_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_21_LocalOriginLocation: 0.0 80.0 0.0
+Body_0_Joint_21_PointCloudSize: 1
+Body_0_Joint_21_AllSpheresInJoint: 
+
+Body_0_Joint_22_MovementOption: False
+Body_0_Joint_22_DistanceFromGlobalOrigin: 75.0
+Body_0_Joint_22_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_22_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_22_LocalOriginLocation: 0.0 75.0 0.0
+Body_0_Joint_22_PointCloudSize: 1
+Body_0_Joint_22_AllSpheresInJoint: 
+
+Body_0_Joint_23_MovementOption: False
+Body_0_Joint_23_DistanceFromGlobalOrigin: 80.0
+Body_0_Joint_23_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_23_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_23_LocalOriginLocation: 0.0 80.0 0.0
+Body_0_Joint_23_PointCloudSize: 1
+Body_0_Joint_23_AllSpheresInJoint: 
+
+Body_0_Joint_24_MovementOption: False
+Body_0_Joint_24_DistanceFromGlobalOrigin: 80.0
+Body_0_Joint_24_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_24_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_24_LocalOriginLocation: 0.0 80.0 0.0
+Body_0_Joint_24_PointCloudSize: 1
+Body_0_Joint_24_AllSpheresInJoint: 
+
+Body_0_Joint_25_MovementOption: False
+Body_0_Joint_25_DistanceFromGlobalOrigin: 75.0
+Body_0_Joint_25_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_25_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_25_LocalOriginLocation: 0.0 75.0 0.0
+Body_0_Joint_25_PointCloudSize: 1
+Body_0_Joint_25_AllSpheresInJoint: 
+
+Body_0_Joint_26_MovementOption: False
+Body_0_Joint_26_DistanceFromGlobalOrigin: 80.0
+Body_0_Joint_26_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_26_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_26_LocalOriginLocation: 0.0 80.0 0.0
+Body_0_Joint_26_PointCloudSize: 1
+Body_0_Joint_26_AllSpheresInJoint: 
+
+Body_0_Joint_27_MovementOption: False
+Body_0_Joint_27_DistanceFromGlobalOrigin: 75.0
+Body_0_Joint_27_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_27_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_27_LocalOriginLocation: 0.0 75.0 0.0
+Body_0_Joint_27_PointCloudSize: 1
+Body_0_Joint_27_AllSpheresInJoint: 
+
+Body_0_Joint_28_MovementOption: False
+Body_0_Joint_28_DistanceFromGlobalOrigin: 80.0
+Body_0_Joint_28_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_28_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_28_LocalOriginLocation: 0.0 80.0 0.0
+Body_0_Joint_28_PointCloudSize: 1
+Body_0_Joint_28_AllSpheresInJoint: 
+
+Body_0_Joint_29_MovementOption: False
+Body_0_Joint_29_DistanceFromGlobalOrigin: 75.0
+Body_0_Joint_29_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_29_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_29_LocalOriginLocation: 0.0 75.0 0.0
+Body_0_Joint_29_PointCloudSize: 1
+Body_0_Joint_29_AllSpheresInJoint: 
+
+Body_0_Joint_30_MovementOption: False
+Body_0_Joint_30_DistanceFromGlobalOrigin: 75.0
+Body_0_Joint_30_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_30_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_30_LocalOriginLocation: 0.0 75.0 0.0
+Body_0_Joint_30_PointCloudSize: 1
+Body_0_Joint_30_AllSpheresInJoint: 
+
+Body_0_Joint_31_MovementOption: False
+Body_0_Joint_31_DistanceFromGlobalOrigin: 80.0
+Body_0_Joint_31_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_31_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_31_LocalOriginLocation: 0.0 80.0 0.0
+Body_0_Joint_31_PointCloudSize: 1
+Body_0_Joint_31_AllSpheresInJoint: 
+
+Body_0_Joint_32_MovementOption: False
+Body_0_Joint_32_DistanceFromGlobalOrigin: 75.0
+Body_0_Joint_32_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_32_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_32_LocalOriginLocation: 0.0 75.0 0.0
+Body_0_Joint_32_PointCloudSize: 1
+Body_0_Joint_32_AllSpheresInJoint: 
+
+Body_0_Joint_33_MovementOption: False
+Body_0_Joint_33_DistanceFromGlobalOrigin: 130.0
+Body_0_Joint_33_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_33_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_33_LocalOriginLocation: 0.0 130.0 0.0
+Body_0_Joint_33_PointCloudSize: 1
+Body_0_Joint_33_AllSpheresInJoint: 
+
+Body_0_Joint_34_MovementOption: False
+Body_0_Joint_34_DistanceFromGlobalOrigin: 130.0
+Body_0_Joint_34_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_34_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_34_LocalOriginLocation: 0.0 130.0 0.0
+Body_0_Joint_34_PointCloudSize: 1
+Body_0_Joint_34_AllSpheresInJoint: 
+
+Body_0_Joint_35_MovementOption: False
+Body_0_Joint_35_DistanceFromGlobalOrigin: 90.0
+Body_0_Joint_35_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_35_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_35_LocalOriginLocation: 0.0 90.0 0.0
+Body_0_Joint_35_PointCloudSize: 1
+Body_0_Joint_35_AllSpheresInJoint: 
+
+Body_0_Joint_36_MovementOption: False
+Body_0_Joint_36_DistanceFromGlobalOrigin: 90.0
+Body_0_Joint_36_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_36_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_36_LocalOriginLocation: 0.0 90.0 0.0
+Body_0_Joint_36_PointCloudSize: 1
+Body_0_Joint_36_AllSpheresInJoint: 
+
+Body_0_Joint_37_MovementOption: False
+Body_0_Joint_37_DistanceFromGlobalOrigin: 85.0
+Body_0_Joint_37_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_37_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_37_LocalOriginLocation: 0.0 85.0 0.0
+Body_0_Joint_37_PointCloudSize: 1
+Body_0_Joint_37_AllSpheresInJoint: 
+
+Body_0_Joint_38_MovementOption: False
+Body_0_Joint_38_DistanceFromGlobalOrigin: 85.0
+Body_0_Joint_38_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_38_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_38_LocalOriginLocation: 0.0 85.0 0.0
+Body_0_Joint_38_PointCloudSize: 1
+Body_0_Joint_38_AllSpheresInJoint: 
+
+Body_0_Joint_39_MovementOption: False
+Body_0_Joint_39_DistanceFromGlobalOrigin: 85.0
+Body_0_Joint_39_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_39_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_39_LocalOriginLocation: 0.0 85.0 0.0
+Body_0_Joint_39_PointCloudSize: 1
+Body_0_Joint_39_AllSpheresInJoint: 
+
+Body_0_Joint_40_MovementOption: False
+Body_0_Joint_40_DistanceFromGlobalOrigin: 85.0
+Body_0_Joint_40_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_40_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_40_LocalOriginLocation: 0.0 85.0 0.0
+Body_0_Joint_40_PointCloudSize: 1
+Body_0_Joint_40_AllSpheresInJoint: 
+
+Body_0_Joint_41_MovementOption: False
+Body_0_Joint_41_DistanceFromGlobalOrigin: 85.0
+Body_0_Joint_41_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_41_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_41_LocalOriginLocation: 0.0 85.0 0.0
+Body_0_Joint_41_PointCloudSize: 1
+Body_0_Joint_41_AllSpheresInJoint: 
+
+Body_0_Joint_42_MovementOption: False
+Body_0_Joint_42_DistanceFromGlobalOrigin: 85.0
+Body_0_Joint_42_YXFromGlobalAxis: 0.0 0.0
+Body_0_Joint_42_LocalAxisRotation: 0.0 0.0 0.0
+Body_0_Joint_42_LocalOriginLocation: 0.0 85.0 0.0
+Body_0_Joint_42_PointCloudSize: 1
+Body_0_Joint_42_AllSpheresInJoint: 
+
+Body_0_Joint_0_Active: True
+Body_0_Joint_0_ShowAxis: True
+Body_0_Joint_0_KeepBodyTogether: True
+Body_0_Joint_0_LocalAxisScale: 5.0
+Body_0_Joint_0_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_0_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_0_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_0_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_0_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_0_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_0_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_0_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_0_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_0_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_0_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_0_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_0_PastConnectionsInBody: 
+Body_0_Joint_0_FutureConnectionsInBody: 1 
+Body_0_Joint_0_ResetPastJoints: False
+Body_0_Joint_0_ResetFutureJoints: False
+
+Body_0_Joint_1_Active: True
+Body_0_Joint_1_ShowAxis: True
+Body_0_Joint_1_KeepBodyTogether: True
+Body_0_Joint_1_LocalAxisScale: 5.0
+Body_0_Joint_1_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_1_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_1_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_1_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_1_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_1_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_1_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_1_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_1_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_1_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_1_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_1_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_1_PastConnectionsInBody: 0 
+Body_0_Joint_1_FutureConnectionsInBody: 2 
+Body_0_Joint_1_ResetPastJoints: False
+Body_0_Joint_1_ResetFutureJoints: False
+
+Body_0_Joint_2_Active: True
+Body_0_Joint_2_ShowAxis: True
+Body_0_Joint_2_KeepBodyTogether: True
+Body_0_Joint_2_LocalAxisScale: 5.0
+Body_0_Joint_2_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_2_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_2_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_2_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_2_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_2_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_2_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_2_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_2_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_2_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_2_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_2_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_2_PastConnectionsInBody: 1 
+Body_0_Joint_2_FutureConnectionsInBody: 3 
+Body_0_Joint_2_ResetPastJoints: False
+Body_0_Joint_2_ResetFutureJoints: False
+
+Body_0_Joint_3_Active: True
+Body_0_Joint_3_ShowAxis: True
+Body_0_Joint_3_KeepBodyTogether: True
+Body_0_Joint_3_LocalAxisScale: 5.0
+Body_0_Joint_3_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_3_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_3_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_3_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_3_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_3_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_3_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_3_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_3_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_3_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_3_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_3_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_3_PastConnectionsInBody: 2 
+Body_0_Joint_3_FutureConnectionsInBody: 33 34 4 
+Body_0_Joint_3_ResetPastJoints: False
+Body_0_Joint_3_ResetFutureJoints: False
+
+Body_0_Joint_4_Active: True
+Body_0_Joint_4_ShowAxis: True
+Body_0_Joint_4_KeepBodyTogether: True
+Body_0_Joint_4_LocalAxisScale: 5.0
+Body_0_Joint_4_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_4_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_4_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_4_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_4_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_4_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_4_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_4_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_4_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_4_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_4_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_4_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_4_PastConnectionsInBody: 3 
+Body_0_Joint_4_FutureConnectionsInBody: 5 
+Body_0_Joint_4_ResetPastJoints: False
+Body_0_Joint_4_ResetFutureJoints: False
+
+Body_0_Joint_5_Active: True
+Body_0_Joint_5_ShowAxis: True
+Body_0_Joint_5_KeepBodyTogether: True
+Body_0_Joint_5_LocalAxisScale: 5.0
+Body_0_Joint_5_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_5_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_5_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_5_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_5_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_5_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_5_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_5_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_5_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_5_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_5_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_5_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_5_PastConnectionsInBody: 4 
+Body_0_Joint_5_FutureConnectionsInBody: 6 
+Body_0_Joint_5_ResetPastJoints: False
+Body_0_Joint_5_ResetFutureJoints: False
+
+Body_0_Joint_6_Active: True
+Body_0_Joint_6_ShowAxis: True
+Body_0_Joint_6_KeepBodyTogether: True
+Body_0_Joint_6_LocalAxisScale: 5.0
+Body_0_Joint_6_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_6_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_6_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_6_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_6_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_6_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_6_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_6_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_6_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_6_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_6_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_6_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_6_PastConnectionsInBody: 5 
+Body_0_Joint_6_FutureConnectionsInBody: 35 36 
+Body_0_Joint_6_ResetPastJoints: False
+Body_0_Joint_6_ResetFutureJoints: False
+
+Body_0_Joint_7_Active: True
+Body_0_Joint_7_ShowAxis: True
+Body_0_Joint_7_KeepBodyTogether: True
+Body_0_Joint_7_LocalAxisScale: 5.0
+Body_0_Joint_7_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_7_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_7_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_7_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_7_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_7_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_7_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_7_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_7_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_7_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_7_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_7_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_7_PastConnectionsInBody: 35 
+Body_0_Joint_7_FutureConnectionsInBody: 9 
+Body_0_Joint_7_ResetPastJoints: False
+Body_0_Joint_7_ResetFutureJoints: False
+
+Body_0_Joint_8_Active: True
+Body_0_Joint_8_ShowAxis: True
+Body_0_Joint_8_KeepBodyTogether: True
+Body_0_Joint_8_LocalAxisScale: 5.0
+Body_0_Joint_8_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_8_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_8_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_8_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_8_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_8_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_8_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_8_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_8_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_8_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_8_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_8_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_8_PastConnectionsInBody: 36 
+Body_0_Joint_8_FutureConnectionsInBody: 10 
+Body_0_Joint_8_ResetPastJoints: False
+Body_0_Joint_8_ResetFutureJoints: False
+
+Body_0_Joint_9_Active: True
+Body_0_Joint_9_ShowAxis: True
+Body_0_Joint_9_KeepBodyTogether: True
+Body_0_Joint_9_LocalAxisScale: 5.0
+Body_0_Joint_9_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_9_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_9_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_9_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_9_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_9_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_9_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_9_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_9_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_9_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_9_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_9_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_9_PastConnectionsInBody: 7 
+Body_0_Joint_9_FutureConnectionsInBody: 11 
+Body_0_Joint_9_ResetPastJoints: False
+Body_0_Joint_9_ResetFutureJoints: False
+
+Body_0_Joint_10_Active: True
+Body_0_Joint_10_ShowAxis: True
+Body_0_Joint_10_KeepBodyTogether: True
+Body_0_Joint_10_LocalAxisScale: 5.0
+Body_0_Joint_10_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_10_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_10_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_10_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_10_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_10_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_10_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_10_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_10_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_10_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_10_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_10_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_10_PastConnectionsInBody: 8 
+Body_0_Joint_10_FutureConnectionsInBody: 12 
+Body_0_Joint_10_ResetPastJoints: False
+Body_0_Joint_10_ResetFutureJoints: False
+
+Body_0_Joint_11_Active: True
+Body_0_Joint_11_ShowAxis: True
+Body_0_Joint_11_KeepBodyTogether: True
+Body_0_Joint_11_LocalAxisScale: 5.0
+Body_0_Joint_11_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_11_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_11_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_11_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_11_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_11_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_11_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_11_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_11_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_11_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_11_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_11_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_11_PastConnectionsInBody: 9 
+Body_0_Joint_11_FutureConnectionsInBody: 13 
+Body_0_Joint_11_ResetPastJoints: False
+Body_0_Joint_11_ResetFutureJoints: False
+
+Body_0_Joint_12_Active: True
+Body_0_Joint_12_ShowAxis: True
+Body_0_Joint_12_KeepBodyTogether: True
+Body_0_Joint_12_LocalAxisScale: 5.0
+Body_0_Joint_12_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_12_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_12_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_12_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_12_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_12_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_12_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_12_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_12_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_12_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_12_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_12_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_12_PastConnectionsInBody: 10 
+Body_0_Joint_12_FutureConnectionsInBody: 14 
+Body_0_Joint_12_ResetPastJoints: False
+Body_0_Joint_12_ResetFutureJoints: False
+
+Body_0_Joint_13_Active: True
+Body_0_Joint_13_ShowAxis: True
+Body_0_Joint_13_KeepBodyTogether: True
+Body_0_Joint_13_LocalAxisScale: 5.0
+Body_0_Joint_13_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_13_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_13_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_13_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_13_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_13_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_13_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_13_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_13_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_13_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_13_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_13_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_13_PastConnectionsInBody: 11 
+Body_0_Joint_13_FutureConnectionsInBody: 
+Body_0_Joint_13_ResetPastJoints: False
+Body_0_Joint_13_ResetFutureJoints: False
+
+Body_0_Joint_14_Active: True
+Body_0_Joint_14_ShowAxis: True
+Body_0_Joint_14_KeepBodyTogether: True
+Body_0_Joint_14_LocalAxisScale: 5.0
+Body_0_Joint_14_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_14_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_14_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_14_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_14_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_14_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_14_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_14_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_14_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_14_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_14_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_14_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_14_PastConnectionsInBody: 12 
+Body_0_Joint_14_FutureConnectionsInBody: 
+Body_0_Joint_14_ResetPastJoints: False
+Body_0_Joint_14_ResetFutureJoints: False
+
+Body_0_Joint_15_Active: True
+Body_0_Joint_15_ShowAxis: True
+Body_0_Joint_15_KeepBodyTogether: True
+Body_0_Joint_15_LocalAxisScale: 5.0
+Body_0_Joint_15_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_15_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_15_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_15_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_15_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_15_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_15_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_15_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_15_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_15_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_15_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_15_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_15_PastConnectionsInBody: 33 
+Body_0_Joint_15_FutureConnectionsInBody: 17 
+Body_0_Joint_15_ResetPastJoints: False
+Body_0_Joint_15_ResetFutureJoints: False
+
+Body_0_Joint_16_Active: True
+Body_0_Joint_16_ShowAxis: True
+Body_0_Joint_16_KeepBodyTogether: True
+Body_0_Joint_16_LocalAxisScale: 5.0
+Body_0_Joint_16_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_16_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_16_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_16_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_16_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_16_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_16_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_16_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_16_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_16_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_16_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_16_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_16_PastConnectionsInBody: 34 
+Body_0_Joint_16_FutureConnectionsInBody: 18 
+Body_0_Joint_16_ResetPastJoints: False
+Body_0_Joint_16_ResetFutureJoints: False
+
+Body_0_Joint_17_Active: True
+Body_0_Joint_17_ShowAxis: True
+Body_0_Joint_17_KeepBodyTogether: True
+Body_0_Joint_17_LocalAxisScale: 5.0
+Body_0_Joint_17_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_17_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_17_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_17_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_17_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_17_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_17_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_17_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_17_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_17_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_17_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_17_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_17_PastConnectionsInBody: 15 
+Body_0_Joint_17_FutureConnectionsInBody: 19 
+Body_0_Joint_17_ResetPastJoints: False
+Body_0_Joint_17_ResetFutureJoints: False
+
+Body_0_Joint_18_Active: True
+Body_0_Joint_18_ShowAxis: True
+Body_0_Joint_18_KeepBodyTogether: True
+Body_0_Joint_18_LocalAxisScale: 5.0
+Body_0_Joint_18_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_18_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_18_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_18_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_18_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_18_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_18_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_18_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_18_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_18_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_18_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_18_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_18_PastConnectionsInBody: 16 
+Body_0_Joint_18_FutureConnectionsInBody: 20 
+Body_0_Joint_18_ResetPastJoints: False
+Body_0_Joint_18_ResetFutureJoints: False
+
+Body_0_Joint_19_Active: True
+Body_0_Joint_19_ShowAxis: True
+Body_0_Joint_19_KeepBodyTogether: True
+Body_0_Joint_19_LocalAxisScale: 5.0
+Body_0_Joint_19_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_19_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_19_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_19_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_19_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_19_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_19_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_19_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_19_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_19_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_19_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_19_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_19_PastConnectionsInBody: 17 
+Body_0_Joint_19_FutureConnectionsInBody: 37 38 39 
+Body_0_Joint_19_ResetPastJoints: False
+Body_0_Joint_19_ResetFutureJoints: False
+
+Body_0_Joint_20_Active: True
+Body_0_Joint_20_ShowAxis: True
+Body_0_Joint_20_KeepBodyTogether: True
+Body_0_Joint_20_LocalAxisScale: 5.0
+Body_0_Joint_20_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_20_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_20_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_20_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_20_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_20_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_20_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_20_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_20_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_20_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_20_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_20_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_20_PastConnectionsInBody: 18 
+Body_0_Joint_20_FutureConnectionsInBody: 40 41 42 
+Body_0_Joint_20_ResetPastJoints: False
+Body_0_Joint_20_ResetFutureJoints: False
+
+Body_0_Joint_21_Active: True
+Body_0_Joint_21_ShowAxis: True
+Body_0_Joint_21_KeepBodyTogether: True
+Body_0_Joint_21_LocalAxisScale: 5.0
+Body_0_Joint_21_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_21_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_21_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_21_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_21_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_21_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_21_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_21_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_21_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_21_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_21_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_21_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_21_PastConnectionsInBody: 37 
+Body_0_Joint_21_FutureConnectionsInBody: 22 
+Body_0_Joint_21_ResetPastJoints: False
+Body_0_Joint_21_ResetFutureJoints: False
+
+Body_0_Joint_22_Active: True
+Body_0_Joint_22_ShowAxis: True
+Body_0_Joint_22_KeepBodyTogether: True
+Body_0_Joint_22_LocalAxisScale: 5.0
+Body_0_Joint_22_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_22_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_22_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_22_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_22_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_22_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_22_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_22_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_22_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_22_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_22_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_22_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_22_PastConnectionsInBody: 21 
+Body_0_Joint_22_FutureConnectionsInBody: 
+Body_0_Joint_22_ResetPastJoints: False
+Body_0_Joint_22_ResetFutureJoints: False
+
+Body_0_Joint_23_Active: True
+Body_0_Joint_23_ShowAxis: True
+Body_0_Joint_23_KeepBodyTogether: True
+Body_0_Joint_23_LocalAxisScale: 5.0
+Body_0_Joint_23_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_23_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_23_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_23_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_23_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_23_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_23_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_23_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_23_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_23_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_23_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_23_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_23_PastConnectionsInBody: 38 
+Body_0_Joint_23_FutureConnectionsInBody: 30 
+Body_0_Joint_23_ResetPastJoints: False
+Body_0_Joint_23_ResetFutureJoints: False
+
+Body_0_Joint_24_Active: True
+Body_0_Joint_24_ShowAxis: True
+Body_0_Joint_24_KeepBodyTogether: True
+Body_0_Joint_24_LocalAxisScale: 5.0
+Body_0_Joint_24_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_24_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_24_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_24_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_24_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_24_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_24_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_24_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_24_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_24_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_24_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_24_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_24_PastConnectionsInBody: 42 
+Body_0_Joint_24_FutureConnectionsInBody: 25 
+Body_0_Joint_24_ResetPastJoints: False
+Body_0_Joint_24_ResetFutureJoints: False
+
+Body_0_Joint_25_Active: True
+Body_0_Joint_25_ShowAxis: True
+Body_0_Joint_25_KeepBodyTogether: True
+Body_0_Joint_25_LocalAxisScale: 5.0
+Body_0_Joint_25_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_25_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_25_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_25_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_25_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_25_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_25_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_25_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_25_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_25_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_25_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_25_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_25_PastConnectionsInBody: 24 
+Body_0_Joint_25_FutureConnectionsInBody: 
+Body_0_Joint_25_ResetPastJoints: False
+Body_0_Joint_25_ResetFutureJoints: False
+
+Body_0_Joint_26_Active: True
+Body_0_Joint_26_ShowAxis: True
+Body_0_Joint_26_KeepBodyTogether: True
+Body_0_Joint_26_LocalAxisScale: 5.0
+Body_0_Joint_26_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_26_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_26_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_26_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_26_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_26_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_26_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_26_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_26_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_26_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_26_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_26_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_26_PastConnectionsInBody: 41 
+Body_0_Joint_26_FutureConnectionsInBody: 27 
+Body_0_Joint_26_ResetPastJoints: False
+Body_0_Joint_26_ResetFutureJoints: False
+
+Body_0_Joint_27_Active: True
+Body_0_Joint_27_ShowAxis: True
+Body_0_Joint_27_KeepBodyTogether: True
+Body_0_Joint_27_LocalAxisScale: 5.0
+Body_0_Joint_27_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_27_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_27_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_27_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_27_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_27_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_27_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_27_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_27_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_27_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_27_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_27_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_27_PastConnectionsInBody: 26 
+Body_0_Joint_27_FutureConnectionsInBody: 
+Body_0_Joint_27_ResetPastJoints: False
+Body_0_Joint_27_ResetFutureJoints: False
+
+Body_0_Joint_28_Active: True
+Body_0_Joint_28_ShowAxis: True
+Body_0_Joint_28_KeepBodyTogether: True
+Body_0_Joint_28_LocalAxisScale: 5.0
+Body_0_Joint_28_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_28_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_28_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_28_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_28_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_28_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_28_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_28_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_28_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_28_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_28_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_28_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_28_PastConnectionsInBody: 40 
+Body_0_Joint_28_FutureConnectionsInBody: 
+Body_0_Joint_28_ResetPastJoints: False
+Body_0_Joint_28_ResetFutureJoints: False
+
+Body_0_Joint_29_Active: True
+Body_0_Joint_29_ShowAxis: True
+Body_0_Joint_29_KeepBodyTogether: True
+Body_0_Joint_29_LocalAxisScale: 5.0
+Body_0_Joint_29_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_29_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_29_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_29_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_29_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_29_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_29_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_29_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_29_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_29_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_29_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_29_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_29_PastConnectionsInBody: 
+Body_0_Joint_29_FutureConnectionsInBody: 
+Body_0_Joint_29_ResetPastJoints: False
+Body_0_Joint_29_ResetFutureJoints: False
+
+Body_0_Joint_30_Active: True
+Body_0_Joint_30_ShowAxis: True
+Body_0_Joint_30_KeepBodyTogether: True
+Body_0_Joint_30_LocalAxisScale: 5.0
+Body_0_Joint_30_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_30_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_30_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_30_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_30_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_30_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_30_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_30_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_30_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_30_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_30_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_30_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_30_PastConnectionsInBody: 23 
+Body_0_Joint_30_FutureConnectionsInBody: 
+Body_0_Joint_30_ResetPastJoints: False
+Body_0_Joint_30_ResetFutureJoints: False
+
+Body_0_Joint_31_Active: True
+Body_0_Joint_31_ShowAxis: True
+Body_0_Joint_31_KeepBodyTogether: True
+Body_0_Joint_31_LocalAxisScale: 5.0
+Body_0_Joint_31_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_31_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_31_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_31_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_31_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_31_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_31_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_31_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_31_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_31_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_31_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_31_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_31_PastConnectionsInBody: 39 
+Body_0_Joint_31_FutureConnectionsInBody: 32 
+Body_0_Joint_31_ResetPastJoints: False
+Body_0_Joint_31_ResetFutureJoints: False
+
+Body_0_Joint_32_Active: True
+Body_0_Joint_32_ShowAxis: True
+Body_0_Joint_32_KeepBodyTogether: True
+Body_0_Joint_32_LocalAxisScale: 5.0
+Body_0_Joint_32_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_32_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_32_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_32_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_32_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_32_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_32_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_32_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_32_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_32_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_32_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_32_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_32_PastConnectionsInBody: 31 
+Body_0_Joint_32_FutureConnectionsInBody: 
+Body_0_Joint_32_ResetPastJoints: False
+Body_0_Joint_32_ResetFutureJoints: False
+
+Body_0_Joint_33_Active: True
+Body_0_Joint_33_ShowAxis: True
+Body_0_Joint_33_KeepBodyTogether: True
+Body_0_Joint_33_LocalAxisScale: 5.0
+Body_0_Joint_33_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_33_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_33_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_33_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_33_SpinFutureY: 90.0 0.0 1.0
+Body_0_Joint_33_SpinFutureSpeedAndAcceleration: 0.5 1.0
+Body_0_Joint_33_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_33_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_33_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_33_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_33_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_33_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_33_PastConnectionsInBody: 3 
+Body_0_Joint_33_FutureConnectionsInBody: 15 
+Body_0_Joint_33_ResetPastJoints: False
+Body_0_Joint_33_ResetFutureJoints: False
+
+Body_0_Joint_34_Active: True
+Body_0_Joint_34_ShowAxis: True
+Body_0_Joint_34_KeepBodyTogether: True
+Body_0_Joint_34_LocalAxisScale: 5.0
+Body_0_Joint_34_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_34_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_34_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_34_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_34_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_34_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_34_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_34_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_34_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_34_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_34_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_34_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_34_PastConnectionsInBody: 3 
+Body_0_Joint_34_FutureConnectionsInBody: 16 
+Body_0_Joint_34_ResetPastJoints: False
+Body_0_Joint_34_ResetFutureJoints: False
+
+Body_0_Joint_35_Active: True
+Body_0_Joint_35_ShowAxis: True
+Body_0_Joint_35_KeepBodyTogether: True
+Body_0_Joint_35_LocalAxisScale: 5.0
+Body_0_Joint_35_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_35_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_35_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_35_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_35_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_35_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_35_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_35_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_35_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_35_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_35_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_35_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_35_PastConnectionsInBody: 6 
+Body_0_Joint_35_FutureConnectionsInBody: 7 
+Body_0_Joint_35_ResetPastJoints: False
+Body_0_Joint_35_ResetFutureJoints: False
+
+Body_0_Joint_36_Active: True
+Body_0_Joint_36_ShowAxis: True
+Body_0_Joint_36_KeepBodyTogether: True
+Body_0_Joint_36_LocalAxisScale: 5.0
+Body_0_Joint_36_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_36_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_36_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_36_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_36_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_36_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_36_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_36_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_36_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_36_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_36_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_36_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_36_PastConnectionsInBody: 6 
+Body_0_Joint_36_FutureConnectionsInBody: 8 
+Body_0_Joint_36_ResetPastJoints: False
+Body_0_Joint_36_ResetFutureJoints: False
+
+Body_0_Joint_37_Active: True
+Body_0_Joint_37_ShowAxis: True
+Body_0_Joint_37_KeepBodyTogether: True
+Body_0_Joint_37_LocalAxisScale: 5.0
+Body_0_Joint_37_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_37_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_37_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_37_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_37_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_37_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_37_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_37_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_37_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_37_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_37_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_37_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_37_PastConnectionsInBody: 19 
+Body_0_Joint_37_FutureConnectionsInBody: 21 
+Body_0_Joint_37_ResetPastJoints: False
+Body_0_Joint_37_ResetFutureJoints: False
+
+Body_0_Joint_38_Active: True
+Body_0_Joint_38_ShowAxis: True
+Body_0_Joint_38_KeepBodyTogether: True
+Body_0_Joint_38_LocalAxisScale: 5.0
+Body_0_Joint_38_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_38_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_38_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_38_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_38_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_38_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_38_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_38_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_38_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_38_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_38_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_38_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_38_PastConnectionsInBody: 19 
+Body_0_Joint_38_FutureConnectionsInBody: 23 
+Body_0_Joint_38_ResetPastJoints: False
+Body_0_Joint_38_ResetFutureJoints: False
+
+Body_0_Joint_39_Active: True
+Body_0_Joint_39_ShowAxis: True
+Body_0_Joint_39_KeepBodyTogether: True
+Body_0_Joint_39_LocalAxisScale: 5.0
+Body_0_Joint_39_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_39_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_39_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_39_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_39_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_39_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_39_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_39_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_39_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_39_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_39_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_39_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_39_PastConnectionsInBody: 19 
+Body_0_Joint_39_FutureConnectionsInBody: 31 
+Body_0_Joint_39_ResetPastJoints: False
+Body_0_Joint_39_ResetFutureJoints: False
+
+Body_0_Joint_40_Active: True
+Body_0_Joint_40_ShowAxis: True
+Body_0_Joint_40_KeepBodyTogether: True
+Body_0_Joint_40_LocalAxisScale: 5.0
+Body_0_Joint_40_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_40_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_40_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_40_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_40_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_40_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_40_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_40_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_40_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_40_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_40_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_40_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_40_PastConnectionsInBody: 20 
+Body_0_Joint_40_FutureConnectionsInBody: 28 
+Body_0_Joint_40_ResetPastJoints: False
+Body_0_Joint_40_ResetFutureJoints: False
+
+Body_0_Joint_41_Active: True
+Body_0_Joint_41_ShowAxis: True
+Body_0_Joint_41_KeepBodyTogether: True
+Body_0_Joint_41_LocalAxisScale: 5.0
+Body_0_Joint_41_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_41_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_41_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_41_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_41_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_41_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_41_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_41_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_41_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_41_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_41_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_41_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_41_PastConnectionsInBody: 20 
+Body_0_Joint_41_FutureConnectionsInBody: 26 
+Body_0_Joint_41_ResetPastJoints: False
+Body_0_Joint_41_ResetFutureJoints: False
+
+Body_0_Joint_42_Active: True
+Body_0_Joint_42_ShowAxis: True
+Body_0_Joint_42_KeepBodyTogether: True
+Body_0_Joint_42_LocalAxisScale: 5.0
+Body_0_Joint_42_SpinPastX: 0.0 0.0 1.0
+Body_0_Joint_42_SpinPastY: 0.0 0.0 1.0
+Body_0_Joint_42_SpinPastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_42_SpinFutureX: 0.0 0.0 1.0
+Body_0_Joint_42_SpinFutureY: 0.0 0.0 1.0
+Body_0_Joint_42_SpinFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_42_MovePastX: 0.0 0.0 1.0
+Body_0_Joint_42_MovePastY: 0.0 0.0 1.0
+Body_0_Joint_42_MovePastSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_42_MoveFutureX: 0.0 0.0 1.0
+Body_0_Joint_42_MoveFutureY: 0.0 0.0 1.0
+Body_0_Joint_42_MoveFutureSpeedAndAcceleration: 0.0 1.0
+Body_0_Joint_42_PastConnectionsInBody: 20 
+Body_0_Joint_42_FutureConnectionsInBody: 24 
+Body_0_Joint_42_ResetPastJoints: False
+Body_0_Joint_42_ResetFutureJoints: False
+
+Body_0_GlobalOriginLocation: 0.0 0.0 0.0
+Body_0_GlobalAxisRotationXYZ: 0.0 0.0 0.0
+Body_0_RadianOrAngle: True
+Body_0_Accuracy: 1
+

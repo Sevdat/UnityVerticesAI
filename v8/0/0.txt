@@ -1,0 +1,42 @@
+Body_0_UpdateReadWrite: 20
+Body_0_Accuracy: 6
+Body_0_ShowAxis: False
+Body_0_GlobalAxisScale: 1.000000
+Body_0_BodyStructureSize: 3
+Body_0_AllJointsInBody: 1
+
+Body_0_Joint_1_MovementOption: False
+Body_0_Joint_1_DistanceFromGlobalOrigin: 0.000000
+Body_0_Joint_1_YXFromGlobalAxis: 0.000000 0.000000
+Body_0_Joint_1_LocalAxisRotation: 0.000000 0.000000 0.000000
+Body_0_Joint_1_LocalOriginLocation: 0.000000 0.000000 0.000000
+Body_0_Joint_1_PointCloudSize: 0
+Body_0_Joint_1_AllSpheresInJoint:
+Body_0_Joint_1_TrianglesInPointCloud:
+
+Body_0_Joint_1_Active: True
+Body_0_Joint_1_ShowAxis: False
+Body_0_Joint_1_KeepBodyTogether: True
+Body_0_Joint_1_LocalAxisScale: 1.000000
+Body_0_Joint_1_PastConnectionsInBody: 
+Body_0_Joint_1_FutureConnectionsInBody: 
+Body_0_Joint_1_ResetPastJoints: False
+Body_0_Joint_1_ResetFutureJoints: False
+Body_0_Joint_1_SpinPastX: 0.000000 0.000000 1.000000
+Body_0_Joint_1_SpinPastY: 0.000000 0.000000 1.000000
+Body_0_Joint_1_SpinPastSpeedAndAcceleration: 0.000000 1.000000
+Body_0_Joint_1_SpinFutureX: 0.000000 0.000000 1.000000
+Body_0_Joint_1_SpinFutureY: 0.000000 0.000000 1.000000
+Body_0_Joint_1_SpinFutureSpeedAndAcceleration: 0.000000 1.000000
+Body_0_Joint_1_MovePastX: 0.000000 0.000000 1.000000
+Body_0_Joint_1_MovePastY: 0.000000 0.000000 1.000000
+Body_0_Joint_1_MovePastSpeedAndAcceleration: 0.000000 1.000000
+Body_0_Joint_1_MoveFutureX: 0.000000 0.000000 1.000000
+Body_0_Joint_1_MoveFutureY: 0.000000 0.000000 1.000000
+Body_0_Joint_1_MoveFutureSpeedAndAcceleration: 0.000000 1.000000
+
+Body_0_GlobalOriginLocation: 0.000000 0.000000 0.000000
+Body_0_GlobalAxisRotationXYZ: 0.000000 0.000000 0.000000
+Body_0_RadianOrAngle: False
+
+
