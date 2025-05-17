@@ -211,6 +211,7 @@ public class VertexVisualizer : MonoBehaviour
                 int pointCloudSize = assembleJoints.bakedMeshIndex.Count;
                 joint.pointCloud = new PointCloud(joint);
                 joint.pointCloud.collisionSpheres = new CollisionSphere[pointCloudSize];
+                joint.pointCloud.keyGenerator = new KeyGenerator(pointCloudSize);
                 for (int i = 0;i < pointCloudSize;i++){
                     CollisionSphere collisionSphere = new CollisionSphere(joint,i,assembleJoints.bakedMeshIndex[i]);
                     collisionSphere.bakedMeshIndex = assembleJoints.bakedMeshIndex[i];
